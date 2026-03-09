@@ -5,9 +5,8 @@
     "name": "Cysharp, Inc.",
     "url": "https://cysharp.co.jp/en/"
   },
-  "version": "1.21.4",
-  "unity": "2022.3",
-  "unityRelease": "12f1",
+  "version": "1.9.11",
+  "unity": "2021.3",
   "description": "Zero encoding extreme performance binary serializer for C#.",
   "keywords": [
     "Serialization"
@@ -18,5 +17,5 @@
   "publishConfig": {
     "registry": "https://package.openupm.com"
   },
-  "_fingerprint": "8d9eac4126c6deb9f1ca2eb6f9ca58cf8179fe67"
+  "_fingerprint": "84cda5dea77e3c8e84ff50184f7bb3be2b656129"
 }

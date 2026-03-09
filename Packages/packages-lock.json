@@ -6,6 +6,12 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "com.github-glitchenzo.nugetforunity": {
+      "version": "file:com.github-glitchenzo.nugetforunity",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.neuecc.messagepack": {
       "version": "file:com.neuecc.messagepack",
       "depth": 0,
@@ -18,12 +24,6 @@
       "source": "git",
       "dependencies": {},
       "hash": "6baeccf6c544c155497164327cca72f28163a578"
-    },
-    "com.opengs.logic": {
-      "version": "file:../../OpenGSCore",
-      "depth": 0,
-      "source": "local",
-      "dependencies": {}
     },
     "com.unity.ai.navigation": {
       "version": "2.0.10",
