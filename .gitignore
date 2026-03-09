@@ -1,0 +1,30 @@
+/[Ll]ibrary/
+/[Tt]emp/
+/[Obj]j/
+/[Bb]uild/
+/[Builds]/
+/[Logs]/
+/[MemoryCaptures]/
+/[UserSettings]/
+
+# --- Visual Studio 関連（13700KFの演算用ゴミ） ---
+.vs/
+[Dd]ebug/
+[Rr]elease/
+*.user
+*.userosscache
+*.sln
+*.csproj
+*.unityproj
+*.suo
+*.pdb
+*.log
+
+# --- OS 固有のノイズ ---
+.DS_Store
+Thumbs.db
+
+# --- NuGet / UPM 関連 ---
+# NuGetForUnityのパッケージ本体はPackagesに展開されるが、
+# 本来は再生成可能なので除外候補（設定による）
+/[Aa]ssets/Packages/
