@@ -1,9 +1,9 @@
 {
   "dependencies": {
-    "com.cysharp.memorypack": "1.21.4",
+    "com.cysharp.memorypack": "1.9.11",
     "com.neuecc.messagepack": "2.5.140",
     "com.neuecc.unirx": "https://github.com/neuecc/UniRx.git?path=Assets/Plugins/UniRx/Scripts",
-    "com.opengs.logic": "file:../../OpenGSCore",
+    "com.opengs.logic": "https://github.com/lagmajin/OpenGSCore.git",
     "com.unity.ai.navigation": "2.0.10",
     "com.unity.collab-proxy": "2.11.3",
     "com.unity.ide.rider": "3.0.39",
@@ -48,7 +48,8 @@
     "com.unity.modules.vehicles": "1.0.0",
     "com.unity.modules.video": "1.0.0",
     "com.unity.modules.wind": "1.0.0",
-    "com.unity.modules.xr": "1.0.0"
+    "com.unity.modules.xr": "1.0.0",
+    "com.github-glitchenzo.nugetforunity": "4.5.0"
   },
   "scopedRegistries": [
     {
@@ -56,6 +57,7 @@
       "url": "https://package.openupm.com",
       "scopes": [
         "com.cysharp.memorypack",
+        "com.github-glitchenzo.nugetforunity",
         "com.neuecc.messagepack"
       ]
     }
