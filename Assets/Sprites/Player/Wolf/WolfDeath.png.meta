@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 5c52d85760087ea439b6b49e44f2063c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2690044895605582352
+    second: WolfDeath_0
+  - first:
+      213: 7318100691159677323
+    second: WolfDeath_1
+  - first:
+      213: -3081734845132767040
+    second: WolfDeath_2
+  - first:
+      213: -4380616010869967409
+    second: WolfDeath_3
+  - first:
+      213: -3196004521610175863
+    second: WolfDeath_4
+  - first:
+      213: 5486405801148069545
+    second: WolfDeath_5
+  - first:
+      213: 1351092700907429884
+    second: WolfDeath_6
+  - first:
+      213: -563094740513413798
+    second: WolfDeath_7
+  - first:
+      213: 7225893716691268572
+    second: WolfDeath_8
+  - first:
+      213: 2365089533240446737
+    second: WolfDeath_9
+  - first:
+      213: -484274003937272360
+    second: WolfDeath_10
+  - first:
+      213: 2068456050479637572
+    second: WolfDeath_11
+  - first:
+      213: 1320654612778013003
+    second: WolfDeath_12
+  - first:
+      213: 1554084165595112321
+    second: WolfDeath_13
+  - first:
+      213: -2586959770450401631
+    second: WolfDeath_14
+  - first:
+      213: 3774696066192451938
+    second: WolfDeath_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: WolfDeath_0
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 117
+        width: 61
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01a6c608495f45520800000000000000
+      internalID: 2690044895605582352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_1
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 120
+        width: 76
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b89fc1f3ecd1f8560800000000000000
+      internalID: 7318100691159677323
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_2
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 136
+        width: 62
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0c00bef6c7a7b35d0800000000000000
+      internalID: -3081734845132767040
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_3
+      rect:
+        serializedVersion: 2
+        x: 488
+        y: 134
+        width: 46
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc5f4b692fce433c0800000000000000
+      internalID: -4380616010869967409
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_4
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 134
+        width: 44
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98a12ec12d285a3d0800000000000000
+      internalID: -3196004521610175863
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_5
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 134
+        width: 43
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a6b2170201a32c40800000000000000
+      internalID: 5486405801148069545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_6
+      rect:
+        serializedVersion: 2
+        x: 906
+        y: 134
+        width: 46
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cffd53037ab00c210800000000000000
+      internalID: 1351092700907429884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_7
+      rect:
+        serializedVersion: 2
+        x: 1047
+        y: 134
+        width: 46
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a55aec0215c7f28f0800000000000000
+      internalID: -563094740513413798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_8
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 38
+        width: 73
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd33c180d08874460800000000000000
+      internalID: 7225893716691268572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_9
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 35
+        width: 68
+        height: 54
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 11f8ac2566c72d020800000000000000
+      internalID: 2365089533240446737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_10
+      rect:
+        serializedVersion: 2
+        x: 328
+        y: 36
+        width: 83
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dddc55fb538749f0800000000000000
+      internalID: -484274003937272360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_11
+      rect:
+        serializedVersion: 2
+        x: 467
+        y: 37
+        width: 83
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 444a85a91d1a4bc10800000000000000
+      internalID: 2068456050479637572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_12
+      rect:
+        serializedVersion: 2
+        x: 606
+        y: 35
+        width: 82
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b415d998f58e35210800000000000000
+      internalID: 1320654612778013003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_13
+      rect:
+        serializedVersion: 2
+        x: 747
+        y: 35
+        width: 82
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1832b519057319510800000000000000
+      internalID: 1554084165595112321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_14
+      rect:
+        serializedVersion: 2
+        x: 892
+        y: 36
+        width: 79
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a6e31a8bc5491cd0800000000000000
+      internalID: -2586959770450401631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: WolfDeath_15
+      rect:
+        serializedVersion: 2
+        x: 1025
+        y: 34
+        width: 87
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2692770b21a626430800000000000000
+      internalID: 3774696066192451938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      WolfDeath_0: 2690044895605582352
+      WolfDeath_1: 7318100691159677323
+      WolfDeath_10: -484274003937272360
+      WolfDeath_11: 2068456050479637572
+      WolfDeath_12: 1320654612778013003
+      WolfDeath_13: 1554084165595112321
+      WolfDeath_14: -2586959770450401631
+      WolfDeath_15: 3774696066192451938
+      WolfDeath_2: -3081734845132767040
+      WolfDeath_3: -4380616010869967409
+      WolfDeath_4: -3196004521610175863
+      WolfDeath_5: 5486405801148069545
+      WolfDeath_6: 1351092700907429884
+      WolfDeath_7: -563094740513413798
+      WolfDeath_8: 7225893716691268572
+      WolfDeath_9: 2365089533240446737
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

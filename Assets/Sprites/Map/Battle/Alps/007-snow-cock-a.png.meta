@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 8a571dfee82c794458cf8c3a6af01007
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4299010812886233708
+    second: 007-snow-cock-a_0
+  - first:
+      213: -9193158994461209973
+    second: 007-snow-cock-a_1
+  - first:
+      213: -7931257776647316685
+    second: 007-snow-cock-a_2
+  - first:
+      213: -10171327993667996
+    second: 007-snow-cock-a_3
+  - first:
+      213: -7602313709072973286
+    second: 007-snow-cock-a_4
+  - first:
+      213: -3790366519276391255
+    second: 007-snow-cock-a_5
+  - first:
+      213: 7024878501286253778
+    second: 007-snow-cock-a_6
+  - first:
+      213: 2717370392594043794
+    second: 007-snow-cock-a_7
+  - first:
+      213: 6426595866931270819
+    second: 007-snow-cock-a_8
+  - first:
+      213: -5213278466251473883
+    second: 007-snow-cock-a_9
+  - first:
+      213: 174413886642808502
+    second: 007-snow-cock-a_10
+  - first:
+      213: 6502528019622956574
+    second: 007-snow-cock-a_11
+  - first:
+      213: 425621017740416837
+    second: 007-snow-cock-a_12
+  - first:
+      213: 8365820129567182463
+    second: 007-snow-cock-a_13
+  - first:
+      213: -6926189377995449815
+    second: 007-snow-cock-a_14
+  - first:
+      213: 6747576775575726088
+    second: 007-snow-cock-a_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 007-snow-cock-a_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 39
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49d4a5c5178d654c0800000000000000
+      internalID: -4299010812886233708
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_1
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 45
+        width: 39
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8ac37b1a965b6080800000000000000
+      internalID: -9193158994461209973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_2
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 0
+        width: 38
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33bd1e0e2138ee190800000000000000
+      internalID: -7931257776647316685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_3
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 45
+        width: 36
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46e1b082b3ddbdff0800000000000000
+      internalID: -10171327993667996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_4
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 0
+        width: 34
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a128f9bd5f72f7690800000000000000
+      internalID: -7602313709072973286
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_5
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 45
+        width: 27
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a43ff1abb9e56bc0800000000000000
+      internalID: -3790366519276391255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_6
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 0
+        width: 29
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d4127b07c16d7160800000000000000
+      internalID: 7024878501286253778
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_7
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 45
+        width: 26
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2935bbd89f906b520800000000000000
+      internalID: 2717370392594043794
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_8
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 45
+        width: 27
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a49e6334eadf2950800000000000000
+      internalID: 6426595866931270819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_9
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 0
+        width: 27
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52c33e72bd6b6a7b0800000000000000
+      internalID: -5213278466251473883
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_10
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 45
+        width: 25
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b66d3d7184ab6200800000000000000
+      internalID: 174413886642808502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_11
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 0
+        width: 27
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1e86af28ce9d3a50800000000000000
+      internalID: 6502528019622956574
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_12
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 45
+        width: 27
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5479b538f0c18e500800000000000000
+      internalID: 425621017740416837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_13
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 0
+        width: 34
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7e0aa5751d591470800000000000000
+      internalID: 8365820129567182463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_14
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 45
+        width: 35
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 92a5f7d057b31ef90800000000000000
+      internalID: -6926189377995449815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 007-snow-cock-a_15
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 0
+        width: 37
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 808edd2c35534ad50800000000000000
+      internalID: 6747576775575726088
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      007-snow-cock-a_0: -4299010812886233708
+      007-snow-cock-a_1: -9193158994461209973
+      007-snow-cock-a_10: 174413886642808502
+      007-snow-cock-a_11: 6502528019622956574
+      007-snow-cock-a_12: 425621017740416837
+      007-snow-cock-a_13: 8365820129567182463
+      007-snow-cock-a_14: -6926189377995449815
+      007-snow-cock-a_15: 6747576775575726088
+      007-snow-cock-a_2: -7931257776647316685
+      007-snow-cock-a_3: -10171327993667996
+      007-snow-cock-a_4: -7602313709072973286
+      007-snow-cock-a_5: -3790366519276391255
+      007-snow-cock-a_6: 7024878501286253778
+      007-snow-cock-a_7: 2717370392594043794
+      007-snow-cock-a_8: 6426595866931270819
+      007-snow-cock-a_9: -5213278466251473883
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

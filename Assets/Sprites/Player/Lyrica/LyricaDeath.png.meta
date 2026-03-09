@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 16336cc81a377014b86a8e8bc76cbade
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5442033591407344959
+    second: LyricaDeath_0
+  - first:
+      213: 6863858726855162543
+    second: LyricaDeath_1
+  - first:
+      213: -224547939934454526
+    second: LyricaDeath_2
+  - first:
+      213: 6917679646457382819
+    second: LyricaDeath_3
+  - first:
+      213: 3267394733372869647
+    second: LyricaDeath_4
+  - first:
+      213: -6543836453913099748
+    second: LyricaDeath_5
+  - first:
+      213: -820687899766865840
+    second: LyricaDeath_6
+  - first:
+      213: 2642857807802232455
+    second: LyricaDeath_7
+  - first:
+      213: 6757343391372018957
+    second: LyricaDeath_8
+  - first:
+      213: 6035563358599734572
+    second: LyricaDeath_9
+  - first:
+      213: 8552274226335921737
+    second: LyricaDeath_10
+  - first:
+      213: 6036417147033243848
+    second: LyricaDeath_11
+  - first:
+      213: 1616197799323911124
+    second: LyricaDeath_12
+  - first:
+      213: -7250612049438203768
+    second: LyricaDeath_13
+  - first:
+      213: 227811175317788843
+    second: LyricaDeath_14
+  - first:
+      213: -8239969503876311921
+    second: LyricaDeath_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: LyricaDeath_0
+      rect:
+        serializedVersion: 2
+        x: 42
+        y: 19
+        width: 47
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c20c6028430a74b0800000000000000
+      internalID: -5442033591407344959
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_1
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 18
+        width: 37
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: faabaa25523514f50800000000000000
+      internalID: 6863858726855162543
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_2
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 21
+        width: 37
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20d392d96de32ecf0800000000000000
+      internalID: -224547939934454526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_3
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 27
+        width: 52
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a7ca0dacf8800060800000000000000
+      internalID: 6917679646457382819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_4
+      rect:
+        serializedVersion: 2
+        x: 644
+        y: 26
+        width: 38
+        height: 51
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0c0ca7d23e185d20800000000000000
+      internalID: 3267394733372869647
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_5
+      rect:
+        serializedVersion: 2
+        x: 755
+        y: 35
+        width: 57
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1202487a6f9f25a0800000000000000
+      internalID: -6543836453913099748
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_6
+      rect:
+        serializedVersion: 2
+        x: 876
+        y: 29
+        width: 57
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0504fee04b45c94f0800000000000000
+      internalID: -820687899766865840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_7
+      rect:
+        serializedVersion: 2
+        x: 1375
+        y: 63
+        width: 10
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78e6be97c215da420800000000000000
+      internalID: 2642857807802232455
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_8
+      rect:
+        serializedVersion: 2
+        x: 1460
+        y: 25
+        width: 63
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0500143308e6cd50800000000000000
+      internalID: 6757343391372018957
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_9
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 21
+        width: 40
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2563b895e0a2c350800000000000000
+      internalID: 6035563358599734572
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_10
+      rect:
+        serializedVersion: 2
+        x: 992
+        y: 23
+        width: 57
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9463b72d818cfa670800000000000000
+      internalID: 8552274226335921737
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_11
+      rect:
+        serializedVersion: 2
+        x: 1119
+        y: 23
+        width: 56
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c05ef4b969a5c350800000000000000
+      internalID: 6036417147033243848
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_12
+      rect:
+        serializedVersion: 2
+        x: 1223
+        y: 22
+        width: 60
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d34873e553ed6610800000000000000
+      internalID: 1616197799323911124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_13
+      rect:
+        serializedVersion: 2
+        x: 1340
+        y: 26
+        width: 63
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 880a115a1c6a06b90800000000000000
+      internalID: -7250612049438203768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_14
+      rect:
+        serializedVersion: 2
+        x: 1594
+        y: 22
+        width: 64
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba85ea49e09592300800000000000000
+      internalID: 227811175317788843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: LyricaDeath_15
+      rect:
+        serializedVersion: 2
+        x: 1714
+        y: 23
+        width: 64
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f849669b46fb5ad80800000000000000
+      internalID: -8239969503876311921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      LyricaDeath_0: -5442033591407344959
+      LyricaDeath_1: 6863858726855162543
+      LyricaDeath_10: 8552274226335921737
+      LyricaDeath_11: 6036417147033243848
+      LyricaDeath_12: 1616197799323911124
+      LyricaDeath_13: -7250612049438203768
+      LyricaDeath_14: 227811175317788843
+      LyricaDeath_15: -8239969503876311921
+      LyricaDeath_2: -224547939934454526
+      LyricaDeath_3: 6917679646457382819
+      LyricaDeath_4: 3267394733372869647
+      LyricaDeath_5: -6543836453913099748
+      LyricaDeath_6: -820687899766865840
+      LyricaDeath_7: 2642857807802232455
+      LyricaDeath_8: 6757343391372018957
+      LyricaDeath_9: 6035563358599734572
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

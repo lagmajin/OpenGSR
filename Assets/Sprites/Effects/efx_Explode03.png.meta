@@ -1,0 +1,718 @@
+fileFormatVersion: 2
+guid: 35220863cf143c64a8cbe9d44bddd789
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8454366763425062167
+    second: efx_Explode03_0
+  - first:
+      213: -476984034761915501
+    second: efx_Explode03_1
+  - first:
+      213: -7144720222475531539
+    second: efx_Explode03_2
+  - first:
+      213: 5235061308558796798
+    second: efx_Explode03_3
+  - first:
+      213: -7736724249075608832
+    second: efx_Explode03_4
+  - first:
+      213: 1813425080352325787
+    second: efx_Explode03_5
+  - first:
+      213: 5389598124228491986
+    second: efx_Explode03_6
+  - first:
+      213: 2540169485216689165
+    second: efx_Explode03_7
+  - first:
+      213: 6655706599081758888
+    second: efx_Explode03_8
+  - first:
+      213: 7950954371316719487
+    second: efx_Explode03_9
+  - first:
+      213: -6643237152994767685
+    second: efx_Explode03_10
+  - first:
+      213: -3351801235893192524
+    second: efx_Explode03_11
+  - first:
+      213: 8594145054581802988
+    second: efx_Explode03_12
+  - first:
+      213: -1506978702990597331
+    second: efx_Explode03_13
+  - first:
+      213: 6905238991952569245
+    second: efx_Explode03_14
+  - first:
+      213: -6447309963864028962
+    second: efx_Explode03_15
+  - first:
+      213: 7482285039772150164
+    second: efx_Explode03_16
+  - first:
+      213: -3038922924851271268
+    second: efx_Explode03_17
+  - first:
+      213: 3099323319925834315
+    second: efx_Explode03_18
+  - first:
+      213: 2705526797115793016
+    second: efx_Explode03_19
+  - first:
+      213: -8043528585899024614
+    second: efx_Explode03_20
+  - first:
+      213: 3244289731077134116
+    second: efx_Explode03_21
+  - first:
+      213: 491506063900361159
+    second: efx_Explode03_22
+  - first:
+      213: -6888847776783043820
+    second: efx_Explode03_23
+  - first:
+      213: 5248003708486623114
+    second: efx_Explode03_24
+  - first:
+      213: -2679847308842883121
+    second: efx_Explode03_25
+  - first:
+      213: -1996836499319029779
+    second: efx_Explode03_26
+  - first:
+      213: 169951935039995110
+    second: efx_Explode03_27
+  - first:
+      213: 4969832643938254248
+    second: efx_Explode03_28
+  - first:
+      213: -4790571997880655254
+    second: efx_Explode03_29
+  - first:
+      213: 3940604016339707155
+    second: efx_Explode03_30
+  - first:
+      213: 5608903999117293151
+    second: efx_Explode03_31
+  - first:
+      213: -2912920198117969168
+    second: efx_Explode03_32
+  - first:
+      213: -2789650659255328272
+    second: efx_Explode03_33
+  - first:
+      213: 1286240582477327401
+    second: efx_Explode03_34
+  - first:
+      213: 3422819197863068898
+    second: efx_Explode03_35
+  - first:
+      213: 286402680780017983
+    second: efx_Explode03_36
+  - first:
+      213: 6823763564931603967
+    second: efx_Explode03_37
+  - first:
+      213: -6585684212221202074
+    second: efx_Explode03_38
+  - first:
+      213: 6732834543197490921
+    second: efx_Explode03_39
+  - first:
+      213: 8125159425320117473
+    second: efx_Explode03_40
+  - first:
+      213: -3224280202427826205
+    second: efx_Explode03_41
+  - first:
+      213: -9222185885982048684
+    second: efx_Explode03_42
+  - first:
+      213: 4022539393724033381
+    second: efx_Explode03_43
+  - first:
+      213: 8001377074674365024
+    second: efx_Explode03_44
+  - first:
+      213: -4614586253391476895
+    second: efx_Explode03_45
+  - first:
+      213: 6836562858380519773
+    second: efx_Explode03_46
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: efx_Explode03_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 840
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e22e29c83e0caa80800000000000000
+      internalID: -8454366763425062167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_1
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 840
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 393cb7c2c896169f0800000000000000
+      internalID: -476984034761915501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_2
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 840
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: deacbcfdfcad8dc90800000000000000
+      internalID: -7144720222475531539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_3
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 840
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef7e90a068ca6a840800000000000000
+      internalID: 5235061308558796798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 630
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00392b05942a1a490800000000000000
+      internalID: -7736724249075608832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_5
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 630
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b904f2da0849a2910800000000000000
+      internalID: 1813425080352325787
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_6
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 630
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2da30cc40f2bbca40800000000000000
+      internalID: 5389598124228491986
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_7
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 630
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0ca0ab30be704320800000000000000
+      internalID: 2540169485216689165
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_8
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 420
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a0dd7f63e1dd5c50800000000000000
+      internalID: 6655706599081758888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_9
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 420
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f7f1cafefd6775e60800000000000000
+      internalID: 7950954371316719487
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_10
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 420
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bbcc119b10b7ec3a0800000000000000
+      internalID: -6643237152994767685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_11
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 420
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b8fed8d8820c71d0800000000000000
+      internalID: -3351801235893192524
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_12
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 210
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce74786b469844770800000000000000
+      internalID: 8594145054581802988
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_13
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 210
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d23aa2c9ad2261be0800000000000000
+      internalID: -1506978702990597331
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_14
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 210
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d936284174654df50800000000000000
+      internalID: 6905238991952569245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_15
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 210
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed84c074fbd8686a0800000000000000
+      internalID: -6447309963864028962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_16
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 499a6dfc99a66d760800000000000000
+      internalID: 7482285039772150164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_17
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 0
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c99e27463b393d5d0800000000000000
+      internalID: -3038922924851271268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_18
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 0
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4283487322030b20800000000000000
+      internalID: 3099323319925834315
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_Explode03_19
+      rect:
+        serializedVersion: 2
+        x: 600
+        y: 0
+        width: 200
+        height: 210
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87e13689946fb8520800000000000000
+      internalID: 2705526797115793016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: c5109099d5f76c944b7c423272cbef1b
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      efx_Explode03_0: -8454366763425062167
+      efx_Explode03_1: -476984034761915501
+      efx_Explode03_10: -6643237152994767685
+      efx_Explode03_11: -3351801235893192524
+      efx_Explode03_12: 8594145054581802988
+      efx_Explode03_13: -1506978702990597331
+      efx_Explode03_14: 6905238991952569245
+      efx_Explode03_15: -6447309963864028962
+      efx_Explode03_16: 7482285039772150164
+      efx_Explode03_17: -3038922924851271268
+      efx_Explode03_18: 3099323319925834315
+      efx_Explode03_19: 2705526797115793016
+      efx_Explode03_2: -7144720222475531539
+      efx_Explode03_3: 5235061308558796798
+      efx_Explode03_4: -7736724249075608832
+      efx_Explode03_5: 1813425080352325787
+      efx_Explode03_6: 5389598124228491986
+      efx_Explode03_7: 2540169485216689165
+      efx_Explode03_8: 6655706599081758888
+      efx_Explode03_9: 7950954371316719487
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,559 @@
+fileFormatVersion: 2
+guid: 63b0af737e483ac42a10f2950c082590
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 5205406840619187620
+    second: MaryDeath_0
+  - first:
+      213: 4954743607486785376
+    second: MaryDeath_1
+  - first:
+      213: 114024855490265685
+    second: MaryDeath_2
+  - first:
+      213: 1257306801849158101
+    second: MaryDeath_3
+  - first:
+      213: -8836570942380785338
+    second: MaryDeath_4
+  - first:
+      213: -1083843413436668046
+    second: MaryDeath_5
+  - first:
+      213: -2452314476894241114
+    second: MaryDeath_6
+  - first:
+      213: 9103499640892145074
+    second: MaryDeath_7
+  - first:
+      213: -2348754464865699899
+    second: MaryDeath_8
+  - first:
+      213: -8501174143974224042
+    second: MaryDeath_9
+  - first:
+      213: -236138956224592551
+    second: MaryDeath_10
+  - first:
+      213: 5745922420942678119
+    second: MaryDeath_11
+  - first:
+      213: -36962685675152204
+    second: MaryDeath_12
+  - first:
+      213: -1548924522843850826
+    second: MaryDeath_13
+  - first:
+      213: -5780712564510578098
+    second: MaryDeath_14
+  - first:
+      213: -6780302035024904373
+    second: MaryDeath_15
+  - first:
+      213: 2347497755808580176
+    second: MaryDeath_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MaryDeath_0
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 17
+        width: 33
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4adbe7e21f15d3840800000000000000
+      internalID: 5205406840619187620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_1
+      rect:
+        serializedVersion: 2
+        x: 189
+        y: 20
+        width: 33
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06723654f09c2c440800000000000000
+      internalID: 4954743607486785376
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_2
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 27
+        width: 25
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 552001f7009159100800000000000000
+      internalID: 114024855490265685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_3
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 33
+        width: 34
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d9c6e1ffd9d27110800000000000000
+      internalID: 1257306801849158101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_4
+      rect:
+        serializedVersion: 2
+        x: 553
+        y: 44
+        width: 44
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 641cadacb813e5580800000000000000
+      internalID: -8836570942380785338
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_5
+      rect:
+        serializedVersion: 2
+        x: 684
+        y: 42
+        width: 47
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 277e5fd682a65f0f0800000000000000
+      internalID: -1083843413436668046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_6
+      rect:
+        serializedVersion: 2
+        x: 805
+        y: 46
+        width: 46
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6aebb27e9f0a7fdd0800000000000000
+      internalID: -2452314476894241114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_7
+      rect:
+        serializedVersion: 2
+        x: 923
+        y: 49
+        width: 49
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bdb544e0b0265e70800000000000000
+      internalID: 9103499640892145074
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_8
+      rect:
+        serializedVersion: 2
+        x: 1042
+        y: 45
+        width: 50
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c73119224c876fd0800000000000000
+      internalID: -2348754464865699899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_9
+      rect:
+        serializedVersion: 2
+        x: 1162
+        y: 46
+        width: 50
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65f4eae3823c50a80800000000000000
+      internalID: -8501174143974224042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_10
+      rect:
+        serializedVersion: 2
+        x: 1283
+        y: 45
+        width: 49
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9550a94ded019bcf0800000000000000
+      internalID: -236138956224592551
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_11
+      rect:
+        serializedVersion: 2
+        x: 1412
+        y: 28
+        width: 49
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 768ad37affd9dbf40800000000000000
+      internalID: 5745922420942678119
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_12
+      rect:
+        serializedVersion: 2
+        x: 1529
+        y: 27
+        width: 51
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4bc536a12aeac7ff0800000000000000
+      internalID: -36962685675152204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_13
+      rect:
+        serializedVersion: 2
+        x: 1648
+        y: 28
+        width: 53
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b730006a5d118ae0800000000000000
+      internalID: -1548924522843850826
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_14
+      rect:
+        serializedVersion: 2
+        x: 1770
+        y: 28
+        width: 52
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e4aa5b3dc88c6cfa0800000000000000
+      internalID: -5780712564510578098
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_15
+      rect:
+        serializedVersion: 2
+        x: 1891
+        y: 27
+        width: 52
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4f7b74093787e1a0800000000000000
+      internalID: -6780302035024904373
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MaryDeath_16
+      rect:
+        serializedVersion: 2
+        x: 2011
+        y: 27
+        width: 52
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0524ff575ccf39020800000000000000
+      internalID: 2347497755808580176
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      MaryDeath_0: 5205406840619187620
+      MaryDeath_1: 4954743607486785376
+      MaryDeath_10: -236138956224592551
+      MaryDeath_11: 5745922420942678119
+      MaryDeath_12: -36962685675152204
+      MaryDeath_13: -1548924522843850826
+      MaryDeath_14: -5780712564510578098
+      MaryDeath_15: -6780302035024904373
+      MaryDeath_16: 2347497755808580176
+      MaryDeath_2: 114024855490265685
+      MaryDeath_3: 1257306801849158101
+      MaryDeath_4: -8836570942380785338
+      MaryDeath_5: -1083843413436668046
+      MaryDeath_6: -2452314476894241114
+      MaryDeath_7: 9103499640892145074
+      MaryDeath_8: -2348754464865699899
+      MaryDeath_9: -8501174143974224042
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

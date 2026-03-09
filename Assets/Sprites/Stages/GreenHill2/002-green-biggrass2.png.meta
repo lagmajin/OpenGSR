@@ -1,0 +1,4017 @@
+fileFormatVersion: 2
+guid: 620da4aee482cb741bc898853d1f36c8
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3414778315734427169
+    second: 002-green-biggrass2_0
+  - first:
+      213: -2770257428008150597
+    second: 002-green-biggrass2_1
+  - first:
+      213: -8381250834956741421
+    second: 002-green-biggrass2_2
+  - first:
+      213: -4079754536359489346
+    second: 002-green-biggrass2_3
+  - first:
+      213: -544083645287723004
+    second: 002-green-biggrass2_4
+  - first:
+      213: -7406302775478234858
+    second: 002-green-biggrass2_5
+  - first:
+      213: 9052853705135683509
+    second: 002-green-biggrass2_6
+  - first:
+      213: 2017534972693269195
+    second: 002-green-biggrass2_7
+  - first:
+      213: 8321055997131090034
+    second: 002-green-biggrass2_8
+  - first:
+      213: 3885254502220994459
+    second: 002-green-biggrass2_9
+  - first:
+      213: 6943978657635575489
+    second: 002-green-biggrass2_10
+  - first:
+      213: 9139656585022189670
+    second: 002-green-biggrass2_11
+  - first:
+      213: 994445977336651934
+    second: 002-green-biggrass2_12
+  - first:
+      213: -1188199090565745662
+    second: 002-green-biggrass2_13
+  - first:
+      213: 647469882427465144
+    second: 002-green-biggrass2_14
+  - first:
+      213: -2087790637457171998
+    second: 002-green-biggrass2_15
+  - first:
+      213: -5774999261127319370
+    second: 002-green-biggrass2_16
+  - first:
+      213: 6795679298480512851
+    second: 002-green-biggrass2_17
+  - first:
+      213: 4161522135641295961
+    second: 002-green-biggrass2_18
+  - first:
+      213: 3219105116080525139
+    second: 002-green-biggrass2_19
+  - first:
+      213: 6645441629147376361
+    second: 002-green-biggrass2_20
+  - first:
+      213: 183262190543881417
+    second: 002-green-biggrass2_21
+  - first:
+      213: 7020190344647963650
+    second: 002-green-biggrass2_22
+  - first:
+      213: 5691731057361575936
+    second: 002-green-biggrass2_23
+  - first:
+      213: -549252879005761247
+    second: 002-green-biggrass2_24
+  - first:
+      213: 4580069224393967033
+    second: 002-green-biggrass2_25
+  - first:
+      213: -4123956812748813665
+    second: 002-green-biggrass2_26
+  - first:
+      213: -527674422670437193
+    second: 002-green-biggrass2_27
+  - first:
+      213: -5245355770675685145
+    second: 002-green-biggrass2_28
+  - first:
+      213: -8180520467545333634
+    second: 002-green-biggrass2_29
+  - first:
+      213: 5600653979044173714
+    second: 002-green-biggrass2_30
+  - first:
+      213: -7471775046069103410
+    second: 002-green-biggrass2_31
+  - first:
+      213: -3894970181093630943
+    second: 002-green-biggrass2_32
+  - first:
+      213: -4922798088753300436
+    second: 002-green-biggrass2_33
+  - first:
+      213: 6267840836136893417
+    second: 002-green-biggrass2_34
+  - first:
+      213: 1619909167940701322
+    second: 002-green-biggrass2_35
+  - first:
+      213: 2044834669974058523
+    second: 002-green-biggrass2_36
+  - first:
+      213: 6611078499801354013
+    second: 002-green-biggrass2_37
+  - first:
+      213: -2863065387200773112
+    second: 002-green-biggrass2_38
+  - first:
+      213: 6744562617008431568
+    second: 002-green-biggrass2_39
+  - first:
+      213: -4533795735345655718
+    second: 002-green-biggrass2_40
+  - first:
+      213: 8024193107668354105
+    second: 002-green-biggrass2_41
+  - first:
+      213: -7207108838149822771
+    second: 002-green-biggrass2_42
+  - first:
+      213: -9080063948787878152
+    second: 002-green-biggrass2_43
+  - first:
+      213: 1551503576841967140
+    second: 002-green-biggrass2_44
+  - first:
+      213: -1600273624343383361
+    second: 002-green-biggrass2_45
+  - first:
+      213: -6212101433833998121
+    second: 002-green-biggrass2_46
+  - first:
+      213: 1920319062326276699
+    second: 002-green-biggrass2_47
+  - first:
+      213: -6933083174928044836
+    second: 002-green-biggrass2_48
+  - first:
+      213: -3667763994642059725
+    second: 002-green-biggrass2_49
+  - first:
+      213: 4880676391181803917
+    second: 002-green-biggrass2_50
+  - first:
+      213: -6898187579853317709
+    second: 002-green-biggrass2_51
+  - first:
+      213: 2847500052055378273
+    second: 002-green-biggrass2_52
+  - first:
+      213: 1229590555981053362
+    second: 002-green-biggrass2_53
+  - first:
+      213: -5215467413048836361
+    second: 002-green-biggrass2_54
+  - first:
+      213: -2846119050079860490
+    second: 002-green-biggrass2_55
+  - first:
+      213: -3946015298152589781
+    second: 002-green-biggrass2_56
+  - first:
+      213: -3701785138553028641
+    second: 002-green-biggrass2_57
+  - first:
+      213: 8061431369319481459
+    second: 002-green-biggrass2_58
+  - first:
+      213: 5805634661244258566
+    second: 002-green-biggrass2_59
+  - first:
+      213: -2413276956205402659
+    second: 002-green-biggrass2_60
+  - first:
+      213: 7763530503730908010
+    second: 002-green-biggrass2_61
+  - first:
+      213: -5860609857899533507
+    second: 002-green-biggrass2_62
+  - first:
+      213: 143028455759490255
+    second: 002-green-biggrass2_63
+  - first:
+      213: 8761813474292664101
+    second: 002-green-biggrass2_64
+  - first:
+      213: 8492524796471979417
+    second: 002-green-biggrass2_65
+  - first:
+      213: 8431735726432178378
+    second: 002-green-biggrass2_66
+  - first:
+      213: 2557995958981854961
+    second: 002-green-biggrass2_67
+  - first:
+      213: 1913825102354475421
+    second: 002-green-biggrass2_68
+  - first:
+      213: 2970476933284995595
+    second: 002-green-biggrass2_69
+  - first:
+      213: 4446780402761070218
+    second: 002-green-biggrass2_70
+  - first:
+      213: 3906371206815412087
+    second: 002-green-biggrass2_71
+  - first:
+      213: -3725162680218711920
+    second: 002-green-biggrass2_72
+  - first:
+      213: 2200054278887223162
+    second: 002-green-biggrass2_73
+  - first:
+      213: 9199201615018208250
+    second: 002-green-biggrass2_74
+  - first:
+      213: -412500397603089273
+    second: 002-green-biggrass2_75
+  - first:
+      213: -7841514064329322803
+    second: 002-green-biggrass2_76
+  - first:
+      213: 6167319719966401045
+    second: 002-green-biggrass2_77
+  - first:
+      213: -6402027361378060995
+    second: 002-green-biggrass2_78
+  - first:
+      213: 8631606974948785526
+    second: 002-green-biggrass2_79
+  - first:
+      213: -9008050856915901359
+    second: 002-green-biggrass2_80
+  - first:
+      213: 6057120067543814921
+    second: 002-green-biggrass2_81
+  - first:
+      213: -7373118613583699590
+    second: 002-green-biggrass2_82
+  - first:
+      213: 2828731023784678630
+    second: 002-green-biggrass2_83
+  - first:
+      213: 2202984524957194026
+    second: 002-green-biggrass2_84
+  - first:
+      213: -7188232152554965277
+    second: 002-green-biggrass2_85
+  - first:
+      213: 2946251011357837698
+    second: 002-green-biggrass2_86
+  - first:
+      213: -339187130057667811
+    second: 002-green-biggrass2_87
+  - first:
+      213: 8082788345102271223
+    second: 002-green-biggrass2_88
+  - first:
+      213: 2458694753234447230
+    second: 002-green-biggrass2_89
+  - first:
+      213: 6308374710504387873
+    second: 002-green-biggrass2_90
+  - first:
+      213: -1296888363257828841
+    second: 002-green-biggrass2_91
+  - first:
+      213: -1510333496704530250
+    second: 002-green-biggrass2_92
+  - first:
+      213: 7125729453257651140
+    second: 002-green-biggrass2_93
+  - first:
+      213: 6855815545960081157
+    second: 002-green-biggrass2_94
+  - first:
+      213: -4880852862464979480
+    second: 002-green-biggrass2_95
+  - first:
+      213: -7677227798433045230
+    second: 002-green-biggrass2_96
+  - first:
+      213: -6981093545100826496
+    second: 002-green-biggrass2_97
+  - first:
+      213: 7146217071604080718
+    second: 002-green-biggrass2_98
+  - first:
+      213: -7382613840289116162
+    second: 002-green-biggrass2_99
+  - first:
+      213: -8911177210776679506
+    second: 002-green-biggrass2_100
+  - first:
+      213: -4431207228201104587
+    second: 002-green-biggrass2_101
+  - first:
+      213: 5558677881045618061
+    second: 002-green-biggrass2_102
+  - first:
+      213: -3592532562209684577
+    second: 002-green-biggrass2_103
+  - first:
+      213: -4829073420361603259
+    second: 002-green-biggrass2_104
+  - first:
+      213: -4389692372931017130
+    second: 002-green-biggrass2_105
+  - first:
+      213: 2301051943683696496
+    second: 002-green-biggrass2_106
+  - first:
+      213: -4411689000486051494
+    second: 002-green-biggrass2_107
+  - first:
+      213: 9046924072298189308
+    second: 002-green-biggrass2_108
+  - first:
+      213: 4688278744001017312
+    second: 002-green-biggrass2_109
+  - first:
+      213: 3502693218965382320
+    second: 002-green-biggrass2_110
+  - first:
+      213: 4180680457918373236
+    second: 002-green-biggrass2_111
+  - first:
+      213: -2711499173170449880
+    second: 002-green-biggrass2_112
+  - first:
+      213: -6623977486651579033
+    second: 002-green-biggrass2_113
+  - first:
+      213: -1417925526314423482
+    second: 002-green-biggrass2_114
+  - first:
+      213: 8903340635440220952
+    second: 002-green-biggrass2_115
+  - first:
+      213: -8852419234127973271
+    second: 002-green-biggrass2_116
+  - first:
+      213: 6831339976778430719
+    second: 002-green-biggrass2_117
+  - first:
+      213: 4380422845837588506
+    second: 002-green-biggrass2_118
+  - first:
+      213: 7793569725401899090
+    second: 002-green-biggrass2_119
+  - first:
+      213: -1569354905432601975
+    second: 002-green-biggrass2_120
+  - first:
+      213: -6308962056769173377
+    second: 002-green-biggrass2_121
+  - first:
+      213: 1486072161598040977
+    second: 002-green-biggrass2_122
+  - first:
+      213: 8159286515657646835
+    second: 002-green-biggrass2_123
+  - first:
+      213: -8623601626422432227
+    second: 002-green-biggrass2_124
+  - first:
+      213: -7429706168002694476
+    second: 002-green-biggrass2_125
+  - first:
+      213: -8730795031026391666
+    second: 002-green-biggrass2_126
+  - first:
+      213: -8462131433567127691
+    second: 002-green-biggrass2_127
+  - first:
+      213: 2955229579661625510
+    second: 002-green-biggrass2_128
+  - first:
+      213: -8562743799139454538
+    second: 002-green-biggrass2_129
+  - first:
+      213: 3368206345051920912
+    second: 002-green-biggrass2_130
+  - first:
+      213: -6680395268998548895
+    second: 002-green-biggrass2_131
+  - first:
+      213: 2190231695604300642
+    second: 002-green-biggrass2_132
+  - first:
+      213: -6785275142922749105
+    second: 002-green-biggrass2_133
+  - first:
+      213: -9076296478225428899
+    second: 002-green-biggrass2_134
+  - first:
+      213: 592130875191186723
+    second: 002-green-biggrass2_135
+  - first:
+      213: 6616402279940819518
+    second: 002-green-biggrass2_136
+  - first:
+      213: -474671976007204293
+    second: 002-green-biggrass2_137
+  - first:
+      213: 2903988775628584396
+    second: 002-green-biggrass2_138
+  - first:
+      213: 952097172173113416
+    second: 002-green-biggrass2_139
+  - first:
+      213: 5037929357800194419
+    second: 002-green-biggrass2_140
+  - first:
+      213: 5174378263437875296
+    second: 002-green-biggrass2_141
+  - first:
+      213: -953389084440235090
+    second: 002-green-biggrass2_142
+  - first:
+      213: -7574833638134444004
+    second: 002-green-biggrass2_143
+  - first:
+      213: 9079732525135271134
+    second: 002-green-biggrass2_144
+  - first:
+      213: -9122551408423167597
+    second: 002-green-biggrass2_145
+  - first:
+      213: 5620995189793357663
+    second: 002-green-biggrass2_146
+  - first:
+      213: -6484871409288344460
+    second: 002-green-biggrass2_147
+  - first:
+      213: -5307799764806311452
+    second: 002-green-biggrass2_148
+  - first:
+      213: 6152606733270603239
+    second: 002-green-biggrass2_149
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 002-green-biggrass2_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 114
+        width: 12
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 126ae0039cab36f20800000000000000
+      internalID: 3414778315734427169
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_1
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 113
+        width: 7
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb9df23fb811e89d0800000000000000
+      internalID: -2770257428008150597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_2
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 115
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d415f875c0dfab80800000000000000
+      internalID: -8381250834956741421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_3
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 119
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb011895ddcc167c0800000000000000
+      internalID: -4079754536359489346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_4
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 119
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 400968aaec60378f0800000000000000
+      internalID: -544083645287723004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_5
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 114
+        width: 12
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61151a0bdd6873990800000000000000
+      internalID: -7406302775478234858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_6
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 113
+        width: 7
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b7f0321b7232ad70800000000000000
+      internalID: 9052853705135683509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_7
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 115
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bca4f494e59bffb10800000000000000
+      internalID: 2017534972693269195
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_8
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 119
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 278e121b7545a7370800000000000000
+      internalID: 8321055997131090034
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_9
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 119
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b979ed282623be530800000000000000
+      internalID: 3885254502220994459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_10
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 114
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c623406cc7fd5060800000000000000
+      internalID: 6943978657635575489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_11
+      rect:
+        serializedVersion: 2
+        x: 127
+        y: 113
+        width: 7
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 660be477d3596de70800000000000000
+      internalID: 9139656585022189670
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_12
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 115
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e90a77bf85bfccd00800000000000000
+      internalID: 994445977336651934
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_13
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 119
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 204f264f83ba28fe0800000000000000
+      internalID: -1188199090565745662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_14
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 119
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bd5ad87d664cf800800000000000000
+      internalID: 647469882427465144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_15
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 114
+        width: 12
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e99af01a7da603e0800000000000000
+      internalID: -2087790637457171998
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_16
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 113
+        width: 7
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b0ec5ee4c41bdfa0800000000000000
+      internalID: -5774999261127319370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_17
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 115
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35f1861215a1f4e50800000000000000
+      internalID: 6795679298480512851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_18
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 119
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95c03db6552b0c930800000000000000
+      internalID: 4161522135641295961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_19
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 119
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35f4f9a2c0f8cac20800000000000000
+      internalID: 3219105116080525139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_20
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 114
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ea2ce0e3f9593c50800000000000000
+      internalID: 6645441629147376361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_21
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 113
+        width: 8
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c4c028cdf31b8200800000000000000
+      internalID: 183262190543881417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_22
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 115
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2047e548ce9bc6160800000000000000
+      internalID: 7020190344647963650
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_23
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 119
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 00068179d371dfe40800000000000000
+      internalID: 5691731057361575936
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_24
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 119
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1214007aa69a068f0800000000000000
+      internalID: -549252879005761247
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_25
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 113
+        width: 12
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9b583be71bcaf8f30800000000000000
+      internalID: 4580069224393967033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_26
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 113
+        width: 9
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9a0e03e023c4c6c0800000000000000
+      internalID: -4123956812748813665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_27
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 114
+        width: 6
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b45ba788e25da8f0800000000000000
+      internalID: -527674422670437193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_28
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 119
+        width: 6
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e89458b7b0c437b0800000000000000
+      internalID: -5245355770675685145
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_29
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 119
+        width: 7
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e70e52e1af3f87e80800000000000000
+      internalID: -8180520467545333634
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_30
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 113
+        width: 12
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2975ec2de1589bd40800000000000000
+      internalID: 5600653979044173714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_31
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 114
+        width: 10
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec45c69ce2cee4890800000000000000
+      internalID: -7471775046069103410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_32
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 116
+        width: 6
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12cdc29b14942f9c0800000000000000
+      internalID: -3894970181093630943
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_33
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 120
+        width: 8
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2c33ea6835beabb0800000000000000
+      internalID: -4922798088753300436
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_34
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 119
+        width: 7
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9eb70a23808dbf650800000000000000
+      internalID: 6267840836136893417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_35
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 113
+        width: 12
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8c018b3ec21b7610800000000000000
+      internalID: 1619909167940701322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_36
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 114
+        width: 10
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b16f4306c46b06c10800000000000000
+      internalID: 2044834669974058523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_37
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 115
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1fc1ea5ed44fbb50800000000000000
+      internalID: 6611078499801354013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_38
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 119
+        width: 8
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8048e2313395448d0800000000000000
+      internalID: -2863065387200773112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_39
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 119
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d1aa2847ff799d50800000000000000
+      internalID: 6744562617008431568
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_40
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 75
+        width: 11
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a509a8ebcc8b411c0800000000000000
+      internalID: -4533795735345655718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_41
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 76
+        width: 11
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 934c5bf0e19ab5f60800000000000000
+      internalID: 8024193107668354105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_42
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 77
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc6608452b43bfb90800000000000000
+      internalID: -7207108838149822771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_43
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 81
+        width: 9
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f6faa262f12df180800000000000000
+      internalID: -9080063948787878152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_44
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 81
+        width: 9
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 426d96d684c088510800000000000000
+      internalID: 1551503576841967140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_45
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 75
+        width: 11
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb2f5950e9faac9e0800000000000000
+      internalID: -1600273624343383361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_46
+      rect:
+        serializedVersion: 2
+        x: 65
+        y: 76
+        width: 12
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d831a7b8ae2ac9a0800000000000000
+      internalID: -6212101433833998121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_47
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 77
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b527e5d430856aa10800000000000000
+      internalID: 1920319062326276699
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_48
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 82
+        width: 10
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdc2d20e59db8cf90800000000000000
+      internalID: -6933083174928044836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_49
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 81
+        width: 8
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33e646b541c791dc0800000000000000
+      internalID: -3667763994642059725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_50
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 75
+        width: 11
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d81e600a155abb340800000000000000
+      internalID: 4880676391181803917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_51
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 76
+        width: 14
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b9d4dcb1f6b440a0800000000000000
+      internalID: -6898187579853317709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_52
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 77
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 169caace53a548720800000000000000
+      internalID: 2847500052055378273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_53
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 82
+        width: 11
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bdfc649812601110800000000000000
+      internalID: 1229590555981053362
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_54
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 81
+        width: 7
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fe39934500fe97b0800000000000000
+      internalID: -5215467413048836361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_55
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 75
+        width: 11
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6f88487adcd8088d0800000000000000
+      internalID: -2846119050079860490
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_56
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 76
+        width: 12
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b269b534effec39c0800000000000000
+      internalID: -3946015298152589781
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_57
+      rect:
+        serializedVersion: 2
+        x: 193
+        y: 77
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fdff9b5870e90acc0800000000000000
+      internalID: -3701785138553028641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_58
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 82
+        width: 12
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3708a7d7e15ffdf60800000000000000
+      internalID: 8061431369319481459
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_59
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 81
+        width: 8
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 609c82ff6f1c19050800000000000000
+      internalID: 5805634661244258566
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_60
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 75
+        width: 11
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd5bdb8f461528ed0800000000000000
+      internalID: -2413276956205402659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_61
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 76
+        width: 11
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a6b4ac53cd99dbb60800000000000000
+      internalID: 7763530503730908010
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_62
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 77
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3beeb4926eeaaea0800000000000000
+      internalID: -5860609857899533507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_63
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 81
+        width: 17
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcc215a6f932cf100800000000000000
+      internalID: 143028455759490255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_64
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 76
+        width: 11
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 527027bcee6389970800000000000000
+      internalID: 8761813474292664101
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_65
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 76
+        width: 10
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99da8eb9e428bd570800000000000000
+      internalID: 8492524796471979417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_66
+      rect:
+        serializedVersion: 2
+        x: 303
+        y: 78
+        width: 6
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac0d5fd48fa830570800000000000000
+      internalID: 8431735726432178378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_67
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 81
+        width: 17
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f68ff795c3df7320800000000000000
+      internalID: 2557995958981854961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_68
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 76
+        width: 12
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d99601c6ac54f8a10800000000000000
+      internalID: 1913825102354475421
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_69
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 75
+        width: 11
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b02a1f55801493920800000000000000
+      internalID: 2970476933284995595
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_70
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 77
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a86fdbc573326bd30800000000000000
+      internalID: 4446780402761070218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_71
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 81
+        width: 16
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77feb0f6ae7363630800000000000000
+      internalID: 3906371206815412087
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_72
+      rect:
+        serializedVersion: 2
+        x: 386
+        y: 76
+        width: 12
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 098850377409d4cc0800000000000000
+      internalID: -3725162680218711920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_73
+      rect:
+        serializedVersion: 2
+        x: 398
+        y: 76
+        width: 9
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a7fa6a3d5b9288e10800000000000000
+      internalID: 2200054278887223162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_74
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 77
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afb2c5021212aaf70800000000000000
+      internalID: 9199201615018208250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_75
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 81
+        width: 16
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 784192be211864af0800000000000000
+      internalID: -412500397603089273
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_76
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 37
+        width: 11
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dcecb6e21885d2390800000000000000
+      internalID: -7841514064329322803
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_77
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 37
+        width: 9
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 512ebd40c98b69550800000000000000
+      internalID: 6167319719966401045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_78
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 39
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d35bab2c80e6727a0800000000000000
+      internalID: -6402027361378060995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_79
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 43
+        width: 15
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67d3b9ebfc0a9c770800000000000000
+      internalID: 8631606974948785526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_80
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 37
+        width: 13
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 154efdae879fcf280800000000000000
+      internalID: -9008050856915901359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_81
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 37
+        width: 8
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 903d6d30c963f0450800000000000000
+      internalID: 6057120067543814921
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_82
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 40
+        width: 6
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a71e5867fab6da990800000000000000
+      internalID: -7373118613583699590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_83
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 43
+        width: 15
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e410ddf0eba14720800000000000000
+      internalID: 2828731023784678630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_84
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 38
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2791c7e0c2929e10800000000000000
+      internalID: 2202984524957194026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_85
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 37
+        width: 7
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e67bef21f44e3c90800000000000000
+      internalID: -7188232152554965277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_86
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 5
+        width: 13
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2898e175faf23e820800000000000000
+      internalID: 2946251011357837698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_87
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 43
+        width: 14
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1b47803a17fa4bf0800000000000000
+      internalID: -339187130057667811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_88
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 38
+        width: 12
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f20d78ec25db2070800000000000000
+      internalID: 8082788345102271223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_89
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 37
+        width: 8
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7be7a1f9d90f1220800000000000000
+      internalID: 2458694753234447230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_90
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 39
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 125fba14069db8750800000000000000
+      internalID: 6308374710504387873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_91
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 43
+        width: 14
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71aeda2a7e6800ee0800000000000000
+      internalID: -1296888363257828841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_92
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 38
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b88d84dfa73a0be0800000000000000
+      internalID: -1510333496704530250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_93
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 37
+        width: 7
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4c3f5fa1f2da3e260800000000000000
+      internalID: 7125729453257651140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_94
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 5
+        width: 13
+        height: 60
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5072d865aefb42f50800000000000000
+      internalID: 6855815545960081157
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_95
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 43
+        width: 9
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ed83d37e2ab34cb0800000000000000
+      internalID: -4880852862464979480
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_96
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 43
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 215e4a63ef1057590800000000000000
+      internalID: -7677227798433045230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_97
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 38
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0882e7c786c2e1f90800000000000000
+      internalID: -6981093545100826496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_98
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 37
+        width: 7
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e402bc870967c2360800000000000000
+      internalID: 7146217071604080718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_99
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 39
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eff4fa7b3dfab8990800000000000000
+      internalID: -7382613840289116162
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_100
+      rect:
+        serializedVersion: 2
+        x: 311
+        y: 43
+        width: 9
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eab891d4a83255480800000000000000
+      internalID: -8911177210776679506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_101
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 43
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53b0ee4e0803182c0800000000000000
+      internalID: -4431207228201104587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_102
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 38
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8d8b88e414642d40800000000000000
+      internalID: 5558677881045618061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_103
+      rect:
+        serializedVersion: 2
+        x: 348
+        y: 37
+        width: 7
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f93c7713ba2c42ec0800000000000000
+      internalID: -3592532562209684577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_104
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 39
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 547e0194f4fabfcb0800000000000000
+      internalID: -4829073420361603259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_105
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 43
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 656843e5b0ea413c0800000000000000
+      internalID: -4389692372931017130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_106
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 43
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0772df02d8afeef10800000000000000
+      internalID: 2301051943683696496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_107
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 38
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a51e78a6a3886c2c0800000000000000
+      internalID: -4411689000486051494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_108
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 37
+        width: 7
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf19347d2812d8d70800000000000000
+      internalID: 9046924072298189308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_109
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 39
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e5f1389dac101140800000000000000
+      internalID: 4688278744001017312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_110
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 43
+        width: 6
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b4e991bce01c9030800000000000000
+      internalID: 3502693218965382320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_111
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 43
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47d54ade9b2c40a30800000000000000
+      internalID: 4180680457918373236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_112
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 12
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 822f86e3ed1de5ad0800000000000000
+      internalID: -2711499173170449880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_113
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 0
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 765a2fb3297e214a0800000000000000
+      internalID: -6623977486651579033
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_114
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 2
+        width: 6
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64be11e0f34825ce0800000000000000
+      internalID: -1417925526314423482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_115
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 5
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81b07b1d2250f8b70800000000000000
+      internalID: 8903340635440220952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_116
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 5
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96477f2db93e52580800000000000000
+      internalID: -8852419234127973271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_117
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 0
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff8bdcfc38bcdce50800000000000000
+      internalID: 6831339976778430719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_118
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 0
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a18b72cae536acc30800000000000000
+      internalID: 4380422845837588506
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_119
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 1
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 250a1d68f52582c60800000000000000
+      internalID: 7793569725401899090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_120
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 5
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98a4c2f3708883ae0800000000000000
+      internalID: -1569354905432601975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_121
+      rect:
+        serializedVersion: 2
+        x: 98
+        y: 5
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f780bd88f601278a0800000000000000
+      internalID: -6308962056769173377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_122
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 0
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19be5a6e1c69f9410800000000000000
+      internalID: 1486072161598040977
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_123
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 0
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f2a8623bdb9b3170800000000000000
+      internalID: 8159286515657646835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_124
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 1
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1e2c94b200d25880800000000000000
+      internalID: -8623601626422432227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_125
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 5
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b2bbaeba9164e890800000000000000
+      internalID: -7429706168002694476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_126
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 0
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e852de05d2cf5d680800000000000000
+      internalID: -8730795031026391666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_127
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 0
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5777093ab48709a80800000000000000
+      internalID: -8462131433567127691
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_128
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 1
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a8457d25a5130920800000000000000
+      internalID: 2955229579661625510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_129
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 5
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b13d9dc1e50b2980800000000000000
+      internalID: -8562743799139454538
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_130
+      rect:
+        serializedVersion: 2
+        x: 208
+        y: 5
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01a590743d54ebe20800000000000000
+      internalID: 3368206345051920912
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_131
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 0
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1623428a5e77a43a0800000000000000
+      internalID: -6680395268998548895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_132
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 0
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26bbb407f14456e10800000000000000
+      internalID: 2190231695604300642
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_133
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 1
+        width: 6
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4b3dca153cd5d1a0800000000000000
+      internalID: -6785275142922749105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_134
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 5
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5e8e3bf0748a0280800000000000000
+      internalID: -9076296478225428899
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_135
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 0
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 325df4cc4eba73800800000000000000
+      internalID: 592130875191186723
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_136
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 0
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3a05f281de22db50800000000000000
+      internalID: 6616402279940819518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_137
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 1
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b32024d4a50a969f0800000000000000
+      internalID: -474671976007204293
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_138
+      rect:
+        serializedVersion: 2
+        x: 309
+        y: 5
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc5301bc76a0d4820800000000000000
+      internalID: 2903988775628584396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_139
+      rect:
+        serializedVersion: 2
+        x: 318
+        y: 5
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 848480b6557863d00800000000000000
+      internalID: 952097172173113416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_140
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 0
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 371413f0f025ae540800000000000000
+      internalID: 5037929357800194419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_141
+      rect:
+        serializedVersion: 2
+        x: 348
+        y: 0
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06897b59d951fc740800000000000000
+      internalID: 5174378263437875296
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_142
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 1
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea37431dda1e4c2f0800000000000000
+      internalID: -953389084440235090
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_143
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 5
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c10115670f8c0e690800000000000000
+      internalID: -7574833638134444004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_144
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 5
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed49f3800a0b10e70800000000000000
+      internalID: 9079732525135271134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_145
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 13
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 39992bfc3df266180800000000000000
+      internalID: -9122551408423167597
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_146
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 0
+        width: 7
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5fffc30859c10e40800000000000000
+      internalID: 5620995189793357663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_147
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 1
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47c0843cfcb1106a0800000000000000
+      internalID: -6484871409288344460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_148
+      rect:
+        serializedVersion: 2
+        x: 419
+        y: 5
+        width: 7
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e161df5c38e656b0800000000000000
+      internalID: -5307799764806311452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-green-biggrass2_149
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 5
+        width: 7
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e5554bd933726550800000000000000
+      internalID: 6152606733270603239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      002-green-biggrass2_0: 3414778315734427169
+      002-green-biggrass2_1: -2770257428008150597
+      002-green-biggrass2_10: 6943978657635575489
+      002-green-biggrass2_100: -8911177210776679506
+      002-green-biggrass2_101: -4431207228201104587
+      002-green-biggrass2_102: 5558677881045618061
+      002-green-biggrass2_103: -3592532562209684577
+      002-green-biggrass2_104: -4829073420361603259
+      002-green-biggrass2_105: -4389692372931017130
+      002-green-biggrass2_106: 2301051943683696496
+      002-green-biggrass2_107: -4411689000486051494
+      002-green-biggrass2_108: 9046924072298189308
+      002-green-biggrass2_109: 4688278744001017312
+      002-green-biggrass2_11: 9139656585022189670
+      002-green-biggrass2_110: 3502693218965382320
+      002-green-biggrass2_111: 4180680457918373236
+      002-green-biggrass2_112: -2711499173170449880
+      002-green-biggrass2_113: -6623977486651579033
+      002-green-biggrass2_114: -1417925526314423482
+      002-green-biggrass2_115: 8903340635440220952
+      002-green-biggrass2_116: -8852419234127973271
+      002-green-biggrass2_117: 6831339976778430719
+      002-green-biggrass2_118: 4380422845837588506
+      002-green-biggrass2_119: 7793569725401899090
+      002-green-biggrass2_12: 994445977336651934
+      002-green-biggrass2_120: -1569354905432601975
+      002-green-biggrass2_121: -6308962056769173377
+      002-green-biggrass2_122: 1486072161598040977
+      002-green-biggrass2_123: 8159286515657646835
+      002-green-biggrass2_124: -8623601626422432227
+      002-green-biggrass2_125: -7429706168002694476
+      002-green-biggrass2_126: -8730795031026391666
+      002-green-biggrass2_127: -8462131433567127691
+      002-green-biggrass2_128: 2955229579661625510
+      002-green-biggrass2_129: -8562743799139454538
+      002-green-biggrass2_13: -1188199090565745662
+      002-green-biggrass2_130: 3368206345051920912
+      002-green-biggrass2_131: -6680395268998548895
+      002-green-biggrass2_132: 2190231695604300642
+      002-green-biggrass2_133: -6785275142922749105
+      002-green-biggrass2_134: -9076296478225428899
+      002-green-biggrass2_135: 592130875191186723
+      002-green-biggrass2_136: 6616402279940819518
+      002-green-biggrass2_137: -474671976007204293
+      002-green-biggrass2_138: 2903988775628584396
+      002-green-biggrass2_139: 952097172173113416
+      002-green-biggrass2_14: 647469882427465144
+      002-green-biggrass2_140: 5037929357800194419
+      002-green-biggrass2_141: 5174378263437875296
+      002-green-biggrass2_142: -953389084440235090
+      002-green-biggrass2_143: -7574833638134444004
+      002-green-biggrass2_144: 9079732525135271134
+      002-green-biggrass2_145: -9122551408423167597
+      002-green-biggrass2_146: 5620995189793357663
+      002-green-biggrass2_147: -6484871409288344460
+      002-green-biggrass2_148: -5307799764806311452
+      002-green-biggrass2_149: 6152606733270603239
+      002-green-biggrass2_15: -2087790637457171998
+      002-green-biggrass2_16: -5774999261127319370
+      002-green-biggrass2_17: 6795679298480512851
+      002-green-biggrass2_18: 4161522135641295961
+      002-green-biggrass2_19: 3219105116080525139
+      002-green-biggrass2_2: -8381250834956741421
+      002-green-biggrass2_20: 6645441629147376361
+      002-green-biggrass2_21: 183262190543881417
+      002-green-biggrass2_22: 7020190344647963650
+      002-green-biggrass2_23: 5691731057361575936
+      002-green-biggrass2_24: -549252879005761247
+      002-green-biggrass2_25: 4580069224393967033
+      002-green-biggrass2_26: -4123956812748813665
+      002-green-biggrass2_27: -527674422670437193
+      002-green-biggrass2_28: -5245355770675685145
+      002-green-biggrass2_29: -8180520467545333634
+      002-green-biggrass2_3: -4079754536359489346
+      002-green-biggrass2_30: 5600653979044173714
+      002-green-biggrass2_31: -7471775046069103410
+      002-green-biggrass2_32: -3894970181093630943
+      002-green-biggrass2_33: -4922798088753300436
+      002-green-biggrass2_34: 6267840836136893417
+      002-green-biggrass2_35: 1619909167940701322
+      002-green-biggrass2_36: 2044834669974058523
+      002-green-biggrass2_37: 6611078499801354013
+      002-green-biggrass2_38: -2863065387200773112
+      002-green-biggrass2_39: 6744562617008431568
+      002-green-biggrass2_4: -544083645287723004
+      002-green-biggrass2_40: -4533795735345655718
+      002-green-biggrass2_41: 8024193107668354105
+      002-green-biggrass2_42: -7207108838149822771
+      002-green-biggrass2_43: -9080063948787878152
+      002-green-biggrass2_44: 1551503576841967140
+      002-green-biggrass2_45: -1600273624343383361
+      002-green-biggrass2_46: -6212101433833998121
+      002-green-biggrass2_47: 1920319062326276699
+      002-green-biggrass2_48: -6933083174928044836
+      002-green-biggrass2_49: -3667763994642059725
+      002-green-biggrass2_5: -7406302775478234858
+      002-green-biggrass2_50: 4880676391181803917
+      002-green-biggrass2_51: -6898187579853317709
+      002-green-biggrass2_52: 2847500052055378273
+      002-green-biggrass2_53: 1229590555981053362
+      002-green-biggrass2_54: -5215467413048836361
+      002-green-biggrass2_55: -2846119050079860490
+      002-green-biggrass2_56: -3946015298152589781
+      002-green-biggrass2_57: -3701785138553028641
+      002-green-biggrass2_58: 8061431369319481459
+      002-green-biggrass2_59: 5805634661244258566
+      002-green-biggrass2_6: 9052853705135683509
+      002-green-biggrass2_60: -2413276956205402659
+      002-green-biggrass2_61: 7763530503730908010
+      002-green-biggrass2_62: -5860609857899533507
+      002-green-biggrass2_63: 143028455759490255
+      002-green-biggrass2_64: 8761813474292664101
+      002-green-biggrass2_65: 8492524796471979417
+      002-green-biggrass2_66: 8431735726432178378
+      002-green-biggrass2_67: 2557995958981854961
+      002-green-biggrass2_68: 1913825102354475421
+      002-green-biggrass2_69: 2970476933284995595
+      002-green-biggrass2_7: 2017534972693269195
+      002-green-biggrass2_70: 4446780402761070218
+      002-green-biggrass2_71: 3906371206815412087
+      002-green-biggrass2_72: -3725162680218711920
+      002-green-biggrass2_73: 2200054278887223162
+      002-green-biggrass2_74: 9199201615018208250
+      002-green-biggrass2_75: -412500397603089273
+      002-green-biggrass2_76: -7841514064329322803
+      002-green-biggrass2_77: 6167319719966401045
+      002-green-biggrass2_78: -6402027361378060995
+      002-green-biggrass2_79: 8631606974948785526
+      002-green-biggrass2_8: 8321055997131090034
+      002-green-biggrass2_80: -9008050856915901359
+      002-green-biggrass2_81: 6057120067543814921
+      002-green-biggrass2_82: -7373118613583699590
+      002-green-biggrass2_83: 2828731023784678630
+      002-green-biggrass2_84: 2202984524957194026
+      002-green-biggrass2_85: -7188232152554965277
+      002-green-biggrass2_86: 2946251011357837698
+      002-green-biggrass2_87: -339187130057667811
+      002-green-biggrass2_88: 8082788345102271223
+      002-green-biggrass2_89: 2458694753234447230
+      002-green-biggrass2_9: 3885254502220994459
+      002-green-biggrass2_90: 6308374710504387873
+      002-green-biggrass2_91: -1296888363257828841
+      002-green-biggrass2_92: -1510333496704530250
+      002-green-biggrass2_93: 7125729453257651140
+      002-green-biggrass2_94: 6855815545960081157
+      002-green-biggrass2_95: -4880852862464979480
+      002-green-biggrass2_96: -7677227798433045230
+      002-green-biggrass2_97: -6981093545100826496
+      002-green-biggrass2_98: 7146217071604080718
+      002-green-biggrass2_99: -7382613840289116162
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

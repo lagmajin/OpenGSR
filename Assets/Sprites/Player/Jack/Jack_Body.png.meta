@@ -1,0 +1,1651 @@
+fileFormatVersion: 2
+guid: 5ec0b4f16e5586f40913cb821b7921d4
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 4014826577200665544
+    second: Jack_Body_0
+  - first:
+      213: -6048745623805720201
+    second: Jack_Body_1
+  - first:
+      213: 7184327028693905189
+    second: Jack_Body_2
+  - first:
+      213: 864036853274209050
+    second: Jack_Body_3
+  - first:
+      213: -5721035069087091446
+    second: Jack_Body_4
+  - first:
+      213: -7393506251819991773
+    second: Jack_Body_5
+  - first:
+      213: -7183020883727540278
+    second: Jack_Body_6
+  - first:
+      213: 7557576255407079656
+    second: Jack_Body_7
+  - first:
+      213: 4670486855343635990
+    second: Jack_Body_8
+  - first:
+      213: 2701930276653555946
+    second: Jack_Body_9
+  - first:
+      213: 5780203248758373674
+    second: Jack_Body_10
+  - first:
+      213: 3561627033348992770
+    second: Jack_Body_11
+  - first:
+      213: -8296289207881368403
+    second: Jack_Body_12
+  - first:
+      213: 4317906358731119255
+    second: Jack_Body_13
+  - first:
+      213: -400963337965893046
+    second: Jack_Body_14
+  - first:
+      213: -8652990297981123776
+    second: Jack_Body_15
+  - first:
+      213: -9111685582690453632
+    second: Jack_Body_16
+  - first:
+      213: -2418835248440121561
+    second: Jack_Body_17
+  - first:
+      213: 5766820817520047407
+    second: Jack_Body_18
+  - first:
+      213: -5720349506389273018
+    second: Jack_Body_19
+  - first:
+      213: -1353623436125081123
+    second: Jack_Body_20
+  - first:
+      213: 8700503499484231465
+    second: Jack_Body_21
+  - first:
+      213: -6091690022536791784
+    second: Jack_Body_22
+  - first:
+      213: 7270232338464606511
+    second: Jack_Body_23
+  - first:
+      213: -4229105631013233164
+    second: Jack_Body_24
+  - first:
+      213: -1342093843609000715
+    second: Jack_Body_25
+  - first:
+      213: 611826894997929307
+    second: Jack_Body_26
+  - first:
+      213: -5161271220961531218
+    second: Jack_Body_27
+  - first:
+      213: -1555391842560850202
+    second: Jack_Body_28
+  - first:
+      213: 2430247463466326453
+    second: Jack_Body_29
+  - first:
+      213: 1549186185243686019
+    second: Jack_Body_30
+  - first:
+      213: -3236682155457840809
+    second: Jack_Body_31
+  - first:
+      213: 917260994183183397
+    second: Jack_Body_32
+  - first:
+      213: 1403225604582206387
+    second: Jack_Body_33
+  - first:
+      213: -3692910439368651244
+    second: Jack_Body_34
+  - first:
+      213: 1825011874102727070
+    second: Jack_Body_35
+  - first:
+      213: 8144019735970061702
+    second: Jack_Body_36
+  - first:
+      213: 1095528008059913832
+    second: Jack_Body_37
+  - first:
+      213: -91497924330975111
+    second: Jack_Body_38
+  - first:
+      213: 7299863665110733535
+    second: Jack_Body_39
+  - first:
+      213: -7896972789448629676
+    second: Jack_Body_40
+  - first:
+      213: 5396617822691731492
+    second: Jack_Body_41
+  - first:
+      213: -9122646060287075606
+    second: Jack_Body_42
+  - first:
+      213: -6974741813321034750
+    second: Jack_Body_43
+  - first:
+      213: 5900708344913285544
+    second: Jack_Body_44
+  - first:
+      213: 4897846256331479681
+    second: Jack_Body_45
+  - first:
+      213: 7411642196006784906
+    second: Jack_Body_46
+  - first:
+      213: -946415710428967706
+    second: Jack_Body_47
+  - first:
+      213: -31453677872144655
+    second: Jack_Body_48
+  - first:
+      213: 2322493112365893004
+    second: Jack_Body_49
+  - first:
+      213: -5381406192902909035
+    second: Jack_Body_50
+  - first:
+      213: -102975831064925799
+    second: Jack_Body_51
+  - first:
+      213: 5143224104740509978
+    second: Jack_Body_52
+  - first:
+      213: -6404330324944132544
+    second: Jack_Body_53
+  - first:
+      213: -250026232851792192
+    second: Jack_Body_54
+  - first:
+      213: 5222025976368259106
+    second: Jack_Body_55
+  - first:
+      213: -8010337221958757173
+    second: Jack_Body_56
+  - first:
+      213: -3864744362295553841
+    second: Jack_Body_57
+  - first:
+      213: 1336737075369038269
+    second: Jack_Body_58
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Jack_Body_0
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 549
+        width: 32
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c3d7d0208787b730800000000000000
+      internalID: 4014826577200665544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_1
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 549
+        width: 32
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7798c5c17e98e0ca0800000000000000
+      internalID: -6048745623805720201
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_2
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 549
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52fa98f4e5bd3b360800000000000000
+      internalID: 7184327028693905189
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_3
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 549
+        width: 32
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1b6140b0fcadfb00800000000000000
+      internalID: 864036853274209050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_4
+      rect:
+        serializedVersion: 2
+        x: 434
+        y: 549
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a05f28f7aecca90b0800000000000000
+      internalID: -5721035069087091446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_5
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 549
+        width: 35
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32db3a78c3df46990800000000000000
+      internalID: -7393506251819991773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_6
+      rect:
+        serializedVersion: 2
+        x: 630
+        y: 549
+        width: 38
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acf15334098c05c90800000000000000
+      internalID: -7183020883727540278
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_7
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 549
+        width: 29
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e047720097e1e860800000000000000
+      internalID: 7557576255407079656
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_8
+      rect:
+        serializedVersion: 2
+        x: 838
+        y: 549
+        width: 29
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61e73e4bc07e0d040800000000000000
+      internalID: 4670486855343635990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_9
+      rect:
+        serializedVersion: 2
+        x: 938
+        y: 549
+        width: 29
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae0eecb654f2f7520800000000000000
+      internalID: 2701930276653555946
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_10
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 449
+        width: 35
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2d3dcbda38673050800000000000000
+      internalID: 5780203248758373674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_11
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 449
+        width: 39
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 20fe131aae07d6130800000000000000
+      internalID: 3561627033348992770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_12
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 449
+        width: 29
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dacf25acbe8addc80800000000000000
+      internalID: -8296289207881368403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_13
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 449
+        width: 29
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79a919db4f84ceb30800000000000000
+      internalID: 4317906358731119255
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_14
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 449
+        width: 29
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4a8690f7fd7f6af0800000000000000
+      internalID: -400963337965893046
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_15
+      rect:
+        serializedVersion: 2
+        x: 534
+        y: 449
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0430fe36b276ae780800000000000000
+      internalID: -8652990297981123776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_16
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 449
+        width: 32
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 087ffa20d3acc8180800000000000000
+      internalID: -9111685582690453632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_17
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 449
+        width: 25
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 727688638229e6ed0800000000000000
+      internalID: -2418835248440121561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_18
+      rect:
+        serializedVersion: 2
+        x: 830
+        y: 449
+        width: 31
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f253c97cafcd70050800000000000000
+      internalID: 5766820817520047407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_19
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 449
+        width: 30
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64616908e6c3d90b0800000000000000
+      internalID: -5720349506389273018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_20
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 349
+        width: 32
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dd1fe1a18a6f63de0800000000000000
+      internalID: -1353623436125081123
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_21
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 349
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 927fcc5e5d56eb870800000000000000
+      internalID: 8700503499484231465
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_22
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 349
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81937ec1338f57ba0800000000000000
+      internalID: -6091690022536791784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_23
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 349
+        width: 32
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f298db0eacd05e460800000000000000
+      internalID: 7270232338464606511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_24
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 349
+        width: 31
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4fd1ad9d5d23f45c0800000000000000
+      internalID: -4229105631013233164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_25
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 349
+        width: 26
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f4627c82ccef5de0800000000000000
+      internalID: -1342093843609000715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_26
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 349
+        width: 29
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5db164c155ad7800800000000000000
+      internalID: 611826894997929307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_27
+      rect:
+        serializedVersion: 2
+        x: 734
+        y: 349
+        width: 32
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eaa242d8b2b7f58b0800000000000000
+      internalID: -5161271220961531218
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_28
+      rect:
+        serializedVersion: 2
+        x: 834
+        y: 349
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e6ce992c532a6ae0800000000000000
+      internalID: -1555391842560850202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_29
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 349
+        width: 32
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b954382139f9b120800000000000000
+      internalID: 2430247463466326453
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_30
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 249
+        width: 37
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3847466a0a0df7510800000000000000
+      internalID: 1549186185243686019
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_31
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 249
+        width: 34
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 759f6117abef413d0800000000000000
+      internalID: -3236682155457840809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_32
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 255
+        width: 43
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52c3c9ca304cabc00800000000000000
+      internalID: 917260994183183397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_33
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 265
+        width: 44
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bbead4b042497310800000000000000
+      internalID: 1403225604582206387
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_34
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 269
+        width: 44
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41e8912758520ccc0800000000000000
+      internalID: -3692910439368651244
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_35
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 258
+        width: 43
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9153c251aeb35910800000000000000
+      internalID: 1825011874102727070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_36
+      rect:
+        serializedVersion: 2
+        x: 644
+        y: 246
+        width: 51
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 68d144e0dce550170800000000000000
+      internalID: 8144019735970061702
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_37
+      rect:
+        serializedVersion: 2
+        x: 748
+        y: 246
+        width: 46
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86607e14be8143f00800000000000000
+      internalID: 1095528008059913832
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_38
+      rect:
+        serializedVersion: 2
+        x: 843
+        y: 246
+        width: 53
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 97011926f1feabef0800000000000000
+      internalID: -91497924330975111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_39
+      rect:
+        serializedVersion: 2
+        x: 933
+        y: 249
+        width: 35
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd2d4bbb3535e4560800000000000000
+      internalID: 7299863665110733535
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_40
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 149
+        width: 35
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4522df38611586290800000000000000
+      internalID: -7896972789448629676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_41
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 149
+        width: 35
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 42825163153a4ea40800000000000000
+      internalID: 5396617822691731492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_42
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 149
+        width: 28
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aead8f4fdb9d56180800000000000000
+      internalID: -9122646060287075606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_43
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 149
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2049fe8464db43f90800000000000000
+      internalID: -6974741813321034750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_44
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 149
+        width: 35
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a15db5f9f683e150800000000000000
+      internalID: 5900708344913285544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_45
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 149
+        width: 33
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 18a5d116835a8f340800000000000000
+      internalID: 4897846256331479681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_46
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 149
+        width: 38
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8fc7470f417bd660800000000000000
+      internalID: 7411642196006784906
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_47
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 149
+        width: 30
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ec480afce7add2f0800000000000000
+      internalID: -946415710428967706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_48
+      rect:
+        serializedVersion: 2
+        x: 838
+        y: 146
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1fe1d8feb01409ff0800000000000000
+      internalID: -31453677872144655
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_49
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 151
+        width: 27
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c854cdb3e272b3020800000000000000
+      internalID: 2322493112365893004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_50
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 53
+        width: 30
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5935fe754976155b0800000000000000
+      internalID: -5381406192902909035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_51
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 48
+        width: 30
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 999ace8f608229ef0800000000000000
+      internalID: -102975831064925799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_52
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 60
+        width: 51
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a19d843c217606740800000000000000
+      internalID: 5143224104740509978
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_53
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 51
+        width: 48
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0466175408f3f17a0800000000000000
+      internalID: -6404330324944132544
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_54
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 48
+        width: 50
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cef656477ab78cf0800000000000000
+      internalID: -250026232851792192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_55
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 45
+        width: 55
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 220ea4145fc587840800000000000000
+      internalID: 5222025976368259106
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_56
+      rect:
+        serializedVersion: 2
+        x: 644
+        y: 45
+        width: 57
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc41f0abcb095d090800000000000000
+      internalID: -8010337221958757173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_57
+      rect:
+        serializedVersion: 2
+        x: 726
+        y: 49
+        width: 36
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc01ea19a7bad5ac0800000000000000
+      internalID: -3864744362295553841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Jack_Body_58
+      rect:
+        serializedVersion: 2
+        x: 818
+        y: 49
+        width: 38
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db15777a94b0d8210800000000000000
+      internalID: 1336737075369038269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Jack_Body_0: 4014826577200665544
+      Jack_Body_1: -6048745623805720201
+      Jack_Body_10: 5780203248758373674
+      Jack_Body_11: 3561627033348992770
+      Jack_Body_12: -8296289207881368403
+      Jack_Body_13: 4317906358731119255
+      Jack_Body_14: -400963337965893046
+      Jack_Body_15: -8652990297981123776
+      Jack_Body_16: -9111685582690453632
+      Jack_Body_17: -2418835248440121561
+      Jack_Body_18: 5766820817520047407
+      Jack_Body_19: -5720349506389273018
+      Jack_Body_2: 7184327028693905189
+      Jack_Body_20: -1353623436125081123
+      Jack_Body_21: 8700503499484231465
+      Jack_Body_22: -6091690022536791784
+      Jack_Body_23: 7270232338464606511
+      Jack_Body_24: -4229105631013233164
+      Jack_Body_25: -1342093843609000715
+      Jack_Body_26: 611826894997929307
+      Jack_Body_27: -5161271220961531218
+      Jack_Body_28: -1555391842560850202
+      Jack_Body_29: 2430247463466326453
+      Jack_Body_3: 864036853274209050
+      Jack_Body_30: 1549186185243686019
+      Jack_Body_31: -3236682155457840809
+      Jack_Body_32: 917260994183183397
+      Jack_Body_33: 1403225604582206387
+      Jack_Body_34: -3692910439368651244
+      Jack_Body_35: 1825011874102727070
+      Jack_Body_36: 8144019735970061702
+      Jack_Body_37: 1095528008059913832
+      Jack_Body_38: -91497924330975111
+      Jack_Body_39: 7299863665110733535
+      Jack_Body_4: -5721035069087091446
+      Jack_Body_40: -7896972789448629676
+      Jack_Body_41: 5396617822691731492
+      Jack_Body_42: -9122646060287075606
+      Jack_Body_43: -6974741813321034750
+      Jack_Body_44: 5900708344913285544
+      Jack_Body_45: 4897846256331479681
+      Jack_Body_46: 7411642196006784906
+      Jack_Body_47: -946415710428967706
+      Jack_Body_48: -31453677872144655
+      Jack_Body_49: 2322493112365893004
+      Jack_Body_5: -7393506251819991773
+      Jack_Body_50: -5381406192902909035
+      Jack_Body_51: -102975831064925799
+      Jack_Body_52: 5143224104740509978
+      Jack_Body_53: -6404330324944132544
+      Jack_Body_54: -250026232851792192
+      Jack_Body_55: 5222025976368259106
+      Jack_Body_56: -8010337221958757173
+      Jack_Body_57: -3864744362295553841
+      Jack_Body_58: 1336737075369038269
+      Jack_Body_6: -7183020883727540278
+      Jack_Body_7: 7557576255407079656
+      Jack_Body_8: 4670486855343635990
+      Jack_Body_9: 2701930276653555946
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

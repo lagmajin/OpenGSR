@@ -1,0 +1,16 @@
+{
+  "name": "com.neuecc.messagepack",
+  "displayName": "MessagePack",
+  "version": "2.5.140",
+  "unity": "2018.4",
+  "description": "Extremely Fast MessagePack Serializer for C#.",
+  "keywords": [
+    "Serializer"
+  ],
+  "license": "MIT",
+  "category": "Scripting",
+  "publishConfig": {
+    "registry": "https://package.openupm.com"
+  },
+  "_fingerprint": "dbe301895c98657090545e683d9ff18279e7cf45"
+}

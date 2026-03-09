@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: 5a37d2455cc5eac48b63b624b4ace8de
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7174309976652096920
+    second: 001-red-smog-a_0
+  - first:
+      213: 3847475396000976304
+    second: 001-red-smog-a_1
+  - first:
+      213: 8469600660550217222
+    second: 001-red-smog-a_2
+  - first:
+      213: 8811139491204239446
+    second: 001-red-smog-a_3
+  - first:
+      213: 4877630762846391000
+    second: 001-red-smog-a_4
+  - first:
+      213: 7250837585913694919
+    second: 001-red-smog-a_5
+  - first:
+      213: 2941414145397432419
+    second: 001-red-smog-a_6
+  - first:
+      213: 1999695696923781360
+    second: 001-red-smog-a_7
+  - first:
+      213: -8050916202747956926
+    second: 001-red-smog-a_8
+  - first:
+      213: -8219587479455053026
+    second: 001-red-smog-a_9
+  - first:
+      213: 2802481870444871897
+    second: 001-red-smog-a_10
+  - first:
+      213: -5239753437698366227
+    second: 001-red-smog-a_11
+  - first:
+      213: 7715105897206315570
+    second: 001-red-smog-a_12
+  - first:
+      213: -8392239819486305170
+    second: 001-red-smog-a_13
+  - first:
+      213: -8654056203701609795
+    second: 001-red-smog-a_14
+  - first:
+      213: 6467275641170474343
+    second: 001-red-smog-a_15
+  - first:
+      213: 4037130482502053935
+    second: 001-red-smog-a_16
+  - first:
+      213: -6160611159694949873
+    second: 001-red-smog-a_17
+  - first:
+      213: -5057973789835321577
+    second: 001-red-smog-a_18
+  - first:
+      213: -765420007186685253
+    second: 001-red-smog-a_19
+  - first:
+      213: 4601006956672706144
+    second: 001-red-smog-a_20
+  - first:
+      213: -638664535256087416
+    second: 001-red-smog-a_21
+  - first:
+      213: 5398850976738259474
+    second: 001-red-smog-a_22
+  - first:
+      213: 8023427642486947980
+    second: 001-red-smog-a_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 001-red-smog-a_0
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 386
+        width: 30
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86a5c1d561bbf6c90800000000000000
+      internalID: -7174309976652096920
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_1
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 292
+        width: 105
+        height: 94
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0bd81b4ec7af46530800000000000000
+      internalID: 3847475396000976304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_2
+      rect:
+        serializedVersion: 2
+        x: 110
+        y: 335
+        width: 70
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60e62894de01a8570800000000000000
+      internalID: 8469600660550217222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_3
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 341
+        width: 49
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65015af0fa4774a70800000000000000
+      internalID: 8811139491204239446
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_4
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 337
+        width: 62
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8da0af40653d0b340800000000000000
+      internalID: 4877630762846391000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_5
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 331
+        width: 79
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7cacf682e5620a460800000000000000
+      internalID: 7250837585913694919
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_6
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 170
+        width: 93
+        height: 80
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 36029b9b49002d820800000000000000
+      internalID: 2941414145397432419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_7
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 160
+        width: 92
+        height: 99
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0f8e40a34a850cb10800000000000000
+      internalID: 1999695696923781360
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_8
+      rect:
+        serializedVersion: 2
+        x: 219
+        y: 141
+        width: 90
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 24175c28e56654090800000000000000
+      internalID: -8050916202747956926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_9
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 139
+        width: 106
+        height: 114
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1b45d69cb82eed80800000000000000
+      internalID: -8219587479455053026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_10
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 140
+        width: 112
+        height: 124
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d0c659b96a64e620800000000000000
+      internalID: 2802481870444871897
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_11
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 210
+        width: 76
+        height: 67
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de46b538208a847b0800000000000000
+      internalID: -5239753437698366227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_12
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 142
+        width: 111
+        height: 72
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23af087efef811b60800000000000000
+      internalID: 7715105897206315570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_13
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 70
+        width: 75
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6461a12956c88b80800000000000000
+      internalID: -8392239819486305170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_14
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 68
+        width: 78
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dba9910ebbd96e780800000000000000
+      internalID: -8654056203701609795
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_15
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 71
+        width: 68
+        height: 52
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 765b0883ee060c950800000000000000
+      internalID: 6467275641170474343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_16
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 78
+        width: 56
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f20bf61c8c4c60830800000000000000
+      internalID: 4037130482502053935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_17
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 83
+        width: 32
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0243136acc118aa0800000000000000
+      internalID: -6160611159694949873
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_18
+      rect:
+        serializedVersion: 2
+        x: 479
+        y: 99
+        width: 13
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71f11ade2a77ec9b0800000000000000
+      internalID: -5057973789835321577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_19
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 9
+        width: 87
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb229af0f8ea065f0800000000000000
+      internalID: -765420007186685253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_20
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 22
+        width: 56
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 066e39d237f0adf30800000000000000
+      internalID: 4601006956672706144
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_21
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 37
+        width: 40
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 884cb6d2df10327f0800000000000000
+      internalID: -638664535256087416
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_22
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 26
+        width: 22
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 21231c7eb529cea40800000000000000
+      internalID: 5398850976738259474
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 001-red-smog-a_23
+      rect:
+        serializedVersion: 2
+        x: 174
+        y: 14
+        width: 21
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c800c7f4ee0f85f60800000000000000
+      internalID: 8023427642486947980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      001-red-smog-a_0: -7174309976652096920
+      001-red-smog-a_1: 3847475396000976304
+      001-red-smog-a_10: 2802481870444871897
+      001-red-smog-a_11: -5239753437698366227
+      001-red-smog-a_12: 7715105897206315570
+      001-red-smog-a_13: -8392239819486305170
+      001-red-smog-a_14: -8654056203701609795
+      001-red-smog-a_15: 6467275641170474343
+      001-red-smog-a_16: 4037130482502053935
+      001-red-smog-a_17: -6160611159694949873
+      001-red-smog-a_18: -5057973789835321577
+      001-red-smog-a_19: -765420007186685253
+      001-red-smog-a_2: 8469600660550217222
+      001-red-smog-a_20: 4601006956672706144
+      001-red-smog-a_21: -638664535256087416
+      001-red-smog-a_22: 5398850976738259474
+      001-red-smog-a_23: 8023427642486947980
+      001-red-smog-a_3: 8811139491204239446
+      001-red-smog-a_4: 4877630762846391000
+      001-red-smog-a_5: 7250837585913694919
+      001-red-smog-a_6: 2941414145397432419
+      001-red-smog-a_7: 1999695696923781360
+      001-red-smog-a_8: -8050916202747956926
+      001-red-smog-a_9: -8219587479455053026
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,767 @@
+fileFormatVersion: 2
+guid: ce79643c6ae7eee4e888f61819b2c439
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3921687812179718002
+    second: 002-windgrass02_0
+  - first:
+      213: -5742194174360448668
+    second: 002-windgrass02_1
+  - first:
+      213: -3326672252217195375
+    second: 002-windgrass02_2
+  - first:
+      213: 2083234950539870651
+    second: 002-windgrass02_3
+  - first:
+      213: 1747425126718133301
+    second: 002-windgrass02_4
+  - first:
+      213: -1637473458211364744
+    second: 002-windgrass02_5
+  - first:
+      213: 7627655799625304153
+    second: 002-windgrass02_6
+  - first:
+      213: 4518294605928799124
+    second: 002-windgrass02_7
+  - first:
+      213: 4100635842728984840
+    second: 002-windgrass02_8
+  - first:
+      213: 4634266810441805979
+    second: 002-windgrass02_9
+  - first:
+      213: -5714359501361882408
+    second: 002-windgrass02_10
+  - first:
+      213: -3162502999938186336
+    second: 002-windgrass02_11
+  - first:
+      213: -8368251921819032553
+    second: 002-windgrass02_12
+  - first:
+      213: 1138946821124013522
+    second: 002-windgrass02_13
+  - first:
+      213: 5036255444367398999
+    second: 002-windgrass02_14
+  - first:
+      213: -4085911533930515807
+    second: 002-windgrass02_15
+  - first:
+      213: -2265926876338279570
+    second: 002-windgrass02_16
+  - first:
+      213: 2737515729110270771
+    second: 002-windgrass02_17
+  - first:
+      213: 6155272222372720894
+    second: 002-windgrass02_18
+  - first:
+      213: -6251741733541868254
+    second: 002-windgrass02_19
+  - first:
+      213: -3522503186028820085
+    second: 002-windgrass02_20
+  - first:
+      213: -8372240269193398709
+    second: 002-windgrass02_21
+  - first:
+      213: -1091725368142725869
+    second: 002-windgrass02_22
+  - first:
+      213: -4987225990399642968
+    second: 002-windgrass02_23
+  - first:
+      213: -7193000044522835563
+    second: 002-windgrass02_24
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 002-windgrass02_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 68
+        width: 43
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e809c0b76bd5399c0800000000000000
+      internalID: -3921687812179718002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_1
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 91
+        width: 38
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4619de562d0af40b0800000000000000
+      internalID: -5742194174360448668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_2
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 68
+        width: 43
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 194027a463945d1d0800000000000000
+      internalID: -3326672252217195375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_3
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 91
+        width: 38
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb18b9a662329ec10800000000000000
+      internalID: 2083234950539870651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_4
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 91
+        width: 39
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53450adf4e9104810800000000000000
+      internalID: 1747425126718133301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_5
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 68
+        width: 43
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8706e22c0968649e0800000000000000
+      internalID: -1637473458211364744
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_6
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 68
+        width: 44
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9584d956980ead960800000000000000
+      internalID: 7627655799625304153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_7
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 91
+        width: 40
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49b13f0510534be30800000000000000
+      internalID: 4518294605928799124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_8
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 91
+        width: 41
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8018817a29268e830800000000000000
+      internalID: 4100635842728984840
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_9
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 68
+        width: 44
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b9034c65c19305040800000000000000
+      internalID: 4634266810441805979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 45
+        width: 44
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8da527a3f4482b0b0800000000000000
+      internalID: -5714359501361882408
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_11
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 21
+        width: 41
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a3c397f6488c14d0800000000000000
+      internalID: -3162502999938186336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_12
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 45
+        width: 44
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7142ff8c63ffddb80800000000000000
+      internalID: -8368251921819032553
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_13
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 21
+        width: 39
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dd3823791a5ecf00800000000000000
+      internalID: 1138946821124013522
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_14
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 45
+        width: 43
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 75855a7b4af54e540800000000000000
+      internalID: 5036255444367398999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_15
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 21
+        width: 39
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a27664ab1deb47c0800000000000000
+      internalID: -4085911533930515807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_16
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 45
+        width: 45
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e6ba8d8e28fcd80e0800000000000000
+      internalID: -2265926876338279570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_17
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 45
+        width: 43
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33389a83d0c9df520800000000000000
+      internalID: 2737515729110270771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_18
+      rect:
+        serializedVersion: 2
+        x: 2
+        y: 0
+        width: 38
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef0fa56697beb6550800000000000000
+      internalID: 6155272222372720894
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_19
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 0
+        width: 38
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 22d80c8340a5d39a0800000000000000
+      internalID: -6251741733541868254
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_20
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 21
+        width: 39
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b89029ce30e8d1fc0800000000000000
+      internalID: -3522503186028820085
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_21
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 0
+        width: 38
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b46b18c45d3dfcb80800000000000000
+      internalID: -8372240269193398709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_22
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 22
+        width: 38
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31df197df8969d0f0800000000000000
+      internalID: -1091725368142725869
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_23
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 0
+        width: 38
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a232ab9260d9cab0800000000000000
+      internalID: -4987225990399642968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: 002-windgrass02_24
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 0
+        width: 38
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 591f8d4d1945d2c90800000000000000
+      internalID: -7193000044522835563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      002-windgrass02_0: -3921687812179718002
+      002-windgrass02_1: -5742194174360448668
+      002-windgrass02_10: -5714359501361882408
+      002-windgrass02_11: -3162502999938186336
+      002-windgrass02_12: -8368251921819032553
+      002-windgrass02_13: 1138946821124013522
+      002-windgrass02_14: 5036255444367398999
+      002-windgrass02_15: -4085911533930515807
+      002-windgrass02_16: -2265926876338279570
+      002-windgrass02_17: 2737515729110270771
+      002-windgrass02_18: 6155272222372720894
+      002-windgrass02_19: -6251741733541868254
+      002-windgrass02_2: -3326672252217195375
+      002-windgrass02_20: -3522503186028820085
+      002-windgrass02_21: -8372240269193398709
+      002-windgrass02_22: -1091725368142725869
+      002-windgrass02_23: -4987225990399642968
+      002-windgrass02_24: -7193000044522835563
+      002-windgrass02_3: 2083234950539870651
+      002-windgrass02_4: 1747425126718133301
+      002-windgrass02_5: -1637473458211364744
+      002-windgrass02_6: 7627655799625304153
+      002-windgrass02_7: 4518294605928799124
+      002-windgrass02_8: 4100635842728984840
+      002-windgrass02_9: 4634266810441805979
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

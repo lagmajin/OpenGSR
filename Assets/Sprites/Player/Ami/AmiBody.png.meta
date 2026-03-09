@@ -1,0 +1,1651 @@
+fileFormatVersion: 2
+guid: 2d8a149806976c74caece5716f5b3b54
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -3304693656423422844
+    second: AmiBody_0
+  - first:
+      213: 4479081631938622102
+    second: AmiBody_1
+  - first:
+      213: -7183675940601638041
+    second: AmiBody_2
+  - first:
+      213: 1286673588561688837
+    second: AmiBody_3
+  - first:
+      213: -3037283935897464867
+    second: AmiBody_4
+  - first:
+      213: -6154240250127831063
+    second: AmiBody_5
+  - first:
+      213: 4175747747528831128
+    second: AmiBody_6
+  - first:
+      213: -6160825402553930020
+    second: AmiBody_7
+  - first:
+      213: -2222453389163140685
+    second: AmiBody_8
+  - first:
+      213: -7163922328753204783
+    second: AmiBody_9
+  - first:
+      213: 4158261300761998968
+    second: AmiBody_10
+  - first:
+      213: -396903227726625798
+    second: AmiBody_11
+  - first:
+      213: -255493125050151472
+    second: AmiBody_12
+  - first:
+      213: -7173182902162638115
+    second: AmiBody_13
+  - first:
+      213: -6418503363757752114
+    second: AmiBody_14
+  - first:
+      213: -8818547457435385041
+    second: AmiBody_15
+  - first:
+      213: -1611350011122146461
+    second: AmiBody_16
+  - first:
+      213: 4901129263572674731
+    second: AmiBody_17
+  - first:
+      213: -516026049097372905
+    second: AmiBody_18
+  - first:
+      213: -3385792802164493324
+    second: AmiBody_19
+  - first:
+      213: 7738177335060482829
+    second: AmiBody_20
+  - first:
+      213: -6551657692504355839
+    second: AmiBody_21
+  - first:
+      213: 907050148246498374
+    second: AmiBody_22
+  - first:
+      213: -3172428368170115554
+    second: AmiBody_23
+  - first:
+      213: 5078838609619926763
+    second: AmiBody_24
+  - first:
+      213: -5200440247643552945
+    second: AmiBody_25
+  - first:
+      213: 2547402789417293738
+    second: AmiBody_26
+  - first:
+      213: 5034441861738961223
+    second: AmiBody_27
+  - first:
+      213: -4299598211522633925
+    second: AmiBody_28
+  - first:
+      213: -1482640944407568681
+    second: AmiBody_29
+  - first:
+      213: 6935557385298382756
+    second: AmiBody_30
+  - first:
+      213: 3014957935608601798
+    second: AmiBody_31
+  - first:
+      213: -6861620004731482486
+    second: AmiBody_32
+  - first:
+      213: 5291729073616872181
+    second: AmiBody_33
+  - first:
+      213: -7525650514102605008
+    second: AmiBody_34
+  - first:
+      213: -3164536041777410079
+    second: AmiBody_35
+  - first:
+      213: -8183500593946554359
+    second: AmiBody_36
+  - first:
+      213: 4581756671397098095
+    second: AmiBody_37
+  - first:
+      213: -4474318591282552130
+    second: AmiBody_38
+  - first:
+      213: 7093330805389447989
+    second: AmiBody_39
+  - first:
+      213: 8260426687282890573
+    second: AmiBody_40
+  - first:
+      213: -5631836605636383320
+    second: AmiBody_41
+  - first:
+      213: -4559475565158498853
+    second: AmiBody_42
+  - first:
+      213: 6178866681147543844
+    second: AmiBody_43
+  - first:
+      213: -7342678825588074706
+    second: AmiBody_44
+  - first:
+      213: -6206962239439246217
+    second: AmiBody_45
+  - first:
+      213: 6709294903762763973
+    second: AmiBody_46
+  - first:
+      213: 3826426077939083841
+    second: AmiBody_47
+  - first:
+      213: -3857536919897729327
+    second: AmiBody_48
+  - first:
+      213: 7773585668307865142
+    second: AmiBody_49
+  - first:
+      213: 6584013958397876580
+    second: AmiBody_50
+  - first:
+      213: -7203424206525301039
+    second: AmiBody_51
+  - first:
+      213: 6268405806993701941
+    second: AmiBody_52
+  - first:
+      213: 347464718514569426
+    second: AmiBody_53
+  - first:
+      213: 2406922646535569546
+    second: AmiBody_54
+  - first:
+      213: 6176729258783369346
+    second: AmiBody_55
+  - first:
+      213: -5775541604404256859
+    second: AmiBody_56
+  - first:
+      213: -1333432127931525614
+    second: AmiBody_57
+  - first:
+      213: -4625572440746110879
+    second: AmiBody_58
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 0
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 2
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: AmiBody_0
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 549
+        width: 29
+        height: 33
+      alignment: 9
+      pivot: {x: 0.5, y: 0.78}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4842565e0ae5322d0800000000000000
+      internalID: -3304693656423422844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_1
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 549
+        width: 29
+        height: 34
+      alignment: 9
+      pivot: {x: 0.5, y: 0.76}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 692bda75305e82e30800000000000000
+      internalID: 4479081631938622102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_2
+      rect:
+        serializedVersion: 2
+        x: 234
+        y: 549
+        width: 29
+        height: 35
+      alignment: 9
+      pivot: {x: 0.5, y: 0.76}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7635be2fac47e4c90800000000000000
+      internalID: -7183675940601638041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_3
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 549
+        width: 29
+        height: 36
+      alignment: 9
+      pivot: {x: 0.5, y: 0.76}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 509b81ccfce2bd110800000000000000
+      internalID: 1286673588561688837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_4
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 549
+        width: 25
+        height: 47
+      alignment: 9
+      pivot: {x: 0.44141725, y: 0.50389457}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddfc4de3a5669d5d0800000000000000
+      internalID: -3037283935897464867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_5
+      rect:
+        serializedVersion: 2
+        x: 531
+        y: 549
+        width: 26
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ef28bc591fb79aa0800000000000000
+      internalID: -6154240250127831063
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_6
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 549
+        width: 26
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 890f71bc37c33f930800000000000000
+      internalID: 4175747747528831128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_7
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 549
+        width: 27
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdee19510f9508aa0800000000000000
+      internalID: -6160825402553930020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_8
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 552
+        width: 25
+        height: 44
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b96119ea624821e0800000000000000
+      internalID: -2222453389163140685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_9
+      rect:
+        serializedVersion: 2
+        x: 935
+        y: 549
+        width: 22
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d11d2c1992a49c90800000000000000
+      internalID: -7163922328753204783
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_10
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 449
+        width: 33
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8763c232f9c15b930800000000000000
+      internalID: 4158261300761998968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_11
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 449
+        width: 36
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af306250e9aed7af0800000000000000
+      internalID: -396903227726625798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_12
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 449
+        width: 25
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ddc4de3b5e447cf0800000000000000
+      internalID: -255493125050151472
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_13
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 449
+        width: 19
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddab0b7d72cb37c90800000000000000
+      internalID: -7173182902162638115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_14
+      rect:
+        serializedVersion: 2
+        x: 441
+        y: 449
+        width: 26
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec0c1958235ece6a0800000000000000
+      internalID: -6418503363757752114
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_15
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 449
+        width: 33
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f23c3a46fc93e9580800000000000000
+      internalID: -8818547457435385041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_16
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 449
+        width: 36
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3632e32c3b553a9e0800000000000000
+      internalID: -1611350011122146461
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_17
+      rect:
+        serializedVersion: 2
+        x: 739
+        y: 449
+        width: 25
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba86581191f440440800000000000000
+      internalID: 4901129263572674731
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_18
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 449
+        width: 19
+        height: 38
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71be3b8da05b6d8f0800000000000000
+      internalID: -516026049097372905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_19
+      rect:
+        serializedVersion: 2
+        x: 941
+        y: 449
+        width: 26
+        height: 39
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f339e7926f3301d0800000000000000
+      internalID: -3385792802164493324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_20
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 349
+        width: 26
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0b4241a947836b60800000000000000
+      internalID: 7738177335060482829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_21
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 349
+        width: 26
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10c82547a06d315a0800000000000000
+      internalID: -6551657692504355839
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_22
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 350
+        width: 26
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64ca2b7dd4d769c00800000000000000
+      internalID: 907050148246498374
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_23
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 349
+        width: 26
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e1e19d7153549f3d0800000000000000
+      internalID: -3172428368170115554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_24
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 349
+        width: 22
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bee3fed7ec8ab7640800000000000000
+      internalID: 5078838609619926763
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_25
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 349
+        width: 22
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f43cf8bd52354d7b0800000000000000
+      internalID: -5200440247643552945
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_26
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 349
+        width: 27
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa79e0b17513a5320800000000000000
+      internalID: 2547402789417293738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_27
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 349
+        width: 27
+        height: 41
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7499e4b133eedd540800000000000000
+      internalID: 5034441861738961223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_28
+      rect:
+        serializedVersion: 2
+        x: 842
+        y: 348
+        width: 29
+        height: 35
+      alignment: 9
+      pivot: {x: 0.48364475, y: 0.52033657}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3fd945f432c454c0800000000000000
+      internalID: -4299598211522633925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_29
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 249
+        width: 26
+        height: 31
+      alignment: 9
+      pivot: {x: 0.54026735, y: 0.41578922}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7de132b9ae99c6be0800000000000000
+      internalID: -1482640944407568681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_30
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 250
+        width: 32
+        height: 29
+      alignment: 9
+      pivot: {x: 0.5281515, y: 0.5303787}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4af0c0e12bc004060800000000000000
+      internalID: 6935557385298382756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_31
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 249
+        width: 28
+        height: 28
+      alignment: 9
+      pivot: {x: 0.49708033, y: 1.0195802}
+      border: {x: 0, y: 0, z: 0, w: 1}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cc12bcb44847d920800000000000000
+      internalID: 3014957935608601798
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_32
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 240
+        width: 30
+        height: 35
+      alignment: 9
+      pivot: {x: 0.4985962, y: 0.7907902}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8e044ac5f0a6c0a0800000000000000
+      internalID: -6861620004731482486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_33
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 239
+        width: 29
+        height: 37
+      alignment: 9
+      pivot: {x: 0.572795, y: 0.81249094}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f26a804e8fff6940800000000000000
+      internalID: 5291729073616872181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_34
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 249
+        width: 29
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03bad23eab48f8790800000000000000
+      internalID: -7525650514102605008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_35
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 249
+        width: 29
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1efcfe68c3f4514d0800000000000000
+      internalID: -3164536041777410079
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_36
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 249
+        width: 31
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9001e9e519d5e6e80800000000000000
+      internalID: -8183500593946554359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_37
+      rect:
+        serializedVersion: 2
+        x: 838
+        y: 249
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6276edda6ba59f30800000000000000
+      internalID: 4581756671397098095
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_38
+      rect:
+        serializedVersion: 2
+        x: 939
+        y: 248
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb26daa72f608e1c0800000000000000
+      internalID: -4474318591282552130
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_39
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 151
+        width: 25
+        height: 21
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 533d29119c2907260800000000000000
+      internalID: 7093330805389447989
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_40
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 149
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4747a47e4ee2a270800000000000000
+      internalID: 8260426687282890573
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_41
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 149
+        width: 24
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ad60082272b7d1b0800000000000000
+      internalID: -5631836605636383320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_42
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 158
+        width: 47
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bdd77a0712d79b0c0800000000000000
+      internalID: -4559475565158498853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_43
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 151
+        width: 46
+        height: 26
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 421db4c628ebfb550800000000000000
+      internalID: 6178866681147543844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_44
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 149
+        width: 51
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e275a05e280991a90800000000000000
+      internalID: -7342678825588074706
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_45
+      rect:
+        serializedVersion: 2
+        x: 645
+        y: 147
+        width: 53
+        height: 16
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77ce5f7aab07cd9a0800000000000000
+      internalID: -6206962239439246217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_46
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 147
+        width: 51
+        height: 18
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c04e18ea243c1d50800000000000000
+      internalID: 6709294903762763973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_47
+      rect:
+        serializedVersion: 2
+        x: 833
+        y: 149
+        width: 22
+        height: 42
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14aa9de9e323a1530800000000000000
+      internalID: 3826426077939083841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_48
+      rect:
+        serializedVersion: 2
+        x: 930
+        y: 153
+        width: 33
+        height: 40
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d69a850c96477ac0800000000000000
+      internalID: -3857536919897729327
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_49
+      rect:
+        serializedVersion: 2
+        x: 34
+        y: 49
+        width: 29
+        height: 33
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 63ece86aaf251eb60800000000000000
+      internalID: 7773585668307865142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_50
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 55
+        width: 31
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 469d482cfcd1f5b50800000000000000
+      internalID: 6584013958397876580
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_51
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 68
+        width: 37
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1defb9b79db480c90800000000000000
+      internalID: -7203424206525301039
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_52
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 71
+        width: 44
+        height: 31
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53cfad9bed9ddf650800000000000000
+      internalID: 6268405806993701941
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_53
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 70
+        width: 42
+        height: 27
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d0ca0f025172d400800000000000000
+      internalID: 347464718514569426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_54
+      rect:
+        serializedVersion: 2
+        x: 828
+        y: 64
+        width: 35
+        height: 35
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a808894056b176120800000000000000
+      internalID: 2406922646535569546
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_55
+      rect:
+        serializedVersion: 2
+        x: 936
+        y: 49
+        width: 25
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2886b8ff88628b550800000000000000
+      internalID: 6176729258783369346
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_56
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 48
+        width: 48
+        height: 17
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5af9efbc28729dfa0800000000000000
+      internalID: -5775541604404256859
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_57
+      rect:
+        serializedVersion: 2
+        x: 649
+        y: 48
+        width: 50
+        height: 15
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2165c826b82be7de0800000000000000
+      internalID: -1333432127931525614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: AmiBody_58
+      rect:
+        serializedVersion: 2
+        x: 744
+        y: 48
+        width: 55
+        height: 14
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 160dd7a5f5aaecfb0800000000000000
+      internalID: -4625572440746110879
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 20ecb7a2a8cb4134197750eb1fda1361
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      AmiBody_0: -3304693656423422844
+      AmiBody_1: 4479081631938622102
+      AmiBody_10: 4158261300761998968
+      AmiBody_11: -396903227726625798
+      AmiBody_12: -255493125050151472
+      AmiBody_13: -7173182902162638115
+      AmiBody_14: -6418503363757752114
+      AmiBody_15: -8818547457435385041
+      AmiBody_16: -1611350011122146461
+      AmiBody_17: 4901129263572674731
+      AmiBody_18: -516026049097372905
+      AmiBody_19: -3385792802164493324
+      AmiBody_2: -7183675940601638041
+      AmiBody_20: 7738177335060482829
+      AmiBody_21: -6551657692504355839
+      AmiBody_22: 907050148246498374
+      AmiBody_23: -3172428368170115554
+      AmiBody_24: 5078838609619926763
+      AmiBody_25: -5200440247643552945
+      AmiBody_26: 2547402789417293738
+      AmiBody_27: 5034441861738961223
+      AmiBody_28: -4299598211522633925
+      AmiBody_29: -1482640944407568681
+      AmiBody_3: 1286673588561688837
+      AmiBody_30: 6935557385298382756
+      AmiBody_31: 3014957935608601798
+      AmiBody_32: -6861620004731482486
+      AmiBody_33: 5291729073616872181
+      AmiBody_34: -7525650514102605008
+      AmiBody_35: -3164536041777410079
+      AmiBody_36: -8183500593946554359
+      AmiBody_37: 4581756671397098095
+      AmiBody_38: -4474318591282552130
+      AmiBody_39: 7093330805389447989
+      AmiBody_4: -3037283935897464867
+      AmiBody_40: 8260426687282890573
+      AmiBody_41: -5631836605636383320
+      AmiBody_42: -4559475565158498853
+      AmiBody_43: 6178866681147543844
+      AmiBody_44: -7342678825588074706
+      AmiBody_45: -6206962239439246217
+      AmiBody_46: 6709294903762763973
+      AmiBody_47: 3826426077939083841
+      AmiBody_48: -3857536919897729327
+      AmiBody_49: 7773585668307865142
+      AmiBody_5: -6154240250127831063
+      AmiBody_50: 6584013958397876580
+      AmiBody_51: -7203424206525301039
+      AmiBody_52: 6268405806993701941
+      AmiBody_53: 347464718514569426
+      AmiBody_54: 2406922646535569546
+      AmiBody_55: 6176729258783369346
+      AmiBody_56: -5775541604404256859
+      AmiBody_57: -1333432127931525614
+      AmiBody_58: -4625572440746110879
+      AmiBody_6: 4175747747528831128
+      AmiBody_7: -6160825402553930020
+      AmiBody_8: -2222453389163140685
+      AmiBody_9: -7163922328753204783
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

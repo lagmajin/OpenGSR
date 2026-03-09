@@ -1,0 +1,1495 @@
+fileFormatVersion: 2
+guid: 3206488a476eedc4a9fd587fcf4e02da
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -1032492187346113384
+    second: YumiBody_0
+  - first:
+      213: -759789542175916458
+    second: YumiBody_1
+  - first:
+      213: 2943612333098761205
+    second: YumiBody_2
+  - first:
+      213: 8814133528420739164
+    second: YumiBody_3
+  - first:
+      213: -5611846731855788797
+    second: YumiBody_4
+  - first:
+      213: -9136610045387784576
+    second: YumiBody_5
+  - first:
+      213: -7279471693909633971
+    second: YumiBody_6
+  - first:
+      213: -6039128000765173410
+    second: YumiBody_7
+  - first:
+      213: 4441538678362440407
+    second: YumiBody_8
+  - first:
+      213: -2639663580046960410
+    second: YumiBody_9
+  - first:
+      213: 1644989360332572718
+    second: YumiBody_10
+  - first:
+      213: 4690018835972644299
+    second: YumiBody_11
+  - first:
+      213: -709232749737634537
+    second: YumiBody_12
+  - first:
+      213: 8826767980319049962
+    second: YumiBody_13
+  - first:
+      213: 3451008513548215282
+    second: YumiBody_14
+  - first:
+      213: -331103359263744760
+    second: YumiBody_15
+  - first:
+      213: -1085572540394969629
+    second: YumiBody_16
+  - first:
+      213: -7105369193330708261
+    second: YumiBody_17
+  - first:
+      213: -6434490837166393175
+    second: YumiBody_18
+  - first:
+      213: 4569201262890266862
+    second: YumiBody_19
+  - first:
+      213: -4107801452861233711
+    second: YumiBody_20
+  - first:
+      213: -562159933003578124
+    second: YumiBody_21
+  - first:
+      213: 6315183909437191627
+    second: YumiBody_22
+  - first:
+      213: -3324840134117445836
+    second: YumiBody_23
+  - first:
+      213: -8883161181493056635
+    second: YumiBody_24
+  - first:
+      213: 8099880102736449909
+    second: YumiBody_25
+  - first:
+      213: -629690398073243270
+    second: YumiBody_26
+  - first:
+      213: 841032159334251984
+    second: YumiBody_27
+  - first:
+      213: -5582072975495243167
+    second: YumiBody_28
+  - first:
+      213: -86557362065525050
+    second: YumiBody_29
+  - first:
+      213: 611324177678368035
+    second: YumiBody_30
+  - first:
+      213: -2063904353355339734
+    second: YumiBody_31
+  - first:
+      213: 992290835915596773
+    second: YumiBody_32
+  - first:
+      213: -4525074227765969358
+    second: YumiBody_33
+  - first:
+      213: 392336692337611537
+    second: YumiBody_34
+  - first:
+      213: -6953991518986082199
+    second: YumiBody_35
+  - first:
+      213: -2513288771054264746
+    second: YumiBody_36
+  - first:
+      213: -6726874744710900482
+    second: YumiBody_37
+  - first:
+      213: -1496541686551376428
+    second: YumiBody_38
+  - first:
+      213: 8994901506531750357
+    second: YumiBody_39
+  - first:
+      213: 8715724030228258935
+    second: YumiBody_40
+  - first:
+      213: -5746135737552221259
+    second: YumiBody_41
+  - first:
+      213: 4512534129338758322
+    second: YumiBody_42
+  - first:
+      213: 4286563289802630197
+    second: YumiBody_43
+  - first:
+      213: 2569223965558446226
+    second: YumiBody_44
+  - first:
+      213: -8156406582432923771
+    second: YumiBody_45
+  - first:
+      213: -6844492504690571599
+    second: YumiBody_46
+  - first:
+      213: -5205609725461699050
+    second: YumiBody_47
+  - first:
+      213: 106012047344122525
+    second: YumiBody_48
+  - first:
+      213: -5497541498845501460
+    second: YumiBody_49
+  - first:
+      213: -2328872965015047147
+    second: YumiBody_50
+  - first:
+      213: 6659279126466810676
+    second: YumiBody_51
+  - first:
+      213: -7347819912880224127
+    second: YumiBody_52
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: YumiBody_0
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 549
+        width: 31
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 89c6ed373d9dba1f0800000000000000
+      internalID: -1032492187346113384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_1
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 549
+        width: 31
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65e3c8adf6fa475f0800000000000000
+      internalID: -759789542175916458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_2
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 549
+        width: 31
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5fb7fce22dfc9d820800000000000000
+      internalID: 2943612333098761205
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_3
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 549
+        width: 31
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c58e06caeb7125a70800000000000000
+      internalID: 8814133528420739164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_4
+      rect:
+        serializedVersion: 2
+        x: 444
+        y: 549
+        width: 22
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3058cc55127be12b0800000000000000
+      internalID: -5611846731855788797
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_5
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 549
+        width: 23
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08e3561529d343180800000000000000
+      internalID: -9136610045387784576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_6
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 550
+        width: 28
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d44510c001f1afa90800000000000000
+      internalID: -7279471693909633971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_7
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 550
+        width: 30
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e51e6497415b03ca0800000000000000
+      internalID: -6039128000765173410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_8
+      rect:
+        serializedVersion: 2
+        x: 835
+        y: 550
+        width: 29
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d283fb45e383ad30800000000000000
+      internalID: 4441538678362440407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_9
+      rect:
+        serializedVersion: 2
+        x: 931
+        y: 551
+        width: 34
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e8d3c0a5f70e5bd0800000000000000
+      internalID: -2639663580046960410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_10
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 449
+        width: 33
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e288be19b1d24d610800000000000000
+      internalID: 1644989360332572718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_11
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 449
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bcd5a04584b461140800000000000000
+      internalID: 4690018835972644299
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_12
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 449
+        width: 25
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71590d0629c4826f0800000000000000
+      internalID: -709232749737634537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_13
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 449
+        width: 20
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae885bd36bafe7a70800000000000000
+      internalID: 8826767980319049962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_14
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 449
+        width: 27
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f3e3e675f174ef20800000000000000
+      internalID: 3451008513548215282
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_15
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 449
+        width: 33
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80d552fbf3fa76bf0800000000000000
+      internalID: -331103359263744760
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_16
+      rect:
+        serializedVersion: 2
+        x: 629
+        y: 449
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e5e6dfa6854fe0f0800000000000000
+      internalID: -1085572540394969629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_17
+      rect:
+        serializedVersion: 2
+        x: 738
+        y: 449
+        width: 25
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd0f4815d58a46d90800000000000000
+      internalID: -7105369193330708261
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_18
+      rect:
+        serializedVersion: 2
+        x: 839
+        y: 449
+        width: 20
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9a8f03ccca814b6a0800000000000000
+      internalID: -6434490837166393175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_19
+      rect:
+        serializedVersion: 2
+        x: 940
+        y: 449
+        width: 27
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee037d50750196f30800000000000000
+      internalID: 4569201262890266862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_20
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 349
+        width: 31
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d56f5ab7582ef6c0800000000000000
+      internalID: -4107801452861233711
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_21
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 349
+        width: 29
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4f44d56f48ec238f0800000000000000
+      internalID: -562159933003578124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_22
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 349
+        width: 35
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc5344d6e4a04a750800000000000000
+      internalID: 6315183909437191627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_23
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 349
+        width: 32
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43fa7f6838bcbd1d0800000000000000
+      internalID: -3324840134117445836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_24
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 349
+        width: 27
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58b219e68fba8b480800000000000000
+      internalID: -8883161181493056635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_25
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 349
+        width: 29
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5715cd6d90e886070800000000000000
+      internalID: 8099880102736449909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_26
+      rect:
+        serializedVersion: 2
+        x: 636
+        y: 349
+        width: 32
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a79be505be3e247f0800000000000000
+      internalID: -629690398073243270
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_27
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 349
+        width: 35
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0dd3ccdfa42fbab00800000000000000
+      internalID: 841032159334251984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_28
+      rect:
+        serializedVersion: 2
+        x: 839
+        y: 349
+        width: 22
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16a5c41343e7882b0800000000000000
+      internalID: -5582072975495243167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_29
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 348
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c6b36da98c7ccef0800000000000000
+      internalID: -86557362065525050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_30
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 253
+        width: 27
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32d7025c91cdb7800800000000000000
+      internalID: 611324177678368035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_31
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 250
+        width: 22
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a286fd7fce98b53e0800000000000000
+      internalID: -2063904353355339734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_32
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 249
+        width: 25
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e3ef94024355cd00800000000000000
+      internalID: 992290835915596773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_33
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 259
+        width: 48
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 23efbb7f6f4b331c0800000000000000
+      internalID: -4525074227765969358
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_34
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 250
+        width: 48
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 113922b942cd17500800000000000000
+      internalID: 392336692337611537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_35
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 248
+        width: 53
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96861cbae857e7f90800000000000000
+      internalID: -6953991518986082199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_36
+      rect:
+        serializedVersion: 2
+        x: 645
+        y: 247
+        width: 54
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 65e155fbd210f1dd0800000000000000
+      internalID: -2513288771054264746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_37
+      rect:
+        serializedVersion: 2
+        x: 745
+        y: 245
+        width: 55
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef4d5f86f0755a2a0800000000000000
+      internalID: -6726874744710900482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_38
+      rect:
+        serializedVersion: 2
+        x: 35
+        y: 149
+        width: 31
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dd8a8dd3473b3be0800000000000000
+      internalID: -1496541686551376428
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_39
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 152
+        width: 31
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5d1737e534f44dc70800000000000000
+      internalID: 8994901506531750357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_40
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 175
+        width: 41
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 770671ed3d874f870800000000000000
+      internalID: 8715724030228258935
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_41
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 174
+        width: 40
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bbc504bdff9140b0800000000000000
+      internalID: -5746135737552221259
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_42
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 166
+        width: 40
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b43018d1edbf9e30800000000000000
+      internalID: 4512534129338758322
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_43
+      rect:
+        serializedVersion: 2
+        x: 549
+        y: 148
+        width: 46
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5346ae3d99eec7b30800000000000000
+      internalID: 4286563289802630197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_44
+      rect:
+        serializedVersion: 2
+        x: 647
+        y: 147
+        width: 48
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 29818879597b7a320800000000000000
+      internalID: 2569223965558446226
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_45
+      rect:
+        serializedVersion: 2
+        x: 745
+        y: 146
+        width: 51
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58f7d628d6f9ece80800000000000000
+      internalID: -8156406582432923771
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_46
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 49
+        width: 25
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b64816a45a7301a0800000000000000
+      internalID: -6844492504690571599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_47
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 49
+        width: 33
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 61669820985f1c7b0800000000000000
+      internalID: -5205609725461699050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_48
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 61
+        width: 36
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9abbd73561a87100800000000000000
+      internalID: 106012047344122525
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_49
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 58
+        width: 35
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce7685f422fc4b3b0800000000000000
+      internalID: -5497541498845501460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_50
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 54
+        width: 35
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5147441906e2eafd0800000000000000
+      internalID: -2328872965015047147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_51
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 49
+        width: 40
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4335a3945138a6c50800000000000000
+      internalID: 6659279126466810676
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: YumiBody_52
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 49
+        width: 25
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1888b3b38bc470a90800000000000000
+      internalID: -7347819912880224127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      YumiBody_0: -1032492187346113384
+      YumiBody_1: -759789542175916458
+      YumiBody_10: 1644989360332572718
+      YumiBody_11: 4690018835972644299
+      YumiBody_12: -709232749737634537
+      YumiBody_13: 8826767980319049962
+      YumiBody_14: 3451008513548215282
+      YumiBody_15: -331103359263744760
+      YumiBody_16: -1085572540394969629
+      YumiBody_17: -7105369193330708261
+      YumiBody_18: -6434490837166393175
+      YumiBody_19: 4569201262890266862
+      YumiBody_2: 2943612333098761205
+      YumiBody_20: -4107801452861233711
+      YumiBody_21: -562159933003578124
+      YumiBody_22: 6315183909437191627
+      YumiBody_23: -3324840134117445836
+      YumiBody_24: -8883161181493056635
+      YumiBody_25: 8099880102736449909
+      YumiBody_26: -629690398073243270
+      YumiBody_27: 841032159334251984
+      YumiBody_28: -5582072975495243167
+      YumiBody_29: -86557362065525050
+      YumiBody_3: 8814133528420739164
+      YumiBody_30: 611324177678368035
+      YumiBody_31: -2063904353355339734
+      YumiBody_32: 992290835915596773
+      YumiBody_33: -4525074227765969358
+      YumiBody_34: 392336692337611537
+      YumiBody_35: -6953991518986082199
+      YumiBody_36: -2513288771054264746
+      YumiBody_37: -6726874744710900482
+      YumiBody_38: -1496541686551376428
+      YumiBody_39: 8994901506531750357
+      YumiBody_4: -5611846731855788797
+      YumiBody_40: 8715724030228258935
+      YumiBody_41: -5746135737552221259
+      YumiBody_42: 4512534129338758322
+      YumiBody_43: 4286563289802630197
+      YumiBody_44: 2569223965558446226
+      YumiBody_45: -8156406582432923771
+      YumiBody_46: -6844492504690571599
+      YumiBody_47: -5205609725461699050
+      YumiBody_48: 106012047344122525
+      YumiBody_49: -5497541498845501460
+      YumiBody_5: -9136610045387784576
+      YumiBody_50: -2328872965015047147
+      YumiBody_51: 6659279126466810676
+      YumiBody_52: -7347819912880224127
+      YumiBody_6: -7279471693909633971
+      YumiBody_7: -6039128000765173410
+      YumiBody_8: 4441538678362440407
+      YumiBody_9: -2639663580046960410
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

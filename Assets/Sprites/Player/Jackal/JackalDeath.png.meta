@@ -1,0 +1,559 @@
+fileFormatVersion: 2
+guid: 770123d9864fd7e4cbfe31a28752917b
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -5764994395496667092
+    second: JackalDeath_0
+  - first:
+      213: 5162474863445072022
+    second: JackalDeath_1
+  - first:
+      213: 3829569668461989314
+    second: JackalDeath_2
+  - first:
+      213: -4849299865842750560
+    second: JackalDeath_3
+  - first:
+      213: -5639385542813639301
+    second: JackalDeath_4
+  - first:
+      213: 5162825209327223750
+    second: JackalDeath_5
+  - first:
+      213: -53191336828418343
+    second: JackalDeath_6
+  - first:
+      213: -8373088888560430158
+    second: JackalDeath_7
+  - first:
+      213: -4507788755604271776
+    second: JackalDeath_8
+  - first:
+      213: -4445044191036157718
+    second: JackalDeath_9
+  - first:
+      213: -3151647708178343615
+    second: JackalDeath_10
+  - first:
+      213: -5115472887317633134
+    second: JackalDeath_11
+  - first:
+      213: 7042694979144967070
+    second: JackalDeath_12
+  - first:
+      213: -8920910034438914252
+    second: JackalDeath_13
+  - first:
+      213: 2256559416059324665
+    second: JackalDeath_14
+  - first:
+      213: 785119533076928375
+    second: JackalDeath_15
+  - first:
+      213: 4928808584634285385
+    second: JackalDeath_16
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: JackalDeath_0
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 29
+        width: 35
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c28ad4c3420aeffa0800000000000000
+      internalID: -5764994395496667092
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_1
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 28
+        width: 34
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 698d68d498bc4a740800000000000000
+      internalID: 5162474863445072022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_2
+      rect:
+        serializedVersion: 2
+        x: 255
+        y: 27
+        width: 32
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2cd8943d25d552530800000000000000
+      internalID: 3829569668461989314
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_3
+      rect:
+        serializedVersion: 2
+        x: 366
+        y: 31
+        width: 39
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0abe717f673d3bcb0800000000000000
+      internalID: -4849299865842750560
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_4
+      rect:
+        serializedVersion: 2
+        x: 475
+        y: 35
+        width: 43
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7d9e114ab0ecb1b0800000000000000
+      internalID: -5639385542813639301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_5
+      rect:
+        serializedVersion: 2
+        x: 584
+        y: 50
+        width: 48
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c3816f8c2a06a740800000000000000
+      internalID: 5162825209327223750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_6
+      rect:
+        serializedVersion: 2
+        x: 691
+        y: 31
+        width: 48
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d6c63fc2c6034ff0800000000000000
+      internalID: -53191336828418343
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_7
+      rect:
+        serializedVersion: 2
+        x: 801
+        y: 31
+        width: 48
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b3d594b400dccb80800000000000000
+      internalID: -8373088888560430158
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_8
+      rect:
+        serializedVersion: 2
+        x: 911
+        y: 31
+        width: 48
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06d05b3920e1171c0800000000000000
+      internalID: -4507788755604271776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_9
+      rect:
+        serializedVersion: 2
+        x: 1021
+        y: 31
+        width: 48
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ae0506eebd70052c0800000000000000
+      internalID: -4445044191036157718
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_10
+      rect:
+        serializedVersion: 2
+        x: 1112
+        y: 32
+        width: 52
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1491bd88b191344d0800000000000000
+      internalID: -3151647708178343615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_11
+      rect:
+        serializedVersion: 2
+        x: 1222
+        y: 32
+        width: 51
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2976a4d03803209b0800000000000000
+      internalID: -5115472887317633134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_12
+      rect:
+        serializedVersion: 2
+        x: 1331
+        y: 36
+        width: 49
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e93ec5d05cdacb160800000000000000
+      internalID: 7042694979144967070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_13
+      rect:
+        serializedVersion: 2
+        x: 1437
+        y: 36
+        width: 57
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43ffc04b69f823480800000000000000
+      internalID: -8920910034438914252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_14
+      rect:
+        serializedVersion: 2
+        x: 1553
+        y: 34
+        width: 52
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f867c845d8e05f10800000000000000
+      internalID: 2256559416059324665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_15
+      rect:
+        serializedVersion: 2
+        x: 1659
+        y: 33
+        width: 56
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 777554b3e0e45ea00800000000000000
+      internalID: 785119533076928375
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: JackalDeath_16
+      rect:
+        serializedVersion: 2
+        x: 1769
+        y: 33
+        width: 56
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94db5053b45a66440800000000000000
+      internalID: 4928808584634285385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      JackalDeath_0: -5764994395496667092
+      JackalDeath_1: 5162474863445072022
+      JackalDeath_10: -3151647708178343615
+      JackalDeath_11: -5115472887317633134
+      JackalDeath_12: 7042694979144967070
+      JackalDeath_13: -8920910034438914252
+      JackalDeath_14: 2256559416059324665
+      JackalDeath_15: 785119533076928375
+      JackalDeath_16: 4928808584634285385
+      JackalDeath_2: 3829569668461989314
+      JackalDeath_3: -4849299865842750560
+      JackalDeath_4: -5639385542813639301
+      JackalDeath_5: 5162825209327223750
+      JackalDeath_6: -53191336828418343
+      JackalDeath_7: -8373088888560430158
+      JackalDeath_8: -4507788755604271776
+      JackalDeath_9: -4445044191036157718
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

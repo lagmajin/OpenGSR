@@ -1,0 +1,1885 @@
+fileFormatVersion: 2
+guid: a77feefd9547d3f4c85936d4d9f72528
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2169355217457359243
+    second: Don_Body_0
+  - first:
+      213: -2911187724079145709
+    second: Don_Body_1
+  - first:
+      213: -273327389728980022
+    second: Don_Body_2
+  - first:
+      213: -4041103431830507209
+    second: Don_Body_3
+  - first:
+      213: 8542133667567473399
+    second: Don_Body_4
+  - first:
+      213: 2767879666410146861
+    second: Don_Body_5
+  - first:
+      213: 2178931719253559277
+    second: Don_Body_6
+  - first:
+      213: 5580688703126741142
+    second: Don_Body_7
+  - first:
+      213: -4353778133549576625
+    second: Don_Body_8
+  - first:
+      213: -8901309489569803473
+    second: Don_Body_9
+  - first:
+      213: 4285287702228920613
+    second: Don_Body_10
+  - first:
+      213: 7223914314428828932
+    second: Don_Body_11
+  - first:
+      213: 8857528960021763931
+    second: Don_Body_12
+  - first:
+      213: -5454971586604477705
+    second: Don_Body_13
+  - first:
+      213: -3861765970753935152
+    second: Don_Body_14
+  - first:
+      213: 4222179792766452217
+    second: Don_Body_15
+  - first:
+      213: -470131145874802835
+    second: Don_Body_16
+  - first:
+      213: -1506160465427511514
+    second: Don_Body_17
+  - first:
+      213: 6028372716098301423
+    second: Don_Body_18
+  - first:
+      213: -4366105477525153309
+    second: Don_Body_19
+  - first:
+      213: -5723176855953503940
+    second: Don_Body_20
+  - first:
+      213: -4565701859559869190
+    second: Don_Body_21
+  - first:
+      213: -3219024068554974264
+    second: Don_Body_22
+  - first:
+      213: 7619894437599975861
+    second: Don_Body_23
+  - first:
+      213: -8255893568034870271
+    second: Don_Body_24
+  - first:
+      213: 6667865980397619111
+    second: Don_Body_25
+  - first:
+      213: 4948556442956086790
+    second: Don_Body_26
+  - first:
+      213: 692995953131509720
+    second: Don_Body_27
+  - first:
+      213: -883606813305561042
+    second: Don_Body_28
+  - first:
+      213: 5738620476428427948
+    second: Don_Body_29
+  - first:
+      213: 124858862342429693
+    second: Don_Body_30
+  - first:
+      213: 5986606978066451128
+    second: Don_Body_31
+  - first:
+      213: -8696276119126038082
+    second: Don_Body_32
+  - first:
+      213: 8771518501276851727
+    second: Don_Body_33
+  - first:
+      213: -859881971804747813
+    second: Don_Body_34
+  - first:
+      213: -4558304550176615289
+    second: Don_Body_35
+  - first:
+      213: 6095768307339162518
+    second: Don_Body_36
+  - first:
+      213: 5776214111580053766
+    second: Don_Body_37
+  - first:
+      213: 4889951382491978817
+    second: Don_Body_38
+  - first:
+      213: 8765268023144396175
+    second: Don_Body_39
+  - first:
+      213: -3560390608228128725
+    second: Don_Body_40
+  - first:
+      213: 7391691990198136311
+    second: Don_Body_41
+  - first:
+      213: -1954920244723303917
+    second: Don_Body_42
+  - first:
+      213: 5896681082746674456
+    second: Don_Body_43
+  - first:
+      213: 648602694034328784
+    second: Don_Body_44
+  - first:
+      213: -6057332193409028124
+    second: Don_Body_45
+  - first:
+      213: 6438987696552120925
+    second: Don_Body_46
+  - first:
+      213: 8549005336917401239
+    second: Don_Body_47
+  - first:
+      213: -4720075775746929399
+    second: Don_Body_48
+  - first:
+      213: 3250149276401560457
+    second: Don_Body_49
+  - first:
+      213: 8829081875884698179
+    second: Don_Body_50
+  - first:
+      213: 1596161840898472928
+    second: Don_Body_51
+  - first:
+      213: 5302147440017737970
+    second: Don_Body_52
+  - first:
+      213: 7906632720569377294
+    second: Don_Body_53
+  - first:
+      213: 4301271825172777651
+    second: Don_Body_54
+  - first:
+      213: -908579871564085743
+    second: Don_Body_55
+  - first:
+      213: -2507693656839419730
+    second: Don_Body_56
+  - first:
+      213: 3703034202722879687
+    second: Don_Body_57
+  - first:
+      213: 7774830595943158933
+    second: Don_Body_58
+  - first:
+      213: -4198614898146738371
+    second: Don_Body_59
+  - first:
+      213: -5445494672342645822
+    second: Don_Body_60
+  - first:
+      213: 3074733886814912186
+    second: Don_Body_61
+  - first:
+      213: 7100719905008231621
+    second: Don_Body_62
+  - first:
+      213: 8780002160471992556
+    second: Don_Body_63
+  - first:
+      213: 2069862378839941045
+    second: Don_Body_64
+  - first:
+      213: -9142475363324636337
+    second: Don_Body_65
+  - first:
+      213: -3318370998534699534
+    second: Don_Body_66
+  - first:
+      213: -1394976421062458596
+    second: Don_Body_67
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Don_Body_0
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 649
+        width: 32
+        height: 36
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57650d76ce6e4e1e0800000000000000
+      internalID: -2169355217457359243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_1
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 649
+        width: 32
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31dd8c760326997d0800000000000000
+      internalID: -2911187724079145709
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_2
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 649
+        width: 32
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ac3c1dbef22f43cf0800000000000000
+      internalID: -273327389728980022
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_3
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 649
+        width: 32
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7317125e6dd1be7c0800000000000000
+      internalID: -4041103431830507209
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_4
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 649
+        width: 29
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f2934fff41cb8670800000000000000
+      internalID: 8542133667567473399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_5
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 649
+        width: 31
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2c476944eb796620800000000000000
+      internalID: 2767879666410146861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_6
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 649
+        width: 30
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de780fbaade1d3e10800000000000000
+      internalID: 2178931719253559277
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_7
+      rect:
+        serializedVersion: 2
+        x: 736
+        y: 649
+        width: 24
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 690a7e7cec6927d40800000000000000
+      internalID: 5580688703126741142
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_8
+      rect:
+        serializedVersion: 2
+        x: 836
+        y: 649
+        width: 24
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4e0ae6dad54493c0800000000000000
+      internalID: -4353778133549576625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_9
+      rect:
+        serializedVersion: 2
+        x: 935
+        y: 649
+        width: 25
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f23d06e2e22387480800000000000000
+      internalID: -8901309489569803473
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_10
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 549
+        width: 32
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52964b3f576687b30800000000000000
+      internalID: 4285287702228920613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_11
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 549
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 40dc3678bcf704460800000000000000
+      internalID: 7223914314428828932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_12
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 549
+        width: 29
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b5715d1f8a34cea70800000000000000
+      internalID: 8857528960021763931
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_13
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 549
+        width: 26
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7f257906e3c0c44b0800000000000000
+      internalID: -5454971586604477705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_14
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 549
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d825836f40486ac0800000000000000
+      internalID: -3861765970753935152
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_15
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 549
+        width: 32
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f14da5c622389a30800000000000000
+      internalID: 4222179792766452217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_16
+      rect:
+        serializedVersion: 2
+        x: 631
+        y: 549
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d67f844b632c979f0800000000000000
+      internalID: -470131145874802835
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_17
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 549
+        width: 29
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 627c473690b091be0800000000000000
+      internalID: -1506160465427511514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_18
+      rect:
+        serializedVersion: 2
+        x: 839
+        y: 549
+        width: 26
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fed22bcab0519a350800000000000000
+      internalID: 6028372716098301423
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_19
+      rect:
+        serializedVersion: 2
+        x: 939
+        y: 549
+        width: 29
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e9d938633a7863c0800000000000000
+      internalID: -4366105477525153309
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_20
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 449
+        width: 25
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c398722e8f03390b0800000000000000
+      internalID: -5723176855953503940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_21
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 449
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af4f79e495e53a0c0800000000000000
+      internalID: -4565701859559869190
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_22
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 449
+        width: 34
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cb195e2aaab353d0800000000000000
+      internalID: -3219024068554974264
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_23
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 449
+        width: 32
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b91f1b7e9d4fb960800000000000000
+      internalID: 7619894437599975861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_24
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 449
+        width: 26
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10c69dd9a8c2d6d80800000000000000
+      internalID: -8255893568034870271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_25
+      rect:
+        serializedVersion: 2
+        x: 534
+        y: 449
+        width: 30
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a7038308c4098c50800000000000000
+      internalID: 6667865980397619111
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_26
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 449
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60e3e55cdddcca440800000000000000
+      internalID: 4948556442956086790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_27
+      rect:
+        serializedVersion: 2
+        x: 735
+        y: 449
+        width: 36
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8d7df21d5240e9900800000000000000
+      internalID: 692995953131509720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_28
+      rect:
+        serializedVersion: 2
+        x: 838
+        y: 449
+        width: 32
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e20aecbe84cccb3f0800000000000000
+      internalID: -883606813305561042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_29
+      rect:
+        serializedVersion: 2
+        x: 937
+        y: 449
+        width: 26
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca2ac463beca3af40800000000000000
+      internalID: 5738620476428427948
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_30
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 349
+        width: 29
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dfbdaf849769bb100800000000000000
+      internalID: 124858862342429693
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_31
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 349
+        width: 30
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8ba86810453b41350800000000000000
+      internalID: 5986606978066451128
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_32
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 349
+        width: 28
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb9a7cac1fe905780800000000000000
+      internalID: -8696276119126038082
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_33
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 349
+        width: 26
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0e9f597a91bab970800000000000000
+      internalID: 8771518501276851727
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_34
+      rect:
+        serializedVersion: 2
+        x: 436
+        y: 349
+        width: 28
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd7c0d907e51114f0800000000000000
+      internalID: -859881971804747813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_35
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 349
+        width: 31
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7841dac9926adb0c0800000000000000
+      internalID: -4558304550176615289
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_36
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 349
+        width: 35
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 693f8009af4889450800000000000000
+      internalID: 6095768307339162518
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_37
+      rect:
+        serializedVersion: 2
+        x: 735
+        y: 349
+        width: 30
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 601e35b712c392050800000000000000
+      internalID: 5776214111580053766
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_38
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 349
+        width: 25
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14c5d52dfd89cd340800000000000000
+      internalID: 4889951382491978817
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_39
+      rect:
+        serializedVersion: 2
+        x: 938
+        y: 346
+        width: 24
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f85bc90a3dc74a970800000000000000
+      internalID: 8765268023144396175
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_40
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 249
+        width: 26
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b28ece60b93f69ec0800000000000000
+      internalID: -3560390608228128725
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_41
+      rect:
+        serializedVersion: 2
+        x: 137
+        y: 249
+        width: 25
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fd2cd4c3b0949660800000000000000
+      internalID: 7391691990198136311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_42
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 248
+        width: 24
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31a3c01256abed4e0800000000000000
+      internalID: -1954920244723303917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_43
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 253
+        width: 51
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81d91eae33835d150800000000000000
+      internalID: 5896681082746674456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_44
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 252
+        width: 48
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0dc074ab6bc400900800000000000000
+      internalID: 648602694034328784
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_45
+      rect:
+        serializedVersion: 2
+        x: 545
+        y: 247
+        width: 49
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ef2155967800fba0800000000000000
+      internalID: -6057332193409028124
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_46
+      rect:
+        serializedVersion: 2
+        x: 645
+        y: 247
+        width: 52
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d52991ed131eb5950800000000000000
+      internalID: 6438987696552120925
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_47
+      rect:
+        serializedVersion: 2
+        x: 745
+        y: 246
+        width: 53
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79e51e13f0b24a670800000000000000
+      internalID: 8549005336917401239
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_48
+      rect:
+        serializedVersion: 2
+        x: 831
+        y: 249
+        width: 32
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90d8da9071cee7eb0800000000000000
+      internalID: -4720075775746929399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_49
+      rect:
+        serializedVersion: 2
+        x: 935
+        y: 251
+        width: 29
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 98b68eefb89da1d20800000000000000
+      internalID: 3250149276401560457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_50
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 148
+        width: 33
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 34a62f80033378a70800000000000000
+      internalID: 8829081875884698179
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_51
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 154
+        width: 31
+        height: 39
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0eb79caccb4b62610800000000000000
+      internalID: 1596161840898472928
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_52
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 169
+        width: 40
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f801053103059940800000000000000
+      internalID: 5302147440017737970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_53
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 172
+        width: 40
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e02a40771900abd60800000000000000
+      internalID: 7906632720569377294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_54
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 168
+        width: 41
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3bac1d59fef21bb30800000000000000
+      internalID: 4301271825172777651
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_55
+      rect:
+        serializedVersion: 2
+        x: 833
+        y: 157
+        width: 31
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1164a51bb631463f0800000000000000
+      internalID: -908579871564085743
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_56
+      rect:
+        serializedVersion: 2
+        x: 930
+        y: 150
+        width: 29
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea8069ac7e1e23dd0800000000000000
+      internalID: -2507693656839419730
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_57
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 148
+        width: 49
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c84b64ecf1d36330800000000000000
+      internalID: 3703034202722879687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_58
+      rect:
+        serializedVersion: 2
+        x: 650
+        y: 148
+        width: 50
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 594d704fb3fb5eb60800000000000000
+      internalID: 7774830595943158933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_59
+      rect:
+        serializedVersion: 2
+        x: 749
+        y: 147
+        width: 52
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d3ffc4fcef58bb5c0800000000000000
+      internalID: -4198614898146738371
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_60
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 48
+        width: 29
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2c30cbc6277bd64b0800000000000000
+      internalID: -5445494672342645822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_61
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 48
+        width: 31
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abe757eed26abaa20800000000000000
+      internalID: 3074733886814912186
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_62
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 48
+        width: 30
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c4af83e123da8260800000000000000
+      internalID: 7100719905008231621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_63
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 48
+        width: 28
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce8681e4275d8d970800000000000000
+      internalID: 8780002160471992556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_64
+      rect:
+        serializedVersion: 2
+        x: 432
+        y: 48
+        width: 28
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5bf13b0fdd0a9bc10800000000000000
+      internalID: 2069862378839941045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_65
+      rect:
+        serializedVersion: 2
+        x: 532
+        y: 48
+        width: 28
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f43564198176f1180800000000000000
+      internalID: -9142475363324636337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_66
+      rect:
+        serializedVersion: 2
+        x: 638
+        y: 50
+        width: 24
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f581678827c2f1d0800000000000000
+      internalID: -3318370998534699534
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Don_Body_67
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 48
+        width: 22
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c13c680065c04ace0800000000000000
+      internalID: -1394976421062458596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Don_Body_0: -2169355217457359243
+      Don_Body_1: -2911187724079145709
+      Don_Body_10: 4285287702228920613
+      Don_Body_11: 7223914314428828932
+      Don_Body_12: 8857528960021763931
+      Don_Body_13: -5454971586604477705
+      Don_Body_14: -3861765970753935152
+      Don_Body_15: 4222179792766452217
+      Don_Body_16: -470131145874802835
+      Don_Body_17: -1506160465427511514
+      Don_Body_18: 6028372716098301423
+      Don_Body_19: -4366105477525153309
+      Don_Body_2: -273327389728980022
+      Don_Body_20: -5723176855953503940
+      Don_Body_21: -4565701859559869190
+      Don_Body_22: -3219024068554974264
+      Don_Body_23: 7619894437599975861
+      Don_Body_24: -8255893568034870271
+      Don_Body_25: 6667865980397619111
+      Don_Body_26: 4948556442956086790
+      Don_Body_27: 692995953131509720
+      Don_Body_28: -883606813305561042
+      Don_Body_29: 5738620476428427948
+      Don_Body_3: -4041103431830507209
+      Don_Body_30: 124858862342429693
+      Don_Body_31: 5986606978066451128
+      Don_Body_32: -8696276119126038082
+      Don_Body_33: 8771518501276851727
+      Don_Body_34: -859881971804747813
+      Don_Body_35: -4558304550176615289
+      Don_Body_36: 6095768307339162518
+      Don_Body_37: 5776214111580053766
+      Don_Body_38: 4889951382491978817
+      Don_Body_39: 8765268023144396175
+      Don_Body_4: 8542133667567473399
+      Don_Body_40: -3560390608228128725
+      Don_Body_41: 7391691990198136311
+      Don_Body_42: -1954920244723303917
+      Don_Body_43: 5896681082746674456
+      Don_Body_44: 648602694034328784
+      Don_Body_45: -6057332193409028124
+      Don_Body_46: 6438987696552120925
+      Don_Body_47: 8549005336917401239
+      Don_Body_48: -4720075775746929399
+      Don_Body_49: 3250149276401560457
+      Don_Body_5: 2767879666410146861
+      Don_Body_50: 8829081875884698179
+      Don_Body_51: 1596161840898472928
+      Don_Body_52: 5302147440017737970
+      Don_Body_53: 7906632720569377294
+      Don_Body_54: 4301271825172777651
+      Don_Body_55: -908579871564085743
+      Don_Body_56: -2507693656839419730
+      Don_Body_57: 3703034202722879687
+      Don_Body_58: 7774830595943158933
+      Don_Body_59: -4198614898146738371
+      Don_Body_6: 2178931719253559277
+      Don_Body_60: -5445494672342645822
+      Don_Body_61: 3074733886814912186
+      Don_Body_62: 7100719905008231621
+      Don_Body_63: 8780002160471992556
+      Don_Body_64: 2069862378839941045
+      Don_Body_65: -9142475363324636337
+      Don_Body_66: -3318370998534699534
+      Don_Body_67: -1394976421062458596
+      Don_Body_7: 5580688703126741142
+      Don_Body_8: -4353778133549576625
+      Don_Body_9: -8901309489569803473
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

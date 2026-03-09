@@ -1,0 +1,1417 @@
+fileFormatVersion: 2
+guid: b6a7ac8fbddff2341984133839c2280c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3029040352094102611
+    second: Misty_0
+  - first:
+      213: 5225621314365475680
+    second: Misty_1
+  - first:
+      213: 4534856808608216386
+    second: Misty_2
+  - first:
+      213: 2201920954052136672
+    second: Misty_3
+  - first:
+      213: 501964754885236593
+    second: Misty_4
+  - first:
+      213: -3882157645316941150
+    second: Misty_5
+  - first:
+      213: -2894854616458563395
+    second: Misty_6
+  - first:
+      213: -3641589783494429110
+    second: Misty_7
+  - first:
+      213: -1588222259929692153
+    second: Misty_8
+  - first:
+      213: -2341887593591971093
+    second: Misty_9
+  - first:
+      213: -1486731807653271807
+    second: Misty_10
+  - first:
+      213: -3705469304185081895
+    second: Misty_11
+  - first:
+      213: 2500798804177586681
+    second: Misty_12
+  - first:
+      213: 7103743594529327668
+    second: Misty_13
+  - first:
+      213: -3669219001490089889
+    second: Misty_14
+  - first:
+      213: -8031220747961082340
+    second: Misty_15
+  - first:
+      213: 4662836889978667911
+    second: Misty_16
+  - first:
+      213: 8027832964459673307
+    second: Misty_17
+  - first:
+      213: 5849411933509248992
+    second: Misty_18
+  - first:
+      213: -5451713289327349893
+    second: Misty_19
+  - first:
+      213: 322805637654883893
+    second: Misty_20
+  - first:
+      213: 3468602950790047577
+    second: Misty_21
+  - first:
+      213: -3216562901642205891
+    second: Misty_22
+  - first:
+      213: 5401443620976586089
+    second: Misty_23
+  - first:
+      213: 2798902497698147545
+    second: Misty_24
+  - first:
+      213: 6914274996909819843
+    second: Misty_25
+  - first:
+      213: -8037220607888486947
+    second: Misty_26
+  - first:
+      213: -1646024118467186714
+    second: Misty_27
+  - first:
+      213: 566830219312514213
+    second: Misty_28
+  - first:
+      213: -994566775242593070
+    second: Misty_29
+  - first:
+      213: 2709879773246890060
+    second: Misty_30
+  - first:
+      213: -4407187285236007320
+    second: Misty_31
+  - first:
+      213: -4962617867154497831
+    second: Misty_32
+  - first:
+      213: 4416428698824433483
+    second: Misty_33
+  - first:
+      213: 563521349233562550
+    second: Misty_34
+  - first:
+      213: -7072338059039307629
+    second: Misty_35
+  - first:
+      213: 2496795705730986300
+    second: Misty_36
+  - first:
+      213: -3773646530459409806
+    second: Misty_37
+  - first:
+      213: -2773634427826050256
+    second: Misty_38
+  - first:
+      213: -4332714626037683653
+    second: Misty_39
+  - first:
+      213: -8281145425537930077
+    second: Misty_40
+  - first:
+      213: -9214131818673498635
+    second: Misty_41
+  - first:
+      213: 5657386266534946223
+    second: Misty_42
+  - first:
+      213: 8583230665402552045
+    second: Misty_43
+  - first:
+      213: 482132354523965390
+    second: Misty_44
+  - first:
+      213: -6048021592774114437
+    second: Misty_45
+  - first:
+      213: -6852072649597339619
+    second: Misty_46
+  - first:
+      213: 616518394097594227
+    second: Misty_47
+  - first:
+      213: -4121253117848834317
+    second: Misty_48
+  - first:
+      213: -3581494123320546062
+    second: Misty_49
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Misty_0
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 449
+        width: 23
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 354a4e4d620590a20800000000000000
+      internalID: 3029040352094102611
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_1
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 449
+        width: 23
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06bc67d16e2258840800000000000000
+      internalID: 5225621314365475680
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_2
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 449
+        width: 23
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 245ba50ad3c0fee30800000000000000
+      internalID: 4534856808608216386
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_3
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 449
+        width: 23
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0ee44c1017bce8e10800000000000000
+      internalID: 2201920954052136672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_4
+      rect:
+        serializedVersion: 2
+        x: 439
+        y: 449
+        width: 21
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17753b8f84657f600800000000000000
+      internalID: 501964754885236593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_5
+      rect:
+        serializedVersion: 2
+        x: 527
+        y: 449
+        width: 31
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2aa11dca03ecf1ac0800000000000000
+      internalID: -3882157645316941150
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_6
+      rect:
+        serializedVersion: 2
+        x: 639
+        y: 449
+        width: 26
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: db0769d501963d7d0800000000000000
+      internalID: -2894854616458563395
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_7
+      rect:
+        serializedVersion: 2
+        x: 739
+        y: 449
+        width: 23
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a467f19c269767dc0800000000000000
+      internalID: -3641589783494429110
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_8
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 449
+        width: 57
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 708c584f44085f9e0800000000000000
+      internalID: -1588222259929692153
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_9
+      rect:
+        serializedVersion: 2
+        x: 933
+        y: 449
+        width: 29
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be26e0834a1ff7fd0800000000000000
+      internalID: -2341887593591971093
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_10
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 349
+        width: 33
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1076d884c411e5be0800000000000000
+      internalID: -1486731807653271807
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_11
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 349
+        width: 36
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9df2feddc47839cc0800000000000000
+      internalID: -3705469304185081895
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_12
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 349
+        width: 27
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f90ab9334f94b220800000000000000
+      internalID: 2500798804177586681
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_13
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 349
+        width: 23
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 43a80677921959260800000000000000
+      internalID: 7103743594529327668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_14
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 349
+        width: 32
+        height: 49
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f58d11d22c0541dc0800000000000000
+      internalID: -3669219001490089889
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_15
+      rect:
+        serializedVersion: 2
+        x: 538
+        y: 349
+        width: 33
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c1e580de74f5b8090800000000000000
+      internalID: -8031220747961082340
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_16
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 349
+        width: 36
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78304c85279b5b040800000000000000
+      internalID: 4662836889978667911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_17
+      rect:
+        serializedVersion: 2
+        x: 740
+        y: 349
+        width: 25
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bd63ac24c87986f60800000000000000
+      internalID: 8027832964459673307
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_18
+      rect:
+        serializedVersion: 2
+        x: 842
+        y: 349
+        width: 20
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e7efb979294d2150800000000000000
+      internalID: 5849411933509248992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_19
+      rect:
+        serializedVersion: 2
+        x: 939
+        y: 349
+        width: 30
+        height: 45
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b7fed54d5af9754b0800000000000000
+      internalID: -5451713289327349893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_20
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 249
+        width: 25
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53ea9e36406da7400800000000000000
+      internalID: 322805637654883893
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_21
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 249
+        width: 27
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 95766bc9104f22030800000000000000
+      internalID: 3468602950790047577
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_22
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 249
+        width: 27
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d35aae145197c53d0800000000000000
+      internalID: -3216562901642205891
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_23
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 249
+        width: 25
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96deb9eea58c5fa40800000000000000
+      internalID: 5401443620976586089
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_24
+      rect:
+        serializedVersion: 2
+        x: 435
+        y: 249
+        width: 26
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dc60401ef2b7d620800000000000000
+      internalID: 2798902497698147545
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_25
+      rect:
+        serializedVersion: 2
+        x: 535
+        y: 249
+        width: 27
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c7cc2ee97074ff50800000000000000
+      internalID: 6914274996909819843
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_26
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 249
+        width: 28
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddd8b5da07e067090800000000000000
+      internalID: -8037220607888486947
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_27
+      rect:
+        serializedVersion: 2
+        x: 737
+        y: 249
+        width: 31
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6efa90709c52829e0800000000000000
+      internalID: -1646024118467186714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_28
+      rect:
+        serializedVersion: 2
+        x: 837
+        y: 249
+        width: 25
+        height: 34
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a4441ec419cdd700800000000000000
+      internalID: 566830219312514213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_29
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 248
+        width: 31
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2dc624099c69232f0800000000000000
+      internalID: -994566775242593070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_30
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 151
+        width: 36
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c40a564db4d6b9520800000000000000
+      internalID: 2709879773246890060
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_31
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 142
+        width: 39
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86eb3eca38686d2c0800000000000000
+      internalID: -4407187285236007320
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_32
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 147
+        width: 35
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dedf38c75d312bb0800000000000000
+      internalID: -4962617867154497831
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_33
+      rect:
+        serializedVersion: 2
+        x: 334
+        y: 158
+        width: 52
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4f5549908e4a4d30800000000000000
+      internalID: 4416428698824433483
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_34
+      rect:
+        serializedVersion: 2
+        x: 437
+        y: 151
+        width: 49
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6b35a647ea702d700800000000000000
+      internalID: 563521349233562550
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_35
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 148
+        width: 55
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3988c7391020add90800000000000000
+      internalID: -7072338059039307629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_36
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 147
+        width: 60
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c31f0dc377666a220800000000000000
+      internalID: 2496795705730986300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_37
+      rect:
+        serializedVersion: 2
+        x: 735
+        y: 146
+        width: 59
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 272e414697051abc0800000000000000
+      internalID: -3773646530459409806
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_38
+      rect:
+        serializedVersion: 2
+        x: 840
+        y: 149
+        width: 25
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 03b62a8ee221289d0800000000000000
+      internalID: -2773634427826050256
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_39
+      rect:
+        serializedVersion: 2
+        x: 934
+        y: 149
+        width: 20
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b3a62e9d00b1fd3c0800000000000000
+      internalID: -4332714626037683653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_40
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 48
+        width: 29
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ace5716c16731d80800000000000000
+      internalID: -8281145425537930077
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_41
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 57
+        width: 41
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5f59752fde3d02080800000000000000
+      internalID: -9214131818673498635
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_42
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 75
+        width: 46
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa52df5d5d2138e40800000000000000
+      internalID: 5657386266534946223
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_43
+      rect:
+        serializedVersion: 2
+        x: 349
+        y: 69
+        width: 47
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dee0f8470d2cd1770800000000000000
+      internalID: 8583230665402552045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_44
+      rect:
+        serializedVersion: 2
+        x: 446
+        y: 66
+        width: 47
+        height: 33
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec7af1e62d0e0b600800000000000000
+      internalID: 482132354523965390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_45
+      rect:
+        serializedVersion: 2
+        x: 818
+        y: 52
+        width: 33
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b738ec8b76c111ca0800000000000000
+      internalID: -6048021592774114437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_46
+      rect:
+        serializedVersion: 2
+        x: 912
+        y: 49
+        width: 25
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d18b491aa3c88e0a0800000000000000
+      internalID: -6852072649597339619
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_47
+      rect:
+        serializedVersion: 2
+        x: 555
+        y: 45
+        width: 52
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37f6ea586305e8800800000000000000
+      internalID: 616518394097594227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_48
+      rect:
+        serializedVersion: 2
+        x: 654
+        y: 46
+        width: 56
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3fe2629ef1e5ec6c0800000000000000
+      internalID: -4121253117848834317
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Misty_49
+      rect:
+        serializedVersion: 2
+        x: 749
+        y: 45
+        width: 59
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fc6456021afb4ec0800000000000000
+      internalID: -3581494123320546062
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Misty_0: 3029040352094102611
+      Misty_1: 5225621314365475680
+      Misty_10: -1486731807653271807
+      Misty_11: -3705469304185081895
+      Misty_12: 2500798804177586681
+      Misty_13: 7103743594529327668
+      Misty_14: -3669219001490089889
+      Misty_15: -8031220747961082340
+      Misty_16: 4662836889978667911
+      Misty_17: 8027832964459673307
+      Misty_18: 5849411933509248992
+      Misty_19: -5451713289327349893
+      Misty_2: 4534856808608216386
+      Misty_20: 322805637654883893
+      Misty_21: 3468602950790047577
+      Misty_22: -3216562901642205891
+      Misty_23: 5401443620976586089
+      Misty_24: 2798902497698147545
+      Misty_25: 6914274996909819843
+      Misty_26: -8037220607888486947
+      Misty_27: -1646024118467186714
+      Misty_28: 566830219312514213
+      Misty_29: -994566775242593070
+      Misty_3: 2201920954052136672
+      Misty_30: 2709879773246890060
+      Misty_31: -4407187285236007320
+      Misty_32: -4962617867154497831
+      Misty_33: 4416428698824433483
+      Misty_34: 563521349233562550
+      Misty_35: -7072338059039307629
+      Misty_36: 2496795705730986300
+      Misty_37: -3773646530459409806
+      Misty_38: -2773634427826050256
+      Misty_39: -4332714626037683653
+      Misty_4: 501964754885236593
+      Misty_40: -8281145425537930077
+      Misty_41: -9214131818673498635
+      Misty_42: 5657386266534946223
+      Misty_43: 8583230665402552045
+      Misty_44: 482132354523965390
+      Misty_45: -6048021592774114437
+      Misty_46: -6852072649597339619
+      Misty_47: 616518394097594227
+      Misty_48: -4121253117848834317
+      Misty_49: -3581494123320546062
+      Misty_5: -3882157645316941150
+      Misty_6: -2894854616458563395
+      Misty_7: -3641589783494429110
+      Misty_8: -1588222259929692153
+      Misty_9: -2341887593591971093
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
