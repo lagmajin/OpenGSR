@@ -136,7 +136,7 @@ namespace OpenGS
 
         // ─── IPlayer: 状態クエリ ─────────────────────────────────────
 
-        public bool IsGround() => check != null && check.IsGround;
+        public bool IsGround() => check != null && check.IsGround();
 
         public bool IsDead() => isDead;
 

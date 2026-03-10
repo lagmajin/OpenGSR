@@ -47,10 +47,17 @@ namespace OpenGS
             _listener.NetworkErrorEvent += OnNetworkError;
 
             _tcpReceiveBuffer = new byte[TcpBufferSize];
-            _matchRoomManager = FindObjectOfType<MatchRoomManager>(); // シーン内のMatchRoomManagerを取得
+            try
+            {
+                _matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            }
+            catch
+            {
+                _matchRoomManager = null;
+            }
             if (_matchRoomManager == null)
             {
-                Debug.LogError("[ClientNetwork] MatchRoomManager not found in scene!");
+                Debug.LogWarning("[ClientNetwork] MatchRoomManager is not available.");
             }
         }
 
@@ -232,7 +239,7 @@ namespace OpenGS
             Debug.LogError($"[ClientNetwork] Network Error: {socketError} from {endPoint}");
         }
 
-        private void OnNetworkReceive(NetPeer peer, NetPacketReader reader, DeliveryMethod deliveryMethod)
+        private void OnNetworkReceive(NetPeer peer, NetPacketReader reader, byte channelNumber, DeliveryMethod deliveryMethod)
         {
             try
             {
