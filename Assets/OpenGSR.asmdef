@@ -6,6 +6,8 @@
         "UniRx",
         "MessagePack",
         "MemoryPack",
+        "Unity.TextMeshPro",
+        "DOTween.Modules",
         "Unity.InputSystem",
         "UniTask",
         "Unity.Cinemachine"

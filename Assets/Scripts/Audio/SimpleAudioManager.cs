@@ -101,6 +101,18 @@ namespace OpenGSR.Audio
 
         public void PauseBGM() => _currentBgmSource.Pause();
         public void ResumeBGM() => _currentBgmSource.UnPause();
+        public bool IsPlayingBGM() => _currentBgmSource != null && _currentBgmSource.isPlaying;
+
+        public void PlayBGM(AudioClip clip, float volume = 1.0f, bool loop = true)
+        {
+            if (clip == null) return;
+
+            if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
+            _currentBgmSource.clip = clip;
+            _currentBgmSource.loop = loop;
+            _currentBgmSource.volume = Mathf.Clamp01(volume) * MasterBGMVolume;
+            _currentBgmSource.Play();
+        }
 
         private IEnumerator CrossFadeBGM(AudioConfig.AudioItem nextItem, float fadeTime)
         {

@@ -253,7 +253,7 @@ namespace OpenGS
         protected Vector3 GetRandomSpawnPoint(IReSpawnPoints points)
         {
             if (points == null) return Vector3.zero;
-            return points.GetRandomPoint();
+            return points.random();
         }
 
         public void Start()

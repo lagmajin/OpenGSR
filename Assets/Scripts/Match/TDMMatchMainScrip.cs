@@ -79,8 +79,9 @@ namespace OpenGS
             ETeam myTeam = ETeam.Blue; // 本来はルーム設定から取得
 
             // チームごとのリスポーンポイントから選ぶ
-            IReSpawnPoints points = (myTeam == ETeam.Blue) ? blueTeamRespawnPoint : redTeamRespawnPoints;
-            Vector3 spawnPos = GetRandomSpawnPoint(points);
+            Vector3 spawnPos = (myTeam == ETeam.Blue)
+                ? blueTeamRespawnPoint.RandomBlueTeam()
+                : redTeamRespawnPoints.RandomRedTeam();
 
             CreateMyPlayer(spawnPos, myTeam);
         }

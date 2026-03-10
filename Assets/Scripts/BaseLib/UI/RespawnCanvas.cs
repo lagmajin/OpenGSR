@@ -1,5 +1,5 @@
 using DG.Tweening;
-//using TMPro;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -20,7 +20,7 @@ namespace OpenGS
     public class RespawnCanvas : MonoBehaviour
     {
         [Header("UI Parts")]
-        [SerializeField] private TextMeshProUGUI countdownText;
+        [SerializeField] private Text countdownText;
         [SerializeField] private TextMeshProUGUI messageText;
 
         [Header("Settings")]
