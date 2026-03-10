@@ -1,1 +1,24 @@
-﻿using System;`nusing System.Collections.Generic;`nusing UnityEngine;`n`nnamespace OpenGSR.Audio`n{`n    [CreateAssetMenu(fileName = `\"AudioConfig`\", menuName = `\"OpenGSR/AudioConfig`\")]`n    public class AudioConfig : ScriptableObject`n    {`n        [Serializable]`n        public class AudioItem`n        {`n            public string Name;`n            public AudioClip Clip;`n            [Range(0f, 1f)] public float Volume = 1f;`n        }`n`n        [Header(`\"BGM List`\")]`n        public List<AudioItem> BGMList = new List<AudioItem>();`n`n        [Header(`\"SE List`\")]`n        public List<AudioItem> SEList = new List<AudioItem>();`n    }`n}
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace OpenGSR.Audio
+{
+    [CreateAssetMenu(fileName = "AudioConfig", menuName = "OpenGSR/AudioConfig")]
+    public class AudioConfig : ScriptableObject
+    {
+        [Serializable]
+        public class AudioItem
+        {
+            public string Name;
+            public AudioClip Clip;
+            [Range(0f, 1f)] public float Volume = 1f;
+        }
+
+        [Header("BGM List")]
+        public List<AudioItem> BGMList = new List<AudioItem>();
+
+        [Header("SE List")]
+        public List<AudioItem> SEList = new List<AudioItem>();
+    }
+}

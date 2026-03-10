@@ -7,7 +7,7 @@
         "MessagePack",
         "MemoryPack",
         "Unity.InputSystem",
-        "Unity.RenderPipelines.Universal.Runtime"
+        "UniTask"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

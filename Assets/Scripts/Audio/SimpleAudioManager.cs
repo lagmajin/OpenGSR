@@ -1,1 +1,203 @@
-﻿using System.Collections;`nusing System.Collections.Generic;`nusing UnityEngine;`n`nnamespace OpenGSR.Audio`n{`n    public class SimpleAudioManager : MonoBehaviour`n    {`n        private static SimpleAudioManager _instance;`n        public static SimpleAudioManager Instance`n        {`n            get`n            {`n                if (_instance == null)`n                {`n                    _instance = FindFirstObjectByType<SimpleAudioManager>();`n                    if (_instance == null)`n                    {`n                        GameObject go = new GameObject(`\"SimpleAudioManager`\");`n                        _instance = go.AddComponent<SimpleAudioManager>();`n                        DontDestroyOnLoad(go);`n                    }`n                }`n                return _instance;`n            }`n        }`n`n        [SerializeField] private AudioConfig _audioConfig;`n        [SerializeField] private float _defaultBgmFadeTime = 1.0f;`n`n        [Range(0f, 1f)] public float MasterBGMVolume = 1f;`n        [Range(0f, 1f)] public float MasterSEVolume = 1f;`n`n        private AudioSource _bgmSource1;`n        private AudioSource _bgmSource2;`n        private List<AudioSource> _seSources = new List<AudioSource>();`n        private const int INITIAL_SE_SOURCES = 5;`n`n        private AudioSource _currentBgmSource;`n        private Coroutine _fadeCoroutine;`n`n        private Dictionary<string, AudioConfig.AudioItem> _bgmDict = new Dictionary<string, AudioConfig.AudioItem>();`n        private Dictionary<string, AudioConfig.AudioItem> _seDict = new Dictionary<string, AudioConfig.AudioItem>();`n`n        private void Awake()`n        {`n            if (_instance != null && _instance != this)`n            {`n                Destroy(gameObject);`n                return;`n            }`n            _instance = this;`n            DontDestroyOnLoad(gameObject);`n            Init();`n        }`n`n        private void Init()`n        {`n            _bgmSource1 = gameObject.AddComponent<AudioSource>();`n            _bgmSource2 = gameObject.AddComponent<AudioSource>();`n            _bgmSource1.loop = true;`n            _bgmSource2.loop = true;`n            _currentBgmSource = _bgmSource1;`n`n            for (int i = 0; i < INITIAL_SE_SOURCES; i++)`n            {`n                _seSources.Add(gameObject.AddComponent<AudioSource>());`n            }`n`n            if (_audioConfig != null)`n            {`n                foreach (var item in _audioConfig.BGMList) _bgmDict[item.Name] = item;`n                foreach (var item in _audioConfig.SEList) _seDict[item.Name] = item;`n            }`n        }`n`n        // =====================================`n        // BGM Methods`n        // =====================================`n        public void PlayBGM(string name, float fadeTime = -1)`n        {`n            if (!_bgmDict.TryGetValue(name, out var item))`n            {`n                Debug.LogWarning($`\"[SimpleAudioManager] BGM not found: {name}`\");`n                return;`n            }`n            if (_currentBgmSource.clip == item.Clip && _currentBgmSource.isPlaying) return;`n`n            float time = fadeTime < 0 ? _defaultBgmFadeTime : fadeTime;`n`n            if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);`n            _fadeCoroutine = StartCoroutine(CrossFadeBGM(item, time));`n        }`n`n        public void StopBGM(float fadeTime = -1)`n        {`n            float time = fadeTime < 0 ? _defaultBgmFadeTime : fadeTime;`n            if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);`n            _fadeCoroutine = StartCoroutine(FadeOutBGM(time));`n        }`n`n        public void PauseBGM() => _currentBgmSource.Pause();`n        public void ResumeBGM() => _currentBgmSource.UnPause();`n`n        private IEnumerator CrossFadeBGM(AudioConfig.AudioItem nextItem, float fadeTime)`n        {`n            AudioSource nextSource = (_currentBgmSource == _bgmSource1) ? _bgmSource2 : _bgmSource1;`n            nextSource.clip = nextItem.Clip;`n            nextSource.volume = 0;`n            nextSource.Play();`n`n            float elapsed = 0;`n            float startVol = _currentBgmSource.volume;`n            float targetVol = nextItem.Volume * MasterBGMVolume;`n`n            while (elapsed < fadeTime)`n            {`n                elapsed += Time.deltaTime;`n                float t = elapsed / fadeTime;`n                _currentBgmSource.volume = Mathf.Lerp(startVol, 0, t);`n                nextSource.volume = Mathf.Lerp(0, targetVol, t);`n                yield return null;`n            }`n`n            _currentBgmSource.Stop();`n            _currentBgmSource.volume = 0;`n            nextSource.volume = targetVol;`n            _currentBgmSource = nextSource;`n        }`n`n        private IEnumerator FadeOutBGM(float fadeTime)`n        {`n            float elapsed = 0;`n            float startVol = _currentBgmSource.volume;`n`n            while (elapsed < fadeTime)`n            {`n                elapsed += Time.deltaTime;`n                _currentBgmSource.volume = Mathf.Lerp(startVol, 0, elapsed / fadeTime);`n                yield return null;`n            }`n            _currentBgmSource.Stop();`n            _currentBgmSource.volume = 0;`n        }`n`n        // =====================================`n        // SE Methods`n        // =====================================`n        public void PlaySE(string name, float pitch = 1.0f)`n        {`n            if (!_seDict.TryGetValue(name, out var item))`n            {`n                Debug.LogWarning($`\"[SimpleAudioManager] SE not found: {name}`\");`n                return;`n            }`n`n            AudioSource source = GetFreeSESource();`n            source.pitch = pitch;`n            source.PlayOneShot(item.Clip, item.Volume * MasterSEVolume);`n        }`n`n        public void StopAllSE()`n        {`n            foreach (var s in _seSources) s.Stop();`n        }`n`n        private AudioSource GetFreeSESource()`n        {`n            foreach (var s in _seSources)`n            {`n                if (!s.isPlaying) return s;`n            }`n            AudioSource newSource = gameObject.AddComponent<AudioSource>();`n            _seSources.Add(newSource);`n            return newSource;`n        }`n`n        // =====================================`n        // Settings`n        // =====================================`n        public void SetBGMVolume(float volume)`n        {`n            MasterBGMVolume = Mathf.Clamp01(volume);`n            if (_currentBgmSource.isPlaying)`n            {`n                // 簡易的な反映（Configの元の音量比率は無視されるため厳密には改善が必要）`n                _currentBgmSource.volume = MasterBGMVolume;`n            }`n        }`n`n        public void SetSEVolume(float volume)`n        {`n            MasterSEVolume = Mathf.Clamp01(volume);`n        }`n    }`n}
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace OpenGSR.Audio
+{
+    public class SimpleAudioManager : MonoBehaviour
+    {
+        private static SimpleAudioManager _instance;
+        public static SimpleAudioManager Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = FindFirstObjectByType<SimpleAudioManager>();
+                    if (_instance == null)
+                    {
+                        GameObject go = new GameObject("SimpleAudioManager");
+                        _instance = go.AddComponent<SimpleAudioManager>();
+                        DontDestroyOnLoad(go);
+                    }
+                }
+                return _instance;
+            }
+        }
+
+        [SerializeField] private AudioConfig _audioConfig;
+        [SerializeField] private float _defaultBgmFadeTime = 1.0f;
+
+        [Range(0f, 1f)] public float MasterBGMVolume = 1f;
+        [Range(0f, 1f)] public float MasterSEVolume = 1f;
+
+        private AudioSource _bgmSource1;
+        private AudioSource _bgmSource2;
+        private List<AudioSource> _seSources = new List<AudioSource>();
+        private const int INITIAL_SE_SOURCES = 5;
+
+        private AudioSource _currentBgmSource;
+        private Coroutine _fadeCoroutine;
+
+        private Dictionary<string, AudioConfig.AudioItem> _bgmDict = new Dictionary<string, AudioConfig.AudioItem>();
+        private Dictionary<string, AudioConfig.AudioItem> _seDict = new Dictionary<string, AudioConfig.AudioItem>();
+
+        private void Awake()
+        {
+            if (_instance != null && _instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            _instance = this;
+            DontDestroyOnLoad(gameObject);
+            Init();
+        }
+
+        private void Init()
+        {
+            _bgmSource1 = gameObject.AddComponent<AudioSource>();
+            _bgmSource2 = gameObject.AddComponent<AudioSource>();
+            _bgmSource1.loop = true;
+            _bgmSource2.loop = true;
+            _currentBgmSource = _bgmSource1;
+
+            for (int i = 0; i < INITIAL_SE_SOURCES; i++)
+            {
+                _seSources.Add(gameObject.AddComponent<AudioSource>());
+            }
+
+            if (_audioConfig != null)
+            {
+                foreach (var item in _audioConfig.BGMList) _bgmDict[item.Name] = item;
+                foreach (var item in _audioConfig.SEList) _seDict[item.Name] = item;
+            }
+        }
+
+        // =====================================
+        // BGM Methods
+        // =====================================
+        public void PlayBGM(string name, float fadeTime = -1)
+        {
+            if (!_bgmDict.TryGetValue(name, out var item))
+            {
+                Debug.LogWarning($"[SimpleAudioManager] BGM not found: {name}");
+                return;
+            }
+            if (_currentBgmSource.clip == item.Clip && _currentBgmSource.isPlaying) return;
+
+            float time = fadeTime < 0 ? _defaultBgmFadeTime : fadeTime;
+
+            if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
+            _fadeCoroutine = StartCoroutine(CrossFadeBGM(item, time));
+        }
+
+        public void StopBGM(float fadeTime = -1)
+        {
+            float time = fadeTime < 0 ? _defaultBgmFadeTime : fadeTime;
+            if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
+            _fadeCoroutine = StartCoroutine(FadeOutBGM(time));
+        }
+
+        public void PauseBGM() => _currentBgmSource.Pause();
+        public void ResumeBGM() => _currentBgmSource.UnPause();
+
+        private IEnumerator CrossFadeBGM(AudioConfig.AudioItem nextItem, float fadeTime)
+        {
+            AudioSource nextSource = (_currentBgmSource == _bgmSource1) ? _bgmSource2 : _bgmSource1;
+            nextSource.clip = nextItem.Clip;
+            nextSource.volume = 0;
+            nextSource.Play();
+
+            float elapsed = 0;
+            float startVol = _currentBgmSource.volume;
+            float targetVol = nextItem.Volume * MasterBGMVolume;
+
+            while (elapsed < fadeTime)
+            {
+                elapsed += Time.deltaTime;
+                float t = elapsed / fadeTime;
+                _currentBgmSource.volume = Mathf.Lerp(startVol, 0, t);
+                nextSource.volume = Mathf.Lerp(0, targetVol, t);
+                yield return null;
+            }
+
+            _currentBgmSource.Stop();
+            _currentBgmSource.volume = 0;
+            nextSource.volume = targetVol;
+            _currentBgmSource = nextSource;
+        }
+
+        private IEnumerator FadeOutBGM(float fadeTime)
+        {
+            float elapsed = 0;
+            float startVol = _currentBgmSource.volume;
+
+            while (elapsed < fadeTime)
+            {
+                elapsed += Time.deltaTime;
+                _currentBgmSource.volume = Mathf.Lerp(startVol, 0, elapsed / fadeTime);
+                yield return null;
+            }
+            _currentBgmSource.Stop();
+            _currentBgmSource.volume = 0;
+        }
+
+        // =====================================
+        // SE Methods
+        // =====================================
+        public void PlaySE(string name, float pitch = 1.0f)
+        {
+            if (!_seDict.TryGetValue(name, out var item))
+            {
+                Debug.LogWarning($"[SimpleAudioManager] SE not found: {name}");
+                return;
+            }
+
+            AudioSource source = GetFreeSESource();
+            source.pitch = pitch;
+            source.PlayOneShot(item.Clip, item.Volume * MasterSEVolume);
+        }
+
+        public void PlaySE(AudioClip clip, float volume = 1.0f, float pitch = 1.0f)
+        {
+            if (clip == null) return;
+            AudioSource source = GetFreeSESource();
+            source.pitch = pitch;
+            source.PlayOneShot(clip, volume * MasterSEVolume);
+        }
+
+        public void StopAllSE()
+        {
+            foreach (var s in _seSources) s.Stop();
+        }
+
+        private AudioSource GetFreeSESource()
+        {
+            foreach (var s in _seSources)
+            {
+                if (!s.isPlaying) return s;
+            }
+            AudioSource newSource = gameObject.AddComponent<AudioSource>();
+            _seSources.Add(newSource);
+            return newSource;
+        }
+
+        // =====================================
+        // Settings
+        // =====================================
+        public void SetBGMVolume(float volume)
+        {
+            MasterBGMVolume = Mathf.Clamp01(volume);
+            if (_currentBgmSource.isPlaying)
+            {
+                _currentBgmSource.volume = MasterBGMVolume;
+            }
+        }
+
+        public void SetSEVolume(float volume)
+        {
+            MasterSEVolume = Mathf.Clamp01(volume);
+        }
+    }
+}
