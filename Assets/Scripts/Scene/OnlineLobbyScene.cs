@@ -234,60 +234,39 @@ namespace OpenGS
 
         public void ParseMessageFromServer(JObject json)
         {
+            if (lobbySceneController != null)
+            {
+                lobbySceneController.ParseServerMessage(
+                    json,
+                    (roomId, roomName, capacity) =>
+                    {
+                        Debug.Log($"OnlineLobbyScene: Room created. RoomID={roomId}, RoomName={roomName}");
+                        matchRoomManager.CreateNewOnlineWaitRoom(roomName, capacity);
+                        waitRoomManager.CreateNewWaitRoom(roomName, roomId, capacity);
+                        GotoOnlineWaitRoom();
+                    },
+                    errorMessage =>
+                    {
+                        Debug.LogWarning($"OnlineLobbyScene: Failed to create room: {errorMessage}");
+                        if (InfoDialog != null)
+                        {
+                            InfoDialog.SetActive(true);
+                        }
+                    },
+                    rooms =>
+                    {
+                        Debug.Log($"OnlineLobbyScene: Received {rooms?.Count ?? 0} rooms");
+                    });
+                return;
+            }
+
+            // Fallback (controller not assigned)
             var messageType = json["MessageType"]?.ToString();
-            if (string.IsNullOrEmpty(messageType)) return;
-
-            switch (messageType)
+            if (messageType == "UpdateRoomResponse")
             {
-                case "CreateNewWaitRoomResponse":
-                    OnCreateNewWaitRoomResponse(json);
-                    break;
-                case "UpdateRoomResponse":
-                    OnUpdateRoomResponse(json);
-                    break;
-                default:
-                    Debug.LogWarning($"OnlineLobbyScene: Unknown message type: {messageType}");
-                    break;
+                var rooms = json["Rooms"] as JArray;
+                Debug.Log($"OnlineLobbyScene: Received {rooms?.Count ?? 0} rooms");
             }
-        }
-
-        private void OnCreateNewWaitRoomResponse(JObject json)
-        {
-            var success = json["Success"]?.ToObject<bool>() ?? false;
-            if (success)
-            {
-                var roomId = json["RoomID"]?.ToString();
-                var roomName = json["RoomName"]?.ToString();
-                var capacity = json["Capacity"]?.ToObject<int>() ?? 8;
-
-                Debug.Log($"OnlineLobbyScene: Room created. RoomID={roomId}, RoomName={roomName}");
-
-                // MatchRoomManager & WaitRoomManager に情報をセット
-                matchRoomManager.CreateNewOnlineWaitRoom(roomName, capacity);
-                waitRoomManager.CreateNewWaitRoom(roomName, roomId, capacity);
-                
-                // 待機部屋シーンへ遷移
-                GotoOnlineWaitRoom();
-            }
-            else
-            {
-                var errorMessage = json["ErrorMessage"]?.ToString() ?? "Unknown error";
-                Debug.LogWarning($"OnlineLobbyScene: Failed to create room: {errorMessage}");
-                
-                // TODO: エラーダイアログを表示（InfoDialog などを使用）
-                if (InfoDialog != null)
-                {
-                    InfoDialog.SetActive(true);
-                    // エラーメッセージのセットロジックが InfoDialog にあれば実行
-                }
-            }
-        }
-
-        private void OnUpdateRoomResponse(JObject json)
-        {
-            var rooms = json["Rooms"] as JArray;
-            Debug.Log($"OnlineLobbyScene: Received {rooms?.Count ?? 0} rooms");
-            // TODO: ルームリスト UI を更新
         }
 
         // ─── INetworkManagerScript の実装 ────────────────────────────

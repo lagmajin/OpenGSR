@@ -39,10 +39,11 @@ namespace OpenGS
         {
             if (!storage.Save(fileName, data, formatting))
             {
+                Debug.LogError($"[JsonStorage] Save failed ({BuildContext(fileName)})");
                 return false;
             }
 
-            Debug.Log($"[JsonStorage] Saved: {storage.GetPath(fileName)}");
+            Debug.Log($"[JsonStorage] Saved ({BuildContext(fileName)})");
             return true;
         }
 
@@ -62,7 +63,7 @@ namespace OpenGS
             }
             catch (Exception e)
             {
-                Debug.LogError($"[JsonStorage] Load Failed ({fileName}): {e.Message}");
+                Debug.LogError($"[JsonStorage] Load failed ({BuildContext(fileName)}): {e.Message}");
                 return defaultValue;
             }
         }
@@ -75,7 +76,7 @@ namespace OpenGS
             }
             catch (Exception e)
             {
-                Debug.LogError($"[JsonStorage] TryLoad Failed ({fileName}): {e.Message}");
+                Debug.LogError($"[JsonStorage] TryLoad failed ({BuildContext(fileName)}): {e.Message}");
                 data = default;
                 return false;
             }
@@ -88,7 +89,12 @@ namespace OpenGS
                 version = version,
                 payload = data
             };
-            return Save(fileName, payload, formatting);
+            bool ok = Save(fileName, payload, formatting);
+            if (ok)
+            {
+                Debug.Log($"[JsonStorage] Versioned save complete ({BuildContext(fileName, version)})");
+            }
+            return ok;
         }
 
         public static T LoadVersioned<T>(
@@ -104,12 +110,13 @@ namespace OpenGS
 
             if (loaded.version == currentVersion)
             {
+                Debug.Log($"[JsonStorage] Versioned load hit ({BuildContext(fileName, currentVersion)})");
                 return loaded.payload;
             }
 
             if (migrate == null)
             {
-                Debug.LogWarning($"[JsonStorage] Save version mismatch ({fileName}): {loaded.version} -> {currentVersion} and no migrator was provided.");
+                Debug.LogWarning($"[JsonStorage] Version mismatch ({BuildContext(fileName, currentVersion)}): from={loaded.version}, migrator=null");
                 return defaultValue;
             }
 
@@ -117,11 +124,12 @@ namespace OpenGS
             {
                 T migrated = migrate(loaded.version, loaded.payload);
                 SaveVersioned(fileName, migrated, currentVersion);
+                Debug.Log($"[JsonStorage] Migration complete ({BuildContext(fileName, currentVersion)}): from={loaded.version}");
                 return migrated;
             }
             catch (Exception ex)
             {
-                Debug.LogError($"[JsonStorage] Migration failed ({fileName}): {ex.Message}");
+                Debug.LogError($"[JsonStorage] Migration failed ({BuildContext(fileName, currentVersion)}): from={loaded.version}, error={ex.Message}");
                 return defaultValue;
             }
         }
@@ -133,7 +141,7 @@ namespace OpenGS
         {
             if (storage.Delete(fileName))
             {
-                Debug.Log($"[JsonStorage] Deleted: {storage.GetPath(fileName)}");
+                Debug.Log($"[JsonStorage] Deleted ({BuildContext(fileName)})");
                 return true;
             }
 
@@ -146,6 +154,21 @@ namespace OpenGS
         public static bool Exists(string fileName)
         {
             return storage.Exists(fileName);
+        }
+
+        private static string BuildContext(string fileName, int? version = null)
+        {
+            string path = "(unknown)";
+            try
+            {
+                path = storage.GetPath(fileName);
+            }
+            catch
+            {
+            }
+
+            string versionText = version.HasValue ? version.Value.ToString() : "-";
+            return $"file={fileName}, version={versionText}, path={path}";
         }
     }
 }
