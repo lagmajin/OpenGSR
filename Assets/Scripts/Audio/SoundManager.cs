@@ -1,13 +1,7 @@
 ﻿
-
-
 using UnityEngine;
 using OpenGSR.Audio;
-//using Mono.Cecil;
 using OpenGSCore;
-//using Unity.VisualScripting;
-using UnityEditor;
-
 
 namespace OpenGS
 {
@@ -17,20 +11,11 @@ namespace OpenGS
     {
         public static SoundManager Instance { get; } = new();
 
-        private BGNSoundMasterData data;
+        private readonly SoundMasterData soundMasterData;
 
-        private MatchSoundMasterData matchSoundMasterData;
-        private AllGrenadeListMasterData allGrenadeMasterData;
-        private WeaponListMasterData allWeaponListMasterData;
-        private SoundEffectMasterData soundEffectMasterData;
         private SoundManager()
         {
-            //Debug.LogError("tested");
-
-            matchSoundMasterData = Resources.Load<MatchSoundMasterData>("MasterData/Sound/MatchSoundMasterData");
-            soundEffectMasterData = Resources.Load<SoundEffectMasterData>("MasterData/Sound/SoundEffectMasterData");
-
-            //Debug.LogError(soundEffectMasterData ? "Test" : "Test2");
+            soundMasterData = SoundMasterData.Instance();
         }
 
         public void PlayBGM(EMap map)
@@ -40,7 +25,11 @@ namespace OpenGS
 
         public void PlaySystemSound(ESystemSound sound)
         {
-            //SimpleAudioManager.Instance.PlaySE(sound.ToString());
+            var clip = GetSystemSoundClip(sound);
+            if (clip != null)
+            {
+                SimpleAudioManager.Instance.PlaySE(clip);
+            }
         }
 
         public void PlayShotSound(EWeaponType type)
@@ -61,8 +50,11 @@ namespace OpenGS
 
         public void PlaySoundEffect(ESoundEffect type, float volume = 1.0f)
         {
-            SimpleAudioManager.Instance.PlaySE(soundEffectMasterData.explosionSound, volume);
-
+            var clip = GetEffectSoundClip(type);
+            if (clip != null)
+            {
+                SimpleAudioManager.Instance.PlaySE(clip, volume);
+            }
         }
 
         public void PlayPlayerSound()
@@ -77,14 +69,26 @@ namespace OpenGS
 
         public void PlayGameSound(EMatchSound sound)
         {
-            if (matchSoundMasterData)
+            var clip = GetMatchSoundClip(sound);
+            if (clip != null)
             {
-                var audioClip = matchSoundMasterData.MatchSoundAudioClip(sound);
-
-                SimpleAudioManager.Instance.PlaySE(audioClip);
-
+                SimpleAudioManager.Instance.PlaySE(clip);
             }
+        }
 
+        public AudioClip GetSystemSoundClip(ESystemSound sound)
+        {
+            return soundMasterData != null ? soundMasterData.GetSystemSound(sound) : null;
+        }
+
+        public AudioClip GetMatchSoundClip(EMatchSound sound)
+        {
+            return soundMasterData != null ? soundMasterData.GetMatchSound(sound) : null;
+        }
+
+        public AudioClip GetEffectSoundClip(ESoundEffect sound)
+        {
+            return soundMasterData != null ? soundMasterData.GetEffectSound(sound) : null;
         }
 
     }
