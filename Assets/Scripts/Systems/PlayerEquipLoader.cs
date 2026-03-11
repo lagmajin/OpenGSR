@@ -17,6 +17,7 @@ namespace OpenGS
     /// </summary>
     public class PlayerEquipLoader
     {
+        private const int SAVE_VERSION = 1;
         private readonly string _fileName;
 
         public PlayerEquipLoader(string fileName = "PlayerEquip.json")
@@ -32,7 +33,22 @@ namespace OpenGS
                 InstantItemSlots = Array.Empty<EInstantItemType>()
             };
 
-            var jObj = JsonStorage.Load<JObject>(_fileName, null);
+            var jObj = JsonStorage.LoadVersioned<JObject>(
+                _fileName,
+                SAVE_VERSION,
+                Migrate,
+                null);
+
+            if (jObj == null)
+            {
+                // Backward compatibility for non-versioned legacy files.
+                jObj = JsonStorage.Load<JObject>(_fileName, null);
+                if (jObj != null)
+                {
+                    JsonStorage.SaveVersioned(_fileName, jObj, SAVE_VERSION);
+                }
+            }
+
             if (jObj == null) return fallback;
 
             try
@@ -60,6 +76,11 @@ namespace OpenGS
                 Debug.LogWarning($"[PlayerEquipLoader] Failed to parse {_fileName}: {ex.Message}");
                 return fallback;
             }
+        }
+
+        private static JObject Migrate(int fromVersion, JObject oldData)
+        {
+            return oldData;
         }
     }
 }

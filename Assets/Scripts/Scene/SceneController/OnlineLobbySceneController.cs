@@ -1,46 +1,50 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Sirenix.OdinInspector;
-//using Unity.VisualScripting;
 using UnityEngine;
 
 namespace OpenGS
 {
-
     public class OnlineLobbySceneController : MonoBehaviour
     {
-        [SerializeField] [Required] private WaitRoomMediateObject mediateObject;
-
-
-        void Start()
+        public void TickInput(
+            bool canInput,
+            ref int updateCount,
+            int maxUpdateCount,
+            System.Action onUpdateRooms,
+            System.Action onBackToTitle,
+            System.Action onOpenShop)
         {
-
-
-        }
-
-
-        void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.Escape))
+            if (!canInput)
             {
-
-                //mediateObject.
-
+                return;
             }
 
-            if (Input.GetKeyDown(KeyCode.R))
+            if (Input.anyKeyDown)
             {
-
+                updateCount = 0;
             }
 
+            if (Input.GetKeyDown(KeyCode.F5))
+            {
+                onUpdateRooms?.Invoke();
+            }
 
+            if (Input.GetKeyDown(KeyCode.F6) || Input.GetKey(KeyCode.Escape))
+            {
+                onBackToTitle?.Invoke();
+                return;
+            }
 
+            if (Input.GetKey(KeyCode.S))
+            {
+                onOpenShop?.Invoke();
+            }
 
+            if (updateCount >= maxUpdateCount)
+            {
+                onBackToTitle?.Invoke();
+                return;
+            }
+
+            updateCount++;
         }
-
-
     }
 }

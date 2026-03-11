@@ -35,6 +35,7 @@ namespace OpenGS
         [SerializeField] public GameObject roomPanel;
 
         [SerializeField] [Required] public LobbySceneMediateObject mediateObject;
+        [SerializeField] private OnlineLobbySceneController lobbySceneController;
 
         // ─── 内部状態 ───────────────────────────────────────────────
 
@@ -53,6 +54,10 @@ namespace OpenGS
             networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
             matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
             waitRoomManager = DependencyInjectionConfig.Resolve<WaitRoomManager>();
+            if (lobbySceneController == null)
+            {
+                lobbySceneController = GetComponent<OnlineLobbySceneController>();
+            }
 
             if (DebugFlagManager.IsDebug())
             {
@@ -93,6 +98,22 @@ namespace OpenGS
 
         void Update()
         {
+            if (lobbySceneController != null)
+            {
+                lobbySceneController.TickInput(
+                    canInput,
+                    ref updateCount,
+                    MaxUpdateCount,
+                    () =>
+                    {
+                        Debug.Log("F5 pressed: Sending UpdateRoomRequest");
+                        networkManager.SendUpdateRoomRequest(new List<EGameMode>());
+                    },
+                    DisconnectAndBackToTitle,
+                    GoToShop);
+                return;
+            }
+
             if (!canInput) return;
 
             if (Input.anyKeyDown)
@@ -116,7 +137,6 @@ namespace OpenGS
                 GoToShop();
             }
 
-            // 長時間操作なしでタイトルへ戻る
             if (updateCount >= MaxUpdateCount)
             {
                 DisconnectAndBackToTitle();

@@ -167,11 +167,37 @@ namespace OpenGS
                 return false;
             }
 
-            return soundMasterData.ValidateAllMappings(logWarnings);
+            bool generalValid = soundMasterData.ValidateAllMappings(logWarnings);
+            bool combatValid = soundMasterData.ValidateCombatMappings(out var combatReport);
+            if (logWarnings)
+            {
+                if (combatValid) Debug.Log(combatReport);
+                else Debug.LogWarning(combatReport);
+            }
+
+            return generalValid && combatValid;
         }
 
         private AudioClip GetWeaponClip(EWeaponType type, string category, Dictionary<string, AudioClip> cache)
         {
+            if (soundMasterData != null)
+            {
+                if (category == "shot" && soundMasterData.TryGetWeaponShotSound(type, out var shotClip))
+                {
+                    return shotClip;
+                }
+
+                if (category == "reload" && soundMasterData.TryGetWeaponReloadSound(type, out var reloadClip))
+                {
+                    return reloadClip;
+                }
+
+                if (category == "hit" && soundMasterData.TryGetWeaponHitSound(type, out var hitClip))
+                {
+                    return hitClip;
+                }
+            }
+
             string key = $"{category}:{type}";
             if (cache.TryGetValue(key, out var cached))
             {
@@ -193,6 +219,11 @@ namespace OpenGS
 
         private AudioClip GetGrenadeThrowClip(EGrenadeType type)
         {
+            if (soundMasterData != null && soundMasterData.TryGetGrenadeThrowSound(type, out var mappedClip))
+            {
+                return mappedClip;
+            }
+
             string key = type.ToString();
             if (grenadeThrowClipCache.TryGetValue(key, out var cached))
             {

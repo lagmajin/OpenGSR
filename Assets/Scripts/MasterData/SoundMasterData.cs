@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -29,15 +30,35 @@ namespace OpenGS
             public AudioClip clip;
         }
 
+        [Serializable]
+        public struct WeaponSoundEntry
+        {
+            public EWeaponType weaponType;
+            public AudioClip shotClip;
+            public AudioClip reloadClip;
+            public AudioClip hitClip;
+        }
+
+        [Serializable]
+        public struct GrenadeSoundEntry
+        {
+            public EGrenadeType grenadeType;
+            public AudioClip throwClip;
+        }
+
         [SerializeField] private List<SystemSoundEntry> systemSounds = new List<SystemSoundEntry>();
         [SerializeField] private List<MatchSoundEntry> matchSounds = new List<MatchSoundEntry>();
         [SerializeField] private List<EffectSoundEntry> effectSounds = new List<EffectSoundEntry>();
+        [SerializeField] private List<WeaponSoundEntry> weaponSounds = new List<WeaponSoundEntry>();
+        [SerializeField] private List<GrenadeSoundEntry> grenadeSounds = new List<GrenadeSoundEntry>();
 
         private static SoundMasterData instance;
 
         private readonly Dictionary<ESystemSound, AudioClip> systemMap = new Dictionary<ESystemSound, AudioClip>();
         private readonly Dictionary<EMatchSound, AudioClip> matchMap = new Dictionary<EMatchSound, AudioClip>();
         private readonly Dictionary<ESoundEffect, AudioClip> effectMap = new Dictionary<ESoundEffect, AudioClip>();
+        private readonly Dictionary<EWeaponType, WeaponSoundEntry> weaponMap = new Dictionary<EWeaponType, WeaponSoundEntry>();
+        private readonly Dictionary<EGrenadeType, AudioClip> grenadeThrowMap = new Dictionary<EGrenadeType, AudioClip>();
 
         public static SoundMasterData Instance()
         {
@@ -78,6 +99,18 @@ namespace OpenGS
             foreach (var e in effectSounds)
             {
                 effectMap[e.sound] = e.clip;
+            }
+
+            weaponMap.Clear();
+            foreach (var e in weaponSounds)
+            {
+                weaponMap[e.weaponType] = e;
+            }
+
+            grenadeThrowMap.Clear();
+            foreach (var e in grenadeSounds)
+            {
+                grenadeThrowMap[e.grenadeType] = e.throwClip;
             }
         }
 
@@ -137,6 +170,52 @@ namespace OpenGS
         public bool HasMatchSound(EMatchSound sound) => TryGetMatchSound(sound, out _);
 
         public bool HasEffectSound(ESoundEffect sound) => TryGetEffectSound(sound, out _);
+
+        public bool TryGetWeaponShotSound(EWeaponType weaponType, out AudioClip clip)
+        {
+            clip = null;
+            if (!weaponMap.TryGetValue(weaponType, out var entry))
+            {
+                return false;
+            }
+
+            clip = entry.shotClip;
+            return clip != null;
+        }
+
+        public bool TryGetWeaponReloadSound(EWeaponType weaponType, out AudioClip clip)
+        {
+            clip = null;
+            if (!weaponMap.TryGetValue(weaponType, out var entry))
+            {
+                return false;
+            }
+
+            clip = entry.reloadClip;
+            return clip != null;
+        }
+
+        public bool TryGetWeaponHitSound(EWeaponType weaponType, out AudioClip clip)
+        {
+            clip = null;
+            if (!weaponMap.TryGetValue(weaponType, out var entry))
+            {
+                return false;
+            }
+
+            clip = entry.hitClip;
+            return clip != null;
+        }
+
+        public bool TryGetGrenadeThrowSound(EGrenadeType grenadeType, out AudioClip clip)
+        {
+            if (grenadeThrowMap.TryGetValue(grenadeType, out clip) && clip != null)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         public string GetResolvedSystemSoundPath(ESystemSound sound)
         {
@@ -231,6 +310,54 @@ namespace OpenGS
             }
 
             return isValid;
+        }
+
+        public bool ValidateCombatMappings(out string report)
+        {
+            var missing = new List<string>();
+
+            foreach (EWeaponType weaponType in Enum.GetValues(typeof(EWeaponType)))
+            {
+                if (weaponType == EWeaponType.None)
+                {
+                    continue;
+                }
+
+                if (!TryGetWeaponShotSound(weaponType, out _))
+                {
+                    missing.Add($"WeaponShot:{weaponType}");
+                }
+            }
+
+            foreach (EGrenadeType grenadeType in Enum.GetValues(typeof(EGrenadeType)))
+            {
+                if (grenadeType == EGrenadeType.Empty || grenadeType == EGrenadeType.ClusterChild)
+                {
+                    continue;
+                }
+
+                if (!TryGetGrenadeThrowSound(grenadeType, out _))
+                {
+                    missing.Add($"GrenadeThrow:{grenadeType}");
+                }
+            }
+
+            if (missing.Count == 0)
+            {
+                report = "SoundMasterData combat mapping validation passed.";
+                return true;
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine("SoundMasterData combat mapping validation failed. Missing mappings:");
+            foreach (var item in missing)
+            {
+                sb.Append("- ");
+                sb.AppendLine(item);
+            }
+
+            report = sb.ToString();
+            return false;
         }
 
         private static AudioClip LoadFirst(string[] candidates)

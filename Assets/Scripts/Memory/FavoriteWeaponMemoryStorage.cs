@@ -5,11 +5,12 @@ namespace OpenGS
 {
     public static class FavoriteWeaponMemoryStorage
     {
+        private const int SAVE_VERSION = 1;
         private const string FILE_NAME = "FavoriteWeapons.json";
 
         public static void Save(List<EWeaponType> weapons)
         {
-            JsonStorage.Save(FILE_NAME, weapons);
+            JsonStorage.SaveVersioned(FILE_NAME, weapons, SAVE_VERSION);
         }
 
         public static List<EWeaponType> Load()
@@ -20,7 +21,26 @@ namespace OpenGS
                 return new List<EWeaponType>() { EWeaponType.AK47 };
             }
 
-            return JsonStorage.Load<List<EWeaponType>>(FILE_NAME, new List<EWeaponType>());
+            var loaded = JsonStorage.LoadVersioned<List<EWeaponType>>(
+                FILE_NAME,
+                SAVE_VERSION,
+                Migrate,
+                null);
+
+            if (loaded != null)
+            {
+                return loaded;
+            }
+
+            // Backward compatibility for non-versioned legacy files.
+            loaded = JsonStorage.Load<List<EWeaponType>>(FILE_NAME, new List<EWeaponType>());
+            JsonStorage.SaveVersioned(FILE_NAME, loaded, SAVE_VERSION);
+            return loaded;
+        }
+
+        private static List<EWeaponType> Migrate(int fromVersion, List<EWeaponType> oldData)
+        {
+            return oldData ?? new List<EWeaponType>() { EWeaponType.AK47 };
         }
     }
 }
