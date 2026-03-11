@@ -2,6 +2,7 @@
 using UnityEngine;
 using OpenGSR.Audio;
 using OpenGSCore;
+using System.Collections.Generic;
 
 namespace OpenGS
 {
@@ -12,6 +13,10 @@ namespace OpenGS
         public static SoundManager Instance { get; } = new();
 
         private readonly SoundMasterData soundMasterData;
+        private readonly Dictionary<string, AudioClip> weaponShotClipCache = new();
+        private readonly Dictionary<string, AudioClip> weaponReloadClipCache = new();
+        private readonly Dictionary<string, AudioClip> weaponHitClipCache = new();
+        private readonly Dictionary<string, AudioClip> grenadeThrowClipCache = new();
 
         private SoundManager()
         {
@@ -31,18 +36,20 @@ namespace OpenGS
 
         public void PlayShotSound(EWeaponType type)
         {
-
+            var clip = GetWeaponClip(type, "shot", weaponShotClipCache);
+            PlayOneShotSafe(clip, 1.0f, 1.0f, $"WeaponShot:{type}");
         }
 
         public void PlayReloadSound(EWeaponType type)
         {
-
+            var clip = GetWeaponClip(type, "reload", weaponReloadClipCache);
+            PlayOneShotSafe(clip, 1.0f, 1.0f, $"WeaponReload:{type}");
         }
 
         public void PlayHitSound(EWeaponType type)
         {
-
-
+            var clip = GetWeaponClip(type, "hit", weaponHitClipCache);
+            PlayOneShotSafe(clip, 1.0f, 1.0f, $"WeaponHit:{type}");
         }
 
         public void PlaySoundEffect(ESoundEffect type, float volume = 1.0f)
@@ -53,12 +60,13 @@ namespace OpenGS
 
         public void PlayPlayerSound()
         {
-
+            // Keep this API for compatibility. Player voice mapping is not finalized yet.
         }
 
         public void PlayThrowGrenadeSound(EGrenadeType type)
         {
-
+            var clip = GetGrenadeThrowClip(type);
+            PlayOneShotSafe(clip, 1.0f, 1.0f, $"GrenadeThrow:{type}");
         }
 
         public void PlayGameSound(EMatchSound sound)
@@ -146,6 +154,86 @@ namespace OpenGS
         public int Warmup()
         {
             return soundMasterData != null ? soundMasterData.Warmup() : 0;
+        }
+
+        public bool ValidateSoundSetup(bool logWarnings = true)
+        {
+            if (soundMasterData == null)
+            {
+                if (logWarnings)
+                {
+                    Debug.LogWarning("[SoundManager] SoundMasterData is null.");
+                }
+                return false;
+            }
+
+            return soundMasterData.ValidateAllMappings(logWarnings);
+        }
+
+        private AudioClip GetWeaponClip(EWeaponType type, string category, Dictionary<string, AudioClip> cache)
+        {
+            string key = $"{category}:{type}";
+            if (cache.TryGetValue(key, out var cached))
+            {
+                return cached;
+            }
+
+            string weaponName = type.ToString();
+            string lower = weaponName.ToLowerInvariant();
+            AudioClip loaded = LoadFirst(
+                $"Sound/Weapon/{weaponName}_{category}",
+                $"Sound/Weapon/{lower}_{category}",
+                $"Sound/Weapon/sfx_{lower}_{category}",
+                $"Sound/Weapon/{category}_{lower}",
+                $"Sound/{category}_{lower}");
+
+            cache[key] = loaded;
+            return loaded;
+        }
+
+        private AudioClip GetGrenadeThrowClip(EGrenadeType type)
+        {
+            string key = type.ToString();
+            if (grenadeThrowClipCache.TryGetValue(key, out var cached))
+            {
+                return cached;
+            }
+
+            string name = type.ToString();
+            string lower = name.ToLowerInvariant();
+            AudioClip loaded = LoadFirst(
+                $"Sound/Grenade/{name}_throw",
+                $"Sound/Grenade/{lower}_throw",
+                $"Sound/Weapon/grenade_throw_{lower}",
+                "Sound/Weapon/grenade_throw");
+
+            grenadeThrowClipCache[key] = loaded;
+            return loaded;
+        }
+
+        private static AudioClip LoadFirst(params string[] candidates)
+        {
+            if (candidates == null)
+            {
+                return null;
+            }
+
+            for (int i = 0; i < candidates.Length; i++)
+            {
+                string path = candidates[i];
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    continue;
+                }
+
+                AudioClip clip = Resources.Load<AudioClip>(path);
+                if (clip != null)
+                {
+                    return clip;
+                }
+            }
+
+            return null;
         }
 
     }

@@ -71,7 +71,7 @@ namespace OpenGS
         {
             lock (subscribePlayerLockObject)
             {
-                if (subscribePlayers.Contains(player))
+                if (!subscribePlayers.Contains(player))
                 {
                     subscribePlayers.Add(player);
                 }

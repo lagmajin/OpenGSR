@@ -28,6 +28,8 @@ namespace OpenGS
         [SerializeField] [Required] public SystemSoundMasterData systemSoundMasterData;
         [SerializeField] [Required] public GeneralSceneMasterData generalSceneMasterData;
         [SerializeField] [Required] protected GameTimer timer;
+        [SerializeField] protected MonoBehaviour sceneController;
+        [SerializeField] protected MonoBehaviour sceneMediateObject;
 
         protected GameGeneralManager _gameGeneralManager;
 
@@ -62,6 +64,8 @@ namespace OpenGS
             {
                 Debug.LogError($"AbstractScene.Awake: Failed to resolve GameGeneralManager: {ex.Message}");
             }
+
+            ValidateSceneComposition(true);
         }
 
         [Button("スクリーンショット")]
@@ -262,6 +266,30 @@ namespace OpenGS
         public GameGeneralManager GameManager()
         {
             return _gameGeneralManager ?? GameGeneralManager.GetInstance;
+        }
+
+        protected TController SceneController<TController>() where TController : class
+        {
+            return sceneController as TController;
+        }
+
+        protected TMediate SceneMediate<TMediate>() where TMediate : class
+        {
+            return sceneMediateObject as TMediate;
+        }
+
+        protected bool ValidateSceneComposition(bool logWarnings = true)
+        {
+            bool hasController = sceneController != null;
+            bool hasMediate = sceneMediateObject != null;
+            bool valid = hasController || hasMediate;
+
+            if (logWarnings && !valid)
+            {
+                Debug.LogWarning($"{GetType().Name}: both sceneController and sceneMediateObject are not assigned. Scene responsibilities may be mixed.");
+            }
+
+            return valid;
         }
 
         public bool IsMatchMode()

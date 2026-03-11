@@ -27,6 +27,7 @@ namespace OpenGS
     /// </summary>
     public static class UserSaveManager
     {
+        private const int SAVE_VERSION = 1;
         private const string SAVE_FILE = "UserData.json";
         private static UserSaveData data;
 
@@ -34,13 +35,30 @@ namespace OpenGS
         {
             if (data == null)
             {
-                data = JsonStorage.Load<UserSaveData>(SAVE_FILE, new UserSaveData());
+                data = JsonStorage.LoadVersioned<UserSaveData>(
+                    SAVE_FILE,
+                    SAVE_VERSION,
+                    Migrate,
+                    null);
+
+                if (data == null)
+                {
+                    // Backward compatibility for non-versioned legacy files.
+                    data = JsonStorage.Load<UserSaveData>(SAVE_FILE, new UserSaveData());
+                    JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
+                }
             }
         }
 
         private static void SaveData()
         {
-            JsonStorage.Save(SAVE_FILE, data);
+            JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
+        }
+
+        private static UserSaveData Migrate(int fromVersion, UserSaveData oldData)
+        {
+            // Currently a pass-through migration. Keep hook for future schema upgrades.
+            return oldData ?? new UserSaveData();
         }
 
         public static bool IsPurchased(string itemId)

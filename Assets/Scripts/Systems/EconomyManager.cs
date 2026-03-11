@@ -15,6 +15,7 @@ namespace OpenGS
     /// </summary>
     public static class EconomyManager
     {
+        private const int SAVE_VERSION = 1;
         private const string SAVE_FILE = "Economy.json";
         private static EconomyData data;
 
@@ -22,13 +23,28 @@ namespace OpenGS
         {
             if (data == null)
             {
-                data = JsonStorage.Load<EconomyData>(SAVE_FILE, new EconomyData());
+                data = JsonStorage.LoadVersioned<EconomyData>(
+                    SAVE_FILE,
+                    SAVE_VERSION,
+                    Migrate,
+                    null);
+
+                if (data == null)
+                {
+                    data = JsonStorage.Load<EconomyData>(SAVE_FILE, new EconomyData());
+                    JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
+                }
             }
         }
 
         private static void SaveData()
         {
-            JsonStorage.Save(SAVE_FILE, data);
+            JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
+        }
+
+        private static EconomyData Migrate(int fromVersion, EconomyData oldData)
+        {
+            return oldData ?? new EconomyData();
         }
 
         public static int GetCredits()
