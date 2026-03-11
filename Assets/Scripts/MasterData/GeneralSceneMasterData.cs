@@ -9,6 +9,7 @@ namespace OpenGS
         [SerializeField] private string titleScene = "TitleScene";
         [SerializeField] private string shopScene = "ShopScene";
         [SerializeField] private string onlineWaitRoomScene = "OnlineWaitRoomScene";
+        [SerializeField] private string onlineLoadingScene = "OnlineLoadingScene";
 
         private static GeneralSceneMasterData _instance;
 
@@ -24,5 +25,6 @@ namespace OpenGS
         public string TitleScene() => titleScene;
         public string ShopScene() => shopScene;
         public string OnlineWaitRoomScene() => onlineWaitRoomScene;
+        public string OnlineLoadingScene() => onlineLoadingScene;
     }
 }
