@@ -1,37 +1,34 @@
 ﻿using Sirenix.OdinInspector;
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Threading;
 using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.SceneManagement;
-//using PimDeWitte.UnityMainThreadDispatcher;
-
+#endif
 
 namespace OpenGS
 {
-
-  
-
     [DisallowMultipleComponent]
     [RequireComponent(typeof(GameTimer))]
-    public abstract  class AbstractScene : SerializedMonoBehaviour, IAbstractScene, ISceneInputReceiver,ISceneLoadReceiver
+    public abstract class AbstractScene : SerializedMonoBehaviour, IAbstractScene, ISceneInputReceiver, ISceneLoadReceiver
     {
         private static bool shouldPlayWarningSound = false;
         private SynchronizationContext currentThread;
 
-        //[SerializeField] [Required] public BGMManager soundManager;
+        private CancellationTokenSource sceneLifetimeCts;
+        private readonly HashSet<Coroutine> managedCoroutines = new HashSet<Coroutine>();
 
         [SerializeField] [Required] public SystemSoundMasterData systemSoundMasterData;
         [SerializeField] [Required] public GeneralSceneMasterData generalSceneMasterData;
-
         [SerializeField] [Required] protected GameTimer timer;
 
-        // Do not resolve DI services during field initialization; resolve in Awake to avoid initialization order issues.
         protected GameGeneralManager _gameGeneralManager;
 
-        // 外部からは読み取り専用で公開。GameGeneralManager を唯一の真実（Single Source of Truth）とする。
         [ShowInInspector]
         public bool IsOnlineMode
         {
@@ -45,7 +42,6 @@ namespace OpenGS
 
         public bool IsOfflineMode => !IsOnlineMode;
 
-        // 状態を変更するメソッド（後方互換性のため残すが、プロパティへの代入を推奨）
         public void SetOnlineMode(bool value)
         {
             IsOnlineMode = value;
@@ -53,7 +49,10 @@ namespace OpenGS
 
         protected virtual void Awake()
         {
-            // Resolve DI services in Awake to ensure the DI container has been initialized by RuntimeInitializeOnLoadMethod.
+            sceneLifetimeCts?.Cancel();
+            sceneLifetimeCts?.Dispose();
+            sceneLifetimeCts = new CancellationTokenSource();
+
             try
             {
                 _gameGeneralManager = DependencyInjectionConfig.Resolve<GameGeneralManager>();
@@ -61,14 +60,12 @@ namespace OpenGS
             catch (Exception ex)
             {
                 Debug.LogError($"AbstractScene.Awake: Failed to resolve GameGeneralManager: {ex.Message}");
-                // Leave _gameGeneralManager null as a safe fallback; callers should handle null accordingly.
             }
         }
 
         [Button("スクリーンショット")]
-
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
-        static void InvokeIfDirectPlay()
+        private static void InvokeIfDirectPlay()
         {
 #if UNITY_EDITOR
             string startingScene = EditorSceneManager.GetActiveScene().path;
@@ -76,27 +73,21 @@ namespace OpenGS
 
             if (startingScene == currentScene)
             {
-
                 var targets = GameObject.FindObjectsByType<AbstractScene>(FindObjectsSortMode.None);
                 foreach (var t in targets)
                 {
                     t.OnStartFromEditorDirectly();
-
-
                 }
-
             }
 #endif
-
         }
 
+#if UNITY_EDITOR
         [InitializeOnEnterPlayMode]
         private static void HandleEditorRegistry()
         {
-            // このメソッドが呼ばれるたびに何度も登録されないようにするため、
-            // まずイベントを解除してから再登録する
-            EditorApplication.delayCall -= HandleDelayCall;  // 事前に解除
-            EditorApplication.delayCall += HandleDelayCall;  // 登録
+            EditorApplication.delayCall -= HandleDelayCall;
+            EditorApplication.delayCall += HandleDelayCall;
 
             EditorApplication.playModeStateChanged -= OnPlayModeChanged;
             EditorApplication.playModeStateChanged += OnPlayModeChanged;
@@ -104,31 +95,13 @@ namespace OpenGS
 
         private static void HandleDelayCall()
         {
-            // オブジェクトが必要なときにのみ検索
             var targets = GameObject.FindObjectsByType<AbstractScene>(FindObjectsSortMode.None);
-
             foreach (var t in targets)
             {
-                // 各ターゲットのメソッドを呼び出し
                 t.OnStartUnityEditor();
             }
         }
 
-        protected virtual void OnStartUnityEditor()
-        {
-
-        }
-
-        protected virtual void OnQuitUnityEditor()
-        {
-
-        }
-
-        protected virtual void OnStartFromEditorDirectly()
-        {
-
-
-        }
         private static void OnPlayModeChanged(PlayModeStateChange state)
         {
             switch (state)
@@ -141,41 +114,124 @@ namespace OpenGS
                     }
                     break;
                 case PlayModeStateChange.EnteredEditMode:
-
-                    //Debug.Log("編集モードに戻ったよ！");
                     break;
             }
         }
+#endif
+
+        protected virtual void OnStartUnityEditor()
+        {
+        }
+
+        protected virtual void OnQuitUnityEditor()
+        {
+        }
+
+        protected virtual void OnStartFromEditorDirectly()
+        {
+        }
+
         public abstract SynchronizationContext MainThread();
 
         public SynchronizationContext MainThread2()
         {
-            //UnityMainthreadDispacher.
-            
             return null;
         }
+
         public void SaveScreenShot()
         {
-            //if(!directory==null)
-
             string date = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss");
             string fileName = Application.dataPath + date + ".png";
-
-
-
             ScreenCapture.CaptureScreenshot(fileName);
-
         }
-
 
         protected virtual void EventProcess(string eventName)
         {
-
         }
 
         public void SendEvent(string str)
         {
+        }
 
+        protected CancellationToken SceneLifetimeToken =>
+            sceneLifetimeCts != null ? sceneLifetimeCts.Token : CancellationToken.None;
+
+        protected Coroutine StartManagedCoroutine(IEnumerator routine)
+        {
+            if (routine == null)
+            {
+                return null;
+            }
+
+            var c = StartCoroutine(routine);
+            if (c != null)
+            {
+                managedCoroutines.Add(c);
+            }
+            return c;
+        }
+
+        protected void StopManagedCoroutine(Coroutine coroutine)
+        {
+            if (coroutine == null)
+            {
+                return;
+            }
+
+            if (managedCoroutines.Contains(coroutine))
+            {
+                StopCoroutine(coroutine);
+                managedCoroutines.Remove(coroutine);
+            }
+        }
+
+        protected virtual void OnBeforeSceneChange(string nextSceneName)
+        {
+        }
+
+        protected virtual void OnAfterSceneLoaded(string loadedSceneName, LoadSceneMode mode)
+        {
+        }
+
+        protected AsyncOperation GoToScene(string nextSceneName, bool additive = false)
+        {
+            if (string.IsNullOrWhiteSpace(nextSceneName))
+            {
+                Debug.LogWarning($"{GetType().Name}: next scene name is empty.");
+                return null;
+            }
+
+            OnBeforeSceneChange(nextSceneName);
+            var mode = additive ? LoadSceneMode.Additive : LoadSceneMode.Single;
+            var op = SceneManager.LoadSceneAsync(nextSceneName, mode);
+            if (op != null)
+            {
+                op.completed += _ => OnAfterSceneLoaded(nextSceneName, mode);
+            }
+            return op;
+        }
+
+        protected bool HandleEscapeToBackScene(Action onBack = null, KeyCode key = KeyCode.Escape)
+        {
+            if (!Input.GetKeyDown(key))
+            {
+                return false;
+            }
+
+            if (onBack != null)
+            {
+                onBack.Invoke();
+            }
+            else
+            {
+                GoToTitleScene();
+            }
+            return true;
+        }
+
+        protected void ResetIdleTimer()
+        {
+            timer?.ReStartTimer();
         }
 
         public GameGeneralManager GameManager()
@@ -188,13 +244,8 @@ namespace OpenGS
             return false;
         }
 
-        
         public bool IsOnlineModeOld()
         {
-            //GameManager().
-
-
-
             return IsOnlineMode;
         }
 
@@ -205,137 +256,98 @@ namespace OpenGS
 
         public void DisconnectFromServer()
         {
-
-
         }
 
         public void GoToSplashScreen()
         {
-            //var splashScene=generalSceneMasterData.
-            
         }
 
         public void GoToTitleScene()
         {
             var titleScene = generalSceneMasterData.TitleScene();
-
             Debug.Log("タイトルシーンへ移動");
-
-            SceneManager.LoadSceneAsync(titleScene);
-
-
+            GoToScene(titleScene);
         }
-
-
 
         public void GoToTitleSceneWithErrorSound()
         {
             var titleScene = generalSceneMasterData.TitleScene();
-
             Debug.Log("タイトルシーンへ移動（エラー警告音付き）");
 
-            shouldPlayWarningSound = true;  // 警告音を鳴らすフラグをセット
-            SceneManager.sceneLoaded += OnSceneLoaded;  // シーンロード時の処理を登録
-            SceneManager.LoadSceneAsync(titleScene);
+            shouldPlayWarningSound = true;
+            SceneManager.sceneLoaded += OnTitleSceneLoadedForWarning;
+            GoToScene(titleScene);
         }
 
         public void GoToShopScene()
         {
             var shopScene = generalSceneMasterData.ShopScene();
-
-            SceneManager.LoadScene(shopScene);
-
+            GoToScene(shopScene);
         }
 
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        private void OnTitleSceneLoadedForWarning(Scene scene, LoadSceneMode mode)
         {
             if (scene.name == generalSceneMasterData.TitleScene() && shouldPlayWarningSound)
             {
                 Debug.Log("タイトルシーンに到達、警告音を再生");
-
-                shouldPlayWarningSound = false;  // フラグリセット
-
-                
-                
-                
-
-                SceneManager.sceneLoaded -= OnSceneLoaded;  // イベント登録解除
+                shouldPlayWarningSound = false;
+                SceneManager.sceneLoaded -= OnTitleSceneLoadedForWarning;
             }
         }
 
         private void OnApplicationFocus(bool focus)
         {
-            if(!focus)
-            {
-                //KanKikuchi.AudioManager.BGMManager.Instance.ChangeBaseVolume(0);
-            }
-            else
-            {
-
-            }
-
-
         }
 
         private void OnApplicationPause(bool pause)
         {
-            
         }
 
         public void GoToOfflineWaitRoom()
         {
-
         }
 
         public void KeyPress()
         {
-
         }
-
 
         public virtual void GoToLobby()
         {
-
-
-
         }
-#if UNITY_EDITOR
 
+        protected virtual void OnDestroy()
+        {
+            foreach (var coroutine in managedCoroutines)
+            {
+                if (coroutine != null)
+                {
+                    StopCoroutine(coroutine);
+                }
+            }
+            managedCoroutines.Clear();
+
+            sceneLifetimeCts?.Cancel();
+            sceneLifetimeCts?.Dispose();
+            sceneLifetimeCts = null;
+        }
+
+#if UNITY_EDITOR
         [Button("自動セット")]
         public void AutoSet()
         {
-
         }
-
 #endif
     }
 
     interface IAbstractBattleScene
     {
-
     }
+
     public abstract class AbstractBattleScene : AbstractScene
     {
-
-
-
-
     }
-
 
     public abstract class AbstractNonBattleScene : AbstractScene
     {
-        
-       
-
-
-
-
     }
-
-
-
-
-
-
 }
