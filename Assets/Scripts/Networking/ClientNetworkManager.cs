@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -43,6 +45,7 @@ namespace OpenGS
 
         // MatchRoomManagerへの参照
         private MatchRoomManager _matchRoomManager;
+        private NetworkRequestClient _requestClient;
 
         private void Awake()
         {
@@ -55,6 +58,7 @@ namespace OpenGS
             _listener.NetworkErrorEvent += OnNetworkError;
 
             _tcpReceiveBuffer = new byte[TcpBufferSize];
+            _requestClient = new NetworkRequestClient(TrySendTcpMessage);
             try
             {
                 _matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
@@ -197,6 +201,11 @@ namespace OpenGS
         
         private void ProcessTcpMessage(JObject message)
         {
+            if (_requestClient != null && _requestClient.HandleIncomingMessage(message))
+            {
+                return;
+            }
+
             string messageType = message.GetStringOrNull("MessageType");
             switch (messageType)
             {
@@ -242,6 +251,11 @@ namespace OpenGS
 
         public void SendTcpMessage(JObject message)
         {
+            _ = TrySendTcpMessage(message);
+        }
+
+        private bool TrySendTcpMessage(JObject message)
+        {
             if (_tcpStream != null && _tcpStream.CanWrite)
             {
                 string jsonString = message.ToString(Formatting.None);
@@ -252,11 +266,11 @@ namespace OpenGS
                 Buffer.BlockCopy(separator, 0, data, payload.Length, separator.Length);
                 _tcpStream.Write(data, 0, data.Length);
                 //Debug.Log($"[ClientNetwork] Sent TCP data: {jsonString}");
+                return true;
             }
-            else
-            {
-                Debug.LogWarning("[ClientNetwork] Not connected to TCP server. Message not sent.");
-            }
+
+            Debug.LogWarning("[ClientNetwork] Not connected to TCP server. Message not sent.");
+            return false;
         }
 
         /// <summary>
@@ -292,6 +306,49 @@ namespace OpenGS
 
         public void SendFriendRequest(string targetPlayerId)
         {
+            _ = SendFriendRequestWithFoundationFallbackAsync(targetPlayerId);
+        }
+
+        private async Task SendFriendRequestWithFoundationFallbackAsync(string targetPlayerId)
+        {
+            try
+            {
+                if (_requestClient == null)
+                {
+                    throw new InvalidOperationException("NetworkRequestClient is not initialized.");
+                }
+
+                var envelopeRequest = new FriendRequestEnvelopeRequest
+                {
+                    PlayerId = ClientPlayerId,
+                    TargetPlayerId = targetPlayerId
+                };
+
+                var envelopeResponse = await _requestClient.SendRequestAsync<FriendRequestEnvelopeRequest, FriendRequestEnvelopeResponse>(
+                    NetworkFoundationRoutes.FriendRequest,
+                    envelopeRequest,
+                    NetworkRequestOptions.Default);
+
+                var legacyResponse = new JObject
+                {
+                    ["MessageType"] = MessageType.FriendRequestResponse,
+                    ["PlayerID"] = envelopeResponse?.PlayerId ?? ClientPlayerId,
+                    ["TargetPlayerID"] = envelopeResponse?.TargetPlayerId ?? targetPlayerId,
+                    ["Success"] = envelopeResponse?.Success ?? false,
+                    ["Error"] = envelopeResponse?.Error ?? string.Empty
+                };
+
+                FriendRequestResponseReceived?.Invoke(legacyResponse);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[ClientNetwork] Foundation friend request failed. Falling back to legacy request. {ex.Message}");
+                SendLegacyFriendRequest(targetPlayerId);
+            }
+        }
+
+        private void SendLegacyFriendRequest(string targetPlayerId)
+        {
             JObject request = new JObject
             {
                 ["MessageType"] = MessageType.FriendRequest,
@@ -324,6 +381,35 @@ namespace OpenGS
             };
 
             SendTcpMessage(request);
+        }
+        
+        public Task<PingResponse> PingServerAsync(
+            int timeoutMs = 3000,
+            int retryCount = 0,
+            CancellationToken cancellationToken = default)
+        {
+            if (_requestClient == null)
+            {
+                throw new InvalidOperationException("NetworkRequestClient is not initialized.");
+            }
+
+            var request = new PingRequest
+            {
+                Nonce = Guid.NewGuid().ToString("N"),
+                ClientSentAtUtc = DateTime.UtcNow.ToString("O")
+            };
+
+            var options = new NetworkRequestOptions
+            {
+                TimeoutMs = timeoutMs,
+                RetryCount = retryCount
+            };
+
+            return _requestClient.SendRequestAsync<PingRequest, PingResponse>(
+                NetworkFoundationRoutes.Ping,
+                request,
+                options,
+                cancellationToken);
         }
 
         #endregion

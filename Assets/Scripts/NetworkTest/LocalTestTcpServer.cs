@@ -35,6 +35,8 @@ namespace OpenGS
         public LocalTestTcpServer()
         {
             Debug.Log($"LocalTestTcpServer: ctor invoked. default port={port}");
+            NetworkFoundationBootstrap.RegisterDefaultHandlers(_requestRouter);
+            RegisterFoundationHandlers();
         }
         public bool IsRunning => _isRunning;
 
@@ -50,6 +52,7 @@ namespace OpenGS
         private string _currentPlayerId = "";
         private readonly Dictionary<string, HashSet<string>> _friendsByPlayer = new();
         private readonly Dictionary<string, HashSet<string>> _incomingFriendRequestsByTarget = new();
+        private readonly NetworkRequestRouter _requestRouter = new();
 
         private void SendWelcomeMessage()
         {
@@ -218,6 +221,13 @@ namespace OpenGS
 
                 var json = JObject.Parse(parseTarget);
                 PrettyLogger.Bold("LocalServer", $"[TcpServer] Parsed JSON: {json}");
+
+                if (_requestRouter.CanHandle(json))
+                {
+                    JObject envelopeResponse = _requestRouter.HandleAsync(json).GetAwaiter().GetResult();
+                    SendJsonToClient(envelopeResponse);
+                    return;
+                }
 
                 var messageType = json["MessageType"].ToString();
 
@@ -1016,54 +1026,10 @@ namespace OpenGS
                 ["TargetPlayerID"] = targetPlayerId ?? ""
             };
 
-            if (string.IsNullOrWhiteSpace(requesterId) || string.IsNullOrWhiteSpace(targetPlayerId))
-            {
-                response["Success"] = false;
-                response["Error"] = "PlayerID and TargetPlayerID are required.";
-                SendJsonToClient(response);
-                return;
-            }
-
-            EnsureFriendStorage(requesterId);
-            EnsureFriendStorage(targetPlayerId);
-
-            if (requesterId == targetPlayerId)
-            {
-                response["Success"] = false;
-                response["Error"] = "Cannot send a friend request to yourself.";
-                SendJsonToClient(response);
-                return;
-            }
-
-            if (_friendsByPlayer[requesterId].Contains(targetPlayerId))
-            {
-                response["Success"] = false;
-                response["Error"] = "Already friends.";
-                SendJsonToClient(response);
-                return;
-            }
-
-            if (!_incomingFriendRequestsByTarget[targetPlayerId].Add(requesterId))
-            {
-                response["Success"] = false;
-                response["Error"] = "Friend request already sent.";
-                SendJsonToClient(response);
-                return;
-            }
-
-            response["Success"] = true;
+            bool success = TryProcessFriendRequest(requesterId, targetPlayerId, out string error);
+            response["Success"] = success;
+            response["Error"] = error ?? string.Empty;
             SendJsonToClient(response);
-
-            var notification = new JObject
-            {
-                ["MessageType"] = MessageType.FriendRequestNotification,
-                ["TargetPlayerID"] = targetPlayerId,
-                ["FromPlayerID"] = requesterId,
-                ["FromPlayerName"] = ResolvePlayerName(requesterId)
-            };
-            SendJsonToClient(notification);
-
-            PrettyLogger.Bold("LocalServer", $"Friend request: {requesterId} -> {targetPlayerId}");
         }
 
         private void HandleFriendApproveRequest(JObject json)
@@ -1187,6 +1153,71 @@ namespace OpenGS
             }
 
             return playerId ?? "Unknown";
+        }
+
+        private void RegisterFoundationHandlers()
+        {
+            _requestRouter.RegisterHandler<FriendRequestEnvelopeRequest, FriendRequestEnvelopeResponse>(
+                NetworkFoundationRoutes.FriendRequest,
+                (request, _) =>
+                {
+                    request ??= new FriendRequestEnvelopeRequest();
+                    string requesterId = request.PlayerId ?? _currentPlayerId;
+                    string targetPlayerId = request.TargetPlayerId;
+
+                    bool success = TryProcessFriendRequest(requesterId, targetPlayerId, out string error);
+                    var response = new FriendRequestEnvelopeResponse
+                    {
+                        PlayerId = requesterId,
+                        TargetPlayerId = targetPlayerId ?? string.Empty,
+                        Success = success,
+                        Error = error ?? string.Empty
+                    };
+                    return Task.FromResult(response);
+                });
+        }
+
+        private bool TryProcessFriendRequest(string requesterId, string targetPlayerId, out string error)
+        {
+            error = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(requesterId) || string.IsNullOrWhiteSpace(targetPlayerId))
+            {
+                error = "PlayerID and TargetPlayerID are required.";
+                return false;
+            }
+
+            EnsureFriendStorage(requesterId);
+            EnsureFriendStorage(targetPlayerId);
+
+            if (requesterId == targetPlayerId)
+            {
+                error = "Cannot send a friend request to yourself.";
+                return false;
+            }
+
+            if (_friendsByPlayer[requesterId].Contains(targetPlayerId))
+            {
+                error = "Already friends.";
+                return false;
+            }
+
+            if (!_incomingFriendRequestsByTarget[targetPlayerId].Add(requesterId))
+            {
+                error = "Friend request already sent.";
+                return false;
+            }
+
+            var notification = new JObject
+            {
+                ["MessageType"] = MessageType.FriendRequestNotification,
+                ["TargetPlayerID"] = targetPlayerId,
+                ["FromPlayerID"] = requesterId,
+                ["FromPlayerName"] = ResolvePlayerName(requesterId)
+            };
+            SendJsonToClient(notification);
+            PrettyLogger.Bold("LocalServer", $"Friend request: {requesterId} -> {targetPlayerId}");
+            return true;
         }
 
         #endregion
