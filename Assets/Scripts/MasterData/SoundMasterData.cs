@@ -82,29 +82,74 @@ namespace OpenGS
 
         public AudioClip GetSystemSound(ESystemSound sound)
         {
-            if (systemMap.TryGetValue(sound, out var clip) && clip != null)
-            {
-                return clip;
-            }
-            return LoadFirst(GetSystemSoundPaths(sound));
+            TryGetSystemSound(sound, out var clip);
+            return clip;
         }
 
         public AudioClip GetMatchSound(EMatchSound sound)
         {
-            if (matchMap.TryGetValue(sound, out var clip) && clip != null)
-            {
-                return clip;
-            }
-            return LoadFirst(GetMatchSoundPaths(sound));
+            TryGetMatchSound(sound, out var clip);
+            return clip;
         }
 
         public AudioClip GetEffectSound(ESoundEffect sound)
         {
-            if (effectMap.TryGetValue(sound, out var clip) && clip != null)
+            TryGetEffectSound(sound, out var clip);
+            return clip;
+        }
+
+        public bool TryGetSystemSound(ESystemSound sound, out AudioClip clip)
+        {
+            if (systemMap.TryGetValue(sound, out clip) && clip != null)
             {
-                return clip;
+                return true;
             }
-            return LoadFirst(GetEffectSoundPaths(sound));
+
+            clip = LoadFirst(GetSystemSoundPaths(sound));
+            return clip != null;
+        }
+
+        public bool TryGetMatchSound(EMatchSound sound, out AudioClip clip)
+        {
+            if (matchMap.TryGetValue(sound, out clip) && clip != null)
+            {
+                return true;
+            }
+
+            clip = LoadFirst(GetMatchSoundPaths(sound));
+            return clip != null;
+        }
+
+        public bool TryGetEffectSound(ESoundEffect sound, out AudioClip clip)
+        {
+            if (effectMap.TryGetValue(sound, out clip) && clip != null)
+            {
+                return true;
+            }
+
+            clip = LoadFirst(GetEffectSoundPaths(sound));
+            return clip != null;
+        }
+
+        public bool HasSystemSound(ESystemSound sound) => TryGetSystemSound(sound, out _);
+
+        public bool HasMatchSound(EMatchSound sound) => TryGetMatchSound(sound, out _);
+
+        public bool HasEffectSound(ESoundEffect sound) => TryGetEffectSound(sound, out _);
+
+        public string GetResolvedSystemSoundPath(ESystemSound sound)
+        {
+            return GetResolvedPath(GetSystemSoundPaths(sound));
+        }
+
+        public string GetResolvedMatchSoundPath(EMatchSound sound)
+        {
+            return GetResolvedPath(GetMatchSoundPaths(sound));
+        }
+
+        public string GetResolvedEffectSoundPath(ESoundEffect sound)
+        {
+            return GetResolvedPath(GetEffectSoundPaths(sound));
         }
 
         private static AudioClip LoadFirst(string[] candidates)
@@ -125,6 +170,29 @@ namespace OpenGS
                 if (clip != null)
                 {
                     return clip;
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetResolvedPath(string[] candidates)
+        {
+            if (candidates == null)
+            {
+                return null;
+            }
+
+            foreach (var path in candidates)
+            {
+                if (string.IsNullOrWhiteSpace(path))
+                {
+                    continue;
+                }
+
+                if (Resources.Load<AudioClip>(path) != null)
+                {
+                    return path;
                 }
             }
 
