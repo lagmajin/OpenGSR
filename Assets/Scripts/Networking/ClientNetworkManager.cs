@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using OpenGSCore; // OpenGSCoreのMatchRoomMessageなどを使用
@@ -32,6 +34,12 @@ namespace OpenGS
         private NetworkStream _tcpStream;
         private byte[] _tcpReceiveBuffer;
         private const int TcpBufferSize = 8192; // 8KB
+        private readonly StringBuilder _tcpMessageBuffer = new StringBuilder();
+
+        public event Action<JObject> FriendRequestResponseReceived;
+        public event Action<JObject> FriendApproveResponseReceived;
+        public event Action<JObject> FriendListResponseReceived;
+        public event Action<JObject> FriendRequestNotificationReceived;
 
         // MatchRoomManagerへの参照
         private MatchRoomManager _matchRoomManager;
@@ -120,14 +128,70 @@ namespace OpenGS
                         break;
                     }
 
-                    string jsonString = System.Text.Encoding.UTF8.GetString(_tcpReceiveBuffer, 0, bytesRead);
-                    JObject message = JObject.Parse(jsonString);
-                    ProcessTcpMessage(message);
+                    string chunk = Encoding.UTF8.GetString(_tcpReceiveBuffer, 0, bytesRead);
+                    _tcpMessageBuffer.Append(chunk);
+
+                    string fullBuffer = _tcpMessageBuffer.ToString();
+                    string[] parts = fullBuffer.Split('\x1F');
+
+                    if (parts.Length == 1)
+                    {
+                        if (TryParseTcpPacket(parts[0], out JObject singleMessage))
+                        {
+                            ProcessTcpMessage(singleMessage);
+                            _tcpMessageBuffer.Clear();
+                        }
+                        continue;
+                    }
+
+                    for (int i = 0; i < parts.Length - 1; i++)
+                    {
+                        if (TryParseTcpPacket(parts[i], out JObject message))
+                        {
+                            ProcessTcpMessage(message);
+                        }
+                    }
+
+                    _tcpMessageBuffer.Clear();
+                    _tcpMessageBuffer.Append(parts[^1]);
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[ClientNetwork] Error receiving TCP data: {ex.Message}");
+            }
+        }
+
+        private static bool TryParseTcpPacket(string rawPacket, out JObject message)
+        {
+            message = null;
+            if (string.IsNullOrWhiteSpace(rawPacket))
+            {
+                return false;
+            }
+
+            string parseTarget = rawPacket.Trim();
+            int firstBrace = parseTarget.IndexOf('{');
+            int lastBrace = parseTarget.LastIndexOf('}');
+
+            if (firstBrace >= 0 && lastBrace > firstBrace)
+            {
+                parseTarget = parseTarget.Substring(firstBrace, lastBrace - firstBrace + 1);
+            }
+            else if (firstBrace >= 0)
+            {
+                parseTarget = parseTarget.Substring(firstBrace);
+            }
+
+            try
+            {
+                message = JObject.Parse(parseTarget);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[ClientNetwork] Failed to parse TCP packet: {ex.Message}, packet={rawPacket}");
+                return false;
             }
         }
         
@@ -137,10 +201,16 @@ namespace OpenGS
             switch (messageType)
             {
                 case MessageType.LoginResponse:
-                    bool success = message.Value<bool>("Success");
+                case "LoginSuccessful":
+                    bool success = messageType == "LoginSuccessful" || (message["Success"]?.ToObject<bool>() ?? false);
                     if (success)
                     {
-                        Debug.Log($"[ClientNetwork] Login successful. PlayerID: {message.GetStringOrNull("PlayerID")}");
+                        string resolvedPlayerId = message.GetStringOrNull("PlayerID") ?? message.GetStringOrNull("GlobalUserId");
+                        if (!string.IsNullOrEmpty(resolvedPlayerId))
+                        {
+                            ClientPlayerId = resolvedPlayerId;
+                        }
+                        Debug.Log($"[ClientNetwork] Login successful. PlayerID: {ClientPlayerId}");
                         // ログイン成功後の処理
                     }
                     else
@@ -150,6 +220,18 @@ namespace OpenGS
                     break;
                 case MessageType.PlayerInfoResponse:
                     HandlePlayerInfoResponse(message);
+                    break;
+                case MessageType.FriendRequestResponse:
+                    FriendRequestResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.FriendApproveResponse:
+                    FriendApproveResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.FriendListResponse:
+                    FriendListResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.FriendRequestNotification:
+                    FriendRequestNotificationReceived?.Invoke(message);
                     break;
                 // 他のTCPメッセージタイプをここで処理
                 default:
@@ -163,7 +245,11 @@ namespace OpenGS
             if (_tcpStream != null && _tcpStream.CanWrite)
             {
                 string jsonString = message.ToString(Formatting.None);
-                byte[] data = System.Text.Encoding.UTF8.GetBytes(jsonString);
+                byte[] payload = Encoding.UTF8.GetBytes(jsonString);
+                byte[] separator = { 0x1F };
+                byte[] data = new byte[payload.Length + separator.Length];
+                Buffer.BlockCopy(payload, 0, data, 0, payload.Length);
+                Buffer.BlockCopy(separator, 0, data, payload.Length, separator.Length);
                 _tcpStream.Write(data, 0, data.Length);
                 //Debug.Log($"[ClientNetwork] Sent TCP data: {jsonString}");
             }
@@ -204,6 +290,42 @@ namespace OpenGS
             }
         }
 
+        public void SendFriendRequest(string targetPlayerId)
+        {
+            JObject request = new JObject
+            {
+                ["MessageType"] = MessageType.FriendRequest,
+                ["PlayerID"] = ClientPlayerId,
+                ["TargetPlayerID"] = targetPlayerId
+            };
+
+            SendTcpMessage(request);
+        }
+
+        public void ApproveFriendRequest(string requestPlayerId, bool approve = true)
+        {
+            JObject request = new JObject
+            {
+                ["MessageType"] = MessageType.FriendApproveRequest,
+                ["PlayerID"] = ClientPlayerId,
+                ["RequestPlayerID"] = requestPlayerId,
+                ["Approve"] = approve
+            };
+
+            SendTcpMessage(request);
+        }
+
+        public void RequestFriendList()
+        {
+            JObject request = new JObject
+            {
+                ["MessageType"] = MessageType.FriendListRequest,
+                ["PlayerID"] = ClientPlayerId
+            };
+
+            SendTcpMessage(request);
+        }
+
         #endregion
 
         #region UDP Match Connection
@@ -218,7 +340,7 @@ namespace OpenGS
         private void OnPeerConnected(NetPeer peer)
         {
             _serverPeer = peer;
-            Debug.Log($"[ClientNetwork] Connected to Match UDP server: {peer.EndPoint}");
+            Debug.Log("[ClientNetwork] Connected to Match UDP server.");
 
             // サーバーにクライアントのPlayerIDを通知 (サーバー側のOnPeerConnectedでID取得できない場合のため)
             SendUdpInput(new JObject
@@ -291,7 +413,8 @@ namespace OpenGS
                 if (input["RoomID"] == null && !string.IsNullOrEmpty(CurrentMatchRoomId)) input["RoomID"] = CurrentMatchRoomId;
 
                 string jsonString = input.ToString(Formatting.None);
-                _serverPeer.Send(jsonString, method);
+                byte[] bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
+                _serverPeer.Send(bytes, 0, method);
                 //Debug.Log($"[ClientNetwork] Sent UDP Input: {jsonString}");
             }
             else

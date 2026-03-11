@@ -98,8 +98,8 @@ namespace OpenGS
 
 
             animator = GetComponent<Animator>();
-            _spriteRenderer = GetComponent<SpriteRenderer>();
-            _rigidbody2D = GetComponent<Rigidbody2D>();
+            spriteRenderer = GetComponent<SpriteRenderer>();
+            rigidbody2D = GetComponent<Rigidbody2D>();
 
 
 
@@ -131,13 +131,17 @@ namespace OpenGS
 
             if (direc.x >= 0)
             {
-                transform.SetLocalScaleX(-1);
+                var ls = transform.localScale;
+                ls.x = -Mathf.Abs(ls.x);
+                transform.localScale = ls;
 
                 //gun?.transform.SetLocalScaleX(-1);
             }
             else
             {
-                transform.SetLocalScaleX(1);
+                var ls = transform.localScale;
+                ls.x = Mathf.Abs(ls.x);
+                transform.localScale = ls;
 
                 //gun?.transform.SetLocalScaleX(1);
             }
@@ -211,7 +215,7 @@ namespace OpenGS
                 if (networkManager != null && networkManager.IsConnected())
                 {
                     // 武器タイプを取得
-                    string weaponType = weapon?.name ?? "Unknown";
+                    string weaponType = weaponSlots?.mainWeaponSlot?.name ?? "Unknown";
 
                     // 射撃メッセージを作成して送信
                     var shotMsg = RUDPMessageBuilder.CreatePlayerShot(
@@ -401,7 +405,7 @@ namespace OpenGS
         }
         public override void Invisible(float sec)
         {
-            _spriteRenderer.color = new Color(1f, 1f, 1f, .3f);
+            spriteRenderer.color = new Color(1f, 1f, 1f, .3f);
 
 
         }

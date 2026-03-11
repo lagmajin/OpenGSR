@@ -17,7 +17,7 @@ namespace OpenGS
             if (!JsonStorage.Exists(FILE_NAME))
             {
                 // 初回実行時はデフォルト武器を返す
-                return new List<EWeaponType>() { EWeaponType.AssaultRifle };
+                return new List<EWeaponType>() { EWeaponType.AK47 };
             }
 
             return JsonStorage.Load<List<EWeaponType>>(FILE_NAME, new List<EWeaponType>());

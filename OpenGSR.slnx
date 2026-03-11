@@ -11,10 +11,10 @@
   <Project Path="Unity.Splines.csproj" />
   <Project Path="Unity.Burst.csproj" />
   <Project Path="Unity.VisualScripting.Flow.Editor.csproj" />
+  <Project Path="OpenGSR.csproj" />
   <Project Path="Unity.VisualStudio.Editor.csproj" />
   <Project Path="Unity.InputSystem.csproj" />
   <Project Path="Zenject-ReflectionBaking-Editor.csproj" />
-  <Project Path="OpenGSR.csproj" />
   <Project Path="OpenGSCore.csproj" />
   <Project Path="UniRx.csproj" />
   <Project Path="UniTask.csproj" />

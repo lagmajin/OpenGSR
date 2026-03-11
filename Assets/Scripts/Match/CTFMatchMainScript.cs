@@ -232,11 +232,11 @@ namespace OpenGS
 
                 JObject json = flagEvent.FlagEventType() switch
                 {
-                    EFlagEventType.Captured => RUDPMessageTypes.CreateFlagCaptured(playerId, teamStr, pos),
-                    EFlagEventType.Lost => RUDPMessageTypes.CreateFlagLost(playerId, teamStr, pos),
-                    EFlagEventType.Returned => RUDPMessageTypes.CreateFlagReturn(teamStr, playerId),
-                    EFlagEventType.Burst => RUDPMessageTypes.CreateFlagBurst(teamStr, pos, playerId),
-                    EFlagEventType.Pickup => RUDPMessageTypes.CreateFlagPickup(playerId, teamStr, pos),
+                    EFlagEventType.Captured => RUDPMessageBuilder.CreateFlagCaptured(playerId, teamStr, pos),
+                    EFlagEventType.Lost => RUDPMessageBuilder.CreateFlagLost(playerId, teamStr, pos),
+                    EFlagEventType.Returned => RUDPMessageBuilder.CreateFlagReturn(teamStr, playerId),
+                    EFlagEventType.Burst => RUDPMessageBuilder.CreateFlagBurst(teamStr, pos, playerId),
+                    EFlagEventType.Pickup => RUDPMessageBuilder.CreateFlagPickup(playerId, teamStr, pos),
                     _ => null
                 };
 

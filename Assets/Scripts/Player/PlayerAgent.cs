@@ -23,6 +23,7 @@ namespace OpenGS
         [SerializeField] private AbstractGunController primaryGunController;
         [SerializeField]private AbstractGunController secondaryGunController;
         [SerializeField]private WeaponArmController armController;
+        [SerializeField] private WeaponSlots weaponSlots;
 
         public float movementSpeed;
         public float jumpHeight;
@@ -215,7 +216,9 @@ namespace OpenGS
         {
             if (weaponSlots == null) return;
             
-            var currentGun = weaponSlots.GetCurrentGun();
+            var currentGun = weaponSlots.currentWeapon != null
+                ? weaponSlots.currentWeapon.GetComponentInChildren<AbstractGunController>()
+                : null;
             if (currentGun == null) return;
 
             if (Input.GetMouseButtonDown(0))
@@ -563,7 +566,7 @@ namespace OpenGS
                 if (networkManager != null && networkManager.IsConnected())
                 {
                     // プレイヤーIDを取得
-                    string playerId = UniqueID().ToString();
+                    string playerId = gameObject.name;
                     string killerId = ""; // キルした場合はサーバー側で設定
 
                     // 死亡メッセージを作成して送信

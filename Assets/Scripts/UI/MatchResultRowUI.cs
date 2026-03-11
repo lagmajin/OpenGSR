@@ -32,7 +32,7 @@ namespace OpenGS
         {
             if (player == null) return;
 
-            if (nameText != null) nameText.text = player.character.ToString(); // または適切な名前フィールド
+            if (nameText != null) nameText.text = player.gameObject.name;
             if (scoreText != null) scoreText.text = "-"; // スコア概念がまだなければ暫定
             if (killsText != null) killsText.text = (player.Status?.KillCount ?? 0).ToString();
             if (deathsText != null) deathsText.text = (player.Status?.DeathCount ?? 0).ToString();

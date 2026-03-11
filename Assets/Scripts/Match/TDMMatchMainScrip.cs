@@ -187,7 +187,7 @@ namespace OpenGS
         {
             // キラーのチームを取得（これはサーバーから情報をもらう必要がある）
             // 暫定的に処理
-            Debug.Log($"[TDM] Kill event processed: {e.KillerId()} killed {e.VictimId()}");
+            Debug.Log($"[TDM] Kill event processed: {e.KillerID()} killed {e.VictimID()}");
         }
 
         /// <summary>
@@ -201,16 +201,18 @@ namespace OpenGS
 
             if (e is PlayerKillEvent killEvent)
             {
-                json = RUDPMessageTypes.CreatePlayerKill(
-                    killEvent.KillerId(),
-                    killEvent.VictimId(),
-                    killEvent.WeaponType(),
-                    killEvent.IsHeadshot()
-                );
+                json = new JObject
+                {
+                    ["MessageType"] = "PlayerKill",
+                    ["KillerId"] = killEvent.KillerID(),
+                    ["VictimId"] = killEvent.VictimID(),
+                    ["WeaponType"] = killEvent.WeaponType(),
+                    ["Headshot"] = killEvent.IsHeadshot()
+                };
             }
             else if (e is PlayerDeadEvent deadEvent)
             {
-                json = RUDPMessageTypes.CreatePlayerDeath(deadEvent.PlayerID(), deadEvent.KillerID());
+                json = RUDPMessageBuilder.CreatePlayerDeath(deadEvent.PlayerID(), deadEvent.KillerID());
             }
 
             if (json != null)
@@ -231,10 +233,10 @@ namespace OpenGS
                 case "TeamKill":
                     HandleTeamKill(obj);
                     break;
-                case RUDPMessageTypes.KillScoreUpdate:
+                case "KillScoreUpdate":
                     HandleScoreUpdate(obj);
                     break;
-                case RUDPMessageTypes.PlayerKill:
+                case "PlayerKill":
                     HandlePlayerKill(obj);
                     break;
                 default:
