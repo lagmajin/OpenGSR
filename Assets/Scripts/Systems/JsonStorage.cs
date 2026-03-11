@@ -1,6 +1,4 @@
 using System;
-using System.IO;
-using System.Text;
 using UnityEngine;
 using Newtonsoft.Json;
 
@@ -13,6 +11,22 @@ namespace OpenGS
     /// </summary>
     public static class JsonStorage
     {
+        [Serializable]
+        private class VersionedPayload<T>
+        {
+            public int version;
+            public T payload;
+        }
+
+        private static ISaveStorage storage = new JsonFileSaveStorage();
+
+        public static ISaveStorage Storage => storage;
+
+        public static void SetStorage(ISaveStorage customStorage)
+        {
+            storage = customStorage ?? new JsonFileSaveStorage();
+        }
+
         /// <summary>
         /// オブジェクトをJSON形式で保存します。
         /// </summary>
@@ -23,19 +37,13 @@ namespace OpenGS
         /// <returns>保存に成功したかどうか</returns>
         public static bool Save<T>(string fileName, T data, Formatting formatting = Formatting.Indented)
         {
-            try
+            if (!storage.Save(fileName, data, formatting))
             {
-                string path = FilePathHelper.GetFilePath(fileName);
-                string json = JsonConvert.SerializeObject(data, formatting);
-                File.WriteAllText(path, json, Encoding.UTF8);
-                Debug.Log($"[JsonStorage] Saved: {path}");
-                return true;
-            }
-            catch (Exception e)
-            {
-                Debug.LogError($"[JsonStorage] Save Failed ({fileName}): {e.Message}");
                 return false;
             }
+
+            Debug.Log($"[JsonStorage] Saved: {storage.GetPath(fileName)}");
+            return true;
         }
 
         /// <summary>
@@ -48,30 +56,72 @@ namespace OpenGS
         /// <returns>読み込んだデータ、またはデフォルト値</returns>
         public static T Load<T>(string fileName, T defaultValue = default)
         {
-            string path = FilePathHelper.GetFilePath(fileName);
-
-            if (!File.Exists(path))
+            try
             {
-                // ファイルが無い場合はデフォルトを返す
+                return storage.Load(fileName, defaultValue);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonStorage] Load Failed ({fileName}): {e.Message}");
+                return defaultValue;
+            }
+        }
+
+        public static bool TryLoad<T>(string fileName, out T data)
+        {
+            try
+            {
+                return storage.TryLoad(fileName, out data);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonStorage] TryLoad Failed ({fileName}): {e.Message}");
+                data = default;
+                return false;
+            }
+        }
+
+        public static bool SaveVersioned<T>(string fileName, T data, int version, Formatting formatting = Formatting.Indented)
+        {
+            var payload = new VersionedPayload<T>
+            {
+                version = version,
+                payload = data
+            };
+            return Save(fileName, payload, formatting);
+        }
+
+        public static T LoadVersioned<T>(
+            string fileName,
+            int currentVersion,
+            Func<int, T, T> migrate,
+            T defaultValue = default)
+        {
+            if (!TryLoad(fileName, out VersionedPayload<T> loaded) || loaded == null)
+            {
+                return defaultValue;
+            }
+
+            if (loaded.version == currentVersion)
+            {
+                return loaded.payload;
+            }
+
+            if (migrate == null)
+            {
+                Debug.LogWarning($"[JsonStorage] Save version mismatch ({fileName}): {loaded.version} -> {currentVersion} and no migrator was provided.");
                 return defaultValue;
             }
 
             try
             {
-                string json = File.ReadAllText(path, Encoding.UTF8);
-                T data = JsonConvert.DeserializeObject<T>(json);
-
-                // もし中身が空っぽ等で null になった場合はデフォルト値を返す
-                if (data == null)
-                {
-                    return defaultValue;
-                }
-
-                return data;
+                T migrated = migrate(loaded.version, loaded.payload);
+                SaveVersioned(fileName, migrated, currentVersion);
+                return migrated;
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Debug.LogError($"[JsonStorage] Load Failed ({fileName}): {e.Message}");
+                Debug.LogError($"[JsonStorage] Migration failed ({fileName}): {ex.Message}");
                 return defaultValue;
             }
         }
@@ -81,21 +131,12 @@ namespace OpenGS
         /// </summary>
         public static bool Delete(string fileName)
         {
-            string path = FilePathHelper.GetFilePath(fileName);
-            if (File.Exists(path))
+            if (storage.Delete(fileName))
             {
-                try
-                {
-                    File.Delete(path);
-                    Debug.Log($"[JsonStorage] Deleted: {path}");
-                    return true;
-                }
-                catch (Exception e)
-                {
-                    Debug.LogError($"[JsonStorage] Delete Failed ({fileName}): {e.Message}");
-                    return false;
-                }
+                Debug.Log($"[JsonStorage] Deleted: {storage.GetPath(fileName)}");
+                return true;
             }
+
             return false;
         }
 
@@ -104,8 +145,7 @@ namespace OpenGS
         /// </summary>
         public static bool Exists(string fileName)
         {
-            string path = FilePathHelper.GetFilePath(fileName);
-            return File.Exists(path);
+            return storage.Exists(fileName);
         }
     }
 }

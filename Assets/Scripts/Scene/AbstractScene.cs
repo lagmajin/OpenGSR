@@ -22,6 +22,8 @@ namespace OpenGS
 
         private CancellationTokenSource sceneLifetimeCts;
         private readonly HashSet<Coroutine> managedCoroutines = new HashSet<Coroutine>();
+        private AsyncOperation currentSceneOperation;
+        private bool isSceneTransitionInProgress;
 
         [SerializeField] [Required] public SystemSoundMasterData systemSoundMasterData;
         [SerializeField] [Required] public GeneralSceneMasterData generalSceneMasterData;
@@ -41,6 +43,7 @@ namespace OpenGS
         }
 
         public bool IsOfflineMode => !IsOnlineMode;
+        public bool IsSceneTransitionInProgress => isSceneTransitionInProgress;
 
         public void SetOnlineMode(bool value)
         {
@@ -49,9 +52,7 @@ namespace OpenGS
 
         protected virtual void Awake()
         {
-            sceneLifetimeCts?.Cancel();
-            sceneLifetimeCts?.Dispose();
-            sceneLifetimeCts = new CancellationTokenSource();
+            RestartSceneLifetimeToken();
 
             try
             {
@@ -193,6 +194,11 @@ namespace OpenGS
         {
         }
 
+        protected virtual void OnSceneTransitionBlocked(string nextSceneName)
+        {
+            Debug.LogWarning($"{GetType().Name}: scene transition blocked while another transition is in progress. next={nextSceneName}");
+        }
+
         protected AsyncOperation GoToScene(string nextSceneName, bool additive = false)
         {
             if (string.IsNullOrWhiteSpace(nextSceneName))
@@ -201,14 +207,33 @@ namespace OpenGS
                 return null;
             }
 
-            OnBeforeSceneChange(nextSceneName);
-            var mode = additive ? LoadSceneMode.Additive : LoadSceneMode.Single;
-            var op = SceneManager.LoadSceneAsync(nextSceneName, mode);
-            if (op != null)
+            if (isSceneTransitionInProgress)
             {
-                op.completed += _ => OnAfterSceneLoaded(nextSceneName, mode);
+                OnSceneTransitionBlocked(nextSceneName);
+                return currentSceneOperation;
             }
-            return op;
+
+            isSceneTransitionInProgress = true;
+            RestartSceneLifetimeToken();
+            OnBeforeSceneChange(nextSceneName);
+
+            var mode = additive ? LoadSceneMode.Additive : LoadSceneMode.Single;
+            currentSceneOperation = SceneManager.LoadSceneAsync(nextSceneName, mode);
+            if (currentSceneOperation != null)
+            {
+                currentSceneOperation.completed += _ =>
+                {
+                    isSceneTransitionInProgress = false;
+                    currentSceneOperation = null;
+                    OnAfterSceneLoaded(nextSceneName, mode);
+                };
+            }
+            else
+            {
+                isSceneTransitionInProgress = false;
+            }
+
+            return currentSceneOperation;
         }
 
         protected bool HandleEscapeToBackScene(Action onBack = null, KeyCode key = KeyCode.Escape)
@@ -329,6 +354,15 @@ namespace OpenGS
             sceneLifetimeCts?.Cancel();
             sceneLifetimeCts?.Dispose();
             sceneLifetimeCts = null;
+            currentSceneOperation = null;
+            isSceneTransitionInProgress = false;
+        }
+
+        private void RestartSceneLifetimeToken()
+        {
+            sceneLifetimeCts?.Cancel();
+            sceneLifetimeCts?.Dispose();
+            sceneLifetimeCts = new CancellationTokenSource();
         }
 
 #if UNITY_EDITOR

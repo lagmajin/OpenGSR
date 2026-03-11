@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace OpenGS
@@ -152,6 +153,86 @@ namespace OpenGS
             return GetResolvedPath(GetEffectSoundPaths(sound));
         }
 
+        public int PreloadAll()
+        {
+            RebuildMaps();
+
+            var loadedCount = 0;
+            loadedCount += PreloadSystemSounds();
+            loadedCount += PreloadMatchSounds();
+            loadedCount += PreloadEffectSounds();
+            return loadedCount;
+        }
+
+        public int Warmup()
+        {
+            return PreloadAll();
+        }
+
+        public bool ValidateAllMappings(out string report)
+        {
+            var missing = new List<string>();
+
+            foreach (ESystemSound sound in Enum.GetValues(typeof(ESystemSound)))
+            {
+                if (!TryGetSystemSound(sound, out _))
+                {
+                    missing.Add($"System:{sound}");
+                }
+            }
+
+            foreach (EMatchSound sound in Enum.GetValues(typeof(EMatchSound)))
+            {
+                if (!TryGetMatchSound(sound, out _))
+                {
+                    missing.Add($"Match:{sound}");
+                }
+            }
+
+            foreach (ESoundEffect sound in Enum.GetValues(typeof(ESoundEffect)))
+            {
+                if (!TryGetEffectSound(sound, out _))
+                {
+                    missing.Add($"Effect:{sound}");
+                }
+            }
+
+            if (missing.Count == 0)
+            {
+                report = "SoundMasterData validation passed. No missing mappings.";
+                return true;
+            }
+
+            var sb = new StringBuilder();
+            sb.AppendLine("SoundMasterData validation failed. Missing mappings:");
+            foreach (var item in missing)
+            {
+                sb.Append("- ");
+                sb.AppendLine(item);
+            }
+
+            report = sb.ToString();
+            return false;
+        }
+
+        public bool ValidateAllMappings(bool logWarnings = true)
+        {
+            var isValid = ValidateAllMappings(out var report);
+            if (logWarnings)
+            {
+                if (isValid)
+                {
+                    Debug.Log(report);
+                }
+                else
+                {
+                    Debug.LogWarning(report);
+                }
+            }
+
+            return isValid;
+        }
+
         private static AudioClip LoadFirst(string[] candidates)
         {
             if (candidates == null)
@@ -197,6 +278,69 @@ namespace OpenGS
             }
 
             return null;
+        }
+
+        private int PreloadSystemSounds()
+        {
+            var loadedCount = 0;
+            foreach (ESystemSound sound in Enum.GetValues(typeof(ESystemSound)))
+            {
+                if (systemMap.TryGetValue(sound, out var existing) && existing != null)
+                {
+                    continue;
+                }
+
+                var loaded = LoadFirst(GetSystemSoundPaths(sound));
+                if (loaded != null)
+                {
+                    systemMap[sound] = loaded;
+                    loadedCount++;
+                }
+            }
+
+            return loadedCount;
+        }
+
+        private int PreloadMatchSounds()
+        {
+            var loadedCount = 0;
+            foreach (EMatchSound sound in Enum.GetValues(typeof(EMatchSound)))
+            {
+                if (matchMap.TryGetValue(sound, out var existing) && existing != null)
+                {
+                    continue;
+                }
+
+                var loaded = LoadFirst(GetMatchSoundPaths(sound));
+                if (loaded != null)
+                {
+                    matchMap[sound] = loaded;
+                    loadedCount++;
+                }
+            }
+
+            return loadedCount;
+        }
+
+        private int PreloadEffectSounds()
+        {
+            var loadedCount = 0;
+            foreach (ESoundEffect sound in Enum.GetValues(typeof(ESoundEffect)))
+            {
+                if (effectMap.TryGetValue(sound, out var existing) && existing != null)
+                {
+                    continue;
+                }
+
+                var loaded = LoadFirst(GetEffectSoundPaths(sound));
+                if (loaded != null)
+                {
+                    effectMap[sound] = loaded;
+                    loadedCount++;
+                }
+            }
+
+            return loadedCount;
         }
 
         private static string[] GetSystemSoundPaths(ESystemSound sound)

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 namespace OpenGS
@@ -65,6 +66,52 @@ namespace OpenGS
 
             return new Subscription<T>(onMessageReceived);
         }
+        
+        public static IDisposable Subscribe<T>(Action<T> onMessageReceived, SubscriptionBag bag)
+        {
+            var sub = Subscribe(onMessageReceived);
+            bag?.Add(sub);
+            return sub;
+        }
+
+        public static IDisposable SubscribeOnce<T>(Action<T> onMessageReceived)
+        {
+            if (onMessageReceived == null) throw new ArgumentNullException(nameof(onMessageReceived));
+
+            IDisposable sub = null;
+            sub = Subscribe<T>(message =>
+            {
+                sub?.Dispose();
+                onMessageReceived(message);
+            });
+            return sub;
+        }
+
+        public static int SubscriberCount<T>()
+        {
+            lock (Locker)
+            {
+                if (Handlers.TryGetValue(typeof(T), out var list))
+                {
+                    return list.Count;
+                }
+            }
+
+            return 0;
+        }
+
+        public static void UnsubscribeAll<T>()
+        {
+            lock (Locker)
+            {
+                Handlers.Remove(typeof(T));
+            }
+        }
+
+        public static SubscriptionBag CreateSubscriptionBag()
+        {
+            return new SubscriptionBag();
+        }
 
         private static void Unsubscribe<T>(Action<T> handler)
         {
@@ -83,6 +130,7 @@ namespace OpenGS
         private sealed class Subscription<T> : IDisposable
         {
             private Action<T> _handler;
+            private int _disposed;
 
             public Subscription(Action<T> handler)
             {
@@ -91,9 +139,55 @@ namespace OpenGS
 
             public void Dispose()
             {
-                if (_handler == null) return;
+                if (Interlocked.Exchange(ref _disposed, 1) == 1)
+                {
+                    return;
+                }
+
+                if (_handler == null)
+                {
+                    return;
+                }
+
                 Unsubscribe(_handler);
                 _handler = null;
+            }
+        }
+
+        public sealed class SubscriptionBag : IDisposable
+        {
+            private readonly List<IDisposable> subscriptions = new List<IDisposable>();
+            private bool disposed;
+
+            public void Add(IDisposable subscription)
+            {
+                if (subscription == null)
+                {
+                    return;
+                }
+
+                if (disposed)
+                {
+                    subscription.Dispose();
+                    return;
+                }
+
+                subscriptions.Add(subscription);
+            }
+
+            public void Dispose()
+            {
+                if (disposed)
+                {
+                    return;
+                }
+
+                disposed = true;
+                for (int i = 0; i < subscriptions.Count; i++)
+                {
+                    subscriptions[i]?.Dispose();
+                }
+                subscriptions.Clear();
             }
         }
     }
