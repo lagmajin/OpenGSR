@@ -51,7 +51,7 @@ namespace OpenGS
             // ブースター燃料の回復
             if (IsGround() && !inputService.IsBoosterPressed())
             {
-                Status.AddBooster(boosterRecovery * Time.deltaTime);
+                Status.RefillBooster(boosterRecovery * Time.deltaTime);
             }
         }
 
@@ -94,7 +94,7 @@ namespace OpenGS
                 velocity.y = Mathf.Min(velocity.y, maxBoosterSpeed);
                 rigidbody2D.linearVelocity = velocity;
 
-                Status.ReduceBooster(boosterConsumption * Time.fixedDeltaTime);
+                Status.ConsumeBooster(boosterConsumption * Time.fixedDeltaTime);
             }
         }
 

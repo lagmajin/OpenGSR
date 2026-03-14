@@ -23,6 +23,9 @@ namespace OpenGS
         [ReadOnly] public GameObject currentWeaponObject;
         [ReadOnly] public EPlayerEquipWeapon currentEquipType = EPlayerEquipWeapon.MainWeapon;
 
+        // 互換性のためのエイリアス
+        public GameObject currentWeapon => currentWeaponObject;
+
         private EPlayerEquipWeapon lastRegularWeapon = EPlayerEquipWeapon.MainWeapon;
         private int specialWeaponAmmo = 0;
 
@@ -91,6 +94,16 @@ namespace OpenGS
             weapon.transform.localRotation = Quaternion.identity;
 
             RefreshWeaponVisibility();
+        }
+
+        [Button("ドロップ")]
+        public void DropCurrentWeapon()
+        {
+            if (currentWeaponObject != null)
+            {
+                Destroy(currentWeaponObject);
+                currentWeaponObject = null;
+            }
         }
 
         private void RemoveWeaponFromSlot(GameObject slot)

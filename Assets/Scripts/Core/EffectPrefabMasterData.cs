@@ -1,4 +1,4 @@
-﻿
+
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -9,7 +9,7 @@ namespace OpenGS
     public class EffectPrefabMasterData : ScriptableObject
     {
         [SerializeField][Required] public GameObject flagReturnEffect;
-        
+        [SerializeField][Required] public GameObject HitEffect;
 
     }
 }
