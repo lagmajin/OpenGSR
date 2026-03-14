@@ -3,23 +3,26 @@ using UnityEngine;
 namespace OpenGS
 {
     /// <summary>
-    /// アサルトライフル (AR) の挙動を制御するクラス。
-    /// 標準的な連射性能と安定した精度を持つ。
+    /// ハンドガン (HG) の挙動を制御するクラス。
+    /// 基本的にセミオートで動作し、移動中の射撃精度が高い。
     /// </summary>
-    public class AssaultRifleController : AbstractGunController
+    public class HandgunController : AbstractGunController
     {
+        private void Start()
+        {
+            // ハンドガンは常にセミオート（MasterDataの設定に関わらず）
+            fireMode = EFireMode.Semi;
+        }
+
         protected override void CreateBullet(OpenGSCore.EBulletType type = OpenGSCore.EBulletType.Normal)
         {
             if (bulletPrefab == null || muzzle == null) return;
 
-            // 抽象クラスで定義された、スプレッド・熱・エイム入力を考慮した方向を取得
             Vector2 shotDir = GetShotDirection();
             float angle = Mathf.Atan2(shotDir.y, shotDir.x) * Mathf.Rad2Deg;
 
-            // 弾を生成
             GameObject bulletObj = Instantiate(bulletPrefab, muzzle.position, Quaternion.Euler(0, 0, angle));
             
-            // 弾の初期設定
             var bullet = bulletObj.GetComponent<BulletController>();
             if (bullet != null)
             {

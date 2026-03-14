@@ -16,24 +16,24 @@ namespace OpenGS
         {
             if (bulletPrefab == null || muzzle == null) return;
 
+            // 基準となるエイム方向
             Vector2 baseDir = GetShotDirection();
             float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
 
             for (int i = 0; i < pelletCount; i++)
             {
-                // 拡散角を計算
+                // 各ペレットごとの追加拡散
                 float angleOffset = Random.Range(-spreadWidth, spreadWidth);
                 float finalAngle = baseAngle + angleOffset;
                 Vector2 shotDir = new Vector2(Mathf.Cos(finalAngle * Mathf.Deg2Rad), Mathf.Sin(finalAngle * Mathf.Deg2Rad));
 
-                // 弾を生成
                 GameObject pellet = Instantiate(bulletPrefab, muzzle.position, Quaternion.Euler(0, 0, finalAngle));
                 
                 var bullet = pellet.GetComponent<BulletController>();
                 if (bullet != null)
                 {
-                    // ショットガンは1発あたりのダメージを調整（ここではそのまま渡すが、設計次第で分割も可能）
-                    bullet.Init(shotDir, bulletSpeed * Random.Range(0.9f, 1.1f), damage);
+                    // 各弾の速度とダメージを微調整してバラけさせる
+                    bullet.Init(shotDir, bulletSpeed * Random.Range(0.95f, 1.05f), damage);
                 }
             }
         }
