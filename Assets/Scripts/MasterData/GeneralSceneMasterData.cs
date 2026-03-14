@@ -6,10 +6,10 @@ namespace OpenGS
     [CreateAssetMenu(menuName = "MasterData/Scene/GeneralSceneMasterData")]
     public class GeneralSceneMasterData : ScriptableObject
     {
-        [SerializeField] private string titleScene = "TitleScene";
-        [SerializeField] private string shopScene = "ShopScene";
-        [SerializeField] private string onlineWaitRoomScene = "OnlineWaitRoomScene";
-        [SerializeField] private string onlineLoadingScene = "OnlineLoadingScene";
+        [SerializeField] private SceneObject titleScene = "TitleScene";
+        [SerializeField] private SceneObject shopScene = "ShopScene";
+        [SerializeField] private SceneObject onlineWaitRoomScene = "OnlineWaitRoomScene";
+        [SerializeField] private SceneObject onlineLoadingScene = "OnlineLoadingScene";
 
         private static GeneralSceneMasterData _instance;
 

@@ -12,7 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 053427d08d6135748a5ec4c655b5637d, type: 3}
   m_Name: GeneralSceneMasterData
   m_EditorClassIdentifier: OpenGSR::OpenGS.GeneralSceneMasterData
-  titleScene: TitleScene
-  shopScene: ShopScene
-  onlineWaitRoomScene: OnlineWaitRoomScene
-  onlineLoadingScene: OnlineLoadingScene
+  titleScene:
+    m_SceneName: TitleScene
+  shopScene:
+    m_SceneName: ShopScene
+  onlineWaitRoomScene:
+    m_SceneName: OnlineWaitRoomScene
+  onlineLoadingScene:
+    m_SceneName: OnlineLoadingScene
