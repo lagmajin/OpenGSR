@@ -13,7 +13,7 @@ namespace OpenGS
     {
         private readonly SoundMasterData _soundMasterData;
 
-        // キャッシュ（旧 SoundManager のロジックを継承）
+        // キャッシュ
         private readonly Dictionary<string, AudioClip> _weaponShotClipCache = new();
         private readonly Dictionary<string, AudioClip> _weaponReloadClipCache = new();
         private readonly Dictionary<string, AudioClip> _weaponHitClipCache = new();
@@ -24,20 +24,9 @@ namespace OpenGS
             _soundMasterData = soundMasterData;
         }
 
-        public void PlayBGM(EMap map)
-        {
-            SimpleAudioManager.Instance.PlayBGM(map.ToString());
-        }
-
-        public void PlayBGM(string bgmName, float fadeTime = -1f)
-        {
-            SimpleAudioManager.Instance.PlayBGM(bgmName, fadeTime);
-        }
-
-        public void StopBGM(float fadeTime = -1f)
-        {
-            SimpleAudioManager.Instance.StopBGM(fadeTime);
-        }
+        public void PlayBGM(EMap map) => SimpleAudioManager.Instance.PlayBGM(map.ToString());
+        public void PlayBGM(string bgmName, float fadeTime = -1f) => SimpleAudioManager.Instance.PlayBGM(bgmName, fadeTime);
+        public void StopBGM(float fadeTime = -1f) => SimpleAudioManager.Instance.StopBGM(fadeTime);
 
         public void PlaySystemSound(ESystemSound sound)
         {
@@ -57,29 +46,10 @@ namespace OpenGS
             PlayOneShot(clip, volume);
         }
 
-        public void PlayWeaponShot(EWeaponType type)
-        {
-            var clip = GetWeaponClip(type, "shot", _weaponShotClipCache);
-            PlayOneShot(clip);
-        }
-
-        public void PlayWeaponReload(EWeaponType type)
-        {
-            var clip = GetWeaponClip(type, "reload", _weaponReloadClipCache);
-            PlayOneShot(clip);
-        }
-
-        public void PlayWeaponHit(EWeaponType type)
-        {
-            var clip = GetWeaponClip(type, "hit", _weaponHitClipCache);
-            PlayOneShot(clip);
-        }
-
-        public void PlayGrenadeThrow(EGrenadeType type)
-        {
-            var clip = GetGrenadeThrowClip(type);
-            PlayOneShot(clip);
-        }
+        public void PlayWeaponShot(EWeaponType type, float pitch = 1.0f) => PlayOneShot(GetWeaponClip(type, "shot", _weaponShotClipCache), 1.0f, pitch);
+        public void PlayWeaponReload(EWeaponType type, float pitch = 1.0f) => PlayOneShot(GetWeaponClip(type, "reload", _weaponReloadClipCache), 1.0f, pitch);
+        public void PlayWeaponHit(EWeaponType type, float pitch = 1.0f) => PlayOneShot(GetWeaponClip(type, "hit", _weaponHitClipCache), 1.0f, pitch);
+        public void PlayGrenadeThrow(EGrenadeType type, float pitch = 1.0f) => PlayOneShot(GetGrenadeThrowClip(type), 1.0f, pitch);
 
         public void PlayOneShot(AudioClip clip, float volume = 1.0f, float pitch = 1.0f)
         {
@@ -89,20 +59,9 @@ namespace OpenGS
 
         public bool ValidateSoundSetup(bool logWarnings = true)
         {
-            if (_soundMasterData == null)
-            {
-                if (logWarnings) Debug.LogWarning("[SoundService] SoundMasterData is null.");
-                return false;
-            }
-
+            if (_soundMasterData == null) return false;
             bool generalValid = _soundMasterData.ValidateAllMappings(logWarnings);
             bool combatValid = _soundMasterData.ValidateCombatMappings(out var combatReport);
-            if (logWarnings)
-            {
-                if (combatValid) Debug.Log(combatReport);
-                else Debug.LogWarning(combatReport);
-            }
-
             return generalValid && combatValid;
         }
 
@@ -118,15 +77,12 @@ namespace OpenGS
             string key = $"{category}:{type}";
             if (cache.TryGetValue(key, out var cached)) return cached;
 
-            // フォールバック（Resources.Load）
             string weaponName = type.ToString();
             string lower = weaponName.ToLowerInvariant();
             AudioClip loaded = LoadFirst(
                 $"Sound/Weapon/{weaponName}_{category}",
                 $"Sound/Weapon/{lower}_{category}",
-                $"Sound/Weapon/sfx_{lower}_{category}",
-                $"Sound/Weapon/{category}_{lower}",
-                $"Sound/{category}_{lower}");
+                $"Sound/Weapon/sfx_{lower}_{category}");
 
             cache[key] = loaded;
             return loaded;
@@ -135,25 +91,15 @@ namespace OpenGS
         private AudioClip GetGrenadeThrowClip(EGrenadeType type)
         {
             if (_soundMasterData != null && _soundMasterData.TryGetGrenadeThrowSound(type, out var mappedClip)) return mappedClip;
-
             string key = type.ToString();
             if (_grenadeThrowClipCache.TryGetValue(key, out var cached)) return cached;
-
-            string name = type.ToString();
-            string lower = name.ToLowerInvariant();
-            AudioClip loaded = LoadFirst(
-                $"Sound/Grenade/{name}_throw",
-                $"Sound/Grenade/{lower}_throw",
-                $"Sound/Weapon/grenade_throw_{lower}",
-                "Sound/Weapon/grenade_throw");
-
+            AudioClip loaded = LoadFirst($"Sound/Grenade/{type}_throw", "Sound/Weapon/grenade_throw");
             _grenadeThrowClipCache[key] = loaded;
             return loaded;
         }
 
         private static AudioClip LoadFirst(params string[] candidates)
         {
-            if (candidates == null) return null;
             foreach (var path in candidates)
             {
                 if (string.IsNullOrWhiteSpace(path)) continue;

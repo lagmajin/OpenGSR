@@ -3,14 +3,14 @@ using OpenGSCore;
 using Sirenix.OdinInspector;
 using DG.Tweening;
 using Zenject;
+using System.Collections;
 
 namespace OpenGS
 {
     public enum EFireMode
     {
         Semi,
-        Auto,
-        Burst
+        Auto
     }
 
     [DisallowMultipleComponent]
@@ -34,6 +34,8 @@ namespace OpenGS
         [SerializeField, Range(0f, 10f)] public float baseSpread = 0.0f;
         [SerializeField, Range(0f, 1f)] public float recoilPerShot = 0.1f;
         [SerializeField, Range(0f, 5f)] public float recoilRecovery = 1.0f;
+        [SerializeField] private float shakeIntensity = 0.05f;
+        [SerializeField] private float visualRecoilAmount = 0.1f;
 
         protected bool isShottable = true;
         [ShowInInspector] protected int remains = 0;
@@ -71,12 +73,14 @@ namespace OpenGS
         // Services
         protected ISoundService soundService;
         protected IInputService inputService;
+        protected IEffectService effectService;
 
         [Inject]
-        public void Construct(ISoundService soundService, IInputService inputService)
+        public void Construct(ISoundService soundService, IInputService inputService, IEffectService effectService)
         {
             this.soundService = soundService;
             this.inputService = inputService;
+            this.effectService = effectService;
         }
 
         private void Awake()
@@ -166,6 +170,8 @@ namespace OpenGS
 
         public virtual void ReloadStart()
         {
+            if (reloadingNow || remains >= magazine) return;
+
             reloadCancelFlag = false;
             reloadingNow = true;
             if (data != null && soundService != null)
@@ -220,7 +226,7 @@ namespace OpenGS
         public void StartFire()
         {
             isFiring = true;
-            if (fireMode == EFireMode.Semi || fireMode == EFireMode.Burst)
+            if (fireMode == EFireMode.Semi)
             {
                 Shot();
             }
@@ -239,6 +245,12 @@ namespace OpenGS
                 CreateMuzzulleFlash();
                 CreateEmptyShellCasing();
                 PlayShotSound();
+                PlayVisualRecoil();
+                
+                if (effectService != null)
+                {
+                    effectService.ShakeCamera(shakeIntensity, 0.1f);
+                }
                 
                 heat = Mathf.Min(heat + heatPerShot, heatMax);
                 PublishAmmoUpdate();
@@ -270,10 +282,19 @@ namespace OpenGS
         {
             if (data != null && soundService != null)
             {
-                // TODO: SoundService にピッチ変更オプションを追加するか、
-                // あるいは SoundService 内部で熱によるピッチ変更を実装する
-                soundService.PlayWeaponShot(data.weaponType);
+                float randomPitch = Random.Range(0.95f, 1.05f);
+                soundService.PlayWeaponShot(data.weaponType, randomPitch);
             }
+        }
+
+        private void PlayVisualRecoil()
+        {
+            transform.DOKill(true);
+            Vector3 recoilPos = Vector3.left * visualRecoilAmount;
+            transform.DOLocalMove(originalHeadPos + recoilPos, 0.05f).SetEase(Ease.OutQuad).OnComplete(() =>
+            {
+                transform.DOLocalMove(originalHeadPos, 0.15f).SetEase(Ease.InSine);
+            });
         }
 
         public void Sit()

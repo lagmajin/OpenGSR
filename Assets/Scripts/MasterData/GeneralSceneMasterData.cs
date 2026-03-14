@@ -33,12 +33,7 @@ namespace OpenGS
         {
             if (_instance == null)
             {
-                _instance = Resources.Load<GeneralSceneMasterData>("ScriptableObject/Scene/GeneralSceneMasterData");
-                if (_instance == null)
-                {
-                    // フォールバック（旧パス）
-                    _instance = Resources.Load<GeneralSceneMasterData>("MasterData/Scene/GeneralSceneMasterData");
-                }
+                _instance = Resources.Load<GeneralSceneMasterData>("MasterData/GeneralSceneMasterData");
             }
             return _instance;
         }

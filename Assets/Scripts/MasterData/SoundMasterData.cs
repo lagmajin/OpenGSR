@@ -64,11 +64,11 @@ namespace OpenGS
         {
             if (instance == null)
             {
-                instance = Resources.Load<SoundMasterData>("MasterData/Sound/SoundMasterData");
+                instance = Resources.Load<SoundMasterData>("MasterData/SoundMasterData");
                 if (instance == null)
                 {
                     instance = CreateInstance<SoundMasterData>();
-                    Debug.LogWarning("SoundMasterData asset not found at Resources/MasterData/Sound/SoundMasterData. Fallback path lookup will be used.");
+                    Debug.LogWarning("SoundMasterData asset not found at Resources/MasterData/SoundMasterData. Fallback path lookup will be used.");
                 }
                 instance.RebuildMaps();
             }
