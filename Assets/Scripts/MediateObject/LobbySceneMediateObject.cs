@@ -4,7 +4,7 @@ using UnityEngine;
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    public class LobbySceneMediateObject : MonoBehaviour, IAbstractMediateObject, ILobbyMediateObject
+    public class LobbySceneMediateObject : AbstractMediateObject, ILobbyMediateObject
     {
         [SerializeField] public AbstractCreateNewRoomDialog createNewRoomDialog;
 

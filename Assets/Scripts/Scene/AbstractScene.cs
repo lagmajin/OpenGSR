@@ -28,8 +28,8 @@ namespace OpenGS
         [SerializeField] [Required] public SystemSoundMasterData systemSoundMasterData;
         [SerializeField] [Required] public GeneralSceneMasterData generalSceneMasterData;
         [SerializeField] [Required] protected GameTimer timer;
-        [SerializeField] protected MonoBehaviour sceneController;
-        [SerializeField] protected MonoBehaviour sceneMediateObject;
+        [SerializeField] protected AbstractSceneController sceneController;
+        [SerializeField] protected AbstractMediateObject sceneMediateObject;
 
         protected GameGeneralManager _gameGeneralManager;
 
@@ -66,6 +66,10 @@ namespace OpenGS
             }
 
             ValidateSceneComposition(true);
+        }
+
+        protected virtual void Update()
+        {
         }
 
         [Button("スクリーンショット")]

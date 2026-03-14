@@ -8,7 +8,7 @@ namespace OpenGS
     /// スプラッシュ画面のリファレンス保持とシーン遷移の仲介を担当するクラス。
     /// </summary>
     [DisallowMultipleComponent]
-    public class SplashScreenMediateObject : MonoBehaviour, ISplashScreenMediateObject
+    public class SplashSceneMediateObject : AbstractMediateObject, ISplashSceneMediateObject
     {
         [Header("UI References")]
         [SerializeField, Required] private CanvasGroup splashCanvasGroup;

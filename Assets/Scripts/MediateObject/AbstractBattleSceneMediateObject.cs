@@ -3,7 +3,7 @@ using UnityEngine;
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    public class AbstractBattleSceneMediateObject : MonoBehaviour, IAbstractMediateObject
+    public class AbstractBattleSceneMediateObject : AbstractMediateObject
     {
         public AbstractMatchMainScript mainscript;
 

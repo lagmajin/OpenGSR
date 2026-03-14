@@ -4,7 +4,7 @@ using UnityEngine;
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    public class WaitRoomMediateObject : MonoBehaviour, IAbstractMediateObject
+    public class WaitRoomMediateObject : AbstractMediateObject
     {
         [SerializeField] private MonoBehaviour waitRoomUiManagerBehaviour;
 

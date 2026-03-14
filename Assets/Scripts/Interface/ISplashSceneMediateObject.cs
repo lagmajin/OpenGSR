@@ -5,7 +5,7 @@ namespace OpenGS
     /// <summary>
     /// スプラッシュ画面のリファレンスと制御を抽象化するインターフェース。
     /// </summary>
-    public interface ISplashScreenMediateObject : IAbstractMediateObject
+    public interface ISplashSceneMediateObject : IAbstractMediateObject
     {
         CanvasGroup SplashCanvasGroup { get; }
         float DisplayDuration { get; }

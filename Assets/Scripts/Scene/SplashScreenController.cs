@@ -11,14 +11,14 @@ namespace OpenGS
     /// </summary>
     public class SplashScreenController : AbstractScene
     {
-        [SerializeField, Required] private SplashScreenMediateObject splashMediate;
+        [SerializeField, Required] private SplashSceneMediateObject splashMediate;
 
         public override SynchronizationContext MainThread() => SynchronizationContext.Current;
 
         protected override void Awake()
         {
             base.Awake();
-            if (splashMediate == null) splashMediate = GetComponentInChildren<SplashScreenMediateObject>();
+            if (splashMediate == null) splashMediate = GetComponentInChildren<SplashSceneMediateObject>();
         }
 
         private void Start()
@@ -30,7 +30,7 @@ namespace OpenGS
         {
             if (splashMediate == null || splashMediate.SplashCanvasGroup == null)
             {
-                Debug.LogError("SplashScreenMediateObject or CanvasGroup is missing!");
+                Debug.LogError("SplashSceneMediateObject or CanvasGroup is missing!");
                 GoToTitleScene();
                 yield break;
             }
