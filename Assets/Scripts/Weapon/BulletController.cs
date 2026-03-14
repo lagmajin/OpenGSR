@@ -22,6 +22,14 @@ namespace OpenGS
         public ETeam Team   { get; set; } = ETeam.NoTeam;
         public int   Damage { get; set; } = 50;
 
+        public void Init(Vector2 direction, float speed, float damage)
+        {
+            this.speed = speed;
+            this.Damage = Mathf.RoundToInt(damage);
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
+
         // ─── Unity ライフサイクル ────────────────────────────────────
 
         private void Start()
