@@ -12,18 +12,17 @@ EditorBuildSettings:
     path: Assets/Scenes/Title/TitleScene.unity
     guid: b87b4fdb93ee17e449866caa7d830086
   - enabled: 1
+    path: Assets/Scenes/Lobby/LobbyScene.unity
+    guid: e94296f71458d70419f896a47618f385
+  - enabled: 0
     path: Assets/Scenes/Map/Battle/DryDays.unity
     guid: 1e34dff441ebe2044926a52031125118
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/ConnectToServerScene.unity
     guid: ec98ae3486356da41909188ce6559d28
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/Setting/GameSettingScene.unity
     guid: 542fb38a093f52e4590610c446b6ffa7
-  - enabled: 1
-    path: Assets/Scenes/LobbyScene.unity
-    guid: e94296f71458d70419f896a47618f385
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 089e42c240b1c874c96e43f372af0425,
       type: 3}
-  m_UseUCBPForAssetBundles: 0

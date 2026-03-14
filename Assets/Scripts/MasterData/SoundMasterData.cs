@@ -474,12 +474,12 @@ namespace OpenGS
         {
             switch (sound)
             {
-                case ESystemSound.Click: return new[] { "Sound/sfx_UI_btn_click", "Sound/WaitRoom/ButtonClick" };
+                case ESystemSound.Click: return new[] { "Sound/UI_Button_Click", "Sound/WaitRoom/ButtonClick" };
                 case ESystemSound.Error: return new[] { "Sound/Common/Error" };
                 case ESystemSound.Check: return new[] { "Sound/Common/ButtonCheck", "Sound/WaitRoom/Check" };
                 case ESystemSound.EnterLobby: return new[] { "Sound/WaitRoom/EnterLobby" };
                 case ESystemSound.Popup: return new[] { "Sound/WaitRoom/Popup" };
-                case ESystemSound.Fanfare: return new[] { "Sound/Game/sfx_game_win_fanfare", "Sound/sfx_game_win" };
+                case ESystemSound.Fanfare: return new[] { "Sound/Game/sfx_game_win_fanfare", "Sound/Game_Victory" };
                 default: return Array.Empty<string>();
             }
         }
@@ -489,13 +489,13 @@ namespace OpenGS
             switch (sound)
             {
                 case EMatchSound.GameStartVoice: return new[] { "Sound/Game/voice_game_start" };
-                case EMatchSound.YouWon: return new[] { "Sound/Game/sfx_game_win_fanfare", "Sound/voice_game_bscore" };
-                case EMatchSound.YouLost: return new[] { "Sound/Game/sfx_game_lose", "Sound/voice_game_lose" };
-                case EMatchSound.RedTeamFlagCaptured: return new[] { "Sound/Game/CTF/voice_game_rcapture", "Sound/voice_game_rcapture" };
-                case EMatchSound.BlueTeamFlagCaptured: return new[] { "Sound/Game/CTF/voice_game_bcapture", "Sound/voice_game_bcapture" };
+                case EMatchSound.YouWon: return new[] { "Sound/Game/sfx_game_win_fanfare", "Sound/Voice_Game_Blue_Scored" };
+                case EMatchSound.YouLost: return new[] { "Sound/Game/sfx_game_lose", "Sound/Voice_Game_Defeat" };
+                case EMatchSound.RedTeamFlagCaptured: return new[] { "Sound/Game/CTF/voice_game_rcapture", "Sound/Voice_Game_Red_Captured" };
+                case EMatchSound.BlueTeamFlagCaptured: return new[] { "Sound/Game/CTF/voice_game_bcapture", "Sound/Voice_Game_Blue_Captured" };
                 case EMatchSound.FlagLost: return new[] { "Sound/Game/CTF/sfx_ctf_lost" };
-                case EMatchSound.RedTeamFlagReturn: return new[] { "Sound/Game/CTF/voice_game_rreturn", "Sound/voice_game_rreturn" };
-                case EMatchSound.BlueTeamFlagReturn: return new[] { "Sound/Game/CTF/voice_game_breturn", "Sound/voice_game_breturn" };
+                case EMatchSound.RedTeamFlagReturn: return new[] { "Sound/Game/CTF/voice_game_rreturn", "Sound/Voice_Game_Red_Returned" };
+                case EMatchSound.BlueTeamFlagReturn: return new[] { "Sound/Game/CTF/voice_game_breturn", "Sound/Voice_Game_Blue_Returned" };
                 default: return Array.Empty<string>();
             }
         }
@@ -504,8 +504,8 @@ namespace OpenGS
         {
             switch (sound)
             {
-                case ESoundEffect.Explosion: return new[] { "Sound/Weapon/_grenade_explode", "Sound/sfx_granade_cluster" };
-                case ESoundEffect.HitStageObject: return new[] { "Sound/bullet_bound", "Sound/Weapon/sfx_ric01" };
+                case ESoundEffect.Explosion: return new[] { "Sound/Weapon/_grenade_explode", "Sound/Weapon_Grenade_Cluster_Explosion" };
+                case ESoundEffect.HitStageObject: return new[] { "Sound/Bullet_Impact_Metal", "Sound/Weapon/sfx_ric01" };
                 default: return Array.Empty<string>();
             }
         }

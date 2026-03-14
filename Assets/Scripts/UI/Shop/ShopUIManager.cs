@@ -2,17 +2,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Zenject;
+using Cysharp.Threading.Tasks;
 
 namespace OpenGS
 {
     /// <summary>
     /// ショップ画面全体の表示とロジックを管理するマネージャー。
+    /// IShopService を介して Online/Offline を切り替える。
     /// </summary>
     public class ShopUIManager : MonoBehaviour
     {
-        [Header("Master Data")]
-        [SerializeField] private ShopMasterData shopMasterData;
-
         [Header("UI Containers")]
         [SerializeField] private Transform itemGridRoot;
         [SerializeField] private GameObject itemPrefab;
@@ -39,23 +39,32 @@ namespace OpenGS
         [SerializeField] private Button itemTab;
         [SerializeField] private Button boosterTab;
 
+        private IShopService shopService;
         private ShopItemData selectedItem;
         private List<GameObject> activeItemObjects = new List<GameObject>();
         private int currentSelectedSlot = 0;
 
+        [Inject]
+        public void Construct(IShopService shopService)
+        {
+            this.shopService = shopService;
+        }
+
         private void Start()
         {
+            shopService.OnDataChanged += UpdateUI;
+
             UpdateCreditsDisplay();
 
             // 初期表示は武器カテゴリー
-            SwitchCategory(EShopCategory.Weapon);
+            SwitchCategory(EShopCategory.Weapon).Forget();
 
             // タブのイベント登録
-            if (weaponTab) weaponTab.onClick.AddListener(() => SwitchCategory(EShopCategory.Weapon));
-            if (itemTab) itemTab.onClick.AddListener(() => SwitchCategory(EShopCategory.InstantItem));
-            if (boosterTab) boosterTab.onClick.AddListener(() => SwitchCategory(EShopCategory.Booster));
+            if (weaponTab) weaponTab.onClick.AddListener(() => SwitchCategory(EShopCategory.Weapon).Forget());
+            if (itemTab) itemTab.onClick.AddListener(() => SwitchCategory(EShopCategory.InstantItem).Forget());
+            if (boosterTab) boosterTab.onClick.AddListener(() => SwitchCategory(EShopCategory.Booster).Forget());
 
-            if (actionButton) actionButton.onClick.AddListener(OnActionClicked);
+            if (actionButton) actionButton.onClick.AddListener(() => OnActionClicked().Forget());
 
             for (int i = 0; i < slotButtons.Length; i++)
             {
@@ -66,6 +75,18 @@ namespace OpenGS
             if (detailPanel) detailPanel.SetActive(false);
             if (slotSelectionRoot) slotSelectionRoot.SetActive(false);
             SelectSlot(0);
+        }
+
+        private void OnDestroy()
+        {
+            if (shopService != null)
+                shopService.OnDataChanged -= UpdateUI;
+        }
+
+        private void UpdateUI()
+        {
+            UpdateCreditsDisplay();
+            UpdateButtonState();
         }
 
         private void SelectSlot(int index)
@@ -84,7 +105,7 @@ namespace OpenGS
             }
         }
 
-        public void SwitchCategory(EShopCategory category)
+        public async UniTaskVoid SwitchCategory(EShopCategory category)
         {
             // 既存のリストをクリア
             foreach (var obj in activeItemObjects)
@@ -93,8 +114,9 @@ namespace OpenGS
             }
             activeItemObjects.Clear();
 
-            // 指定カテゴリーのアイテムを取得して生成
-            var items = shopMasterData.GetItemsByCategory(category);
+            // 指定カテゴリーのアイテムをサービス経由で取得
+            var items = await shopService.GetItemsAsync(category);
+            
             foreach (var item in items)
             {
                 var go = Instantiate(itemPrefab, itemGridRoot);
@@ -127,22 +149,19 @@ namespace OpenGS
         {
             if (selectedItem == null || actionButton == null || actionButtonText == null) return;
 
-            bool purchased = UserSaveManager.IsPurchased(selectedItem.id);
-            
-            // インスタントアイテムの場合は特定スロットの装備状況を見る
-            bool equippedAtCurrentSlot = UserSaveManager.GetEquippedInSlot(selectedItem.category, currentSelectedSlot) == selectedItem.id;
-            bool equippedAtAnySlot = UserSaveManager.IsEquippedAtAnySlot(selectedItem.id, selectedItem.category);
+            bool purchased = shopService.IsPurchased(selectedItem.id);
+            bool equipped = shopService.IsEquipped(selectedItem.id, selectedItem.category, currentSelectedSlot);
 
             if (slotSelectionRoot) slotSelectionRoot.SetActive(purchased && selectedItem.category == EShopCategory.InstantItem);
 
             if (!purchased)
             {
                 actionButtonText.text = "BUY";
-                actionButton.interactable = EconomyManager.CanAfford(selectedItem.price);
+                actionButton.interactable = shopService.GetCredits() >= selectedItem.price;
             }
             else if (selectedItem.category == EShopCategory.InstantItem)
             {
-                if (equippedAtCurrentSlot)
+                if (equipped)
                 {
                     actionButtonText.text = "UNEQUIP";
                     actionButton.interactable = true;
@@ -155,73 +174,42 @@ namespace OpenGS
             }
             else if (selectedItem.category == EShopCategory.Weapon)
             {
-                bool isFavorite = UserSaveManager.IsFavoriteWeapon(selectedItem.id);
-                if (isFavorite)
-                {
-                    actionButtonText.text = "REMOVE FAVORITE";
-                    actionButton.interactable = true;
-                }
-                else
-                {
-                    actionButtonText.text = "ADD FAVORITE";
-                    actionButton.interactable = true;
-                }
+                // ここは将来的に Favorite 管理もサービスに入れる
+                actionButtonText.text = equipped ? "EQUIPPED" : "EQUIP";
+                actionButton.interactable = !equipped;
             }
             else
             {
-                // Booster 等の単体スロット用
-                bool equipped = UserSaveManager.GetEquippedId(selectedItem.category) == selectedItem.id;
-                if (!equipped)
-                {
-                    actionButtonText.text = "EQUIP";
-                    actionButton.interactable = true;
-                }
-                else
-                {
-                    actionButtonText.text = "EQUIPPED";
-                    actionButton.interactable = false;
-                }
+                actionButtonText.text = equipped ? "EQUIPPED" : "EQUIP";
+                actionButton.interactable = !equipped;
             }
         }
 
-        private void OnActionClicked()
+        private async UniTaskVoid OnActionClicked()
         {
             if (selectedItem == null) return;
 
-            bool purchased = UserSaveManager.IsPurchased(selectedItem.id);
+            bool purchased = shopService.IsPurchased(selectedItem.id);
 
             if (!purchased)
             {
-                if (EconomyManager.SpendCredits(selectedItem.price))
+                bool success = await shopService.PurchaseItemAsync(selectedItem.id, selectedItem.price);
+                if (success)
                 {
-                    UserSaveManager.SetPurchased(selectedItem.id);
                     Debug.Log($"Purchased: {selectedItem.itemName}");
-                    UpdateCreditsDisplay();
-                    UpdateButtonState();
                 }
             }
             else
             {
-                if (selectedItem.category == EShopCategory.InstantItem)
+                bool equipped = shopService.IsEquipped(selectedItem.id, selectedItem.category, currentSelectedSlot);
+                if (equipped)
                 {
-                    string equippedInSlot = UserSaveManager.GetEquippedInSlot(selectedItem.category, currentSelectedSlot);
-                    if (equippedInSlot == selectedItem.id)
-                    {
-                        // 同じスロットに装備済みなら解除
-                        UserSaveManager.EquipToSlot("", selectedItem.category, currentSelectedSlot);
-                    }
-                    else
-                    {
-                        // 別のスロットに同じアイテムがあれば移動するか、重複不可にするか？
-                        // ここでは、指定スロットに上書き装備
-                        UserSaveManager.EquipToSlot(selectedItem.id, selectedItem.category, currentSelectedSlot);
-                    }
+                    await shopService.UnequipItemAsync(selectedItem.id, selectedItem.category, currentSelectedSlot);
                 }
                 else
                 {
-                    UserSaveManager.EquipItem(selectedItem.id, selectedItem.category);
+                    await shopService.EquipItemAsync(selectedItem.id, selectedItem.category, currentSelectedSlot);
                 }
-                UpdateButtonState();
             }
         }
 
@@ -229,7 +217,7 @@ namespace OpenGS
         {
             if (creditsText != null)
             {
-                creditsText.text = $"CREDITS: {EconomyManager.GetCredits()}";
+                creditsText.text = $"CREDITS: {shopService.GetCredits()}";
             }
         }
     }
