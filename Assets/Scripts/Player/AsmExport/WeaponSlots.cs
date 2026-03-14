@@ -3,19 +3,27 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using OpenGSCore;
+using Zenject;
 
 namespace OpenGS
 {
+    /// <summary>
+    /// プレイヤーの武器スロットを管理するコンポーネント。
+    /// Main, Secondary, Special の3つのスロットを持ち、表示・非表示を切り替える。
+    /// </summary>
     [DisallowMultipleComponent]
     public class WeaponSlots : MonoBehaviour
     {
+        [Header("Slot Containers")]
         [Required] public GameObject mainWeaponSlot;
         [Required] public GameObject secondaryWeaponSlot;
         [Required] public GameObject specialWeaponSlot;
-        public GameObject currentWeapon;
 
-        public EPlayerEquipWeapon EquipWeaponType { get; set; } = EPlayerEquipWeapon.MainWeapon;
-        private EPlayerEquipWeapon lastRegularWeapon = EPlayerEquipWeapon.MainWeapon; // 特殊武器の前に持っていた通常武器
+        [Header("Current State")]
+        [ReadOnly] public GameObject currentWeaponObject;
+        [ReadOnly] public EPlayerEquipWeapon currentEquipType = EPlayerEquipWeapon.MainWeapon;
+
+        private EPlayerEquipWeapon lastRegularWeapon = EPlayerEquipWeapon.MainWeapon;
         private int specialWeaponAmmo = 0;
 
         private void Start()
@@ -23,142 +31,115 @@ namespace OpenGS
             RefreshWeaponVisibility();
         }
 
+        /// <summary>
+        /// 特殊武器（火炎放射器やランチャーなど）を一時的に装備する
+        /// </summary>
         public void EquipSpecialWeapon(GameObject weaponPrefab, int ammo)
         {
-            // すでに特殊武器を持っている場合は古いものを消去
-            if (EquipWeaponType == EPlayerEquipWeapon.SpecialWeapon)
+            if (currentEquipType == EPlayerEquipWeapon.SpecialWeapon)
             {
-                DropCurrentWeapon();
+                RemoveWeaponFromSlot(specialWeaponSlot);
             }
             else
             {
-                // 現在の通常武器を記憶
-                lastRegularWeapon = EquipWeaponType;
+                lastRegularWeapon = currentEquipType;
             }
 
-            EquipWeaponType = EPlayerEquipWeapon.SpecialWeapon;
+            currentEquipType = EPlayerEquipWeapon.SpecialWeapon;
             specialWeaponAmmo = ammo;
 
             var weapon = Instantiate(weaponPrefab, specialWeaponSlot.transform);
             weapon.transform.localPosition = Vector3.zero;
-            currentWeapon = weapon;
+            weapon.transform.localRotation = Quaternion.identity;
 
             RefreshWeaponVisibility();
         }
 
         public void OnFireSpecialWeapon()
         {
-            if (EquipWeaponType != EPlayerEquipWeapon.SpecialWeapon) return;
+            if (currentEquipType != EPlayerEquipWeapon.SpecialWeapon) return;
 
             specialWeaponAmmo--;
             if (specialWeaponAmmo <= 0)
             {
-                // 弾切れ：特殊武器を捨てて元の武器に戻る
-                DropCurrentWeapon();
-                EquipWeaponType = lastRegularWeapon;
+                RemoveWeaponFromSlot(specialWeaponSlot);
+                currentEquipType = lastRegularWeapon;
                 RefreshWeaponVisibility();
             }
         }
 
         public bool CanEquip()
         {
-            if (EquipWeaponType == EPlayerEquipWeapon.SpecialWeapon) return false; // 特殊武器装備中は取得不可（あるいは交換）
+            // 特殊武器装備中は通常武器の拾得不可
+            if (currentEquipType == EPlayerEquipWeapon.SpecialWeapon) return false;
 
-            if (EquipWeaponType == EPlayerEquipWeapon.MainWeapon)
-            {
-                return mainWeaponSlot.transform.childCount == 0;
-            }
-            else if (EquipWeaponType == EPlayerEquipWeapon.SecondaryWeapon)
-            {
-                return secondaryWeaponSlot.transform.childCount == 0;
-            }
-            return true;
+            GameObject targetSlot = (currentEquipType == EPlayerEquipWeapon.MainWeapon) ? mainWeaponSlot : secondaryWeaponSlot;
+            return targetSlot.transform.childCount == 0;
         }
 
         public void EquipWeapon(GameObject weaponPrefab)
         {
-            // 特殊武器装備中は通常武器の取得を制限（必要なら）
-            if (EquipWeaponType == EPlayerEquipWeapon.SpecialWeapon) return;
+            if (currentEquipType == EPlayerEquipWeapon.SpecialWeapon) return;
 
-            var weapon = Instantiate(weaponPrefab);
+            GameObject targetSlot = (currentEquipType == EPlayerEquipWeapon.MainWeapon) ? mainWeaponSlot : secondaryWeaponSlot;
+            
+            // 既存の武器があれば削除
+            RemoveWeaponFromSlot(targetSlot);
 
-            if (EquipWeaponType == EPlayerEquipWeapon.MainWeapon)
+            var weapon = Instantiate(weaponPrefab, targetSlot.transform);
+            weapon.transform.localPosition = Vector3.zero;
+            weapon.transform.localRotation = Quaternion.identity;
+
+            RefreshWeaponVisibility();
+        }
+
+        private void RemoveWeaponFromSlot(GameObject slot)
+        {
+            foreach (Transform child in slot.transform)
             {
-                weapon.transform.SetParent(mainWeaponSlot.transform);
-                weapon.transform.position = mainWeaponSlot.transform.position;
-                currentWeapon = weapon;
-            }
-            else
-            {
-                weapon.transform.SetParent(secondaryWeaponSlot.transform);
-                weapon.transform.position = secondaryWeaponSlot.transform.position;
-                currentWeapon = weapon;
+                Destroy(child.gameObject);
             }
         }
 
-        [Button("ドロップ")]
-        public void DropCurrentWeapon()
+        public void FlipWeapon()
         {
-            if (currentWeapon != null)
-            {
-                Destroy(currentWeapon);
-                currentWeapon = null;
-            }
+            if (currentEquipType == EPlayerEquipWeapon.SpecialWeapon) return;
+
+            currentEquipType = (currentEquipType == EPlayerEquipWeapon.MainWeapon) 
+                ? EPlayerEquipWeapon.SecondaryWeapon 
+                : EPlayerEquipWeapon.MainWeapon;
+
+            RefreshWeaponVisibility();
         }
 
         private void RefreshWeaponVisibility()
         {
-            if (mainWeaponSlot != null) 
-                mainWeaponSlot.SetActive(EquipWeaponType == EPlayerEquipWeapon.MainWeapon);
-            
-            if (secondaryWeaponSlot != null) 
-                secondaryWeaponSlot.SetActive(EquipWeaponType == EPlayerEquipWeapon.SecondaryWeapon);
+            if (mainWeaponSlot) mainWeaponSlot.SetActive(currentEquipType == EPlayerEquipWeapon.MainWeapon);
+            if (secondaryWeaponSlot) secondaryWeaponSlot.SetActive(currentEquipType == EPlayerEquipWeapon.SecondaryWeapon);
+            if (specialWeaponSlot) specialWeaponSlot.SetActive(currentEquipType == EPlayerEquipWeapon.SpecialWeapon);
 
-            if (specialWeaponSlot != null)
-                specialWeaponSlot.SetActive(EquipWeaponType == EPlayerEquipWeapon.SpecialWeapon);
-
-            // activeSlot を選択
             GameObject activeSlot = null;
-            switch (EquipWeaponType)
+            switch (currentEquipType)
             {
                 case EPlayerEquipWeapon.MainWeapon: activeSlot = mainWeaponSlot; break;
                 case EPlayerEquipWeapon.SecondaryWeapon: activeSlot = secondaryWeaponSlot; break;
                 case EPlayerEquipWeapon.SpecialWeapon: activeSlot = specialWeaponSlot; break;
             }
 
-            if (activeSlot != null && activeSlot.transform.childCount > 0)
+            if (activeSlot && activeSlot.transform.childCount > 0)
             {
-                currentWeapon = activeSlot.transform.GetChild(0).gameObject;
+                currentWeaponObject = activeSlot.transform.GetChild(0).gameObject;
             }
             else
             {
-                currentWeapon = null;
+                currentWeaponObject = null;
             }
         }
 
-        [Button("武器切り替え")]
-        public void FlipWeapon()
+        public AbstractGunController GetCurrentGun()
         {
-            // 特殊武器装備中は切り替え不可
-            if (EquipWeaponType == EPlayerEquipWeapon.SpecialWeapon)
-            {
-                Debug.Log("Cannot switch weapon while using Special Weapon!");
-                return;
-            }
-
-            if (EquipWeaponType == EPlayerEquipWeapon.MainWeapon)
-            {
-                EquipWeaponType = EPlayerEquipWeapon.SecondaryWeapon;
-            }
-            else
-            {
-                EquipWeaponType = EPlayerEquipWeapon.MainWeapon;
-            }
-            RefreshWeaponVisibility();
+            if (currentWeaponObject == null) return null;
+            return currentWeaponObject.GetComponent<AbstractGunController>();
         }
-
-        public void FlipWeaponFirstWeapon(GameObject obj) { }
-        public void FlipSecondaryWeapon(GameObject obj) { }
-        public void FlipSpecialWeapon(GameObject obj) { }
     }
 }
