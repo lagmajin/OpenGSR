@@ -1,17 +1,11 @@
-﻿//using KanKikuchi.AudioManager;
-
 using UnityEngine;
 using OpenGSCore;
 using Sirenix.OdinInspector;
 using DG.Tweening;
+using Zenject;
 
 namespace OpenGS
 {
-
-
-
-
-
     public enum EFireMode
     {
         Semi,
@@ -34,7 +28,7 @@ namespace OpenGS
         [SerializeField] public bool canZooming = false;
         [SerializeField, Range(0f, 100f)] protected float reloadTime = 2.0f;
         [SerializeField, Range(1f, 100f)] public float bulletSpeed = 100.0f;
-        [SerializeField, Range(0.05f, 5f)] public float shotDelay = 0.1f; // 間隔 (FireRate)
+        [SerializeField, Range(0.05f, 5f)] public float shotDelay = 0.1f;
 
         [Header("Accuracy & Recoil")]
         [SerializeField, Range(0f, 10f)] public float baseSpread = 0.0f;
@@ -43,79 +37,60 @@ namespace OpenGS
 
         protected bool isShottable = true;
         [ShowInInspector] protected int remains = 0;
-        protected bool isFiring = false; // 入力が押されているか
+        protected bool isFiring = false;
         protected float shotTimer = 0f;
 
-        [SerializeField, Range(0f, 1f)]
-        public float rand = 0.0f;
-
+        [SerializeField, Range(0f, 1f)] public float rand = 0.0f;
 
         public bool bulletGravity = false;
-        [SerializeField, Range(0, 20f)]
-        public float gravity = 0.0f;
+        [SerializeField, Range(0, 20f)] public float gravity = 0.0f;
 
         protected bool reloadingNow = false;
         protected bool reloadCancelFlag = false;
-
         protected float reloadDelay = 0.0f;
 
-        //public AudioClip shotSound;
-        //public AudioClip reloadStartSound;
         Vector3 originalHeadPos;
         public GameObject bulletPrefab;
 
-        [SerializeField]protected AudioSource audioSource;
-
-
-        [SerializeField]public GameObject shotEffectPrefab;
-        [SerializeField]public GameObject shellCasingPrefab;
-        [SerializeField]public Transform muzzle;
-
-
+        [Header("Effects")]
+        [SerializeField] public GameObject shotEffectPrefab;
+        [SerializeField] public GameObject shellCasingPrefab;
+        [SerializeField] public Transform muzzle;
         [SerializeField] public GameObject fieldWeaponPrefab;
- 
-
-
         [SerializeField] public Sprite gunBigIcon;
         [SerializeField] public Sprite gunSilhouette;
 
         public WeaponMasterData data;
 
         protected float spreadAngle = 0f;
-
-        protected float heat = 0;//演出用の銃のオーバーヒート
+        protected float heat = 0;
         protected float heatMax = 5f;
-
         float heatPerShot = 0.5f;
         float heatDecayPerSecond = 1f;
 
+        // Services
+        protected ISoundService soundService;
+        protected IInputService inputService;
+
+        [Inject]
+        public void Construct(ISoundService soundService, IInputService inputService)
+        {
+            this.soundService = soundService;
+            this.inputService = inputService;
+        }
 
         private void Awake()
         {
-
             originalHeadPos = gameObject.transform.localPosition;
         }
-        private void Start()
-        {
-
-        }
-
 
         protected virtual void OnUpdate()
         {
             UpdateRotation();
             
-            // 射撃間隔タイマー
-            if (shotTimer > 0)
-            {
-                shotTimer -= Time.deltaTime;
-            }
+            if (shotTimer > 0) shotTimer -= Time.deltaTime;
 
-            // リロード進捗
-            if (reloadingNow)
-            {
-                UpdateReloading();
-            }
+            if (reloadingNow) UpdateReloading();
 
             // 射撃入力処理 (Autoモード用)
             if (isFiring && fireMode == EFireMode.Auto && CanShot())
@@ -123,26 +98,22 @@ namespace OpenGS
                 Shot();
             }
 
-            // 熱減衰
-            if (heat > 0f)
-            {
-                heat -= heatDecayPerSecond * Time.deltaTime;
-            }
+            if (heat > 0f) heat -= heatDecayPerSecond * Time.deltaTime;
         }
 
         private void UpdateRotation()
         {
-            if (Camera.main == null) return;
+            if (inputService == null) return;
 
-            var screenPos = Camera.main.WorldToScreenPoint(transform.position);
-            var dir = Input.mousePosition - screenPos;
+            var aimPos = inputService.GetAimWorldPosition();
+            var dir = (Vector3)aimPos - transform.position;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
-            if (Input.mousePosition.x < screenPos.x) // マウスが左側
+            if (aimPos.x < transform.position.x) // エイムが左側
             {
                 transform.rotation = Quaternion.Euler(0f, 0f, -(180 - angle));
             }
-            else // マウスが右側
+            else // エイムが右側
             {
                 transform.rotation = Quaternion.Euler(0f, 0f, angle);
             }
@@ -151,63 +122,38 @@ namespace OpenGS
         private void UpdateReloading()
         {
             reloadDelay += Time.deltaTime;
-
             if (reloadDelay >= reloadTime)
             {
                 ReloadComplete();
             }
         }
+
         private void Update()
         {
-
             OnUpdate();
-
-
-
-
-
-        }
-
-    
-
-        void LastUpdate()
-        {
-
-        }
-
-        void RemoveGameObject()
-        {
-            Destroy(this.gameObject);
-        }
-
-        protected void CreateShell()
-        {
-            //Instantiate(shellCasingPrefab, gameObject.transform.position, Quaternion.identity);
-
         }
 
         protected void CreateMuzzulleFlash()
         {
-            Instantiate(shotEffectPrefab, muzzle.position, muzzle.rotation);
+            if (shotEffectPrefab && muzzle)
+                Instantiate(shotEffectPrefab, muzzle.position, muzzle.rotation);
         }
-        protected virtual void CreateBullet(EBulletType type=EBulletType.Normal)
-        {
 
-        }
+        protected virtual void CreateBullet(EBulletType type = EBulletType.Normal) { }
 
         protected virtual void CreateEmptyShellCasing()
         {
+            if (!shellCasingPrefab) return;
+
             float angleOffset = Random.Range(-19f, 19f);
             Quaternion spawnRot = transform.rotation * Quaternion.Euler(0, 0, angleOffset);
-
             var shell = Instantiate(shellCasingPrefab, transform.position, spawnRot);
 
             var rb = shell.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                bool isWildShell = Random.value < 0.05f; // 10%の確率で「暴れ薬莢」
-
-                float fx = isWildShell ? Random.Range(3f,4f) : Random.Range(1.4f, 1.4f);
+                bool isWildShell = Random.value < 0.05f;
+                float fx = isWildShell ? Random.Range(3f, 4f) : Random.Range(1.4f, 1.4f);
                 float fy = isWildShell ? Random.Range(6f, 8f) : Random.Range(3.0f, 4.0f);
 
                 Vector2 force = transform.right * fx + transform.up * fy;
@@ -221,12 +167,11 @@ namespace OpenGS
         public virtual void ReloadStart()
         {
             reloadCancelFlag = false;
-
             reloadingNow = true;
-
-            //Functions.WaitAfterAction(ReloadComplete, reloadTime);
-
-            //PlaySound.PlaySE(reloadStartSound);
+            if (data != null && soundService != null)
+            {
+                soundService.PlayWeaponReload(data.weaponType);
+            }
         }
 
         public virtual void ReloadCancel()
@@ -240,9 +185,7 @@ namespace OpenGS
             reloadingNow = false;
             reloadCancelFlag = false;
             reloadDelay = 0.0f;
-
             remains = magazine;
-
             PublishAmmoUpdate();
         }
 
@@ -263,25 +206,16 @@ namespace OpenGS
 
         protected Vector2 GetShotDirection()
         {
-            if (Camera.main == null) return muzzle.right;
+            if (inputService == null) return muzzle.right;
 
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 baseDir = ((Vector2)mouseWorldPos - (Vector2)muzzle.transform.position).normalized;
-
-            // スプレッド（基本拡散 + 熱/連射によるブレ）
-            // heat は射撃ごとに 1.0 (デフォルト) 溜まり、徐々に減衰する
+            Vector2 baseDir = inputService.GetAimDirection(muzzle.position);
             float currentSpread = baseSpread + (heat * 2.5f); 
             float spreadAngle = UnityEngine.Random.Range(-currentSpread, currentSpread);
             
             return Quaternion.Euler(0, 0, spreadAngle) * baseDir;
         }
 
-        public virtual float ReloadTime()
-        {
-            return data.reloadTime;
-
-            //return 1.0f;
-        }
+        public virtual float ReloadTime() => data != null ? data.reloadTime : 2.0f;
 
         public void StartFire()
         {
@@ -292,10 +226,7 @@ namespace OpenGS
             }
         }
 
-        public void StopFire()
-        {
-            isFiring = false;
-        }
+        public void StopFire() => isFiring = false;
 
         public void Shot()
         {
@@ -304,173 +235,80 @@ namespace OpenGS
                 remains--;
                 shotTimer = shotDelay;
                 
-                // 演出
                 CreateBullet();
                 CreateMuzzulleFlash();
                 CreateEmptyShellCasing();
                 PlayShotSound();
                 
-                // 熱と反動
                 heat = Mathf.Min(heat + heatPerShot, heatMax);
-                
                 PublishAmmoUpdate();
-                
-                var pid = GetPlayerID();
-                if (!string.IsNullOrEmpty(pid))
-                {
-                    // 必要に応じてグローバルイベントを送信
-                    // GameEventBroker.Publish(new PlayerShotEvent(pid, muzzle.position, muzzle.right, Name));
-                }
             }
         }
 
-        public virtual bool CanShot()
-        {
-            return shotTimer <= 0 && remains > 0 && !reloadingNow;
-        }
+        public virtual bool CanShot() => shotTimer <= 0 && remains > 0 && !reloadingNow;
 
-        public bool CanReload()
-        {
-            if (magazine <= remains)
-            {
-                return false;
-            }
+        public bool CanReload() => magazine > remains;
 
-            return true;
-        }
+        public int gunDirection() => transform.localScale.x > 0 ? 1 : -1;
 
-        public int gunDirection()
-        {
-            var scale = gameObject.transform.localScale.x;
-
-            if (scale > 0)
-            {
-                return 1;
-            }
-            else
-            {
-                return -1;
-            }
-
-        }
         public void SetGunDirection(bool left = true)
         {
-            Debug.Log("ChangeGunDirection");
-
-            var scale = gameObject.transform.localScale;
-            if (left)
-            {
-
-
-                scale.x = 1;
-
-
-            }
-            else
-            {
-                scale.x = -1;
-
-
-
-            }
-
-            gameObject.transform.localScale = scale;
-
+            var scale = transform.localScale;
+            scale.x = left ? 1 : -1;
+            transform.localScale = scale;
         }
 
-        public virtual void SetGunAngle()
-        {
+        public virtual void SetGunAngle() { }
 
-        }
-
-        public void EnableRigidBody()
-        {
-
-        }
-
-        public void DisableRigidBody()
-        {
-
-        }
-
-        public Sprite GunBigIcon()
-        {
-            return gunBigIcon;
-        }
-
-        public Sprite GunSilhouette()
-        {
-            return gunSilhouette;
-        }
-
-        public int MagazineCount()
-        {
-            return remains;
-        }
-
-        string IGunInfo.Name()
-        {
-            return Name;
-        }
-
-        public int MagazineMaxCount()
-        {
-            return data.maxBullet;
-
-        }
+        public Sprite GunBigIcon() => gunBigIcon;
+        public Sprite GunSilhouette() => gunSilhouette;
+        public int MagazineCount() => remains;
+        string IGunInfo.Name() => Name;
+        public int MagazineMaxCount() => data != null ? data.maxBullet : magazine;
 
         public void PlayShotSound()
         {
-            if (data)
+            if (data != null && soundService != null)
             {
-                float heatFactor = Mathf.Clamp01(heat / heatMax);
-                audioSource.pitch = 1.0f + heatFactor * 0.2f;
-                audioSource.PlayOneShot(data.shotSound);
+                // TODO: SoundService にピッチ変更オプションを追加するか、
+                // あるいは SoundService 内部で熱によるピッチ変更を実装する
+                soundService.PlayWeaponShot(data.weaponType);
             }
         }
+
         public void Sit()
         {
             if (gameObject != null)
             {
                 Sequence seq = DOTween.Sequence();
-                seq.AppendInterval(0.4f); // 0.1秒待つ
-                seq.Append(gameObject.transform.DOLocalMove(originalHeadPos + new Vector3(-0.02f, -0.01f, 0f), 0.2f)
-                    .SetEase(Ease.OutSine));
+                seq.AppendInterval(0.4f);
+                seq.Append(transform.DOLocalMove(originalHeadPos + new Vector3(-0.02f, -0.01f, 0f), 0.2f).SetEase(Ease.OutSine));
             }
-
         }
+
         public void StandUp()
         {
-   
+            if (gameObject != null)
+            {
                 Sequence seq = DOTween.Sequence();
-                seq.AppendInterval(0.1f); // 0.1秒ディレイ
-                seq.Append(gameObject.transform.DOLocalMove(originalHeadPos, 0.2f).SetEase(Ease.OutSine));
-            
+                seq.AppendInterval(0.1f);
+                seq.Append(transform.DOLocalMove(originalHeadPos, 0.2f).SetEase(Ease.OutSine));
+            }
         }
 
-        public void RemoveThis()
-        {
-            Destroy(gameObject);
-        }
+        public void RemoveThis() => Destroy(gameObject);
 
-        public GameObject FieldPrefab()
-        {
-            return fieldWeaponPrefab;
-        }
+        public GameObject FieldPrefab() => fieldWeaponPrefab;
 
         protected Vector2 CalculateSpreadDirection(Transform muzzle, float spreadAngle)
         {
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 dir = (mouseWorldPos - muzzle.position).normalized;
-
+            if (inputService == null) return muzzle.right;
+            
+            Vector2 dir = inputService.GetAimDirection(muzzle.position);
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             angle += spreadAngle;
 
-            Quaternion spreadRotation = Quaternion.Euler(0, 0, angle);
-
-            return spreadRotation * Vector2.right;
+            return Quaternion.Euler(0, 0, angle) * Vector2.right;
         }
     }
-
-
 }

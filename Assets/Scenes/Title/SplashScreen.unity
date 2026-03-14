@@ -175,14 +175,15 @@ MonoBehaviour:
     PrefabModifications: []
     SerializationNodes: []
   systemSoundMasterData: {fileID: 0}
-  generalSceneMasterData: {fileID: 0}
+  generalSceneMasterData: {fileID: 11400000, guid: e0e6a797ab6bad64f90a1aa6af8bc59b,
+    type: 2}
   timer: {fileID: 198330610}
   sceneController: {fileID: 0}
   sceneMediateObject: {fileID: 0}
   displayTime: 3
   fadeTime: 1.2
-  splashCanvas: {fileID: 0}
-  logoImage: {fileID: 0}
+  splashCanvas: {fileID: 1854650145}
+  logoImage: {fileID: 1877059339}
   overlayColor: {r: 0, g: 0, b: 0, a: 1}
 --- !u!114 &198330610
 MonoBehaviour:
@@ -515,7 +516,6 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_UseReflectionProbes: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
