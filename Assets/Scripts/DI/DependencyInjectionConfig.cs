@@ -60,6 +60,14 @@ namespace OpenGS
 
             builder.RegisterType<WaitRoomManager>().SingleInstance();
             builder.RegisterType<MatchRoomManager>().SingleInstance();
+
+            // Sound Service
+            builder.Register(c =>
+            {
+                var soundData = Resources.Load<SoundMasterData>("MasterData/SoundMasterData");
+                var bgmData = Resources.Load<BGMMasterData>("MasterData/BGMMasterData");
+                return new SoundService(soundData, bgmData);
+            }).As<ISoundService>().SingleInstance();
             
             builder.RegisterType<WaitRoom>().InstancePerDependency();
             builder.RegisterType<MatchData>().InstancePerDependency();

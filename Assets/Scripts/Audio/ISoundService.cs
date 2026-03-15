@@ -9,6 +9,7 @@ namespace OpenGS
     public interface ISoundService
     {
         // BGM 関連
+        void PlayBGM(EBgm bgm, float fadeTime = -1f);
         void PlayBGM(EMap map);
         void PlayBGM(string bgmName, float fadeTime = -1f);
         void PlayBGM(AudioClip clip, float fadeTime = -1f);

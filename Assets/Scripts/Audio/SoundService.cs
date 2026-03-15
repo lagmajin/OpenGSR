@@ -25,12 +25,24 @@ namespace OpenGS
             _bgmMasterData = bgmMasterData;
         }
 
+        public void PlayBGM(EBgm bgm, float fadeTime = -1f)
+        {
+            if (_bgmMasterData != null && _bgmMasterData.TryGetBGM(bgm, out var clip))
+            {
+                SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
+            }
+            else
+            {
+                Debug.LogWarning($"[SoundService] BGM {bgm} not found in MasterData.");
+            }
+        }
+
         public void PlayBGM(EMap map) => SimpleAudioManager.Instance.PlayBGM(map.ToString());
 
         public void PlayBGM(string bgmName, float fadeTime = -1f)
         {
-            // 1. BGMMasterData から探す
-            if (_bgmMasterData != null && _bgmMasterData.TryGetBGM(bgmName, out var clip))
+            // 1. BGMMasterData から文字列名で探す
+            if (_bgmMasterData != null && _bgmMasterData.TryGetBGMByName(bgmName, out var clip))
             {
                 SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
             }

@@ -9,7 +9,7 @@ namespace OpenGS
 {
     /// <summary>
     /// スプラッシュ画面のシーケンス制御を担当するクラス。
-    /// 数値設定、遷移ロジック、および BGM 再生を管理。
+    /// 数値設定、遷移ロジック、および EBgm による音楽再生を管理。
     /// </summary>
     public class SplashScreenController : AbstractScene
     {
@@ -22,7 +22,8 @@ namespace OpenGS
         [SerializeField] private float fadeDuration = 1.0f;
 
         [Header("Audio Settings")]
-        [SerializeField] private string bgmName = ""; // 空の場合は再生しない
+        [SerializeField] private bool playBgm = true;
+        [SerializeField, ShowIf("playBgm")] private EBgm bgm = EBgm.AuroraClassic;
         [SerializeField] private bool stopBgmOnTransition = true;
 
         private ISoundService soundService;
@@ -66,10 +67,10 @@ namespace OpenGS
                 yield return new WaitForSeconds(preDelayDuration);
             }
 
-            // BGM 再生開始
-            if (!string.IsNullOrEmpty(bgmName) && soundService != null)
+            // BGM 再生開始 (Enum 指定)
+            if (playBgm && soundService != null)
             {
-                soundService.PlayBGM(bgmName);
+                soundService.PlayBGM(bgm);
             }
 
             var cg = splashMediate.SplashCanvasGroup;
@@ -101,13 +102,11 @@ namespace OpenGS
 
         private void TransitionToTitle()
         {
-            // BGM を止める設定の場合
             if (stopBgmOnTransition && soundService != null)
             {
                 soundService.StopBGM(fadeDuration);
             }
 
-            // AbstractScene の機能を使って遷移
             GoToTitleScene();
         }
     }

@@ -6,7 +6,7 @@ namespace OpenGS
 {
     /// <summary>
     /// BGM のリストを管理するマスターデータクラス。
-    /// 名前（キー）と AudioClip を紐付けて登録する。
+    /// EBgm 列挙型と AudioClip を紐付けて登録する。
     /// </summary>
     [CreateAssetMenu(menuName = "MasterData/Sound/BGMMasterData")]
     public class BGMMasterData : ScriptableObject
@@ -14,13 +14,13 @@ namespace OpenGS
         [Serializable]
         public struct BGMMapping
         {
-            public string name;
+            public EBgm bgm;
             public AudioClip clip;
         }
 
         [SerializeField] private List<BGMMapping> bgmList = new List<BGMMapping>();
 
-        private readonly Dictionary<string, AudioClip> bgmMap = new Dictionary<string, AudioClip>();
+        private readonly Dictionary<EBgm, AudioClip> bgmMap = new Dictionary<EBgm, AudioClip>();
 
         private void OnEnable()
         {
@@ -32,22 +32,29 @@ namespace OpenGS
             bgmMap.Clear();
             foreach (var item in bgmList)
             {
-                if (!string.IsNullOrEmpty(item.name))
-                {
-                    bgmMap[item.name] = item.clip;
-                }
+                bgmMap[item.bgm] = item.clip;
             }
         }
 
-        public bool TryGetBGM(string name, out AudioClip clip)
+        public bool TryGetBGM(EBgm bgm, out AudioClip clip)
         {
             if (bgmMap.Count == 0) RebuildMap();
-            return bgmMap.TryGetValue(name, out clip) && clip != null;
+            return bgmMap.TryGetValue(bgm, out clip) && clip != null;
         }
 
-        public List<string> GetAllBgmNames()
+        /// <summary>
+        /// 文字列名からの取得も互換性のために残す
+        /// </summary>
+        public bool TryGetBGMByName(string name, out AudioClip clip)
         {
-            return new List<string>(bgmMap.Keys);
+            clip = null;
+            if (string.IsNullOrEmpty(name)) return false;
+
+            if (Enum.TryParse<EBgm>(name, true, out var result))
+            {
+                return TryGetBGM(result, out clip);
+            }
+            return false;
         }
     }
 }

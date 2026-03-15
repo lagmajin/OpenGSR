@@ -1,4 +1,3 @@
-﻿
 
 namespace OpenGS
 {
@@ -18,20 +17,41 @@ namespace OpenGS
 
     }
 
+    /// <summary>
+    /// 全ての利用可能な BGM の列挙型。
+    /// Resources/BGM フォルダ内のファイルに対応。
+    /// </summary>
     public enum EBgm
     {
-        AuroraClassic,
+        None,
+        Title,
+        SplashScreen,
+        WaitRoom,
+        Shop,
+        Base,
+        BattleBase,
+        
+        // Map BGMs
         AmusementPark,
-        ArchLoadOfGunster,
-
+        ArchLord,
+        AuroraClassic,
+        BluffStructure,
         CityOfDarkness,
-        DesertedJungle,
-        GhostHouse,
-        FullHouse,
-        OnStudio,
-        ThePark,
-
-
+        DryDays,
+        Factory,
+        Forest,
+        Green,
+        HiddenBunker,
+        House,
+        Jungle,
+        LavaCave,
+        MetalBreaker,
+        Pipe,
+        Ruin,
+        SkyFighter,
+        Snow,
+        Village,
+        WaterFall
     }
 
     public enum ESystemSound

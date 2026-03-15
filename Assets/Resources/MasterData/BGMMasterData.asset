@@ -1,0 +1,67 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 587abfbf27aff2f488aee9ccb9d28cdf, type: 3}
+  m_Name: BGMMasterData
+  m_EditorClassIdentifier: 
+  bgmList:
+  - bgm: 1
+    clip: {fileID: 8300000, guid: 65b7c6b63e1f9834fb3af6e038d53aed, type: 3} # Title
+  - bgm: 2
+    clip: {fileID: 8300000, guid: 35bcbb29d968c9446892bd927300e46a, type: 3} # SplashScreen (Base)
+  - bgm: 3
+    clip: {fileID: 8300000, guid: d49e2874f59473644a9da86f8b7cb64d, type: 3} # WaitRoom
+  - bgm: 4
+    clip: {fileID: 8300000, guid: 2dbedb019d1a5774aaf1055a1213b68b, type: 3} # Shop
+  - bgm: 5
+    clip: {fileID: 8300000, guid: 35bcbb29d968c9446892bd927300e46a, type: 3} # Base
+  - bgm: 6
+    clip: {fileID: 8300000, guid: d7c62818cf9d9fe499e6ec977329a0ee, type: 3} # BattleBase
+  - bgm: 7
+    clip: {fileID: 8300000, guid: c2d8716829dffad4297e0b8e36a160df, type: 3} # AmusementPark
+  - bgm: 8
+    clip: {fileID: 8300000, guid: 6ab66e0674b3dab4597b03113f2d8a01, type: 3} # ArchLord
+  - bgm: 9
+    clip: {fileID: 8300000, guid: bf37a1dda41ab5a448fa4ababf8ebf1a, type: 3} # AuroraClassic
+  - bgm: 10
+    clip: {fileID: 8300000, guid: 8a939084ecc7f0a47989f974bb65c70c, type: 3} # BluffStructure
+  - bgm: 11
+    clip: {fileID: 8300000, guid: ff621652219f1974c849e689b6703d56, type: 3} # CityOfDarkness
+  - bgm: 12
+    clip: {fileID: 8300000, guid: 07fa6d272e6448544bcc7f3c6d0b8bb4, type: 3} # DryDays
+  - bgm: 13
+    clip: {fileID: 8300000, guid: 2c9eb7843093ad046b263122717a9188, type: 3} # Factory
+  - bgm: 14
+    clip: {fileID: 8300000, guid: 11c0e373d016ff3458726cd50e90144c, type: 3} # Forest
+  - bgm: 15
+    clip: {fileID: 8300000, guid: 2ef3f28ad41dff84ba9f1f037ba240a0, type: 3} # Green
+  - bgm: 16
+    clip: {fileID: 8300000, guid: d0e26ba9b1e249c4593706a30165c243, type: 3} # HiddenBunker
+  - bgm: 17
+    clip: {fileID: 8300000, guid: 6228b644cf35b0942bc692b300d24501, type: 3} # House
+  - bgm: 18
+    clip: {fileID: 8300000, guid: 41c53f9122a25c6458ff56b610a017bf, type: 3} # Jungle
+  - bgm: 19
+    clip: {fileID: 8300000, guid: 9325033068fbd1248ab53289e3008e5c, type: 3} # LavaCave
+  - bgm: 20
+    clip: {fileID: 8300000, guid: ae458ecaad5a7d349ae620366626af54, type: 3} # MetalBreaker
+  - bgm: 21
+    clip: {fileID: 8300000, guid: 69f59a0974eb2454d9cf0cb635f08355, type: 3} # Pipe
+  - bgm: 22
+    clip: {fileID: 8300000, guid: 66a1141a0a2e25b40adc8ba9a827ef58, type: 3} # Ruin
+  - bgm: 23
+    clip: {fileID: 8300000, guid: 2413cb09443b5b04cb1fdf7c899abd0b, type: 3} # SkyFighter
+  - bgm: 24
+    clip: {fileID: 8300000, guid: 9ce745185db115c4180e156adae7b3ed, type: 3} # Snow
+  - bgm: 25
+    clip: {fileID: 8300000, guid: c1f8e70ec3cc5694399afacb83cfbba9, type: 3} # Village
+  - bgm: 26
+    clip: {fileID: 8300000, guid: f4e0866106d13ab4598b88a669a9a9ea, type: 3} # WaterFall
