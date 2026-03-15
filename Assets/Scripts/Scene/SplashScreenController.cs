@@ -9,7 +9,7 @@ namespace OpenGS
 {
     /// <summary>
     /// スプラッシュ画面のシーケンス制御を担当するコントローラー。
-    /// AbstractSceneController を継承し、演出ロジックのみに専念する。
+    /// DI コンテナからの手動解決をサポート。
     /// </summary>
     public class SplashScreenController : AbstractSceneController
     {
@@ -37,6 +37,17 @@ namespace OpenGS
 
         private void Awake()
         {
+            // 自動注入に失敗している場合、手動で解決を試みる
+            if (soundService == null)
+            {
+                try {
+                    soundService = DependencyInjectionConfig.Resolve<ISoundService>();
+                    Debug.Log("[SplashScreen] SoundService manually resolved via DependencyInjectionConfig.");
+                } catch (System.Exception e) {
+                    Debug.LogWarning("[SplashScreen] Failed to manually resolve SoundService: " + e.Message);
+                }
+            }
+
             parentScene = GetComponentInParent<AbstractScene>();
             
             if (splashMediate == null) splashMediate = GetComponentInChildren<SplashSceneMediateObject>();
@@ -56,7 +67,7 @@ namespace OpenGS
         {
             if (splashMediate == null || splashMediate.SplashCanvasGroup == null)
             {
-                Debug.LogError("SplashSceneMediateObject or CanvasGroup is missing!");
+                Debug.LogError("[SplashScreen] MediateObject or CanvasGroup is missing!");
                 TransitionToNextScene();
                 yield break;
             }
@@ -70,7 +81,12 @@ namespace OpenGS
             // BGM 再生開始
             if (playBgm && soundService != null)
             {
+                Debug.Log($"[SplashScreen] Playing BGM: {bgm}");
                 soundService.PlayBGM(bgm);
+            }
+            else
+            {
+                Debug.LogWarning($"[SplashScreen] BGM Skip. playBgm={playBgm}, soundService={(soundService != null ? "Valid" : "Null")}");
             }
 
             var cg = splashMediate.SplashCanvasGroup;
@@ -105,16 +121,14 @@ namespace OpenGS
                 soundService.StopBGM(fadeDuration);
             }
 
-            // 親の AbstractScene の機能を使ってタイトルへ移動
             if (parentScene != null)
             {
                 parentScene.GoToTitleScene();
             }
             else
             {
-                // フォールバック
-                GeneralSceneMasterData.Instance().TitleScene();
-                UnityEngine.SceneManagement.SceneManager.LoadScene(GeneralSceneMasterData.Instance().TitleScene());
+                var title = GeneralSceneMasterData.Instance().TitleScene();
+                UnityEngine.SceneManagement.SceneManager.LoadScene(title);
             }
         }
     }
