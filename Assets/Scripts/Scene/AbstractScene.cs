@@ -26,6 +26,8 @@ namespace OpenGS
         private bool isSceneTransitionInProgress;
 
         [SerializeField] [Required] public SystemSoundMasterData systemSoundMasterData;
+        [SerializeField] [Required] public SoundMasterData soundMasterData;
+        [SerializeField] [Required] public BGMMasterData bgmMasterData;
         [SerializeField] [Required] public GeneralSceneMasterData generalSceneMasterData;
         [SerializeField] [Required] protected GameTimer timer;
         [SerializeField] protected AbstractSceneController sceneController;

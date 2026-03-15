@@ -5,13 +5,13 @@ namespace OpenGS
 {
     /// <summary>
     /// ゲーム全体のサウンド再生を抽象化するサービスインターフェース。
-    /// 各Enum（ESystemSoundなど）から実際のAudioClipへの解決と、再生の実行を担う。
     /// </summary>
     public interface ISoundService
     {
         // BGM 関連
         void PlayBGM(EMap map);
         void PlayBGM(string bgmName, float fadeTime = -1f);
+        void PlayBGM(AudioClip clip, float fadeTime = -1f);
         void StopBGM(float fadeTime = -1f);
 
         // システム・ゲーム進行音

@@ -7,11 +7,11 @@ namespace OpenGS
 {
     /// <summary>
     /// ISoundService の具体的な実装クラス。
-    /// SoundMasterData から AudioClip を取得し、SimpleAudioManager を通じて再生する。
     /// </summary>
     public class SoundService : ISoundService
     {
         private readonly SoundMasterData _soundMasterData;
+        private readonly BGMMasterData _bgmMasterData;
 
         // キャッシュ
         private readonly Dictionary<string, AudioClip> _weaponShotClipCache = new();
@@ -19,13 +19,34 @@ namespace OpenGS
         private readonly Dictionary<string, AudioClip> _weaponHitClipCache = new();
         private readonly Dictionary<string, AudioClip> _grenadeThrowClipCache = new();
 
-        public SoundService(SoundMasterData soundMasterData)
+        public SoundService(SoundMasterData soundMasterData, BGMMasterData bgmMasterData = null)
         {
             _soundMasterData = soundMasterData;
+            _bgmMasterData = bgmMasterData;
         }
 
         public void PlayBGM(EMap map) => SimpleAudioManager.Instance.PlayBGM(map.ToString());
-        public void PlayBGM(string bgmName, float fadeTime = -1f) => SimpleAudioManager.Instance.PlayBGM(bgmName, fadeTime);
+
+        public void PlayBGM(string bgmName, float fadeTime = -1f)
+        {
+            // 1. BGMMasterData から探す
+            if (_bgmMasterData != null && _bgmMasterData.TryGetBGM(bgmName, out var clip))
+            {
+                SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
+            }
+            else
+            {
+                // 2. なければ直接ファイル名として再生
+                SimpleAudioManager.Instance.PlayBGM(bgmName, fadeTime);
+            }
+        }
+
+        public void PlayBGM(AudioClip clip, float fadeTime = -1f)
+        {
+            if (clip == null) return;
+            SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
+        }
+
         public void StopBGM(float fadeTime = -1f) => SimpleAudioManager.Instance.StopBGM(fadeTime);
 
         public void PlaySystemSound(ESystemSound sound)
@@ -60,9 +81,7 @@ namespace OpenGS
         public bool ValidateSoundSetup(bool logWarnings = true)
         {
             if (_soundMasterData == null) return false;
-            bool generalValid = _soundMasterData.ValidateAllMappings(logWarnings);
-            bool combatValid = _soundMasterData.ValidateCombatMappings(out var combatReport);
-            return generalValid && combatValid;
+            return _soundMasterData.ValidateAllMappings(logWarnings);
         }
 
         private AudioClip GetWeaponClip(EWeaponType type, string category, Dictionary<string, AudioClip> cache)

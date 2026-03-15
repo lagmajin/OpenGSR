@@ -3,17 +3,14 @@ using UnityEngine;
 namespace OpenGS
 {
     /// <summary>
-    /// スプラッシュ画面のリファレンスと制御を抽象化するインターフェース。
+    /// スプラッシュ画面のリファレンスを抽象化するインターフェース。
+    /// 数値設定（時間等）はロジックを担う Controller 側で管理する。
     /// </summary>
     public interface ISplashSceneMediateObject : IAbstractMediateObject
     {
-        CanvasGroup SplashCanvasGroup { get; }
-        float DisplayDuration { get; }
-        float FadeDuration { get; }
-        
         /// <summary>
-        /// 次のシーン（タイトル）へ遷移する。
+        /// フェード対象となる CanvasGroup
         /// </summary>
-        void TransitionToTitle();
+        CanvasGroup SplashCanvasGroup { get; }
     }
 }
