@@ -48,7 +48,6 @@
   <Project Path="Unity.Mathematics.Editor.csproj" />
   <Project Path="Unity.VisualScripting.SettingsProvider.Editor.csproj" />
   <Project Path="UniTask.TextMeshPro.csproj" />
-  <Project Path="KanKikuchi.AudioManager.csproj" />
   <Project Path="Unity.Settings.Editor.csproj" />
   <Project Path="Unity.InputSystem.TestFramework.csproj" />
   <Project Path="Unity.VisualScripting.Shared.Editor.csproj" />

@@ -23,12 +23,16 @@ namespace OpenGS
         {
             _soundMasterData = soundMasterData;
             _bgmMasterData = bgmMasterData;
+            
+            Debug.Log($"[SoundService] Initialized. SoundData: {(soundMasterData != null ? "Loaded" : "Null")}, BGMData: {(bgmMasterData != null ? "Loaded" : "Null")}");
         }
 
         public void PlayBGM(EBgm bgm, float fadeTime = -1f)
         {
+            Debug.Log($"[SoundService] PlayBGM(Enum): {bgm}");
             if (_bgmMasterData != null && _bgmMasterData.TryGetBGM(bgm, out var clip))
             {
+                Debug.Log($"[SoundService] Found BGM clip for {bgm}: {clip.name}");
                 SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
             }
             else
@@ -37,17 +41,24 @@ namespace OpenGS
             }
         }
 
-        public void PlayBGM(EMap map) => SimpleAudioManager.Instance.PlayBGM(map.ToString());
+        public void PlayBGM(EMap map)
+        {
+            Debug.Log($"[SoundService] PlayBGM(Map): {map}");
+            SimpleAudioManager.Instance.PlayBGM(map.ToString());
+        }
 
         public void PlayBGM(string bgmName, float fadeTime = -1f)
         {
+            Debug.Log($"[SoundService] PlayBGM(String): {bgmName}");
             // 1. BGMMasterData から文字列名で探す
             if (_bgmMasterData != null && _bgmMasterData.TryGetBGMByName(bgmName, out var clip))
             {
+                Debug.Log($"[SoundService] Found BGM clip by name {bgmName}: {clip.name}");
                 SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
             }
             else
             {
+                Debug.Log($"[SoundService] BGM {bgmName} not in MasterData, trying direct load.");
                 // 2. なければ直接ファイル名として再生
                 SimpleAudioManager.Instance.PlayBGM(bgmName, fadeTime);
             }
@@ -56,6 +67,7 @@ namespace OpenGS
         public void PlayBGM(AudioClip clip, float fadeTime = -1f)
         {
             if (clip == null) return;
+            Debug.Log($"[SoundService] PlayBGM(Clip): {clip.name}");
             SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
         }
 

@@ -14,9 +14,9 @@ namespace OpenGS
             SimpleAudioManager.Instance.PlaySE(clip, volume, pitch);
         }
 
-        public static void PlaySE(string name, float pitch = 1.0f)
+        public static void PlaySE(string name, float volume = 1.0f, float pitch = 1.0f)
         {
-            SimpleAudioManager.Instance.PlaySE(name, pitch);
+            SimpleAudioManager.Instance.PlaySE(name, volume, pitch);
         }
 
         public static void PlayBGM(AudioClip clip, float volume = 1.0f, bool loop = true)

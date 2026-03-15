@@ -60,11 +60,15 @@ namespace OpenGSR.Audio
             _bgmSource2 = gameObject.AddComponent<AudioSource>();
             _bgmSource1.loop = true;
             _bgmSource2.loop = true;
+            _bgmSource1.playOnAwake = false;
+            _bgmSource2.playOnAwake = false;
             _currentBgmSource = _bgmSource1;
 
             for (int i = 0; i < INITIAL_SE_SOURCES; i++)
             {
-                _seSources.Add(gameObject.AddComponent<AudioSource>());
+                var source = gameObject.AddComponent<AudioSource>();
+                source.playOnAwake = false;
+                _seSources.Add(source);
             }
 
             if (_audioConfig != null)
@@ -72,72 +76,52 @@ namespace OpenGSR.Audio
                 foreach (var item in _audioConfig.BGMList) _bgmDict[item.Name] = item;
                 foreach (var item in _audioConfig.SEList) _seDict[item.Name] = item;
             }
+            
+            Debug.Log("[SimpleAudioManager] Initialized with BGM sources and SE pool.");
         }
 
-        // =====================================
-        // BGM Methods
-        // =====================================
         public void PlayBGM(string name, float fadeTime = -1)
         {
             if (!_bgmDict.TryGetValue(name, out var item))
             {
-                Debug.LogWarning($"[SimpleAudioManager] BGM not found: {name}");
+                Debug.LogWarning($"[SimpleAudioManager] BGM not found in config: {name}");
                 return;
             }
-            if (_currentBgmSource.clip == item.Clip && _currentBgmSource.isPlaying) return;
+            PlayBGM(item.Clip, item.Volume, true);
+        }
 
-            float time = fadeTime < 0 ? _defaultBgmFadeTime : fadeTime;
+        public void PlayBGM(AudioClip clip, float volume = 1.0f, bool loop = true)
+        {
+            if (clip == null)
+            {
+                Debug.LogWarning("[SimpleAudioManager] PlayBGM called with null clip.");
+                return;
+            }
+
+            // オーディオ環境のチェック
+            if (FindObjectsByType<AudioListener>(FindObjectsSortMode.None).Length == 0)
+            {
+                Debug.LogError("[SimpleAudioManager] CRITICAL: No AudioListener found in the scene! Sound will not be heard.");
+            }
 
             if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
-            _fadeCoroutine = StartCoroutine(CrossFadeBGM(item, time));
+            
+            _currentBgmSource.clip = clip;
+            _currentBgmSource.loop = loop;
+            _currentBgmSource.volume = Mathf.Clamp01(volume) * MasterBGMVolume;
+            _currentBgmSource.Play();
+            
+            Debug.Log($"[SimpleAudioManager] BGM Start Playing: {clip.name} (Volume: {_currentBgmSource.volume})");
         }
 
         public void StopBGM(float fadeTime = -1)
         {
             float time = fadeTime < 0 ? _defaultBgmFadeTime : fadeTime;
             if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
-            _fadeCoroutine = StartCoroutine(FadeOutBGM(time));
-        }
-
-        public void PauseBGM() => _currentBgmSource.Pause();
-        public void ResumeBGM() => _currentBgmSource.UnPause();
-        public bool IsPlayingBGM() => _currentBgmSource != null && _currentBgmSource.isPlaying;
-
-        public void PlayBGM(AudioClip clip, float volume = 1.0f, bool loop = true)
-        {
-            if (clip == null) return;
-
-            if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
-            _currentBgmSource.clip = clip;
-            _currentBgmSource.loop = loop;
-            _currentBgmSource.volume = Mathf.Clamp01(volume) * MasterBGMVolume;
-            _currentBgmSource.Play();
-        }
-
-        private IEnumerator CrossFadeBGM(AudioConfig.AudioItem nextItem, float fadeTime)
-        {
-            AudioSource nextSource = (_currentBgmSource == _bgmSource1) ? _bgmSource2 : _bgmSource1;
-            nextSource.clip = nextItem.Clip;
-            nextSource.volume = 0;
-            nextSource.Play();
-
-            float elapsed = 0;
-            float startVol = _currentBgmSource.volume;
-            float targetVol = nextItem.Volume * MasterBGMVolume;
-
-            while (elapsed < fadeTime)
-            {
-                elapsed += Time.deltaTime;
-                float t = elapsed / fadeTime;
-                _currentBgmSource.volume = Mathf.Lerp(startVol, 0, t);
-                nextSource.volume = Mathf.Lerp(0, targetVol, t);
-                yield return null;
-            }
-
-            _currentBgmSource.Stop();
-            _currentBgmSource.volume = 0;
-            nextSource.volume = targetVol;
-            _currentBgmSource = nextSource;
+            if (time > 0)
+                _fadeCoroutine = StartCoroutine(FadeOutBGM(time));
+            else
+                _currentBgmSource.Stop();
         }
 
         private IEnumerator FadeOutBGM(float fadeTime)
@@ -151,65 +135,49 @@ namespace OpenGSR.Audio
                 _currentBgmSource.volume = Mathf.Lerp(startVol, 0, elapsed / fadeTime);
                 yield return null;
             }
+
             _currentBgmSource.Stop();
             _currentBgmSource.volume = 0;
         }
 
-        // =====================================
-        // SE Methods
-        // =====================================
-        public void PlaySE(string name, float pitch = 1.0f)
+        public void PlaySE(string name, float volume = 1.0f, float pitch = 1.0f)
         {
-            if (!_seDict.TryGetValue(name, out var item))
+            if (_seDict.TryGetValue(name, out var item))
             {
-                Debug.LogWarning($"[SimpleAudioManager] SE not found: {name}");
-                return;
+                PlaySE(item.Clip, item.Volume * volume, pitch);
             }
-
-            AudioSource source = GetFreeSESource();
-            source.pitch = pitch;
-            source.PlayOneShot(item.Clip, item.Volume * MasterSEVolume);
+            else
+            {
+                Debug.LogWarning($"[SimpleAudioManager] SE not found in config: {name}");
+            }
         }
 
         public void PlaySE(AudioClip clip, float volume = 1.0f, float pitch = 1.0f)
         {
             if (clip == null) return;
-            AudioSource source = GetFreeSESource();
-            source.pitch = pitch;
-            source.PlayOneShot(clip, volume * MasterSEVolume);
-        }
 
-        public void StopAllSE()
-        {
-            foreach (var s in _seSources) s.Stop();
-        }
-
-        private AudioSource GetFreeSESource()
-        {
-            foreach (var s in _seSources)
+            AudioSource source = GetAvailableSESource();
+            if (source != null)
             {
-                if (!s.isPlaying) return s;
+                source.pitch = pitch;
+                source.PlayOneShot(clip, volume * MasterSEVolume);
             }
-            AudioSource newSource = gameObject.AddComponent<AudioSource>();
+        }
+
+        private AudioSource GetAvailableSESource()
+        {
+            foreach (var source in _seSources)
+            {
+                if (!source.isPlaying) return source;
+            }
+            // 足りなければ追加
+            var newSource = gameObject.AddComponent<AudioSource>();
             _seSources.Add(newSource);
             return newSource;
         }
 
-        // =====================================
-        // Settings
-        // =====================================
-        public void SetBGMVolume(float volume)
-        {
-            MasterBGMVolume = Mathf.Clamp01(volume);
-            if (_currentBgmSource.isPlaying)
-            {
-                _currentBgmSource.volume = MasterBGMVolume;
-            }
-        }
-
-        public void SetSEVolume(float volume)
-        {
-            MasterSEVolume = Mathf.Clamp01(volume);
-        }
+        public bool IsPlayingBGM() => _currentBgmSource != null && _currentBgmSource.isPlaying;
+        public void SetBGMVolume(float volume) => MasterBGMVolume = Mathf.Clamp01(volume);
+        public void SetSEVolume(float volume) => MasterSEVolume = Mathf.Clamp01(volume);
     }
 }

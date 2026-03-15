@@ -8,10 +8,10 @@ using Zenject;
 namespace OpenGS
 {
     /// <summary>
-    /// スプラッシュ画面のシーケンス制御を担当するクラス。
-    /// 数値設定、遷移ロジック、および EBgm による音楽再生を管理。
+    /// スプラッシュ画面のシーケンス制御を担当するコントローラー。
+    /// AbstractSceneController を継承し、演出ロジックのみに専念する。
     /// </summary>
-    public class SplashScreenController : AbstractScene
+    public class SplashScreenController : AbstractSceneController
     {
         [Header("References")]
         [SerializeField, Required] private SplashSceneMediateObject splashMediate;
@@ -23,12 +23,11 @@ namespace OpenGS
 
         [Header("Audio Settings")]
         [SerializeField] private bool playBgm = true;
-        [SerializeField, ShowIf("playBgm")] private EBgm bgm = EBgm.AuroraClassic;
+        [SerializeField, ShowIf("playBgm")] private EBgm bgm = EBgm.SplashScreen;
         [SerializeField] private bool stopBgmOnTransition = true;
 
         private ISoundService soundService;
-
-        public override SynchronizationContext MainThread() => SynchronizationContext.Current;
+        private AbstractScene parentScene;
 
         [Inject]
         public void Construct(ISoundService soundService)
@@ -36,9 +35,10 @@ namespace OpenGS
             this.soundService = soundService;
         }
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
+            parentScene = GetComponentInParent<AbstractScene>();
+            
             if (splashMediate == null) splashMediate = GetComponentInChildren<SplashSceneMediateObject>();
             
             if (splashMediate != null && splashMediate.SplashCanvasGroup != null)
@@ -57,7 +57,7 @@ namespace OpenGS
             if (splashMediate == null || splashMediate.SplashCanvasGroup == null)
             {
                 Debug.LogError("SplashSceneMediateObject or CanvasGroup is missing!");
-                GoToTitleScene();
+                TransitionToNextScene();
                 yield break;
             }
 
@@ -67,7 +67,7 @@ namespace OpenGS
                 yield return new WaitForSeconds(preDelayDuration);
             }
 
-            // BGM 再生開始 (Enum 指定)
+            // BGM 再生開始
             if (playBgm && soundService != null)
             {
                 soundService.PlayBGM(bgm);
@@ -85,29 +85,37 @@ namespace OpenGS
             yield return cg.DOFade(0f, fadeDuration).WaitForCompletion();
 
             // 次のシーンへ
-            TransitionToTitle();
+            TransitionToNextScene();
         }
 
-        protected override void Update()
+        private void Update()
         {
-            base.Update();
-
             // キー入力でスキップ
             if (Input.anyKeyDown)
             {
                 StopAllCoroutines();
-                TransitionToTitle();
+                TransitionToNextScene();
             }
         }
 
-        private void TransitionToTitle()
+        private void TransitionToNextScene()
         {
             if (stopBgmOnTransition && soundService != null)
             {
                 soundService.StopBGM(fadeDuration);
             }
 
-            GoToTitleScene();
+            // 親の AbstractScene の機能を使ってタイトルへ移動
+            if (parentScene != null)
+            {
+                parentScene.GoToTitleScene();
+            }
+            else
+            {
+                // フォールバック
+                GeneralSceneMasterData.Instance().TitleScene();
+                UnityEngine.SceneManagement.SceneManager.LoadScene(GeneralSceneMasterData.Instance().TitleScene());
+            }
         }
     }
 }
