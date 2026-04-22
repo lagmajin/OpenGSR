@@ -1,0 +1,49 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bcbaaec694a437a47aeff7d1f4c400da, type: 3}
+  m_Name: SelectStageThumbnail
+  m_EditorClassIdentifier: 
+  GhostHouse: {fileID: 0}
+  CityOfDarkness1: {fileID: 21300000, guid: f878ed46c51415640bd6b29028c32156, type: 3}
+  CityOfDarkness2: {fileID: 21300000, guid: 47a2697f81283fd41b03a3ad2bb54072, type: 3}
+  Jungle1: {fileID: 0}
+  Jungle2: {fileID: 0}
+  GreenHill1: {fileID: 21300000, guid: dce99b9912aba3b488c6c7214a193967, type: 3}
+  GreenHill2: {fileID: 21300000, guid: 73fb24160112a754bbd876fd06ebc9c0, type: 3}
+  RuinOfWarSide1: {fileID: 0}
+  RuinOfWarSide2: {fileID: 0}
+  Waterfall: {fileID: 21300000, guid: 962e3c8f46854734688fe26c43319475, type: 3}
+  Nocturne: {fileID: 21300000, guid: 669f89bc26c86864d8b0755b5fb0b71e, type: 3}
+  RobotFactory: {fileID: 0}
+  SecretBase: {fileID: 0}
+  AuroraClassic: {fileID: 0}
+  ArchOfGunster: {fileID: 21300000, guid: 0bcb10ffe82039b41980f9ee3b67e76f, type: 3}
+  OnStudio: {fileID: 21300000, guid: 360703c6871ae2a4691184ee9bb7fe36, type: 3}
+  CityOfDarkness1_S: {fileID: 21300000, guid: 47a2697f81283fd41b03a3ad2bb54072, type: 3}
+  CityOfDarkness2_S: {fileID: 0}
+  Jungle1_S: {fileID: 21300000, guid: dce99b9912aba3b488c6c7214a193967, type: 3}
+  Jungle2_S: {fileID: 0}
+  GreenHillSide1_S: {fileID: 0}
+  GreenHillSide2_S: {fileID: 0}
+  RuinOfWar1_S: {fileID: 0}
+  RuinOfWar2_S: {fileID: 0}
+  Waterfall_S: {fileID: 21300000, guid: 6980212b0eaa6414a967156520d9b193, type: 3}
+  Nocturne_S: {fileID: 0}
+  FactoryInGeol_S: {fileID: 0}
+  RobotFactory_S: {fileID: 0}
+  SecretBase_S: {fileID: 0}
+  ArchOfGunster_S: {fileID: 21300000, guid: 852519a078932b647b194e43eaa01a2d, type: 3}
+  OnStudio_S: {fileID: 21300000, guid: a44fce5b187026a40a5d22d271272178, type: 3}
+  SkyHigh: {fileID: 0}
+  SkyHighCTF: {fileID: 0}
+  Random: {fileID: 21300000, guid: 3c3bb646d9b1cf14da95f94162a55617, type: 3}
+  Random_S: {fileID: 21300000, guid: cc45c8dcc0c1aa14b92bded913f261a4, type: 3}

@@ -7,9 +7,17 @@
 - Record each rescue batch in this file.
 
 ## Current Structure
+- `Assets/Scenes/`
 - `Assets/Scenes/Title/`
 - `Assets/Scenes/Lobby/`
 - `Assets/Scenes/Login/`
+- `Assets/Scenes/Loading/`
+- `Assets/Scenes/Map/`
+- `Assets/Scenes/Result/`
+- `Assets/Scenes/Setting/`
+- `Assets/Scenes/Shop/`
+- `Assets/Scenes/SingleMode/`
+- `Assets/Scenes/Waitroom/`
 
 ## Rescued (from old OpenGS)
 - `Assets/Scenes/Title/TitleScene.unity`
@@ -48,3 +56,29 @@
   - `Assets/Scripts/Scene/SceneController/`
   - `Assets/Scripts/Scene/WaitRoom/`
   - `Assets/Scripts/Scene/ExportAssets/`
+
+## Script rescue batch
+- Source: `x:/Dev/OpenGS/Assets/Scripts`
+- Mode: copy only missing files (no overwrite)
+- Copied scripts/meta: `355`
+- Destination:
+  - `Assets/Scripts/`
+
+## Scene and resource rescue batch
+- Source: `x:/Dev/OpenGS/Assets`
+- Scope: `Assets/Scenes`, `Assets/Resources`, `Assets/Settings`
+- Mode: copy only missing files (no overwrite)
+- Copied files: `324`
+- Destination:
+  - `Assets/Scenes/`
+  - `Assets/Resources/`
+  - `Assets/Settings/`
+
+## Scene rescue follow-up batch
+- Source: `x:/Dev/OpenGS/Assets/Scenes`
+- Scope: missing scene and lighting files only
+- Mode: copy only missing files (no overwrite)
+- Copied scene files: `65`
+- Cleanup: removed `6` duplicate root scene copies that already had feature-folder versions
+- Destination:
+  - `Assets/Scenes/`

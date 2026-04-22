@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b686cac8b7eaf540b55f4cc8266bc8e, type: 3}
+  m_Name: DialogMasterData
+  m_EditorClassIdentifier: 
+  DmMapSelectDialog: {fileID: 0}
+  TdmMapSelectDialog: {fileID: 0}
+  SuvMapSelectDialog: {fileID: 0}
+  TsuvMapSelectDialog: {fileID: 0}
+  CtfMapSelectDialog: {fileID: 0}
+  PlayerSelectDialog: {fileID: 0}
+  InstantItemDialog: {fileID: 0}
+  WeaponLimitDialog: {fileID: 0}
+  InviteDialog: {fileID: 0}
+  createNewRoomDialog: {fileID: 4265133594825993451, guid: 70cf34b2b112e51408503741fb736750,
+    type: 3}
+  helpDialog: {fileID: 0}
+  WeaponSelectDialog: {fileID: 7068208961843555485, guid: a5da16c5422256f4c976434dc02ac5ac,
+    type: 3}

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e667b32ef96c19344964b08314ee257e, type: 3}
+  m_Name: AllGrenadeListMasterData
+  m_EditorClassIdentifier: 
+  normalGrenade: {fileID: 11400000, guid: d210622797abf0b48a8ea812f7be95e3, type: 2}
+  fireGrenade: {fileID: 11400000, guid: 57b590b45fc5fc54a8c6726c1d1ed79b, type: 2}
+  magneticGrenade: {fileID: 11400000, guid: a49b6adc8a8d0304fb78328924d13fec, type: 2}
+  mineGrenade: {fileID: 11400000, guid: 6d5bb6d476e71ff499af42420c9da930, type: 2}
+  powerGrenade: {fileID: 11400000, guid: fe4f4ea19f103884aa028cac0a09f78c, type: 2}
+  clusterGrenade: {fileID: 11400000, guid: 261f4a41ca88ddd4bbb64568421cb6b6, type: 2}

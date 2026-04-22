@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cc8f01d2d43b04b9321b7db708319a, type: 3}
+  m_Name: CanvasMasterData
+  m_EditorClassIdentifier: 
+  NavigatorCanvas: {fileID: 1654229739734850332, guid: fcdd6c4b23dcc9040a7bcad492902f2e,
+    type: 3}
+  PlayerStatusUI: {fileID: 3317239519674642096, guid: 5d385ce8a0c9dd749bb8097e6c966bb3,
+    type: 3}
+  DMHud: {fileID: 3826837243123342287, guid: 98133658905a5104e8c97db277eb102f, type: 3}
+  TDMHud: {fileID: 3250118645260983284, guid: 69fea7455209dcc49a198a7aecdcfdc5, type: 3}
+  SuvHud: {fileID: 0}
+  TSuvHud: {fileID: 0}
+  CTFHud: {fileID: 8720642266037443894, guid: c2fd2af77243bee45907a06cfdf819d1, type: 3}
+  MatchInformationCanvas: {fileID: 0}
+  ReSpawnUICanvas: {fileID: 5991388335848991857, guid: 3dc8458d09ee0fc45986d6e7cf06ba08,
+    type: 3}
+  PlayerNameCanvas: {fileID: 0}
+  MatchChat: {fileID: 0}

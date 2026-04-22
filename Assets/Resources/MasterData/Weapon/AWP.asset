@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b343cd5316c07b49a83d40ad4f0476b, type: 3}
+  m_Name: AWP
+  m_EditorClassIdentifier: 
+  type: 9
+  gunType: 3
+  Name: 
+  maxBullet: 10
+  bulletSpeed: 0
+  bulletCount: 1
+  damage: 1
+  reloadTime: 30
+  inGameSprite: {fileID: 21300000, guid: a527bd051274fb04799192c9b682b17b, type: 3}
+  inSelectionSprite: {fileID: 1702584465547899308, guid: 4e9a93ed478f8484abb208b27babf755,
+    type: 3}
+  shilhouetteSprite: {fileID: -3018283909314946460, guid: 6e5cf4c5d0454d0408d54bf54e87f0b5,
+    type: 3}
+  reloadStartSound: {fileID: 8300000, guid: e484a9a9ee90d9f4bab608c1c1152cae, type: 3}
+  shotSound: {fileID: 0}
+  shotHitObjectSound: {fileID: 0}
+  shellPrefab: {fileID: 0}
+  bulletPrefab: {fileID: 0}
+  shotEffectPrefab: {fileID: 0}

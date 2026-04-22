@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 661a97ca4b1dcc44a871bee9ee42852b, type: 3}
+  m_Name: SystemSoundMasterData
+  m_EditorClassIdentifier: 
+  ClickSound: {fileID: 8300000, guid: ee57ba6269043824e864491c985eb6db, type: 3}
+  ErrorSound: {fileID: 8300000, guid: ba04681d719a4fe4b8b6be14dcafa4fa, type: 3}
+  EnterLobbySound: {fileID: 8300000, guid: c50c5d1f319c8a44bb2c49c454fd0d13, type: 3}
+  PopupSound: {fileID: 8300000, guid: 73d022a6dfe7e254e8776397873db0d1, type: 3}
+  Fanfare: {fileID: 8300000, guid: e19abb0c940213b41be6e129741307bc, type: 3}

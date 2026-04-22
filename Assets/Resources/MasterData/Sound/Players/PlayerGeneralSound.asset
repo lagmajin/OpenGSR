@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f56f2167766b0fb42a356c94c4b5f0bc, type: 3}
+  m_Name: PlayerGeneralSound
+  m_EditorClassIdentifier: 
+  jumpStartSound: {fileID: 8300000, guid: 51aa5eabfb386bf44a9944c1c0bafcb3, type: 3}
+  jumpEndSound: {fileID: 0}
+  boosterStartSound: {fileID: 0}
+  boosterSound: {fileID: 0}
+  boosterEndSound: {fileID: 0}
+  takeItemSound: {fileID: 0}
+  takeGrenadeSound: {fileID: 0}
+  dropItemSound: {fileID: 0}
+  openGrenadeSound: {fileID: 0}
+  throwGrenadeSound: {fileID: 0}

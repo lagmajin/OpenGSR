@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31b9eb24fa53e744bbe5e4f5491d73fb, type: 3}
+  m_Name: Player Thumbnail Master Data
+  m_EditorClassIdentifier: 
+  ami: {fileID: -3710040471068135816, guid: d8ab8a1123163f4468ff88b21953c84a, type: 3}
+  yumi: {fileID: 21300000, guid: 7d705acf5c82ee24dbb0e2b45c55cd15, type: 3}
+  misty: {fileID: 21300000, guid: 386d434338af48748be5fc4d8862a4ba, type: 3}
+  mary: {fileID: 21300000, guid: 83135b58d40778f4d867287da52ce02c, type: 3}
+  seoul: {fileID: 21300000, guid: 7cf719fc7cb61e24c9697185d9353620, type: 3}
+  littleJ: {fileID: 21300000, guid: d1d2f2c6248df9149b156a521b57ea85, type: 3}
+  liu: {fileID: 21300000, guid: e9fe364184db91648868e3dd072c8ef5, type: 3}
+  wolf: {fileID: 21300000, guid: 02ca204d86d279043b9ee68f339fbf73, type: 3}
+  schwartz: {fileID: 21300000, guid: 43e7da07a30c75341a1e406e87285649, type: 3}
+  wyvern: {fileID: 21300000, guid: e078bee0a814aa14c8677c69ce6386aa, type: 3}
+  ami_B: {fileID: 1542876665580207614, guid: 0c0db861bdbd9c249ba3834a75b5f2a9, type: 3}
+  yumi_B: {fileID: -304270166728332805, guid: 1ceaf2c2c7347e64f99db2d9ba2bdcde, type: 3}
+  misty_B: {fileID: 21300000, guid: 861f425ae9cede744b3ea47a90f5f057, type: 3}
+  mary_B: {fileID: 21300000, guid: 079dc342d961a2f49abacbd13bc2fda3, type: 3}
+  seoul_B: {fileID: 21300000, guid: 00bb50c028f14104b9dfedd60c4ac275, type: 3}
+  littleJ_B: {fileID: 21300000, guid: 4d83c6a8afac9b74ea135df3d8a55d2c, type: 3}
+  liu_B: {fileID: 21300000, guid: e6b441eec3115e745b5998da77d349dd, type: 3}
+  wolf_B: {fileID: 21300000, guid: ec74f12b09aa5d844bbc4a7d2a76bec3, type: 3}
+  schwartz_B: {fileID: 0}
+  wyvern_B: {fileID: 0}

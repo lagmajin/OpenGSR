@@ -1,0 +1,7 @@
+﻿
+namespace OpenGS
+{
+    class IPoweupable
+    {
+    }
+}

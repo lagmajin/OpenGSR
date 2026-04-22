@@ -1,0 +1,16 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 897bc28cbdd86b24fabe3d45557f8714, type: 3}
+  m_Name: EffectPrefab
+  m_EditorClassIdentifier: 
+  flagReturnEffect: {fileID: 7155702413162174501, guid: cfe5a91b4f240104498745e8321568da,
+    type: 3}

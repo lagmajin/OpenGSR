@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14cfe701349e12243b473dd5f90b8d2e, type: 3}
+  m_Name: FlagMasterData
+  m_EditorClassIdentifier: 
+  blueFlag: {fileID: 8824185939825363750, guid: 78780f6e636f10a4f8e912fa9c13c02f,
+    type: 3}
+  redFlag: {fileID: 8533702891057410407, guid: 472001d230528f940882fbf1cfde029e, type: 3}
+  blueFlagInSlot: {fileID: 6251399387367993976, guid: af3420667b7808a46b69aa19a9380981,
+    type: 3}
+  redFlagInSlot: {fileID: 4037394637432888443, guid: 56d884d7801a5bf45baaea7386daa8f2,
+    type: 3}

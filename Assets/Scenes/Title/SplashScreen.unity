@@ -185,8 +185,8 @@ MonoBehaviour:
   timer: {fileID: 198330610}
   sceneController: {fileID: 1644294370}
   sceneMediateObject: {fileID: 2076644898}
-  displayTime: 6.68
-  fadeTime: 4.92
+  displayTime: 7.51
+  fadeTime: 6.8
   splashCanvas: {fileID: 1854650145}
   logoImage: {fileID: 1877059339}
   overlayColor: {r: 0, g: 0, b: 0, a: 1}
@@ -490,9 +490,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: OpenGSR::OpenGS.SplashScreenController
   splashMediate: {fileID: 2076644898}
-  preDelayDuration: 0.5
-  displayDuration: 2
-  fadeDuration: 1
+  preDelayDuration: 2.71
+  displayDuration: 5.01
+  fadeDuration: 1.76
   playBgm: 1
   bgm: 1
   stopBgmOnTransition: 1
@@ -630,7 +630,6 @@ GameObject:
   - component: {fileID: 1877059340}
   - component: {fileID: 1877059339}
   - component: {fileID: 1877059342}
-  - component: {fileID: 1877059343}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -707,18 +706,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &1877059343
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1877059337}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f5dec09bce12aea4397efccfdeb87eec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1923387128
 GameObject:
   m_ObjectHideFlags: 0
