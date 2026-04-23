@@ -288,6 +288,7 @@ That path is not the main multiplayer loop, but it should remain compatible with
 - `PARALLEL_DEV_PLAN.md` explains how to develop both sides together
 - `PROTOCOL.md` documents the network contract
 - `RULES.md` documents the current and legacy game rule structure
+- `LEGACY_DOC_MAP.md` points to older design documents and historical notes
 
 ## Practical Design Rule
 
