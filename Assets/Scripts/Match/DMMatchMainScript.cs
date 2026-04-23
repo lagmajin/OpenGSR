@@ -266,7 +266,20 @@ namespace OpenGS
 
         protected override void OnNetworkDataRecved(JObject obj)
         {
+            var messageType = MessageType.Normalize(obj["MessageType"]?.ToString());
 
+            switch (messageType)
+            {
+                case RUDPMessageTypes.PlayerDeath:
+                    Debug.Log($"[DM] PlayerDeath received: {obj["PlayerId"]?.ToString()}");
+                    break;
+                case RUDPMessageTypes.KillScoreUpdate:
+                    Debug.Log($"[DM] KillScoreUpdate received: {obj["PlayerId"]?.ToString()}");
+                    break;
+                case MessageType.MatchEndNotification:
+                    HandleMatchEnd(obj);
+                    break;
+            }
         }
         protected override void OnOneSec()
         {
@@ -281,6 +294,17 @@ namespace OpenGS
         private void HandleMyPlayerRespawn()
         {
             Debug.Log("MyPlayerRespawn");
+        }
+
+        private void HandleMatchEnd(JObject json)
+        {
+            endFlag = true;
+
+            var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
+            var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
+
+            Debug.Log($"[DM] Match ended: winner={winningTeam}, myTeam={myTeam}");
+            GoToResult();
         }
 
         public override void OnStartUnityEditor()

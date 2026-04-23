@@ -23,6 +23,12 @@ namespace OpenGS
         private EventBasedNetListener listener;
         private NetPeer _clientPeer;
         private volatile bool running;
+        private bool _loopbackMode = true;
+        private bool _matchEnded;
+        private int _totalDeathEvents;
+        private readonly Dictionary<string, int> _teamKills = new();
+
+        public event Action<JObject> MessageProduced;
 
         // テスト用：ダミープレイヤーの状態
         private float testPlayerX = 0f;
@@ -43,6 +49,13 @@ namespace OpenGS
 
         private void SendJson(in JObject json)
         {
+            MessageProduced?.Invoke(json);
+
+            if (_loopbackMode)
+            {
+                return;
+            }
+
             string jsonStr = json.ToString();
 
             // LiteNetLib用のデータライター
@@ -55,6 +68,7 @@ namespace OpenGS
 
         public void StartServer(int port)
         {
+            ResetMatchState();
             listener = new EventBasedNetListener();
             server = new NetManager(listener);
             server.Start(port);
@@ -68,6 +82,25 @@ namespace OpenGS
 
             Task.Run(() => PollLoop());
             Task.Run(() => TestDataBroadcastLoop()); // テストデータを定期送信
+        }
+
+        public void StopLoopback()
+        {
+            _loopbackMode = false;
+        }
+
+        public void StartLoopback()
+        {
+            _loopbackMode = true;
+        }
+
+        private void ResetMatchState()
+        {
+            _matchEnded = false;
+            _totalDeathEvents = 0;
+            _teamKills.Clear();
+            _teamKills["Red"] = 0;
+            _teamKills["Blue"] = 0;
         }
 
 
@@ -111,39 +144,60 @@ namespace OpenGS
                 try
                 {
                     var json = JObject.Parse(msg);
-                    var messageType = json["MessageType"]?.ToString();
-                    PrettyLogger.Bold("RUDP Server", $"Received: {messageType}");
-
-                    // メッセージタイプごとに処理
-                    switch (messageType)
-                    {
-                        case "PlayerInput": // RUDP専用
-                            HandlePlayerInput(json);
-                            break;
-                        case "ShootRequest": // RUDP専用
-                            HandleShootRequest(json);
-                            break;
-                        case RUDPMessageTypes.PlayerShot:
-                            HandlePlayerShot(json);
-                            break;
-                        case RUDPMessageTypes.PlayerDeath:
-                            HandlePlayerDeath(json);
-                            break;
-                        case "ItemUseRequest": // RUDP専用
-                            HandleItemUseRequest(json);
-                            break;
-                        case "ChatMessage": // RUDP専用
-                            HandleChatMessage(json);
-                            break;
-                        default:
-                            PrettyLogger.Bold("RUDP Server", $"Unknown message: {messageType}");
-                            break;
-                    }
+                    ProcessIncomingMessage(json);
                 }
                 catch (JsonException ex)
                 {
                     Console.WriteLine($"JSON解析エラー: {ex.Message}");
                 }
+            }
+        }
+
+        public void ProcessIncomingMessage(JObject json)
+        {
+            if (json == null)
+            {
+                return;
+            }
+
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            PrettyLogger.Bold("RUDP Server", $"Received: {messageType}");
+
+            switch (messageType)
+            {
+                case "PlayerInput":
+                    HandlePlayerInput(json);
+                    break;
+                case "ShootRequest":
+                    HandleShootRequest(json);
+                    break;
+                case RUDPMessageTypes.PlayerShot:
+                    HandlePlayerShot(json);
+                    break;
+                case RUDPMessageTypes.PlayerDeath:
+                    HandlePlayerDeath(json);
+                    break;
+                case "TeamKill":
+                    HandleTeamKill(json);
+                    break;
+                case "ItemUseRequest":
+                    HandleItemUseRequest(json);
+                    break;
+                case "ChatMessage":
+                    HandleChatMessage(json);
+                    break;
+                case RUDPMessageTypes.PlayerKill:
+                    HandlePlayerKill(json);
+                    break;
+                case RUDPMessageTypes.KillScoreUpdate:
+                    HandleKillScoreUpdate(json);
+                    break;
+                case RUDPMessageTypes.PlayerRespawn:
+                    HandlePlayerRespawn(json);
+                    break;
+                default:
+                    PrettyLogger.Bold("RUDP Server", $"Unknown message: {messageType}");
+                    break;
             }
         }
 
@@ -219,6 +273,130 @@ namespace OpenGS
                 victimTeam
             );
             SendJson(deathScoreMsg);
+
+            _totalDeathEvents++;
+            TryBroadcastMatchEnd();
+        }
+
+        private void HandleTeamKill(JObject json)
+        {
+            var killerTeam = json["KillerTeam"]?.ToString() ?? "Red";
+            var victimTeam = json["VictimTeam"]?.ToString() ?? "Blue";
+
+            if (!_teamKills.ContainsKey(killerTeam))
+            {
+                _teamKills[killerTeam] = 0;
+            }
+
+            _teamKills[killerTeam]++;
+
+            var killScoreMsg = new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.KillScoreUpdate,
+                ["PlayerId"] = killerTeam,
+                ["Kills"] = _teamKills[killerTeam],
+                ["Deaths"] = 0,
+                ["Score"] = _teamKills[killerTeam] * 100,
+                ["Team"] = killerTeam
+            };
+            SendJson(killScoreMsg);
+
+            PrettyLogger.Bold("RUDP Server", $"TeamKill: {killerTeam} -> {victimTeam} (score={_teamKills[killerTeam]})");
+            TryBroadcastMatchEnd();
+        }
+
+        private void HandlePlayerKill(JObject json)
+        {
+            var killerId = json["KillerId"]?.ToString() ?? "unknown";
+            var victimId = json["VictimId"]?.ToString() ?? "unknown";
+            var weaponType = json["WeaponType"]?.ToString() ?? "Unknown";
+            var headshot = json["Headshot"]?.ToObject<bool>() ?? false;
+
+            PrettyLogger.Bold("RUDP Server", $"PlayerKill: {killerId} -> {victimId} ({weaponType}, headshot={headshot})");
+
+            var killMsg = new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.PlayerKill,
+                ["KillerId"] = killerId,
+                ["VictimId"] = victimId,
+                ["WeaponType"] = weaponType,
+                ["Headshot"] = headshot
+            };
+            SendJson(killMsg);
+        }
+
+        private void HandleKillScoreUpdate(JObject json)
+        {
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var kills = json["Kills"]?.ToObject<int>() ?? 0;
+            var deaths = json["Deaths"]?.ToObject<int>() ?? 0;
+            var score = json["Score"]?.ToObject<int>() ?? 0;
+            var team = json["Team"]?.ToString() ?? "Unknown";
+
+            PrettyLogger.Bold("RUDP Server", $"KillScoreUpdate: {playerId} K={kills} D={deaths} S={score} Team={team}");
+
+            SendJson(new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.KillScoreUpdate,
+                ["PlayerId"] = playerId,
+                ["Kills"] = kills,
+                ["Deaths"] = deaths,
+                ["Score"] = score,
+                ["Team"] = team
+            });
+        }
+
+        private void HandlePlayerRespawn(JObject json)
+        {
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var posX = json["PosX"]?.ToObject<float>() ?? 0f;
+            var posY = json["PosY"]?.ToObject<float>() ?? 0f;
+
+            PrettyLogger.Bold("RUDP Server", $"PlayerRespawn: {playerId} at ({posX}, {posY})");
+
+            SendJson(new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.PlayerRespawn,
+                ["PlayerId"] = playerId,
+                ["PosX"] = posX,
+                ["PosY"] = posY
+            });
+        }
+
+        private void TryBroadcastMatchEnd()
+        {
+            if (_matchEnded)
+            {
+                return;
+            }
+
+            var redKills = _teamKills.TryGetValue("Red", out var red) ? red : 0;
+            var blueKills = _teamKills.TryGetValue("Blue", out var blue) ? blue : 0;
+
+            if (redKills < 3 && blueKills < 3 && _totalDeathEvents < 3)
+            {
+                return;
+            }
+
+            _matchEnded = true;
+
+            var winningTeam = redKills == blueKills
+                ? "Draw"
+                : (redKills > blueKills ? "Red" : "Blue");
+
+            var result = new JObject
+            {
+                ["MessageType"] = MessageType.MatchEndNotification,
+                ["WinningTeam"] = winningTeam,
+                ["MyTeam"] = "Blue",
+                ["RedTeamKills"] = redKills,
+                ["BlueTeamKills"] = blueKills,
+                ["TotalDeaths"] = _totalDeathEvents,
+                ["Players"] = new JArray()
+            };
+
+            SendJson(result);
+            PrettyLogger.Bold("RUDP Server", $"Match ended. winner={winningTeam}, red={redKills}, blue={blueKills}, deaths={_totalDeathEvents}");
         }
 
         private void HandleItemUseRequest(JObject json)

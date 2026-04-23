@@ -44,6 +44,7 @@ namespace OpenGS
 
         public new void Start()
         {
+            base.Start();
             // Singleton設定
             Instance = this;
 
@@ -180,6 +181,7 @@ namespace OpenGS
 
         void GoToResultScene()
         {
+            GoToResult();
         }
 
         private void OfflineEventParser(AbstractGameEvent e)
@@ -253,7 +255,7 @@ namespace OpenGS
         /// </summary>
         protected override void OnNetworkDataRecved(JObject obj)
         {
-            var messageType = obj["MessageType"]?.ToString();
+            var messageType = MessageType.Normalize(obj["MessageType"]?.ToString());
 
             switch (messageType)
             {
@@ -274,6 +276,9 @@ namespace OpenGS
                     break;
                 case RUDPMessageTypes.FlagScoreUpdate:
                     HandleFlagScoreUpdate(obj);
+                    break;
+                case MessageType.MatchEndNotification:
+                    HandleMatchEnd(obj);
                     break;
                 default:
                     base.OnNetworkDataRecved(obj);
@@ -358,6 +363,15 @@ namespace OpenGS
         {
             Debug.Log("FlagPickedUp: " + team + " by " + playerName);
             OnFlagPickedUp?.Invoke(team, playerName);
+        }
+
+        private void HandleMatchEnd(JObject json)
+        {
+            var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
+            var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
+
+            Debug.Log($"[CTF] Match ended: winner={winningTeam}, myTeam={myTeam}");
+            GoToResultScene();
         }
     }
 }

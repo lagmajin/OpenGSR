@@ -39,6 +39,7 @@ namespace OpenGS
 
         private new void Start()
         {
+            base.Start();
             Application.targetFrameRate = 30;
 
             // Singleton設定
@@ -97,6 +98,7 @@ namespace OpenGS
 
         void GoToResultScene()
         {
+            GoToResult();
         }
 
         /// <summary>
@@ -226,7 +228,7 @@ namespace OpenGS
         /// </summary>
         protected override void OnNetworkDataRecved(JObject obj)
         {
-            var messageType = obj["MessageType"]?.ToString();
+            var messageType = OpenGSCore.MessageType.Normalize(obj["MessageType"]?.ToString());
 
             switch (messageType)
             {
@@ -238,6 +240,9 @@ namespace OpenGS
                     break;
                 case "PlayerKill":
                     HandlePlayerKill(obj);
+                    break;
+                case OpenGSCore.MessageType.MatchEndNotification:
+                    HandleMatchEnd(obj);
                     break;
                 default:
                     base.OnNetworkDataRecved(obj);
@@ -294,6 +299,16 @@ namespace OpenGS
             var headshot = json["Headshot"]?.ToObject<bool>() ?? false;
 
             Debug.Log($"[TDM] Player kill: {killerId} killed {victimId} (headshot: {headshot})");
+        }
+
+        private void HandleMatchEnd(JObject json)
+        {
+            var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
+            var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
+
+            Debug.Log($"[TDM] Match ended: winner={winningTeam}, myTeam={myTeam}");
+            OnMatchEnded?.Invoke(Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
+            GoToResultScene();
         }
     }
 }

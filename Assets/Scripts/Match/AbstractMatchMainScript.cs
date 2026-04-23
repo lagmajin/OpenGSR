@@ -15,6 +15,7 @@ using Sirenix.OdinInspector;
 using Zenject;
 using UnityEditor;
 using Unity.Cinemachine;
+using UniRx;
 
 //using Unity.
 
@@ -84,6 +85,9 @@ namespace OpenGS
 
         [Inject]
         [ShowInInspector]protected MatchRoomManager matchRoomManager;
+
+        private MatchRUDPServerNetworkManager matchNetworkManager;
+        private bool matchNetworkSubscribed;
 
 
         [InitializeOnEnterPlayMode]
@@ -259,6 +263,7 @@ namespace OpenGS
         public void Start()
         {
             OnStart();
+            BindMatchNetwork();
 
             Debug.Log("AbstracMainScript.Con");
 
@@ -296,6 +301,60 @@ namespace OpenGS
                 yield return new WaitForSecondsRealtime(60);
                 OnOneMin();
             }
+        }
+
+        protected void BindMatchNetwork()
+        {
+            if (matchNetworkSubscribed)
+            {
+                return;
+            }
+
+            try
+            {
+                matchNetworkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[{GetType().Name}] Failed to resolve MatchRUDPServerNetworkManager: {ex.Message}");
+                matchNetworkManager = null;
+                return;
+            }
+
+            if (matchNetworkManager == null)
+            {
+                return;
+            }
+
+            matchNetworkManager.DataReceivedStream
+                .ObserveOnMainThread()
+                .Subscribe(OnNetworkDataRecved)
+                .AddTo(this);
+
+            matchNetworkManager.ConnectedStream
+                .ObserveOnMainThread()
+                .Subscribe(_ => OnMatchNetworkConnected())
+                .AddTo(this);
+
+            matchNetworkManager.DisconnectedStream
+                .ObserveOnMainThread()
+                .Subscribe(_ => OnMatchNetworkDisconnected())
+                .AddTo(this);
+
+            if (IsOnlineMatch() && !matchNetworkManager.IsConnected())
+            {
+                matchNetworkManager.ConnectToLocalServer(0);
+            }
+
+            matchNetworkSubscribed = true;
+        }
+
+        protected virtual void OnMatchNetworkConnected()
+        {
+        }
+
+        protected virtual void OnMatchNetworkDisconnected()
+        {
         }
 
         void OnEnable()

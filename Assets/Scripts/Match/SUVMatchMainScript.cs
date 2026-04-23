@@ -17,6 +17,7 @@ namespace OpenGS
 
         private void Start()
         {
+            base.Start();
 
             SpawnPlayers();
         }
