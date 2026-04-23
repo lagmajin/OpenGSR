@@ -95,3 +95,7 @@ Done when:
 5. `S4`
 6. `S5`
 
+## Parallel Development
+
+For a client/server split plan that matches these milestones, see
+[PARALLEL_DEV_PLAN.md](/x:/Dev/OpenGSR/PARALLEL_DEV_PLAN.md).

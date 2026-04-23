@@ -307,8 +307,28 @@ namespace OpenGS
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
 
             Debug.Log($"[TDM] Match ended: winner={winningTeam}, myTeam={myTeam}");
+            if (IsOfflineMatch())
+            {
+                StoreOfflineMatchResult(winningTeam, myTeam);
+            }
             OnMatchEnded?.Invoke(Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
             GoToResultScene();
+        }
+
+        private void StoreOfflineMatchResult(string winningTeam, string myTeam)
+        {
+            var players = ResolveLocalPlayers();
+            var result = new JObject
+            {
+                ["MessageType"] = OpenGSCore.MessageType.MatchEndNotification,
+                ["WinningTeam"] = winningTeam,
+                ["MyTeam"] = string.IsNullOrWhiteSpace(myTeam) ? ResolveLocalTeamName() : myTeam,
+                ["RedScore"] = redTeamKills,
+                ["BlueScore"] = blueTeamKills,
+                ["Players"] = new JArray(players.ConvertAll(p => p?.ToJson()))
+            };
+
+            matchRoomManager?.StoreOfflineMatchResult(result);
         }
     }
 }

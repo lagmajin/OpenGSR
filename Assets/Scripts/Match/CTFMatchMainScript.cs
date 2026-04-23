@@ -371,7 +371,29 @@ namespace OpenGS
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
 
             Debug.Log($"[CTF] Match ended: winner={winningTeam}, myTeam={myTeam}");
+            if (IsOfflineMatch())
+            {
+                StoreOfflineMatchResult(winningTeam, myTeam);
+            }
             GoToResultScene();
+        }
+
+        private void StoreOfflineMatchResult(string winningTeam, string myTeam)
+        {
+            var players = ResolveLocalPlayers();
+            var result = new JObject
+            {
+                ["MessageType"] = MessageType.MatchEndNotification,
+                ["WinningTeam"] = winningTeam,
+                ["MyTeam"] = string.IsNullOrWhiteSpace(myTeam) ? ResolveLocalTeamName() : myTeam,
+                ["RedTeamScore"] = 0,
+                ["BlueTeamScore"] = 0,
+                ["RedTeamKills"] = 0,
+                ["BlueTeamKills"] = 0,
+                ["Players"] = new JArray(players.ConvertAll(p => p?.ToJson()))
+            };
+
+            matchRoomManager?.StoreOfflineMatchResult(result);
         }
     }
 }

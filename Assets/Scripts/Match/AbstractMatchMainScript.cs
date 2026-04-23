@@ -497,6 +497,42 @@ namespace OpenGS
 
         }
 
+        /// <summary>
+        /// 現在のローカルプレイヤーの所属チーム名を返す。
+        /// オフライン結果の MyTeam 記録に使う。
+        /// </summary>
+        protected string ResolveLocalTeamName()
+        {
+            if (player == null)
+            {
+                return "Draw";
+            }
+
+            var abstractPlayer = player.GetComponent<AbstractPlayer>();
+            if (abstractPlayer == null)
+            {
+                return "Draw";
+            }
+
+            var team = abstractPlayer.Team();
+            return team == ETeam.NoTeam ? "Draw" : team.ToString();
+        }
+
+        /// <summary>
+        /// ローカル待機所の全プレイヤー情報を返す。
+        /// オフライン結果のプレイヤー一覧に使う。
+        /// </summary>
+        protected List<PlayerInfo> ResolveLocalPlayers()
+        {
+            var manager = matchRoomManager ?? MatchRoomManager();
+            if (manager?.WaitRoom == null)
+            {
+                return new List<PlayerInfo>();
+            }
+
+            return manager.WaitRoom.AllPlayers();
+        }
+
         [Button("タイトルテスト")]
         public void GoToTitle()
         {

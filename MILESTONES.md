@@ -121,6 +121,11 @@ Done when:
 5. `M4`
 6. `M5`
 
+## Parallel Development
+
+If you want to work on client and server at the same time, see
+[PARALLEL_DEV_PLAN.md](/x:/Dev/OpenGSR/PARALLEL_DEV_PLAN.md).
+
 ## Server Side Roadmap
 
 This section tracks the unfinished server-facing pieces that still look like mock,

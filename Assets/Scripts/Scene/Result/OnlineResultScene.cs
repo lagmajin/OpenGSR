@@ -75,9 +75,9 @@ namespace OpenGS
         {
             if (json == null) return;
             
-            var messageType = json["MessageType"]?.ToString();
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
             
-            if (messageType == "MatchResult" || messageType == MessageType.MatchEndNotification)
+            if (messageType == MessageType.MatchResult || messageType == MessageType.MatchEndNotification)
             {
                 // 勝ったチーム名を抽出
                 string winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
@@ -89,10 +89,10 @@ namespace OpenGS
 
                 // JSONから各プレイヤーの戦績リストをパースしてUIに流す
                 var playersArray = json["Players"] as JArray;
-                if (playersArray != null && resultUIManager != null)
+                if (resultUIManager != null)
                 {
                     var parsedData = new System.Collections.Generic.List<PlayerMatchResultData>();
-                    foreach (var pToken in playersArray)
+                    foreach (var pToken in playersArray ?? new JArray())
                     {
                         var p = pToken as JObject;
                         if (p == null) continue;
@@ -116,7 +116,7 @@ namespace OpenGS
         {
             // オンライン版は、結果確認後オンラインのウェイトルームに戻る
             // 正しいオンラインウェイトルームのシーン名は OnlineWaitRoom
-            SceneManager.LoadScene("OnlineWaitRoom");
+            SceneManager.LoadScene(GeneralSceneMasterData.Instance().OnlineWaitRoomScene());
 
             // リザルトデータをクリア（次の試合のために）
             if (networkManager != null)
