@@ -1,220 +1,190 @@
-﻿
-
 using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
 using OpenGSCore;
+using System;
 using UnityEngine;
 
 namespace OpenGS
 {
-
-
-
     public partial class MatchRoomManager
     {
         [CanBeNull] public WaitRoom OnlineWaitRoom { get; private set; } = null;
-
         [CanBeNull] public MatchRoom OnlineMatchRoom { get; private set; } = null;
 
-        private readonly object _lockObj=new object();
+        private readonly object _lockObj = new object();
+
         public void CreateNewOnlineWaitRoom(in string roomName = "", int capacity = 8)
         {
             lock (_lockObj)
             {
-
                 if (OnlineWaitRoom != null)
                 {
                     RemoveOnlineWaitRoom();
                 }
 
-                OnlineWaitRoom = new WaitRoom(roomName, "", 0);
-
+                OnlineWaitRoom = new WaitRoom(roomName, "", capacity);
             }
-
         }
+
         public void RemoveOnlineWaitRoom()
         {
             lock (_lockObj)
             {
                 OnlineWaitRoom = null;
             }
-
-            
-
-
-
-
-
         }
-
 
         public void CreateNewOnlineMatchRoom(in string id)
         {
             lock (_lockObj)
             {
-
-                if (OfflineMatchRoom != null)
+                if (OnlineMatchRoom != null)
                 {
-
                     RemoveOnlineMatchRoom();
                 }
 
                 if (OnlineWaitRoom != null)
                 {
                     Debug.Log("OnlineMatchRoom created...");
-
                     OnlineMatchRoom = new MatchRoom("");
-
-
                 }
-                else
-                {
-
-                }
-
             }
-
-
-
         }
 
         public void CreateNewOnlineMatchRoom()
         {
             lock (_lockObj)
             {
-
                 if (OnlineMatchRoom != null)
                 {
-
                     RemoveOnlineMatchRoom();
                 }
 
                 if (OnlineWaitRoom != null)
                 {
-
                     Debug.Log("OnlineMatchRoom created...");
-
                     OnlineMatchRoom = new MatchRoom("");
-
                 }
-                else
-                {
-
-                }
-
-
             }
-
         }
-        
 
         public void RemoveOnlineMatchRoom()
         {
             lock (_lockObj)
             {
-                OfflineMatchRoom = null;
+                OnlineMatchRoom = null;
             }
-
-            
-
         }
 
         public bool IsValidOnlineWaitRoom()
         {
-            if (OnlineWaitRoom == null)
-            {
-                return false;
-            }
-
-            return true;
-
+            return OnlineWaitRoom != null;
         }
 
         public bool IsValidOnlineMatchRoom()
         {
-            if (OnlineWaitRoom == null)
-            {
-                return false;
-            }
-
-            return true;
+            return OnlineMatchRoom != null;
         }
-
     }
-
 
     public partial class MatchRoomManager : IMatchRoomManager
     {
-        //public static MatchRoomManager Instance { get; } = new();
-
         [CanBeNull] public WaitRoom WaitRoom { get; private set; } = null;
-
-        //public OfflineWaitRoom
         [CanBeNull] public MatchRoom OfflineMatchRoom { get; private set; } = null;
-
         [CanBeNull] public OfflineWaitRoom OfflineWaitRoom { get; private set; } = null;
 
         public MatchRoom TestRoom;
-        
-        //public Stage Stage { get; set; }
-
-
-
         public MapInfo MapInfo { get; set; }
+        public JObject LastOfflineMatchResult { get; private set; }
+
         public MatchRoomManager()
         {
-
             SetUpDebugMatchRoom();
         }
 
         private void SetUpDebugMatchRoom()
         {
             TestRoom = new MatchRoom("test");
-
-
-
         }
 
-        public void CreateNewOfflineWaitRoom(in string roomName="")
+        public void CreateNewOfflineWaitRoom(in string roomName = "")
         {
-            if (OfflineWaitRoom == null)
+            lock (_lockObj)
             {
+                if (OfflineWaitRoom == null)
+                {
+                    OfflineWaitRoom = new OfflineWaitRoom();
+                }
 
+                var select = GameModeSelectManager.Instance.OfflineGameSelect;
+                var capacity = select != null && select.Capacity > 0 ? select.Capacity : 8;
+                var resolvedRoomName = string.IsNullOrWhiteSpace(roomName) ? "OfflineRoom" : roomName;
+
+                WaitRoom = new WaitRoom(resolvedRoomName, Guid.NewGuid().ToString(), capacity);
+                WaitRoom.ChangeGameMode(select?.GameMode ?? EGameMode.DeathMatch);
+
+                MapInfo = new MapInfo
+                {
+                    GameMode = select?.GameMode ?? EGameMode.DeathMatch,
+                    Map = select?.Map ?? EMap.DryDays
+                };
             }
-
-            //OfflineWaitRoom = DependencyInjectionConfig.Resolve<OfflineWaitRoom>();
-
-
-
-
         }
 
+        public void CreateNewOfflineMatchRoom()
+        {
+            lock (_lockObj)
+            {
+                if (OfflineMatchRoom != null)
+                {
+                    RemoveOfflineMatchRoom();
+                }
 
- 
+                if (WaitRoom == null)
+                {
+                    CreateNewOfflineWaitRoom("OfflineRoom");
+                }
+
+                OfflineMatchRoom = new MatchRoom(Guid.NewGuid().ToString())
+                {
+                    RoomName = "Offline Match",
+                    Capacity = WaitRoom != null ? WaitRoom.Capacity : 8
+                };
+
+                LastOfflineMatchResult = null;
+            }
+        }
 
         public void RemoveOfflineWaitRoom()
         {
-
+            lock (_lockObj)
+            {
+                WaitRoom = null;
+                OfflineWaitRoom = null;
+            }
         }
-
-
-
-
 
         public void RemoveOfflineMatchRoom()
         {
-
+            lock (_lockObj)
+            {
+                OfflineMatchRoom = null;
+            }
         }
 
         public bool IsValidOfflineWaitRoom()
         {
-            return false;
-
+            return WaitRoom != null;
         }
 
         public bool IsValidOfflineMatchRoom()
         {
-            return false;
+            return OfflineMatchRoom != null;
         }
 
+        public void StoreOfflineMatchResult(JObject result)
+        {
+            LastOfflineMatchResult = result;
+        }
     }
 }

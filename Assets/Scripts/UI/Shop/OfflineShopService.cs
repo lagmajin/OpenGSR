@@ -22,7 +22,11 @@ namespace OpenGS
 
         public UniTask<List<ShopItemData>> GetItemsAsync(EShopCategory category)
         {
-            return UniTask.FromResult(shopMasterData.GetItemsByCategory(category));
+            var items = shopMasterData != null
+                ? shopMasterData.GetItemsByCategory(category)
+                : ShopCatalogFactory.GetDefaultItems(category);
+
+            return UniTask.FromResult(items);
         }
 
         public UniTask<bool> PurchaseItemAsync(string itemId, int price)

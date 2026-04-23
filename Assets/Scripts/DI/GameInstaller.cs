@@ -22,6 +22,7 @@ namespace OpenGS
             Container.BindInstance(DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>()).AsSingle();
             Container.BindInstance(DependencyInjectionConfig.Resolve<EquipmentSaveManager>()).AsSingle();
             Container.BindInstance(DependencyInjectionConfig.Resolve<PlayerMatchManager>()).AsSingle();
+            Container.Bind<IShopService>().To<OnlineShopService>().AsSingle();
             // BindInstance は任意だけど、Resolve に使うならここで Bind
             //var manager = DependencyInjectionConfig.Resolve<OnlineLoadingSceneNetworkManager>();
             //Container.BindInstance(manager).AsSingle();

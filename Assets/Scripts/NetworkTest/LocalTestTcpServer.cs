@@ -229,22 +229,22 @@ namespace OpenGS
                     return;
                 }
 
-                var messageType = json["MessageType"].ToString();
+                var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
 
-                if (messageType=="LoginRequest")
+                if (messageType == MessageType.LoginRequest)
                 {
-                    // Client requested login — respond with a LoginSuccessful message to simulate auth success.
+                    // Client requested login — respond with a LoginResponse message to simulate auth success.
                     OnLogin();
                 }
 
-                if(messageType=="LogoutRequest")
+                if(messageType == MessageType.LogoutRequest)
                 {
                     OnLogout();
                 }
 
-                if(messageType=="PlayerInfo")
+                if(messageType == MessageType.PlayerInfoRequest || messageType == MessageType.PlayerInfo)
                 {
-                    userId= json["PlayerLocalId"].ToString();
+                    userId = json["PlayerID"]?.ToString();
 
                     Debug.Log("User Id:"+userId);
 
@@ -294,7 +294,7 @@ namespace OpenGS
                     }
                 }
 
-                if (messageType == "CreateNewWaitRoomRequest")
+                if (messageType == MessageType.CreateRoomRequest)
                 {
                     // Client requests to create a new room
                     try
@@ -309,7 +309,7 @@ namespace OpenGS
                         var roomId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
                         var resp = new JObject();
-                        resp["MessageType"] = "CreateNewWaitRoomResponse";
+                        resp["MessageType"] = MessageType.CreateRoomResponse;
                         resp["Success"] = true;
                         resp["RoomID"] = roomId;
                         resp["RoomName"] = roomName;
@@ -322,31 +322,31 @@ namespace OpenGS
                     }
                     catch (Exception ex)
                     {
-                        Debug.LogWarning($"LocalTestTcpServer: failed to handle CreateNewWaitRoomRequest: {ex.Message}");
+                        Debug.LogWarning($"LocalTestTcpServer: failed to handle CreateRoomRequest: {ex.Message}");
                         var errorResp = new JObject();
-                        errorResp["MessageType"] = "CreateNewWaitRoomResponse";
+                        errorResp["MessageType"] = MessageType.CreateRoomResponse;
                         errorResp["Success"] = false;
                         errorResp["ErrorMessage"] = ex.Message;
                         SendJsonToClient(errorResp);
                     }
                 }
 
-                if (messageType == "UpdateRoomRequest")
+                if (messageType == MessageType.RoomListUpdateRequest)
                 {
                     // Client requests room list
                     try
                     {
                         var resp = new JObject();
-                        resp["MessageType"] = "UpdateRoomResponse";
+                        resp["MessageType"] = MessageType.RoomListUpdateNotification;
                         var rooms = new JArray();
                         // For now, return empty list (can be extended later)
                         resp["Rooms"] = rooms;
                         SendJsonToClient(resp);
-                        PrettyLogger.Bold("LocalServer", "Sent UpdateRoomResponse");
+                        PrettyLogger.Bold("LocalServer", "Sent RoomListUpdateNotification");
                     }
                     catch (Exception ex)
                     {
-                        Debug.LogWarning($"LocalTestTcpServer: failed to handle UpdateRoomRequest: {ex.Message}");
+                        Debug.LogWarning($"LocalTestTcpServer: failed to handle RoomListUpdateRequest: {ex.Message}");
                     }
                 }
 
@@ -451,7 +451,7 @@ namespace OpenGS
                     HandleWaitRoomCancelCountdown(json);
                 }
 
-                if (messageType == "SendEnterRoom")
+                if (messageType == MessageType.JoinRoomRequest)
                 {
                     HandleSendEnterRoom(json);
                 }
@@ -545,7 +545,7 @@ namespace OpenGS
             var obj = new AIXJsonObject();
 
             // Use the message type expected by the client-side parser
-            obj["MessageType"] = "LoginSuccessful";
+            obj["MessageType"] = MessageType.LoginResponse;
             obj["GlobalUserId"] = string.IsNullOrEmpty(userId) ? Guid.NewGuid().ToString("N") : userId;
 
             SendJsonToClient(obj);
@@ -564,7 +564,7 @@ namespace OpenGS
 
             var obj = new AIXJsonObject();
 
-            obj["MessageType"] = "LogoutSuccess";
+            obj["MessageType"] = MessageType.LogoutSuccessful;
 
 
             SendJsonToClient(obj);
@@ -594,7 +594,7 @@ namespace OpenGS
 
         private void HandleLobbyEnter(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString() ?? Guid.NewGuid().ToString("N").Substring(0, 8);
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? Guid.NewGuid().ToString("N").Substring(0, 8);
             var playerName = json["PlayerName"]?.ToString() ?? "Player";
 
             _currentPlayerId = playerId;
@@ -629,7 +629,7 @@ namespace OpenGS
 
         private void HandleLobbyLeave(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
 
             if (!string.IsNullOrEmpty(playerId) && _lobbyPlayers.ContainsKey(playerId))
             {
@@ -645,7 +645,7 @@ namespace OpenGS
 
         private void HandleLobbyChat(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             var playerName = json["PlayerName"]?.ToString();
             var message = json["Message"]?.ToString();
 
@@ -657,13 +657,13 @@ namespace OpenGS
 
         private void HandleWaitRoomEnter(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString() ?? _currentPlayerId;
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? _currentPlayerId;
             var playerName = json["PlayerName"]?.ToString() ?? "Player";
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
 
             if (string.IsNullOrEmpty(roomId))
             {
-                PrettyLogger.Bold("LocalServer", "WaitRoomEnter: No RoomId provided");
+                PrettyLogger.Bold("LocalServer", "WaitRoomEnter: No RoomID provided");
                 return;
             }
 
@@ -750,10 +750,10 @@ namespace OpenGS
 
         private void HandleWaitRoomChat(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             var playerName = json["PlayerName"]?.ToString();
             var message = json["Message"]?.ToString();
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
 
             var resp = RUDPMessageBuilder.CreateWaitRoomChat(playerId ?? "", playerName ?? "Unknown", message ?? "", roomId ?? "");
             SendJsonToClient(resp);
@@ -763,8 +763,8 @@ namespace OpenGS
 
         private void HandleWaitRoomPlayerReady(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString() ?? _currentPlayerId;
-            var roomId = json["RoomId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? _currentPlayerId;
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
 
             if (_lobbyPlayers.ContainsKey(playerId))
             {
@@ -788,8 +788,8 @@ namespace OpenGS
 
         private void HandleWaitRoomPlayerUnready(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString() ?? _currentPlayerId;
-            var roomId = json["RoomId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? _currentPlayerId;
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
 
             if (_lobbyPlayers.ContainsKey(playerId))
             {
@@ -810,7 +810,7 @@ namespace OpenGS
 
         private void HandleWaitRoomSettingsChange(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var settings = json["Settings"] as JObject;
 
             if (!string.IsNullOrEmpty(roomId) && _rooms.ContainsKey(roomId))
@@ -832,10 +832,10 @@ namespace OpenGS
 
         private void HandleWaitRoomKickPlayer(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();  // キック対象のプレイヤーID
-            var roomId = json["RoomId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();  // キック対象のプレイヤーID
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var reason = json["Reason"]?.ToString() ?? "Kicked by host";
-            var kickedByPlayerId = json["KickedByPlayerId"]?.ToString() ?? _currentPlayerId;  // キックを実行したプレイヤーID
+            var kickedByPlayerId = json["KickedByPlayerID"]?.ToString() ?? json["KickedByPlayerId"]?.ToString() ?? _currentPlayerId;  // キックを実行したプレイヤーID
 
             if (string.IsNullOrEmpty(roomId) || !_rooms.ContainsKey(roomId) || string.IsNullOrEmpty(playerId))
             {
@@ -891,7 +891,7 @@ namespace OpenGS
 
         private void HandleWaitRoomStartCountdown(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var countdown = json["Countdown"]?.ToObject<int>() ?? 5;
 
             var resp = RUDPMessageBuilder.CreateWaitRoomStartCountdown(roomId ?? "", countdown);
@@ -905,7 +905,7 @@ namespace OpenGS
 
         private void HandleWaitRoomCancelCountdown(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var reason = json["Reason"]?.ToString() ?? "Cancelled";
 
             var resp = RUDPMessageBuilder.CreateWaitRoomCancelCountdown(roomId ?? "", reason);
@@ -916,8 +916,8 @@ namespace OpenGS
 
         private void HandleSendEnterRoom(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
-            var playerId = json["PlayerId"]?.ToString() ?? _currentPlayerId;
+            var roomId = json["RoomId"]?.ToString() ?? json["RoomID"]?.ToString();
+            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? _currentPlayerId;
             var password = json["Password"]?.ToString() ?? "";
 
             if (string.IsNullOrEmpty(roomId))

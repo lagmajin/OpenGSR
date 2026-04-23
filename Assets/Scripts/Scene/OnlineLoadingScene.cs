@@ -175,16 +175,18 @@ namespace OpenGS
 
             networkManager.SendLoadingStart();
 
-            float progress = 0f;
+            float loadProgress = 0f;
             while (!_sceneLoadOp.isDone)
             {
-                progress = Mathf.Clamp01(_sceneLoadOp.progress / 0.9f);
+                loadProgress = Mathf.Clamp01(_sceneLoadOp.progress / 0.9f);
+                progress.Value = loadProgress;
                 // サーバに進捗送信（モック）
-                //Debug.Log($"Sending progress {progress * 100}% to server");
-                networkManager.SendLoadingProgress(progress);
+                //Debug.Log($"Sending progress {loadProgress * 100}% to server");
+                networkManager.SendLoadingProgress(loadProgress);
                 yield return null;
             }
             
+            progress.Value = 1f;
             networkManager.SendLoadingComplete(); 
 
 

@@ -26,32 +26,32 @@ MonoBehaviour:
   titleScene:
     m_SceneName: TitleScene
   loginServerScene:
-    m_SceneName: 
+    m_SceneName: LoginServerScene
   lobbyScene:
     m_SceneName: LobbyScene
   missionLobbyScene:
-    m_SceneName: 
+    m_SceneName: MissionLobbyScene
   onlineWaitRoomScene:
-    m_SceneName: 
+    m_SceneName: OnlineWaitRoom
   offlineWaitRoomScene:
-    m_SceneName: 
+    m_SceneName: OfflineWaitRoom
   shopScene:
-    m_SceneName: 
+    m_SceneName: ShopScene
   offlineMissionWaitRoomScene:
-    m_SceneName: 
+    m_SceneName: MissionWaitroom
   onlineLobbyScene:
-    m_SceneName: 
+    m_SceneName: LobbyScene
   offlineLobbyScene:
-    m_SceneName: 
+    m_SceneName: LobbyScene
   onlineLoadingScene:
-    m_SceneName: 
+    m_SceneName: OnlineLoadingScene
   offlineLoadingScene:
-    m_SceneName: 
+    m_SceneName: OfflineLoadingScene
   missionSceneLoadingScene:
-    m_SceneName: 
+    m_SceneName: OfflineLoadingScene
   gameSettingScene:
-    m_SceneName: 
+    m_SceneName: GameSettingScene
   resultScene:
-    m_SceneName: 
+    m_SceneName: ResultScene
   exportAssetScene:
-    m_SceneName: 
+    m_SceneName: ExportAssetScene

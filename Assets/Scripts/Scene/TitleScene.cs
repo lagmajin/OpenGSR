@@ -141,7 +141,7 @@ namespace OpenGS
         {
             bgmFlag = true;
 
-            SceneManager.LoadScene("ConnectToServerScene");
+            SceneManager.LoadScene(GeneralSceneMasterData.Instance().ConnectToServerScene());
 
             GameFlagsManager.GetInstance().BeforeSceneName = "TitleScene";
         }
@@ -152,7 +152,7 @@ namespace OpenGS
         {
             bgmFlag = true;
 
-            SceneManager.LoadScene("OfflineWaitRoom");
+            SceneManager.LoadScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
 
             GameFlagsManager.GetInstance().BeforeSceneName = "TitleScene";
         }

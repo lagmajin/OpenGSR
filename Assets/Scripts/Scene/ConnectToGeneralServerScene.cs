@@ -37,22 +37,21 @@ namespace OpenGS
 
         void Start()
         {
-            currentContext=SynchronizationContext.Current;
+            currentContext = SynchronizationContext.Current;
 
+            var serverIP = isOverrideServerAddress && !string.IsNullOrWhiteSpace(OverrideServerAddress)
+                ? OverrideServerAddress
+                : defaultServerAddress;
+            var port = defaultServerPort;
 
-            string serverIP = "localhost";
-            int port = 50000;
-
-
-            string publicIP = "138.2.5.79";
-
-
-          mediateObject.networkManager.ConnectToLobbyServer("192.168.0.6", 60000);
-
-
-
-
-
+            if (mediateObject != null && mediateObject.networkManager != null)
+            {
+                mediateObject.networkManager.ConnectToLobbyServer(serverIP, port);
+            }
+            else
+            {
+                Debug.LogWarning("ConnectToGeneralServerScene: mediateObject or networkManager is null.");
+            }
         }
 
 
@@ -141,21 +140,23 @@ namespace OpenGS
         {
             Debug.Log("BackToTitle");
             GameFlagsManager.GetInstance().BeforeSceneName = "ConnectToServerScene";
-            SceneManager.LoadScene("NewTitleScene");
+            GoToTitleScene();
 
         }
 
         public override SynchronizationContext MainThread()
         {
-            throw new System.NotImplementedException();
+            return currentContext ?? SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
         public override void GoToLobby()
         {
-            currentContext.Post(__ =>
+            var context = MainThread();
+            context.Post(__ =>
             {
 
-                var asyncOperation =SceneManager.LoadSceneAsync("LobbyScene");
+                var lobbyScene = generalSceneMasterData != null ? generalSceneMasterData.LobbyScene() : GeneralSceneMasterData.Instance().LobbyScene();
+                var asyncOperation = SceneManager.LoadSceneAsync(lobbyScene);
 
                 asyncOperation.completed += (operation) =>
                 {

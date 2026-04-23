@@ -17,16 +17,16 @@ MonoBehaviour:
   titleScene:
     m_SceneName: TitleScene
   loginScene:
-    m_SceneName: 
+    m_SceneName: LoginServerScene
   lobbyScene:
     m_SceneName: LobbyScene
   shopScene:
-    m_SceneName: 
+    m_SceneName: ShopScene
   onlineWaitRoomScene:
-    m_SceneName: 
+    m_SceneName: OnlineWaitRoom
   offlineWaitRoomScene:
-    m_SceneName: 
+    m_SceneName: OfflineWaitRoom
   onlineLoadingScene:
-    m_SceneName: 
+    m_SceneName: OnlineLoadingScene
   resultScene:
-    m_SceneName: 
+    m_SceneName: ResultScene

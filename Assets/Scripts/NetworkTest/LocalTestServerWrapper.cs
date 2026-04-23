@@ -67,16 +67,16 @@ namespace OpenGS.Network
         private void RegisterCustomHandlers()
         {
             // ルーム作成のカスタム実装
-            m_EventHandler.Register("CreateNewWaitRoomRequest", HandleCreateRoom);
+            m_EventHandler.Register(MessageType.CreateRoomRequest, HandleCreateRoom);
 
             // ルーム参加のカスタム実装
-            m_EventHandler.Register("EnterWaitRoomRequest", HandleEnterRoom);
+            m_EventHandler.Register(MessageType.JoinRoomRequest, HandleEnterRoom);
 
             // 準備完了のカスタム実装
-            m_EventHandler.Register("PlayerReady", HandlePlayerReady);
+            m_EventHandler.Register(MessageType.PlayerReadyRequest, HandlePlayerReady);
 
             // ゲームスタートのカスタム実装
-            m_EventHandler.Register("GameStartRequest", HandleGameStart);
+            m_EventHandler.Register(MessageType.GameStartRequest, HandleGameStart);
         }
 
         /// <summary>
@@ -113,7 +113,7 @@ namespace OpenGS.Network
 
             var resp = new JObject
             {
-                ["MessageType"] = "CreateNewWaitRoomResponse",
+                ["MessageType"] = MessageType.CreateRoomResponse,
                 ["Success"] = true,
                 ["RoomID"] = roomId,
                 ["RoomName"] = roomName,
@@ -135,7 +135,7 @@ namespace OpenGS.Network
             {
                 var errorResp = new JObject
                 {
-                    ["MessageType"] = "EnterWaitRoomResponse",
+                    ["MessageType"] = MessageType.JoinRoomResponse,
                     ["Success"] = false,
                     ["ErrorMessage"] = "Room not found"
                 };
@@ -147,7 +147,7 @@ namespace OpenGS.Network
             {
                 var errorResp = new JObject
                 {
-                    ["MessageType"] = "EnterWaitRoomResponse",
+                    ["MessageType"] = MessageType.JoinRoomResponse,
                     ["Success"] = false,
                     ["ErrorMessage"] = "Room is full"
                 };
@@ -160,7 +160,7 @@ namespace OpenGS.Network
 
             var resp = new JObject
             {
-                ["MessageType"] = "EnterWaitRoomResponse",
+                ["MessageType"] = MessageType.JoinRoomResponse,
                 ["Success"] = true,
                 ["RoomID"] = roomId,
                 ["RoomName"] = room.RoomName,
@@ -183,7 +183,7 @@ namespace OpenGS.Network
 
                 var resp = new JObject
                 {
-                    ["MessageType"] = "PlayerReady",
+                    ["MessageType"] = MessageType.PlayerReadyNotification,
                     ["PlayerID"] = playerId,
                     ["RoomID"] = roomId
                 };
@@ -202,7 +202,7 @@ namespace OpenGS.Network
             {
                 var countdown = new JObject
                 {
-                    ["MessageType"] = "CountdownStart",
+                    ["MessageType"] = RUDPMessageTypes.WaitRoomStartCountdown,
                     ["Countdown"] = 5,
                     ["RoomID"] = roomId
                 };

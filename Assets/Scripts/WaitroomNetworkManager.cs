@@ -113,7 +113,7 @@ namespace OpenGS
             var json = new JObject();
             json["MessageType"] = "GameStartRequest";
             json["PlayerAccountID"] = "";
-            json["RoomId"] = currentRoomId;
+            json["RoomID"] = currentRoomId;
             SendMessage(json);
         }
 
@@ -216,7 +216,7 @@ namespace OpenGS
         public void SendCreateRoomRequest(string roomName, int capacity, string gameMode, bool teamBalance, string password = "")
         {
             var json = new JObject();
-            json["MessageType"] = "CreateNewWaitRoomRequest";
+            json["MessageType"] = MessageType.CreateRoomRequest;
             json["OwnerPlayerID"] = "";
             json["RoomName"] = roomName;
             json["Capacity"] = capacity.ToString();
@@ -232,9 +232,9 @@ namespace OpenGS
         public void SendEnterRoomRequest(string roomId, string playerId, string password = "")
         {
             var json = new JObject();
-            json["MessageType"] = "SendEnterRoom";
-            json["RoomId"] = roomId;
-            json["PlayerId"] = playerId;
+            json["MessageType"] = MessageType.JoinRoomRequest;
+            json["RoomID"] = roomId;
+            json["PlayerID"] = playerId;
             json["Password"] = password;
             SendMessage(json);
         }
@@ -245,7 +245,7 @@ namespace OpenGS
         public void SendRoomListRequest()
         {
             var json = new JObject();
-            json["MessageType"] = "UpdateRoomRequest";
+            json["MessageType"] = MessageType.RoomListUpdateRequest;
             json["MatchRoomType"] = "All";
             json["Options"] = "";
             SendMessage(json);
@@ -281,7 +281,7 @@ namespace OpenGS
         {
             if (json == null) return;
             
-            var messageType = json["MessageType"]?.ToString();
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
             if (string.IsNullOrEmpty(messageType))
             {
                 Debug.LogWarning("Received message without MessageType");
@@ -365,7 +365,7 @@ namespace OpenGS
 
         private void HandleLobbyEnter(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             var playerName = json["PlayerName"]?.ToString();
             
             PrettyLogger.Bold("Lobby", $"Player entered: {playerName} ({playerId})");
@@ -374,7 +374,7 @@ namespace OpenGS
 
         private void HandleLobbyLeave(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             
             PrettyLogger.Bold("Lobby", $"Player left: {playerId}");
             onPlayerLeft.OnNext(json);
@@ -405,9 +405,9 @@ namespace OpenGS
 
         private void HandleWaitRoomEnter(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             var playerName = json["PlayerName"]?.ToString();
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
             if (!string.IsNullOrEmpty(roomId))
             {
@@ -420,8 +420,8 @@ namespace OpenGS
 
         private void HandleWaitRoomLeave(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
-            var roomId = json["RoomId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
             PrettyLogger.Bold("WaitRoom", $"Player left: {playerId} from room {roomId}");
             onPlayerLeft.OnNext(json);
@@ -443,14 +443,16 @@ namespace OpenGS
         {
             var playerName = json["PlayerName"]?.ToString();
             var message = json["Message"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
-            PrettyLogger.Bold("WaitRoom", $"[Chat] {playerName}: {message}");
+            PrettyLogger.Bold("WaitRoom", $"[Chat] {playerName} ({playerId}) in {roomId}: {message}");
             onChatMessage.OnNext(json);
         }
 
         private void HandleWaitRoomPlayerReady(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             
             PrettyLogger.Bold("WaitRoom", $"Player ready: {playerId}");
             onPlayerReady.OnNext(json);
@@ -458,7 +460,7 @@ namespace OpenGS
 
         private void HandleWaitRoomPlayerUnready(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             
             PrettyLogger.Bold("WaitRoom", $"Player unready: {playerId}");
             onPlayerReady.OnNext(json);
@@ -466,7 +468,7 @@ namespace OpenGS
 
         private void HandleWaitRoomSettingsChange(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var settings = json["Settings"] as JObject;
             
             PrettyLogger.Bold("WaitRoom", $"Settings changed for room {roomId}");
@@ -475,7 +477,7 @@ namespace OpenGS
 
         private void HandleWaitRoomKickPlayer(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString();
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             var reason = json["Reason"]?.ToString();
             
             PrettyLogger.Bold("WaitRoom", $"Player kicked: {playerId}, reason: {reason}");
@@ -486,7 +488,7 @@ namespace OpenGS
 
         private void HandleWaitRoomOwnerChange(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var newOwnerId = json["NewOwnerId"]?.ToString();
             
             PrettyLogger.Bold("WaitRoom", $"Owner changed in room {roomId} to {newOwnerId}");
@@ -495,7 +497,7 @@ namespace OpenGS
 
         private void HandleWaitRoomStartCountdown(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var countdown = json["Countdown"]?.ToObject<int>() ?? 0;
             
             PrettyLogger.Bold("WaitRoom", $"Game starting in {countdown} seconds");
@@ -504,7 +506,7 @@ namespace OpenGS
 
         private void HandleWaitRoomCancelCountdown(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var reason = json["Reason"]?.ToString() ?? "Unknown";
             
             PrettyLogger.Bold("WaitRoom", $"Countdown cancelled: {reason}");
@@ -527,23 +529,23 @@ namespace OpenGS
 
         private void HandleRoomCreated(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var roomName = json["RoomName"]?.ToString();
-            var ownerId = json["OwnerId"]?.ToString();
+            var ownerId = json["OwnerID"]?.ToString() ?? json["OwnerId"]?.ToString();
             
             PrettyLogger.Bold("RoomList", $"Room created: {roomName} ({roomId}) by {ownerId}");
         }
 
         private void HandleRoomDeleted(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
             PrettyLogger.Bold("RoomList", $"Room deleted: {roomId}");
         }
 
         private void HandleRoomFull(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
             PrettyLogger.Bold("RoomList", $"Room full: {roomId}");
         }

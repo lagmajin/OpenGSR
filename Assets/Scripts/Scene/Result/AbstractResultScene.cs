@@ -58,7 +58,7 @@ namespace OpenGS
             if (loseImage != null) loseImage.gameObject.SetActive(false);
             if (drawImage != null) drawImage.gameObject.SetActive(false);
 
-            if (string.IsNullOrEmpty(winningTeam) || winningTeam == "Draw" || winningTeam == "None")
+            if (string.IsNullOrEmpty(winningTeam) || winningTeam == "Draw" || winningTeam == "None" || winningTeam == "NoPlayers")
             {
                 if (drawImage != null) drawImage.gameObject.SetActive(true);
             }
@@ -85,7 +85,7 @@ namespace OpenGS
 
         public override SynchronizationContext MainThread()
         {
-            throw new System.NotImplementedException();
+            return SynchronizationContext.Current;
         }
 
         /// <summary>

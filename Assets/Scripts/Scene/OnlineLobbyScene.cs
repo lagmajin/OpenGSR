@@ -45,6 +45,10 @@ namespace OpenGS
         private SynchronizationContext mainThread;
         private bool canInput = true;
         private int updateCount = 0;
+        private JArray currentRoomList = new JArray();
+        private string currentRoomFilter = "All";
+        private string currentSelectedRoomId = "";
+        private readonly List<GameObject> spawnedRoomButtons = new List<GameObject>();
 
         // ─── Unity ライフサイクル ────────────────────────────────────
 
@@ -69,8 +73,6 @@ namespace OpenGS
         void Start()
         {
             SceneManager.sceneLoaded += OnGameSceneLoaded;
-            StartCoroutine(PeriodicUpdateCoroutine());
-            ShowDefaultRooms();
 
             try
             {
@@ -84,6 +86,9 @@ namespace OpenGS
             {
                 Debug.LogWarning($"OnlineLobbyScene: Failed to subscribe to DataReceivedStream: {ex.Message}");
             }
+
+            StartCoroutine(PeriodicUpdateCoroutine());
+            ShowDefaultRooms();
         }
 
         void OnDestroy()
@@ -107,7 +112,7 @@ namespace OpenGS
                     () =>
                     {
                         Debug.Log("F5 pressed: Sending UpdateRoomRequest");
-                        networkManager.SendUpdateRoomRequest(new List<EGameMode>());
+                        networkManager.SendUpdateRoomRequest();
                     },
                     DisconnectAndBackToTitle,
                     GoToShop);
@@ -124,7 +129,7 @@ namespace OpenGS
             if (Input.GetKeyDown(KeyCode.F5))
             {
                 Debug.Log("F5 pressed: Sending UpdateRoomRequest");
-                networkManager.SendUpdateRoomRequest(new List<EGameMode>());
+                networkManager.SendUpdateRoomRequest();
             }
 
             if (Input.GetKeyDown(KeyCode.F6) || Input.GetKey(KeyCode.Escape))
@@ -164,7 +169,10 @@ namespace OpenGS
         [Button("ルーム作成ダイアログ表示テスト")]
         public void ShowCreateNewRoomDialog()
         {
-            mediateObject.createNewRoomDialog.gameObject.SetActive(true);
+            if (mediateObject != null && mediateObject.createNewRoomDialog != null)
+            {
+                mediateObject.createNewRoomDialog.gameObject.SetActive(true);
+            }
         }
 
         /// <summary>
@@ -173,13 +181,22 @@ namespace OpenGS
         [Button("部屋作成テスト (旧)")]
         public void CreateNewWaitRoom()
         {
+            if (createNewRoomDialog == null)
+            {
+                Debug.LogWarning("OnlineLobbyScene.CreateNewWaitRoom: createNewRoomDialog is null");
+                return;
+            }
+
             var dialogScript = createNewRoomDialog.GetComponent<ICreateNewRoomDialog>();
             createNewRoomDialog.SetActive(false);
 
             string roomName = dialogScript != null ? dialogScript.RoomName() : "One Shot One Kill!";
+            var maxPlayer = dialogScript != null ? dialogScript.MaxPlayer() : 8;
+            var password = dialogScript != null ? dialogScript.Password() : "";
+            var gameMode = dialogScript != null ? dialogScript.GameMode().ToString() : EGameMode.TeamDeathMatch.ToString();
+            var teamBalance = dialogScript != null && dialogScript.TeamBalance();
 
-            var v = MakeJSON.EnterRoomRequest();
-            // TODO: networkManager.SendCreateRoomRequest(v);
+            networkManager.SendCreateNewWaitRoomRequest(roomName, maxPlayer, gameMode, teamBalance, password);
         }
 
         /// <summary>
@@ -187,18 +204,50 @@ namespace OpenGS
         /// </summary>
         public void SendEnterRoomRequest()
         {
-            networkManager.SendMessage(MakeJSON.EnterRoomRequest());
+            var room = FindSelectedOrFirstFilteredRoom();
+            if (room == null)
+            {
+                Debug.LogWarning("OnlineLobbyScene.SendEnterRoomRequest: room list is empty");
+                return;
+            }
+
+            var roomId = room["RoomID"]?.ToString() ?? room["RoomId"]?.ToString() ?? "";
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                Debug.LogWarning("OnlineLobbyScene.SendEnterRoomRequest: room id is empty");
+                return;
+            }
+
+            currentSelectedRoomId = roomId;
+            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                playerId = "local_player";
+            }
+
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                playerName = "Player";
+            }
+
+            networkManager.SendEnterWaitRoomRequest(roomId, playerId, playerName);
+        }
+
+        public void SendEnterRoomRequest(string roomId, string playerId, string playerName, string password = "")
+        {
+            networkManager.SendEnterWaitRoomRequest(roomId, playerId, playerName, password);
         }
 
         // ─── ルーム絞り込み (UI ボタンから呼ばれる) ──────────────────
 
-        public void ShowAllRooms()   { /* TODO: フィルタなしで全ルームを表示 */ }
-        public void ShowDMRooms()    { /* TODO: Death Match ルームのみ表示 */ }
-        public void ShowTDMRooms()   { /* TODO: Team Death Match ルームのみ表示 */ }
-        public void ShowSUVRooms()   { /* TODO: SUV ルームのみ表示 */ }
-        public void ShowTSUVRooms()  { /* TODO: Team SUV ルームのみ表示 */ }
-        public void ShowCTFRooms()   { /* TODO: CTF ルームのみ表示 */ }
-        public void ShowArmsRaceRooms() { /* TODO: Arms Race ルームのみ表示 */ }
+        public void ShowAllRooms()   { SetRoomFilter("All"); }
+        public void ShowDMRooms()    { SetRoomFilter(nameof(EGameMode.DeathMatch)); }
+        public void ShowTDMRooms()   { SetRoomFilter(nameof(EGameMode.TeamDeathMatch)); }
+        public void ShowSUVRooms()   { SetRoomFilter(nameof(EGameMode.Survival)); }
+        public void ShowTSUVRooms()  { SetRoomFilter(nameof(EGameMode.TeamSurvival)); }
+        public void ShowCTFRooms()   { SetRoomFilter(nameof(EGameMode.CaptureTheFlag)); }
+        public void ShowArmsRaceRooms() { SetRoomFilter(nameof(EGameMode.ArmsRace)); }
 
         // ─── シーン遷移 ──────────────────────────────────────────────
 
@@ -207,20 +256,30 @@ namespace OpenGS
         /// </summary>
         public void DisconnectAndBackToTitle()
         {
+            ResetLobbyState(true);
             networkManager.Disconnect();
-            SceneManager.LoadSceneAsync(mediateObject.GeneralSceneMasterData().TitleScene());
+            var sceneName = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
+                ? mediateObject.GeneralSceneMasterData().TitleScene()
+                : GeneralSceneMasterData.Instance().TitleScene();
+            SceneManager.LoadSceneAsync(sceneName);
         }
 
         public void GoToShop()
         {
-            SceneManager.LoadScene("ShopScene");
+            var sceneName = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
+                ? mediateObject.GeneralSceneMasterData().ShopScene()
+                : GeneralSceneMasterData.Instance().ShopScene();
+            SceneManager.LoadScene(sceneName);
         }
 
         public void GotoOnlineWaitRoom()
         {
             mainThread.Post(__ =>
             {
-                SceneManager.LoadScene(mediateObject.GeneralSceneMasterData().OnlineWaitRoomScene());
+                var sceneName = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
+                    ? mediateObject.GeneralSceneMasterData().OnlineWaitRoomScene()
+                    : GeneralSceneMasterData.Instance().OnlineWaitRoomScene();
+                SceneManager.LoadScene(sceneName);
             }, null);
         }
 
@@ -238,7 +297,7 @@ namespace OpenGS
             {
                 lobbySceneController.ParseServerMessage(
                     json,
-                    (roomId, roomName, capacity) =>
+                (roomId, roomName, capacity) =>
                     {
                         Debug.Log($"OnlineLobbyScene: Room created. RoomID={roomId}, RoomName={roomName}");
                         matchRoomManager.CreateNewOnlineWaitRoom(roomName, capacity);
@@ -256,16 +315,48 @@ namespace OpenGS
                     rooms =>
                     {
                         Debug.Log($"OnlineLobbyScene: Received {rooms?.Count ?? 0} rooms");
+                        currentRoomList = rooms ?? new JArray();
+                        RefreshRoomListView();
+                    },
+                    (roomId, roomName, players) =>
+                    {
+                        Debug.Log($"OnlineLobbyScene: Entered room {roomId} ({roomName}), capacity={players}");
+                        matchRoomManager.CreateNewOnlineWaitRoom(roomName, players);
+                        waitRoomManager.CreateNewWaitRoom(roomName, roomId, players);
+                        GotoOnlineWaitRoom();
+                    },
+                    errorMessage =>
+                    {
+                        Debug.LogWarning($"OnlineLobbyScene: Failed to enter room: {errorMessage}");
                     });
                 return;
             }
 
             // Fallback (controller not assigned)
-            var messageType = json["MessageType"]?.ToString();
-            if (messageType == "UpdateRoomResponse")
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            if (messageType == MessageType.RoomListUpdateNotification)
             {
                 var rooms = json["Rooms"] as JArray;
                 Debug.Log($"OnlineLobbyScene: Received {rooms?.Count ?? 0} rooms");
+                currentRoomList = rooms ?? new JArray();
+                RefreshRoomListView();
+            }
+            else if (messageType == MessageType.JoinRoomResponse)
+            {
+                var success = json["Success"]?.ToObject<bool>() ?? false;
+                if (success)
+                {
+                    var roomId = json["RoomID"]?.ToString() ?? "";
+                    var roomName = json["RoomName"]?.ToString() ?? "Room";
+                    var capacity = json["Capacity"]?.ToObject<int>() ?? json["Players"]?.ToObject<int>() ?? 0;
+                    matchRoomManager.CreateNewOnlineWaitRoom(roomName, capacity);
+                    waitRoomManager.CreateNewWaitRoom(roomName, roomId, capacity);
+                    GotoOnlineWaitRoom();
+                }
+                else
+                {
+                    Debug.LogWarning($"OnlineLobbyScene: Enter room failed: {json["ErrorMessage"]?.ToString()}");
+                }
             }
         }
 
@@ -273,10 +364,13 @@ namespace OpenGS
 
         public void OnConnected()
         {
+            ResetLobbyState(false);
+            ShowDefaultRooms();
         }
 
         public void OnDisconnected()
         {
+            ResetLobbyState(true);
         }
 
         public void ParseNetworkMatchMessageFromServer(JObject json)
@@ -309,7 +403,7 @@ namespace OpenGS
 
             var json = new JObject
             {
-                ["MessageType"] = "CreateNewWaitRoomRequest",
+                ["MessageType"] = MessageType.CreateRoomRequest,
                 ["RoomName"] = dialogScript.RoomName(),
                 ["Capacity"] = maxPlayer.ToString(),
                 ["GameMode"] = gameMode.ToString(),
@@ -318,7 +412,7 @@ namespace OpenGS
             };
 
             networkManager.SendMessage(json);
-            Debug.Log($"OnlineLobbyScene: Sent CreateNewWaitRoomRequest: {json.ToString(Formatting.None)}");
+            Debug.Log($"OnlineLobbyScene: Sent {MessageType.CreateRoomRequest}: {json.ToString(Formatting.None)}");
 
             if (createNewRoomDialog != null) createNewRoomDialog.SetActive(false);
             if (mediateObject.createNewRoomDialog != null) mediateObject.createNewRoomDialog.gameObject.SetActive(false);
@@ -338,7 +432,7 @@ namespace OpenGS
         {
             var json = new JObject
             {
-                ["MessageType"] = "AddLobbyChat",
+                ["MessageType"] = MessageType.AddLobbyChat,
                 ["Chat"] = str
             };
             networkManager.SendMessage(json);
@@ -364,6 +458,7 @@ namespace OpenGS
         private void ShowDefaultRooms()
         {
             Debug.Log("ShowDefaultRooms");
+            networkManager.SendUpdateRoomRequest();
         }
 
         private IEnumerator PeriodicUpdateCoroutine()
@@ -371,7 +466,7 @@ namespace OpenGS
             while (true)
             {
                 yield return new WaitForSeconds(1f);
-                // TODO: 定期的なルームリスト更新
+                networkManager.SendUpdateRoomRequest();
             }
         }
 
@@ -382,7 +477,206 @@ namespace OpenGS
 
         private void BackToConnectServerScene()
         {
-            SceneManager.LoadScene("ConnectServerScene");
+            var sceneName = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
+                ? mediateObject.GeneralSceneMasterData().ConnectToServerScene()
+                : GeneralSceneMasterData.Instance().ConnectToServerScene();
+            SceneManager.LoadScene(sceneName);
+        }
+
+        private void SetRoomFilter(string filter)
+        {
+            currentRoomFilter = filter;
+            RefreshRoomListView();
+        }
+
+        private void RefreshRoomListView()
+        {
+            var filtered = FilterRooms(currentRoomList, currentRoomFilter);
+            if (string.IsNullOrWhiteSpace(currentSelectedRoomId) || FindRoomById(filtered, currentSelectedRoomId) == null)
+            {
+                currentSelectedRoomId = GetFirstRoomId(filtered);
+            }
+            RenderRoomListView(filtered);
+            Debug.Log($"OnlineLobbyScene: room list filtered by {currentRoomFilter}, showing {filtered.Count} rooms");
+        }
+
+        private void RenderRoomListView(JArray rooms)
+        {
+            if (roomPanel == null)
+            {
+                return;
+            }
+
+            ClearSpawnedRoomButtons();
+            RemoveAllRoom();
+
+            if (RoomButton == null || rooms == null)
+            {
+                return;
+            }
+
+            foreach (var token in rooms)
+            {
+                if (token is not JObject room)
+                {
+                    continue;
+                }
+
+                var roomId = room["RoomID"]?.ToString() ?? room["RoomId"]?.ToString() ?? "";
+                var roomName = room["RoomName"]?.ToString() ?? "Room";
+                var gameMode = room["GameMode"]?.ToString() ?? "";
+                var capacity = room["Capacity"]?.ToObject<int>() ?? 0;
+                var players = room["PlayerCount"]?.ToObject<int>() ?? room["Players"]?.ToObject<int>() ?? 0;
+                var isSelected = string.Equals(roomId, currentSelectedRoomId, StringComparison.OrdinalIgnoreCase);
+
+                var instance = Instantiate(RoomButton, roomPanel.transform);
+                instance.SetActive(true);
+                spawnedRoomButtons.Add(instance);
+
+                var button = instance.GetComponent<Button>();
+                if (button != null)
+                {
+                    button.onClick.RemoveAllListeners();
+                    button.onClick.AddListener(() =>
+                    {
+                        currentSelectedRoomId = roomId;
+                        RenderRoomListView(rooms);
+                    });
+                }
+
+                var label = instance.GetComponentInChildren<Text>(true);
+                if (label != null)
+                {
+                    label.text = $"{roomName}\n{gameMode}  {players}/{capacity}";
+                }
+
+                var image = instance.GetComponent<Image>();
+                if (image != null)
+                {
+                    image.color = isSelected ? new Color(0.35f, 0.65f, 1f, 1f) : Color.white;
+                }
+            }
+        }
+
+        private void ClearSpawnedRoomButtons()
+        {
+            for (int i = 0; i < spawnedRoomButtons.Count; i++)
+            {
+                if (spawnedRoomButtons[i] != null)
+                {
+                    Destroy(spawnedRoomButtons[i]);
+                }
+            }
+
+            spawnedRoomButtons.Clear();
+        }
+
+        private void ResetLobbyState(bool clearRooms)
+        {
+            currentSelectedRoomId = "";
+            updateCount = 0;
+
+            if (!clearRooms)
+            {
+                return;
+            }
+
+            currentRoomList = new JArray();
+            ClearSpawnedRoomButtons();
+            RemoveAllRoom();
+        }
+
+        private static JArray FilterRooms(JArray rooms, string filter)
+        {
+            if (rooms == null || rooms.Count == 0 || string.Equals(filter, "All", StringComparison.OrdinalIgnoreCase))
+            {
+                return rooms ?? new JArray();
+            }
+
+            var filtered = new JArray();
+            foreach (var room in rooms)
+            {
+                var mode = room?["GameMode"]?.ToString() ?? "";
+                if (string.Equals(mode, filter, StringComparison.OrdinalIgnoreCase))
+                {
+                    filtered.Add(room);
+                }
+            }
+
+            return filtered;
+        }
+
+        private JObject FindFirstFilteredRoom()
+        {
+            var filtered = FilterRooms(currentRoomList, currentRoomFilter);
+            if (filtered.Count == 0)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(currentSelectedRoomId))
+            {
+                foreach (var room in filtered)
+                {
+                    var roomId = room?["RoomID"]?.ToString() ?? room?["RoomId"]?.ToString() ?? "";
+                    if (string.Equals(roomId, currentSelectedRoomId, StringComparison.OrdinalIgnoreCase))
+                    {
+                        return room as JObject;
+                    }
+                }
+            }
+
+            return filtered[0] as JObject;
+        }
+
+        private JObject FindSelectedOrFirstFilteredRoom()
+        {
+            var filtered = FilterRooms(currentRoomList, currentRoomFilter);
+            if (filtered.Count == 0)
+            {
+                return null;
+            }
+
+            if (!string.IsNullOrWhiteSpace(currentSelectedRoomId))
+            {
+                var selected = FindRoomById(filtered, currentSelectedRoomId);
+                if (selected != null)
+                {
+                    return selected;
+                }
+            }
+
+            return filtered[0] as JObject;
+        }
+
+        private static JObject FindRoomById(JArray rooms, string roomId)
+        {
+            if (rooms == null || rooms.Count == 0 || string.IsNullOrWhiteSpace(roomId))
+            {
+                return null;
+            }
+
+            foreach (var room in rooms)
+            {
+                var currentRoomId = room?["RoomID"]?.ToString() ?? room?["RoomId"]?.ToString() ?? "";
+                if (string.Equals(currentRoomId, roomId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return room as JObject;
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetFirstRoomId(JArray rooms)
+        {
+            if (rooms == null || rooms.Count == 0)
+            {
+                return "";
+            }
+
+            var room = rooms[0];
+            return room?["RoomID"]?.ToString() ?? room?["RoomId"]?.ToString() ?? "";
         }
 
         // ─── AbstractNonBattleScene の実装 ────────────────────────────

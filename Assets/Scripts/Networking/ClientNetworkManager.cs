@@ -206,12 +206,11 @@ namespace OpenGS
                 return;
             }
 
-            string messageType = message.GetStringOrNull("MessageType");
+            string messageType = MessageType.Normalize(message.GetStringOrNull("MessageType"));
             switch (messageType)
             {
                 case MessageType.LoginResponse:
-                case "LoginSuccessful":
-                    bool success = messageType == "LoginSuccessful" || (message["Success"]?.ToObject<bool>() ?? false);
+                    bool success = message["Success"]?.ToObject<bool>() ?? true;
                     if (success)
                     {
                         string resolvedPlayerId = message.GetStringOrNull("PlayerID") ?? message.GetStringOrNull("GlobalUserId");

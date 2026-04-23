@@ -41,8 +41,9 @@ namespace OpenGS
 
         private IShopService shopService;
         private ShopItemData selectedItem;
-        private List<GameObject> activeItemObjects = new List<GameObject>();
+        private List<ShopItemUI> activeItemObjects = new List<ShopItemUI>();
         private int currentSelectedSlot = 0;
+        private EShopCategory currentCategory = EShopCategory.Weapon;
 
         [Inject]
         public void Construct(IShopService shopService)
@@ -52,12 +53,24 @@ namespace OpenGS
 
         private void Start()
         {
+            if (shopService == null)
+            {
+                try
+                {
+                    shopService = DependencyInjectionConfig.Resolve<IShopService>();
+                }
+                catch
+                {
+                    shopService = new OfflineShopService(null);
+                }
+            }
+
             shopService.OnDataChanged += UpdateUI;
 
             UpdateCreditsDisplay();
 
             // 初期表示は武器カテゴリー
-            SwitchCategory(EShopCategory.Weapon).Forget();
+            SwitchCategory(currentCategory).Forget();
 
             // タブのイベント登録
             if (weaponTab) weaponTab.onClick.AddListener(() => SwitchCategory(EShopCategory.Weapon).Forget());
@@ -87,6 +100,7 @@ namespace OpenGS
         {
             UpdateCreditsDisplay();
             UpdateButtonState();
+            RefreshItemStates();
         }
 
         private void SelectSlot(int index)
@@ -107,12 +121,28 @@ namespace OpenGS
 
         public async UniTaskVoid SwitchCategory(EShopCategory category)
         {
+            currentCategory = category;
+            selectedItem = null;
+
             // 既存のリストをクリア
             foreach (var obj in activeItemObjects)
             {
-                Destroy(obj);
+                if (obj != null)
+                {
+                    Destroy(obj.gameObject);
+                }
             }
             activeItemObjects.Clear();
+
+            if (detailPanel != null)
+            {
+                detailPanel.SetActive(false);
+            }
+
+            if (slotSelectionRoot != null)
+            {
+                slotSelectionRoot.SetActive(false);
+            }
 
             // 指定カテゴリーのアイテムをサービス経由で取得
             var items = await shopService.GetItemsAsync(category);
@@ -124,9 +154,11 @@ namespace OpenGS
                 if (ui != null)
                 {
                     ui.Setup(item, OnItemSelected);
+                    activeItemObjects.Add(ui);
                 }
-                activeItemObjects.Add(go);
             }
+
+            RefreshItemStates();
         }
 
         private void OnItemSelected(ShopItemData item)
@@ -211,6 +243,8 @@ namespace OpenGS
                     await shopService.EquipItemAsync(selectedItem.id, selectedItem.category, currentSelectedSlot);
                 }
             }
+
+            UpdateUI();
         }
 
         private void UpdateCreditsDisplay()
@@ -218,6 +252,27 @@ namespace OpenGS
             if (creditsText != null)
             {
                 creditsText.text = $"CREDITS: {shopService.GetCredits()}";
+            }
+        }
+
+        private void RefreshItemStates()
+        {
+            foreach (var itemUi in activeItemObjects)
+            {
+                if (itemUi == null)
+                {
+                    continue;
+                }
+
+                var itemData = itemUi.ItemData;
+                if (itemData == null)
+                {
+                    continue;
+                }
+
+                var purchased = shopService.IsPurchased(itemData.id);
+                var equipped = shopService.IsEquipped(itemData.id, itemData.category, currentSelectedSlot);
+                itemUi.RefreshState(purchased, equipped);
             }
         }
     }

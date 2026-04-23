@@ -1,5 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Newtonsoft.Json.Linq;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -13,25 +15,49 @@ namespace OpenGS
         {
             base.Start();
 
-            // ※ TODO:
-            // 実際は ScoreManager や GameManager.Instance など、ローカルメモリに残された
-            // 前の試合記録を参照して変数を取り出します。
-            
-            // 例: (仮実装)
-            string winningTeam = "Red"; 
-            string myTeam = "Red";      
+            var manager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            var result = manager != null ? manager.LastOfflineMatchResult : null;
 
-            // オフライン用プレイヤーやボットの戦績ランキングもここで組み立てる
-            
-            // 即座にUIを更新してファンファーレ等を開始する
+            string winningTeam = result?["WinningTeam"]?.ToString() ?? "Draw";
+            string myTeam = ResolveMyTeam(result) ?? "Draw";
+
             ShowResult(winningTeam, myTeam);
         }
 
         protected override void GoToNextScene()
         {
-            // オフライン版は、通常のルームマップ選択やメインメニューに帰る
-            // ※ TODO: 適当なシーン名 ("WaitRoom" Or "MapSelect") に書き直してください
-            SceneManager.LoadScene("WaitRoom");
+            SceneManager.LoadScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
+        }
+
+        private static string ResolveMyTeam(JObject result)
+        {
+            if (result == null)
+            {
+                return "Draw";
+            }
+
+            var players = result["Players"] as JArray;
+            if (players == null)
+            {
+                return "Draw";
+            }
+
+            foreach (var token in players)
+            {
+                var player = token as JObject;
+                if (player == null)
+                {
+                    continue;
+                }
+
+                var team = player["Team"]?.ToString();
+                if (!string.IsNullOrWhiteSpace(team) && team != "NoTeam")
+                {
+                    return team;
+                }
+            }
+
+            return "Draw";
         }
     }
 }

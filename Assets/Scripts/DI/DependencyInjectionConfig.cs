@@ -73,6 +73,7 @@ namespace OpenGS
             builder.RegisterType<MatchData>().InstancePerDependency();
             builder.RegisterType<PlayerMatchManager>().SingleInstance();
             builder.RegisterType<LocalTestMatchRUDPServer>().SingleInstance();
+            builder.RegisterType<OnlineShopService>().As<IShopService>().SingleInstance();
             //builder.RegisterType<OnlineLoadingSceneNetworkManager>().SingleInstance();
 
             _container = builder.Build();

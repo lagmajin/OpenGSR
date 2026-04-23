@@ -434,14 +434,14 @@ namespace OpenGS
         public void GoToResult()
         {
 
-            SceneManager.LoadSceneAsync("ResultScene");
+            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().ResultScene());
 
         }
 
         [Button("タイトルテスト")]
         public void GoToTitle()
         {
-            SceneManager.LoadSceneAsync("NewTitleScene");
+            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
         }
 
         public MatchRoomManager MatchRoomManager()

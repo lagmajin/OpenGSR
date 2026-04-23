@@ -60,6 +60,13 @@ namespace OpenGS
             SaveData();
         }
 
+        public static void SetCredits(int amount)
+        {
+            LoadData();
+            data.credits = Mathf.Max(0, amount);
+            SaveData();
+        }
+
         public static bool SpendCredits(int amount)
         {
             LoadData();

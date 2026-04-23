@@ -1,5 +1,6 @@
 using UnityEngine;
 using Newtonsoft.Json.Linq;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -52,9 +53,12 @@ namespace OpenGS
             JObject json,
             System.Action<string, string, int> onRoomCreateSuccess,
             System.Action<string> onRoomCreateFailed,
-            System.Action<JArray> onRoomListUpdated)
+            System.Action<JArray> onRoomListUpdated,
+            System.Action<string, string, int> onRoomEnterSuccess = null,
+            System.Action<string> onRoomEnterFailed = null)
         {
             var messageType = json?["MessageType"]?.ToString();
+            messageType = MessageType.Normalize(messageType);
             if (string.IsNullOrWhiteSpace(messageType))
             {
                 return;
@@ -62,11 +66,14 @@ namespace OpenGS
 
             switch (messageType)
             {
-                case "CreateNewWaitRoomResponse":
+                case MessageType.CreateRoomResponse:
                     HandleCreateNewWaitRoomResponse(json, onRoomCreateSuccess, onRoomCreateFailed);
                     break;
-                case "UpdateRoomResponse":
+                case MessageType.RoomListUpdateNotification:
                     onRoomListUpdated?.Invoke(json["Rooms"] as JArray);
+                    break;
+                case MessageType.JoinRoomResponse:
+                    HandleEnterWaitRoomResponse(json, onRoomEnterSuccess, onRoomEnterFailed);
                     break;
                 default:
                     Debug.LogWarning($"OnlineLobbySceneController: Unknown message type: {messageType}");
@@ -91,6 +98,25 @@ namespace OpenGS
 
             string errorMessage = json["ErrorMessage"]?.ToString() ?? "Unknown error";
             onRoomCreateFailed?.Invoke(errorMessage);
+        }
+
+        private static void HandleEnterWaitRoomResponse(
+            JObject json,
+            System.Action<string, string, int> onRoomEnterSuccess,
+            System.Action<string> onRoomEnterFailed)
+        {
+            bool success = json["Success"]?.ToObject<bool>() ?? false;
+            if (success)
+            {
+                string roomId = json["RoomID"]?.ToString();
+                string roomName = json["RoomName"]?.ToString();
+                int capacity = json["Capacity"]?.ToObject<int>() ?? 0;
+                onRoomEnterSuccess?.Invoke(roomId, roomName, capacity);
+                return;
+            }
+
+            string errorMessage = json["ErrorMessage"]?.ToString() ?? "Unknown error";
+            onRoomEnterFailed?.Invoke(errorMessage);
         }
     }
 }

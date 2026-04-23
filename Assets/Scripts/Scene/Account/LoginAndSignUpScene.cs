@@ -1,6 +1,9 @@
-﻿using System.Threading;
+using System.Threading;
+using Newtonsoft.Json.Linq;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -15,43 +18,74 @@ namespace OpenGS
         private Button b;
         private Button c;
 
-        //public GeneralSceneMasterData generalSceneMasterData;
         private void Awake()
         {
-
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
-
-
         }
+
         private void Start()
         {
-
         }
 
         private void OnApplicationQuit()
         {
-            var b = GameManager().HasBeforeLoginData();
-
+            var hasBeforeLoginData = GameManager().HasBeforeLoginData();
         }
 
         private void StringCheck()
         {
-
         }
 
         public void TryLogin()
         {
+            var accountName = id != null ? id.text : "";
+            var password = pass != null ? pass.text : "";
+            var globalUserId = System.Guid.NewGuid().ToString("N");
 
+            AccountManager.Instance.LoginData(accountName, "", globalUserId);
+
+            try
+            {
+                var networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+                networkManager.SendMessage(new JObject
+                {
+                    ["MessageType"] = MessageType.LoginRequest,
+                    ["AccountName"] = accountName,
+                    ["Password"] = password,
+                    ["GlobalUserId"] = globalUserId
+                });
+            }
+            catch
+            {
+            }
+
+            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
         }
 
-        public void TrySignUp(in string id,in string password)
+        public void TrySignUp(in string id, in string password)
         {
+            var globalUserId = System.Guid.NewGuid().ToString("N");
+            AccountManager.Instance.LoginData(id, "", globalUserId);
 
+            try
+            {
+                var networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+                networkManager.SendMessage(new JObject
+                {
+                    ["MessageType"] = MessageType.CreateAccountRequest,
+                    ["AccountName"] = id,
+                    ["Password"] = password,
+                    ["GlobalUserId"] = globalUserId
+                });
+            }
+            catch
+            {
+            }
         }
 
         public override SynchronizationContext MainThread()
         {
-            throw new System.NotImplementedException();
+            return SynchronizationContext.Current;
         }
     }
 }

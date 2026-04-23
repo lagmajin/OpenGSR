@@ -323,14 +323,14 @@ namespace OpenGS
 
         public void GoToTitleScene()
         {
-            var titleScene = generalSceneMasterData.TitleScene();
+            var titleScene = generalSceneMasterData != null ? generalSceneMasterData.TitleScene() : GeneralSceneMasterData.Instance().TitleScene();
             Debug.Log("タイトルシーンへ移動");
             GoToScene(titleScene);
         }
 
         public void GoToTitleSceneWithErrorSound()
         {
-            var titleScene = generalSceneMasterData.TitleScene();
+            var titleScene = generalSceneMasterData != null ? generalSceneMasterData.TitleScene() : GeneralSceneMasterData.Instance().TitleScene();
             Debug.Log("タイトルシーンへ移動（エラー警告音付き）");
 
             shouldPlayWarningSound = true;
@@ -340,13 +340,14 @@ namespace OpenGS
 
         public void GoToShopScene()
         {
-            var shopScene = generalSceneMasterData.ShopScene();
+            var shopScene = generalSceneMasterData != null ? generalSceneMasterData.ShopScene() : GeneralSceneMasterData.Instance().ShopScene();
             GoToScene(shopScene);
         }
 
         private void OnTitleSceneLoadedForWarning(Scene scene, LoadSceneMode mode)
         {
-            if (scene.name == generalSceneMasterData.TitleScene() && shouldPlayWarningSound)
+            var titleScene = generalSceneMasterData != null ? generalSceneMasterData.TitleScene() : GeneralSceneMasterData.Instance().TitleScene();
+            if (scene.name == titleScene && shouldPlayWarningSound)
             {
                 Debug.Log("タイトルシーンに到達、警告音を再生");
                 shouldPlayWarningSound = false;

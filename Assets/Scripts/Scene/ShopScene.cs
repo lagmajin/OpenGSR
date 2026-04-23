@@ -70,12 +70,12 @@ namespace OpenGS
         {
             GameFlagsManager.GetInstance().BeforeSceneName = "ShopScene";
 
-            SceneManager.LoadSceneAsync("TitleScene");
+            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
         }
 
         public override SynchronizationContext MainThread()
         {
-            throw new System.NotImplementedException();
+            return SynchronizationContext.Current;
         }
     }
 

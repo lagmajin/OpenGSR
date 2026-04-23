@@ -3,6 +3,7 @@
 //using Cinemachine;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using Sirenix.OdinInspector;
 
 
@@ -135,32 +136,80 @@ namespace OpenGS
         {
             endFlag = true;
 
-            //Time.timeScale = 0.4f;
-            bool won = false;
-
-            // var canvasIf = uiManager.GetComponent<IBattleSceneUIManager>();
             var canvasIf = uiManager.GetComponent(typeof(IBattleSceneUIManager)) as IBattleSceneUIManager;
+            var result = StoreOfflineMatchResult();
+            var winningTeam = result?["WinningTeam"]?.ToString() ?? "Draw";
+            var myTeam = result?["MyTeam"]?.ToString() ?? "Draw";
 
-
-
-
-            if (won)
+            if (canvasIf != null)
             {
-                canvasIf.ShowGameWin();
+                if (string.IsNullOrWhiteSpace(winningTeam) || winningTeam == "Draw" || winningTeam == "None")
+                {
+                    canvasIf.ShowGameDefatead();
+                }
+                else if (winningTeam == myTeam)
+                {
+                    canvasIf.ShowGameWin();
+                }
+                else
+                {
+                    canvasIf.ShowGameDefatead();
+                }
             }
-            else
-            {
-                canvasIf.ShowGameDefatead();
-            }
-
-
-
-            //GoToResult();
 
             Debug.Log("GameEnd");
 
             Invoke("GoToResult", gotoResultSceneWaitTime);
 
+        }
+
+        private JObject StoreOfflineMatchResult()
+        {
+            if (GameManager != null && GameManager.IsOnlineGameMode)
+            {
+                return null;
+            }
+
+            var select = GameModeSelectManager.Instance.OfflineGameSelect;
+            var mode = select != null ? select.GameMode : EGameMode.DeathMatch;
+            var evaluator = MatchResultEvaluatorFactory.CreateEvaluator(mode);
+            var manager = matchRoomManager ?? MatchRoomManager();
+
+            var players = new List<PlayerInfo>();
+            if (manager != null && manager.WaitRoom != null)
+            {
+                players.AddRange(manager.WaitRoom.AllPlayers());
+            }
+
+            var result = evaluator.Evaluate(null, players);
+            result["MyTeam"] = ResolveLocalTeam(players);
+
+            manager?.StoreOfflineMatchResult(result);
+            return result;
+        }
+
+        private static string ResolveLocalTeam(List<PlayerInfo> players)
+        {
+            if (players == null)
+            {
+                return "Draw";
+            }
+
+            foreach (var player in players)
+            {
+                if (player == null || player.IsBot)
+                {
+                    continue;
+                }
+
+                var team = player.Team.ToString();
+                if (!string.IsNullOrWhiteSpace(team) && team != ETeam.NoTeam.ToString())
+                {
+                    return team;
+                }
+            }
+
+            return "Draw";
         }
 
 

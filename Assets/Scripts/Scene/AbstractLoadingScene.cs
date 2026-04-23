@@ -16,7 +16,7 @@ namespace OpenGS
 
         public override SynchronizationContext MainThread()
         {
-            throw new System.NotImplementedException();
+            return SynchronizationContext.Current;
         }
 
         public MatchRoomManager MatchRoomManager()

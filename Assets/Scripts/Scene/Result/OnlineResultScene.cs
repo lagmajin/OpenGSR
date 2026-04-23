@@ -2,6 +2,7 @@ using Newtonsoft.Json.Linq;
 using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -76,7 +77,7 @@ namespace OpenGS
             
             var messageType = json["MessageType"]?.ToString();
             
-            if (messageType == "MatchResult")
+            if (messageType == "MatchResult" || messageType == MessageType.MatchEndNotification)
             {
                 // 勝ったチーム名を抽出
                 string winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
@@ -98,12 +99,12 @@ namespace OpenGS
 
                         parsedData.Add(new PlayerMatchResultData()
                         {
-                            PlayerId = p["PlayerId"]?.ToString() ?? "",
-                            PlayerName = p["Name"]?.ToString() ?? "Unknown",
-                            Team = p["Team"]?.ToString() ?? "None",
+                            PlayerId = p["PlayerId"]?.ToString() ?? p["Id"]?.ToString() ?? "",
+                            PlayerName = p["Name"]?.ToString() ?? p["PlayerName"]?.ToString() ?? "Unknown",
+                            Team = p["Team"]?.ToString() ?? p["TeamName"]?.ToString() ?? "None",
                             Kills = p["Kills"]?.ToObject<int>() ?? 0,
                             Deaths = p["Deaths"]?.ToObject<int>() ?? 0,
-                            Score = p["Score"]?.ToObject<int>() ?? 0
+                            Score = p["Score"]?.ToObject<int>() ?? p["Kills"]?.ToObject<int>() ?? 0
                         });
                     }
                     resultUIManager.UpdateResultList(parsedData);

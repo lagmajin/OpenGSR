@@ -12,10 +12,13 @@ namespace OpenGS
         [SerializeField] private Image iconImage;
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI priceText;
+        [SerializeField] private TextMeshProUGUI stateText;
         [SerializeField] private Button selectButton;
 
         private ShopItemData itemData;
         private System.Action<ShopItemData> onSelected;
+
+        public ShopItemData ItemData => itemData;
 
         public void Setup(ShopItemData data, System.Action<ShopItemData> callback)
         {
@@ -28,6 +31,27 @@ namespace OpenGS
 
             selectButton.onClick.RemoveAllListeners();
             selectButton.onClick.AddListener(() => onSelected?.Invoke(itemData));
+        }
+
+        public void RefreshState(bool purchased, bool equipped)
+        {
+            if (stateText == null)
+            {
+                return;
+            }
+
+            if (equipped)
+            {
+                stateText.text = "EQUIPPED";
+            }
+            else if (purchased)
+            {
+                stateText.text = "OWNED";
+            }
+            else
+            {
+                stateText.text = "LOCKED";
+            }
         }
     }
 }

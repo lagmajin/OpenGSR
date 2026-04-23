@@ -9,6 +9,7 @@ namespace OpenGS
     public class UserSaveData
     {
         public List<string> purchasedItems = new List<string>();
+        public string equippedCharacter = "";
         public string equippedBooster = "";
         public string[] equippedInstantItems = new string[3];
 
@@ -27,7 +28,7 @@ namespace OpenGS
     /// </summary>
     public static class UserSaveManager
     {
-        private const int SAVE_VERSION = 1;
+        private const int SAVE_VERSION = 2;
         private const string SAVE_FILE = "UserData.json";
         private static UserSaveData data;
 
@@ -57,14 +58,24 @@ namespace OpenGS
 
         private static UserSaveData Migrate(int fromVersion, UserSaveData oldData)
         {
-            // Currently a pass-through migration. Keep hook for future schema upgrades.
-            return oldData ?? new UserSaveData();
+            var migrated = oldData ?? new UserSaveData();
+
+            if (string.IsNullOrEmpty(migrated.equippedCharacter))
+            {
+                migrated.equippedCharacter = "";
+            }
+
+            return migrated;
         }
 
         public static bool IsPurchased(string itemId)
         {
             // デフォルトで最初から持っているアイテムなどの処理が必要ならここに追加
             if (string.IsNullOrEmpty(itemId)) return true;
+            if (string.Equals(itemId, OpenGSCore.EPlayerCharacter.Misty.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
             
             LoadData();
             return data.purchasedItems.Contains(itemId);
@@ -102,6 +113,12 @@ namespace OpenGS
 
             LoadData();
 
+            if (category == EShopCategory.Character)
+            {
+                data.equippedCharacter = itemId;
+            }
+            else
+            {
             if (category == EShopCategory.Booster)
             {
                 data.equippedBooster = itemId;
@@ -112,6 +129,7 @@ namespace OpenGS
                 {
                     data.equippedInstantItems[slotIndex] = itemId;
                 }
+            }
             }
 
             SaveData();
@@ -126,6 +144,11 @@ namespace OpenGS
         public static string GetEquippedInSlot(EShopCategory category, int slotIndex)
         {
             LoadData();
+
+            if (category == EShopCategory.Character)
+            {
+                return data.equippedCharacter;
+            }
 
             if (category == EShopCategory.Booster)
             {
@@ -144,6 +167,11 @@ namespace OpenGS
 
         public static bool IsEquippedAtAnySlot(string itemId, EShopCategory category)
         {
+            if (category == EShopCategory.Character)
+            {
+                return GetEquippedId(category) == itemId;
+            }
+
             if (category == EShopCategory.Weapon)
             {
                 return IsFavoriteWeapon(itemId);
