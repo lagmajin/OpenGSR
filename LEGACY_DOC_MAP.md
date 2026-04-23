@@ -49,6 +49,17 @@ What it contains:
 - references to old `Docs/GAME_RULES.md`
 - references to mission, CTF, TDM, TSUV, and other older systems
 
+### Legacy Server Summary
+
+- [LEGACY_SERVER_NOTES.md](/x:/Dev/OpenGSR/LEGACY_SERVER_NOTES.md)
+
+What it contains:
+
+- the actionable parts of the server architecture rules
+- the useful lobby and match design takeaways
+- the core integration guidance for `OpenGSCore`
+- the surviving cleanup and priority signals
+
 ## Important Note
 
 `X:\Dev\OpenGS\Assets\Scripts\CLASS_INDEX.md` points at
@@ -90,3 +101,6 @@ across the older `OpenGS` folder and any sibling project folders.
 
 If the goal is to rebuild the missing rules document rather than find the
 original file, the recovered mode list above is enough to start a draft.
+
+If the goal is to harden the server roadmap, start with
+[LEGACY_SERVER_NOTES.md](/x:/Dev/OpenGSR/LEGACY_SERVER_NOTES.md).

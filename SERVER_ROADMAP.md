@@ -3,6 +3,22 @@
 This is the server-side view of the remaining unfinished work. It is meant to be
 short, execution-oriented, and easier to track than the full project roadmap.
 
+## Recovered Legacy Constraints
+
+The older OpenGSServer notes line up with the current direction and are worth
+keeping explicit:
+
+- the server should remain authoritative for state, sync, and validation
+- the client should handle input, rendering, and prediction
+- lobby traffic belongs on TCP
+- match traffic belongs on RUDP / UDP-style real-time transport
+- detailed collision and physics should stay off the server when possible
+- room, player, chat, and ping state should live in one lobby authority
+- shared game logic should continue to move into `OpenGSCore`
+
+See [LEGACY_SERVER_NOTES.md](/x:/Dev/OpenGSR/LEGACY_SERVER_NOTES.md) for the
+longer recovered summary.
+
 ## S0. Protocol Hardening
 
 Goal: keep client, core, and server message names aligned.

@@ -311,6 +311,7 @@ That path is not the main multiplayer loop, but it should remain compatible with
 - `RULES.md` documents the current and legacy game rule structure
 - `LEGACY_DOC_MAP.md` points to older design documents and historical notes
 - `ITEM_SYSTEMS.md` summarizes the current item-use implementation state
+- `LEGACY_SERVER_NOTES.md` summarizes the recovered server design guidance
 
 ## Practical Design Rule
 
