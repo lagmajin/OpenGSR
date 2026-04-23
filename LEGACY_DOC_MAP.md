@@ -16,7 +16,7 @@ What it contains:
   - `OpenGSCore` shared logic
   - `OpenGSServer` server app
 - a directory-level map of the client/server/core layout
-- the historical mode list:
+- the historical supported-mode list:
   - DeathMatch
   - Survival
   - TeamDeathMatch
@@ -55,11 +55,15 @@ What it contains:
 `../../Docs/GAME_RULES.md`, but that file is not currently present in the
 workspace search results I checked.
 
+I also checked the visible `OpenGS` git history for `GAME_RULES.md`, but only
+the index-linking commit shows up. The actual document still has not surfaced.
+
 That likely means one of the following:
 
 - the file was renamed
 - the file lived in a different old project folder
 - the file was removed but the reference remained
+- the rules content only existed as an unpublished draft or local note
 
 ## How To Use These Documents
 
@@ -83,3 +87,6 @@ for:
 - `Capture The Flag`
 
 across the older `OpenGS` folder and any sibling project folders.
+
+If the goal is to rebuild the missing rules document rather than find the
+original file, the recovered mode list above is enough to start a draft.
