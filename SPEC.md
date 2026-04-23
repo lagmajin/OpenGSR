@@ -39,6 +39,22 @@ The game should feel:
 
 That loop is the main spine of the project.
 
+## Scene Flow
+
+The current scene flow should stay conceptually simple:
+
+- title
+- general server connect
+- lobby
+- room / wait room
+- loading
+- match
+- result
+- back to lobby or wait room
+
+Offline play follows the same pattern, but skips the live server dependency where
+possible.
+
 ## Match Scale
 
 The target match size is around 16 players.
@@ -111,6 +127,37 @@ The current project structure suggests these core rules:
 
 The game should be able to use the same match flow while swapping the rule layer.
 
+### DeathMatch
+
+- free-for-all
+- winner is the player with the highest kill count
+- result screen should show the top player and the full player list
+
+### TeamDeathMatch
+
+- two teams
+- winner is the team with the higher kill count
+- team score should be visible during the match
+- result screen should show both team totals and the player list
+
+### CaptureTheFlag
+
+- two teams
+- scoring is driven by objective play
+- flag capture / return events are part of the match loop
+- tie-break behavior should remain explicit in the rule evaluator
+
+### Survival
+
+- individual survival-oriented mode
+- death count and elimination matter more than raw score
+
+### TeamSurvival
+
+- team-based survival mode
+- last surviving team or equivalent survival condition wins
+- team lives and alive counts should be visible to the server rule layer
+
 ## Networking Model
 
 OpenGSR uses a split network model:
@@ -122,6 +169,26 @@ OpenGSR uses a split network model:
 The shared contract lives in `OpenGSCore`.
 
 New code should prefer canonical protocol names and payload fields.
+
+## Authoritative Boundaries
+
+The project should treat these as server-authoritative where possible:
+
+- room membership
+- room capacity
+- readiness
+- loading approval
+- match end
+- score updates
+- objective events
+
+The client should be responsible for:
+
+- input capture
+- presentation
+- scene transitions
+- local feedback
+- temporary prediction or interpolation where needed
 
 ## Online and Offline Modes
 
@@ -153,6 +220,23 @@ The intended combat feel is:
 
 The game should feel more like a competitive arena shooter than a slow tactical sim.
 
+## Match Presentation Goals
+
+During a match the player should be able to read:
+
+- current team or position
+- current score or objective progress
+- match timer
+- recent combat feedback
+- whether the match is about to end
+
+The result screen should immediately answer:
+
+- who won
+- why they won
+- how each player performed
+- what to do next
+
 ## UI and Presentation Goals
 
 The UI should make it easy to understand:
@@ -177,6 +261,19 @@ The intended long-term direction is:
 - shop and unlock flow
 
 These systems should support the match game loop instead of getting in the way of it.
+
+## Maximum Scope For The First Playable Version
+
+The first strong playable version should include:
+
+- lobby connection
+- room create / join
+- wait room flow
+- at least one fully working match rule
+- result screen
+- offline fallback
+
+Everything else should support that core loop rather than replace it.
 
 ## Mission Route
 
