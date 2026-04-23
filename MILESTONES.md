@@ -112,6 +112,31 @@ Done when:
 - Damage feedback is accurate enough to trust.
 - Kill log, hit effects, and network prediction feel coherent.
 
+## M6. Item Usage And Resource Loop
+
+Goal: finish the missing "use item" path and make item resources consistent.
+
+Scope:
+- `Assets/Scripts/Player/CharaController.cs`
+- `Assets/Scripts/Match/MatchEventProvider.cs`
+- `Assets/Scripts/Item/InstantItemSlot.cs`
+- `Assets/Scripts/Item/FieldItemNetworkManager.cs`
+- `Assets/Scripts/Player/AsmExport/PlayerGrenadeComponent.cs`
+- `Packages/com.opengs.logic/Item/*`
+
+Why this matters:
+- Field-item spawning exists, but activation and usage are still split across
+  several partial layers.
+- Instant items are equipped and saved, but `UseItem` is still a stub in the
+  main player controller.
+- Grenade, booster, and consumable behavior all belong in one coherent resource
+  model.
+
+Done when:
+- Instant items can be used from input and consumed from a slot.
+- Field-item pickup, inventory state, and player UI stay in sync.
+- The server/core contract defines what item usage means for the match layer.
+
 ## Suggested Order
 
 1. `M0`
@@ -120,6 +145,7 @@ Done when:
 4. `M2`
 5. `M4`
 6. `M5`
+7. `M6`
 
 ## Parallel Development
 

@@ -237,6 +237,27 @@ The result screen should immediately answer:
 - how each player performed
 - what to do next
 
+## Item And Resource Model
+
+The project already has several item-related systems in partial form.
+
+The intended item model is:
+
+- field pickups that spawn in the arena
+- slot-based instant items that can be consumed from input
+- combat resources such as grenades and booster fuel
+- shop ownership and equipment state that persist between matches
+
+From a player point of view, the item loop should feel like this:
+
+1. pick up an arena item or equip an item before the match
+2. use it through a dedicated input or slot
+3. see the effect immediately in combat
+4. have the UI and match state stay in sync
+
+The canonical item-use work should eventually live in `OpenGSCore`, with the
+client handling presentation and input and the server handling authority.
+
 ## UI and Presentation Goals
 
 The UI should make it easy to understand:
@@ -289,6 +310,7 @@ That path is not the main multiplayer loop, but it should remain compatible with
 - `PROTOCOL.md` documents the network contract
 - `RULES.md` documents the current and legacy game rule structure
 - `LEGACY_DOC_MAP.md` points to older design documents and historical notes
+- `ITEM_SYSTEMS.md` summarizes the current item-use implementation state
 
 ## Practical Design Rule
 
