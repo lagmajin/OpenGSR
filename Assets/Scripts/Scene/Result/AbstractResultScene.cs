@@ -79,7 +79,7 @@ namespace OpenGS
             if (fanfare != null)
             {
                 // SE再生
-                PlaySound.PlaySE(fanfare);
+                SoundManager.Instance.PlayOneShotSafe(fanfare, context: nameof(AbstractResultScene));
             }
         }
 

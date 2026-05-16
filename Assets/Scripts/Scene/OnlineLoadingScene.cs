@@ -86,15 +86,6 @@ namespace OpenGS
         {
             loadingErrorFlag = false;
 
-            if (PlaySound.IsPlayingBGM())
-            {
-
-            }
-            else
-            {
-
-            }
-
             if (DebugFlagManager.IsDebug())
             {
                 //DebugCreateMatchRoom();

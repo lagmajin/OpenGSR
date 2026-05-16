@@ -210,7 +210,7 @@ namespace OpenGS
                 TotalKills = entriesList.Sum(e => e.Kills),
                 TotalDeaths = entriesList.Sum(e => e.Deaths),
                 TotalScore = entriesList.Sum(e => e.Score),
-                AverageScore = entriesList.Any() ? entriesList.Average(e => e.Score) : 0,
+                AverageScore = entriesList.Any() ? (float)entriesList.Average(e => e.Score) : 0f,
                 WinRate = entriesList.Count > 0 
                     ? (float)entriesList.Count(e => e.Result == "Win") / entriesList.Count * 100 
                     : 0

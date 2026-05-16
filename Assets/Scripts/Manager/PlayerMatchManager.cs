@@ -8,11 +8,11 @@ namespace OpenGS
 {
     public class PlayerAllData
     {
-        PlayerInfo playerInfo;
+        OpenGSCore.PlayerInfo playerInfo;
         PlayerStatus status;
 
         private List<PlayerAllData> players = new List<PlayerAllData>();
-        public PlayerAllData(PlayerInfo playerInfo, PlayerStatus status)
+        public PlayerAllData(OpenGSCore.PlayerInfo playerInfo, PlayerStatus status)
         {
             this.playerInfo = playerInfo;
             this.status = status;
@@ -31,7 +31,7 @@ namespace OpenGS
 
         }
 
-        public void AddPlayer(PlayerInfo info, PlayerStatus status)
+        public void AddPlayer(OpenGSCore.PlayerInfo info, PlayerStatus status)
         {
             //PlayerAllData newPlayer = new PlayerAllData(info, status);
             //players.Add(newPlayer);

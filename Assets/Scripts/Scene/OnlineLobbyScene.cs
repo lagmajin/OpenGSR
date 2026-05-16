@@ -169,6 +169,12 @@ namespace OpenGS
         [Button("ルーム作成ダイアログ表示テスト")]
         public void ShowCreateNewRoomDialog()
         {
+            if (createNewRoomDialog != null)
+            {
+                createNewRoomDialog.SetActive(true);
+                return;
+            }
+
             if (mediateObject != null && mediateObject.createNewRoomDialog != null)
             {
                 mediateObject.createNewRoomDialog.gameObject.SetActive(true);

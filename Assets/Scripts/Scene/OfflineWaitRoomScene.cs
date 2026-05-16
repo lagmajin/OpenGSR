@@ -144,12 +144,12 @@ namespace OpenGS
 
         void Start()
         {
-            if (PlaySound.IsPlayingBGM())
+            if (SoundManager.Instance.IsBgmPlaying())
             {
-                PlaySound.StopBGM();
+                SoundManager.Instance.StopBgm();
             }
 
-            PlaySound.PlayBGM(bgm);
+            SoundManager.Instance.PlayBgm(bgm);
             SceneManager.sceneLoaded += GameSceneLoaded;
         }
 

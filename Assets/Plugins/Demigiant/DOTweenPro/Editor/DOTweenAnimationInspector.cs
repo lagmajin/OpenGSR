@@ -16,7 +16,7 @@ using DOTweenSettings = DG.Tweening.Core.DOTweenSettings;
 using UnityEngine.UI;
 #endif
 #if DOTWEEN_TEXTMESHPRO // TEXTMESHPRO_MARKER
-    //using TMPro;
+using TMPro;
 #endif
 
 namespace DG.DOTweenEditor

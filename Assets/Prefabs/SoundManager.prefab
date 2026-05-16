@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1ea3af7dad7257448f160ac0af24cb0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: OpenGSR::OpenGSR.Audio.SimpleAudioManager
-  _audioConfig: {fileID: 0}
+  _audioConfig: {fileID: 11400000, guid: c7a1e2b3d4f5061728394a5b6c7d8e9f, type: 2}
   _defaultBgmFadeTime: 1
   MasterBGMVolume: 1
   MasterSEVolume: 1

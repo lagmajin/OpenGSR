@@ -75,33 +75,24 @@ namespace OpenGS
             {
                 if (overridePlayingBGM)
                 {
-
-                    PlaySound.PlayBGM(bgm, bgmVolume);
+                    SoundManager.Instance.PlayBgm(bgm, bgmVolume, loopBgm);
                 }
                 else
                 {
-                    if (!PlaySound.IsPlayingBGM())
+                    if (!SoundManager.Instance.IsBgmPlaying())
                     {
-                        PlaySound.PlayBGM(bgm, bgmVolume);
-
+                        SoundManager.Instance.PlayBgm(bgm, bgmVolume, loopBgm);
                     }
-
                 }
             }
         }
 
         public void StopBGM()
         {
-            if (PlaySound.IsPlayingBGM())
+            if (SoundManager.Instance.IsBgmPlaying())
             {
-
+                SoundManager.Instance.StopBgm();
             }
-            else
-            {
-
-            }
-
-
         }
 
         public void StopBGMAll()
@@ -113,15 +104,13 @@ namespace OpenGS
         {
             if (bgn)
             {
-                PlaySound.PlayBGM(bgn);
-
+                SoundManager.Instance.PlayBgm(bgn, bgnVolume, true);
             }
         }
 
         public bool IsPlayBGMNow()
         {
-            return PlaySound.IsPlayingBGM();
-
+            return SoundManager.Instance.IsBgmPlaying();
         }
 
         [Button("自動セット")]

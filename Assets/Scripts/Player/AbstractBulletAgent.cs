@@ -23,7 +23,7 @@ namespace OpenGS
                     if (hitObjectSounds.Length > 0)
                     {
                         var clip = hitObjectSounds[Random.Range(0, hitObjectSounds.Length)];
-                        global::OpenGS.PlaySound.PlaySE(clip);
+                        SoundManager.Instance.PlayOneShotSafe(clip, context: nameof(AbstractBulletAgent));
 
                         //audioSource.PlayOneShot(clip);
                     }

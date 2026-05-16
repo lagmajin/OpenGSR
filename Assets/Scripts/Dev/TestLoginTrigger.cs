@@ -10,28 +10,21 @@ namespace OpenGS
         {
             if (Input.GetKeyDown(KeyCode.F5))
             {
-                Debug.Log("TestLoginTrigger: F5 pressed -> trigger success");
-                try
+                var loginScene = FindFirstObjectByType<LoginAndSignUpScene>();
+                if (loginScene != null)
                 {
-                    AuthenticationManager.Instance.DebugTriggerLoginResult(true);
+                    Debug.Log("TestLoginTrigger: F5 pressed -> triggering login scene TryLogin()");
+                    loginScene.TryLogin();
                 }
-                catch (System.Exception ex)
+                else
                 {
-                    Debug.LogWarning("TestLoginTrigger: Failed to trigger AuthenticationManager: " + ex.Message);
+                    Debug.LogWarning("TestLoginTrigger: LoginAndSignUpScene not found");
                 }
             }
 
             if (Input.GetKeyDown(KeyCode.F6))
             {
-                Debug.Log("TestLoginTrigger: F6 pressed -> trigger failure");
-                try
-                {
-                    AuthenticationManager.Instance.DebugTriggerLoginResult(false);
-                }
-                catch (System.Exception ex)
-                {
-                    Debug.LogWarning("TestLoginTrigger: Failed to trigger AuthenticationManager: " + ex.Message);
-                }
+                Debug.Log("TestLoginTrigger: F6 pressed -> no AuthenticationManager available in current codebase");
             }
         }
     }

@@ -15,7 +15,7 @@ namespace OpenGS
         public int PlayerCount { get; set; } = 0;
         public int Capacity { get; set; } = 8;
 
-        public List<PlayerInfo> PlayerList { get; set; } = new();
+        public List<OpenGSCore.PlayerInfo> PlayerList { get; set; } = new();
 
         public ClientWaitRoom()
         {
@@ -34,7 +34,7 @@ namespace OpenGS
 
         }
 
-        public void AddNewPlayer(PlayerInfo info)
+        public void AddNewPlayer(OpenGSCore.PlayerInfo info)
         {
             info.Name = RoomName;
 
@@ -44,7 +44,7 @@ namespace OpenGS
 
         }
 
-        public void RemovePlayer(PlayerInfo info)
+        public void RemovePlayer(OpenGSCore.PlayerInfo info)
         {
 
         }

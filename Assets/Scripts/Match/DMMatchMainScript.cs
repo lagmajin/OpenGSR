@@ -175,7 +175,7 @@ namespace OpenGS
             var evaluator = MatchResultEvaluatorFactory.CreateEvaluator(mode);
             var manager = matchRoomManager ?? MatchRoomManager();
 
-            var players = new List<PlayerInfo>();
+            var players = new List<OpenGSCore.PlayerInfo>();
             if (manager != null && manager.WaitRoom != null)
             {
                 players.AddRange(manager.WaitRoom.AllPlayers());
@@ -188,7 +188,7 @@ namespace OpenGS
             return result;
         }
 
-        private static string ResolveLocalTeam(List<PlayerInfo> players)
+        private static string ResolveLocalTeam(List<OpenGSCore.PlayerInfo> players)
         {
             if (players == null)
             {
@@ -327,7 +327,7 @@ namespace OpenGS
 
             var playerCharacter = EPlayerCharacter.Ami;
 
-            var playerInfo=new PlayerInfo();
+            var playerInfo = new OpenGSCore.PlayerInfo();
 
             //playerInfo.playerCharacter = playerCharacter;
 

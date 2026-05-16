@@ -151,7 +151,7 @@ namespace OpenGS
 
             if (hitSound != null)
             {
-                PlaySound.PlaySE(hitSound);
+                SoundManager.Instance.PlayOneShotSafe(hitSound, context: nameof(SandboxDummyEnemy));
             }
 
             if (hitEffectPrefab != null)

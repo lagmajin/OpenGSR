@@ -1,12 +1,8 @@
-﻿
-using UnityEngine;
-using KanKikuchi.AudioManager;
 using System.Collections;
+using UnityEngine;
 
 namespace OpenGS
 {
-
-
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MultipleTags))]
     public class AbstractGrenadeController : MonoBehaviour
@@ -28,40 +24,31 @@ namespace OpenGS
         protected void SetVariables()
         {
             body = gameObject.GetComponent<Rigidbody2D>();
-
             myTags = gameObject.GetComponent<MultipleTags>();
         }
 
         private void Start()
         {
-
-
             c = StartCoroutine(Functions.WaitAfterAction(Exp, expTime));
-
         }
 
         public void Reset()
         {
-
-
         }
+
         void Update()
         {
             var time = Time.deltaTime;
-
-
         }
 
         public virtual void Exp()
         {
             var obj = Instantiate(expEffect, gameObject.transform);
-
             Destroy(this.gameObject);
         }
 
         public virtual void OnExplosion()
         {
-
         }
 
         public void StopMoving()
@@ -79,19 +66,9 @@ namespace OpenGS
             body.bodyType = RigidbodyType2D.Kinematic;
         }
 
-
         IEnumerator BombTimer()
         {
             yield return new WaitForSeconds(expTime);
-
-
-
-
         }
-
     }
-
-
-
-
 }

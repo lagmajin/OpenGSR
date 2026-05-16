@@ -168,7 +168,7 @@ namespace OpenGS
             // if (playersArray != null) { /* プレイヤーリストを更新 */ }
         }
 
-        public void AddPlayer(PlayerInfo info)
+        public void AddPlayer(OpenGSCore.PlayerInfo info)
         {
             lock (_lockObj)
             {
@@ -178,7 +178,7 @@ namespace OpenGS
             }
         }
 
-        public void AddPlayers(List<PlayerInfo> info)
+        public void AddPlayers(List<OpenGSCore.PlayerInfo> info)
         {
             foreach (var player in info)
             {

@@ -45,10 +45,10 @@ namespace OpenGS
 
         // ─── 内部状態 ───────────────────────────────────────────────
 
-        private List<PlayerInfo> lobbyPlayers = new List<PlayerInfo>();
-        private List<PlayerInfo> friendList = new List<PlayerInfo>();
-        private List<PlayerInfo> filteredPlayers = new List<PlayerInfo>();
-        private PlayerInfo selectedPlayer = null;
+        private List<OpenGSCore.PlayerInfo> lobbyPlayers = new List<OpenGSCore.PlayerInfo>();
+        private List<OpenGSCore.PlayerInfo> friendList = new List<OpenGSCore.PlayerInfo>();
+        private List<OpenGSCore.PlayerInfo> filteredPlayers = new List<OpenGSCore.PlayerInfo>();
+        private OpenGSCore.PlayerInfo selectedPlayer = null;
         private bool isLobbyTabActive = true;
         private string currentRoomId = "";
         private string currentRoomName = "";
@@ -159,9 +159,9 @@ namespace OpenGS
         /// ロビーにいるプレイヤーリストを更新する
         /// </summary>
         /// <param name="players">プレイヤーリスト</param>
-        public void UpdateLobbyPlayers(List<PlayerInfo> players)
+        public void UpdateLobbyPlayers(List<OpenGSCore.PlayerInfo> players)
         {
-            lobbyPlayers = players ?? new List<PlayerInfo>();
+            lobbyPlayers = players ?? new List<OpenGSCore.PlayerInfo>();
             if (isLobbyTabActive)
             {
                 RefreshPlayerList();
@@ -172,9 +172,9 @@ namespace OpenGS
         /// フレンドリストを更新する
         /// </summary>
         /// <param name="friends">フレンドリスト</param>
-        public void UpdateFriendList(List<PlayerInfo> friends)
+        public void UpdateFriendList(List<OpenGSCore.PlayerInfo> friends)
         {
-            friendList = friends ?? new List<PlayerInfo>();
+            friendList = friends ?? new List<OpenGSCore.PlayerInfo>();
             if (!isLobbyTabActive)
             {
                 RefreshPlayerList();
@@ -223,7 +223,7 @@ namespace OpenGS
 
             // 招待を送信
             string message = messageInput != null ? messageInput.text : "";
-            SendInvite(selectedPlayer.PlayerId, message);
+            SendInvite(selectedPlayer.Id, message);
         }
 
         private void OnCancelButtonClicked()
@@ -243,7 +243,7 @@ namespace OpenGS
 
             // 現在のタブに応じたプレイヤーリストを取得
             var sourceList = isLobbyTabActive ? lobbyPlayers : friendList;
-            filteredPlayers = new List<PlayerInfo>(sourceList);
+            filteredPlayers = new List<OpenGSCore.PlayerInfo>(sourceList);
 
             // プレイヤーアイテムを生成
             if (filteredPlayers.Count == 0)
@@ -287,7 +287,7 @@ namespace OpenGS
         /// <summary>
         /// プレイヤーアイテムを生成する
         /// </summary>
-        private void CreatePlayerItem(PlayerInfo player)
+        private void CreatePlayerItem(OpenGSCore.PlayerInfo player)
         {
             if (playerItemPrefab == null || playerListContent == null) return;
 
@@ -304,7 +304,7 @@ namespace OpenGS
                 var text = item.GetComponentInChildren<TextMeshProUGUI>();
                 if (text != null)
                 {
-                    text.text = player.PlayerName;
+                    text.text = player.Name;
                 }
 
                 var button = item.GetComponent<Button>();
@@ -318,7 +318,7 @@ namespace OpenGS
         /// <summary>
         /// プレイヤーが選択されたときの処理
         /// </summary>
-        private void OnPlayerSelected(PlayerInfo player)
+        private void OnPlayerSelected(OpenGSCore.PlayerInfo player)
         {
             selectedPlayer = player;
             UpdateSelectedPlayerUI();
@@ -332,7 +332,7 @@ namespace OpenGS
             if (selectedPlayerText != null)
             {
                 selectedPlayerText.text = selectedPlayer != null 
-                    ? $"選択中: {selectedPlayer.PlayerName}" 
+                    ? $"選択中: {selectedPlayer.Name}"
                     : "プレイヤーを選択してください";
             }
 
@@ -351,12 +351,12 @@ namespace OpenGS
 
             if (string.IsNullOrWhiteSpace(keyword))
             {
-                filteredPlayers = new List<PlayerInfo>(sourceList);
+                filteredPlayers = new List<OpenGSCore.PlayerInfo>(sourceList);
             }
             else
             {
                 filteredPlayers = sourceList
-                    .Where(p => p.PlayerName.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
+                    .Where(p => p.Name.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
                     .ToList();
             }
 
@@ -485,25 +485,4 @@ namespace OpenGS
         }
     }
 
-    /// <summary>
-    /// プレイヤー情報クラス
-    /// </summary>
-    [System.Serializable]
-    public class PlayerInfo
-    {
-        public string PlayerId;
-        public string PlayerName;
-        public int Level;
-        public bool IsOnline;
-        public bool IsInRoom;
-
-        public PlayerInfo(string id, string name, int level = 1, bool isOnline = true, bool isInRoom = false)
-        {
-            PlayerId = id;
-            PlayerName = name;
-            Level = level;
-            IsOnline = isOnline;
-            IsInRoom = isInRoom;
-        }
-    }
 }

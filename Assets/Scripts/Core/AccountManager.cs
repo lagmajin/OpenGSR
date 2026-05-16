@@ -19,7 +19,7 @@ namespace OpenGS
         public static AccountManager Instance { get; } = new();
 
         public AccountProfile CurrentProfile { get; private set; } = new AccountProfile();
-        public PlayerInfo PlayerInfo { get; private set; } = new PlayerInfo();
+        public OpenGSCore.PlayerInfo PlayerInfo { get; private set; } = new OpenGSCore.PlayerInfo();
 
         private AccountManager()
         {
@@ -38,6 +38,9 @@ namespace OpenGS
             PlayerInfo.Id = CurrentProfile.GlobalUserId;
             PlayerInfo.Name = CurrentProfile.DisplayName;
             PlayerInfo.CurrentIp = CurrentProfile.GlobalMyIP;
+            PlayerInfo.IsBot = false;
+            PlayerInfo.Team = OpenGSCore.ETeam.NoTeam;
+            PlayerInfo.IsReady = false;
         }
 
         public void Logout()
@@ -90,7 +93,7 @@ namespace OpenGS
 
             if (PlayerInfo == null)
             {
-                PlayerInfo = new PlayerInfo();
+                PlayerInfo = new OpenGSCore.PlayerInfo();
             }
         }
     }

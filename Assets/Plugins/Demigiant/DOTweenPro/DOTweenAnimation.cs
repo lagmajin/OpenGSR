@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 #endif
 #if DOTWEEN_TEXTMESHPRO // TEXTMESHPRO_MARKER
-//using TMPro;
+using TMPro;
 #endif
 
 #pragma warning disable 1591

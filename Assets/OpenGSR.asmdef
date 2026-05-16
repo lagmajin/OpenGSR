@@ -10,7 +10,8 @@
         "DOTween.Modules",
         "Unity.InputSystem",
         "UniTask",
-        "Unity.Cinemachine"
+        "Unity.Cinemachine",
+        "Zenject"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

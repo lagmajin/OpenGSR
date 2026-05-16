@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS.Network
 {

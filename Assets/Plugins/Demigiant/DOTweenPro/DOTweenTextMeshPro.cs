@@ -13,7 +13,7 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
 using UnityEngine.UI;
-//using TMPro;
+using TMPro;
 using Object = UnityEngine.Object;
 
 namespace DG.Tweening

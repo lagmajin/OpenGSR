@@ -10,14 +10,15 @@ namespace OpenGS
         IEnumerator Start()
         {
             yield return new WaitForSeconds(0.5f);
-            Debug.Log("TestAutoLogin: Attempting AuthenticationManager.TryLogin('test','test')");
-            try
+            var loginScene = FindFirstObjectByType<LoginAndSignUpScene>();
+            if (loginScene != null)
             {
-                AuthenticationManager.Instance.TryLogin("test", "test", "");
+                Debug.Log("TestAutoLogin: triggering LoginAndSignUpScene.TryLogin()");
+                loginScene.TryLogin();
             }
-            catch (System.Exception ex)
+            else
             {
-                Debug.LogWarning("TestAutoLogin: failed to call TryLogin: " + ex.Message);
+                Debug.LogWarning("TestAutoLogin: LoginAndSignUpScene not found");
             }
         }
     }

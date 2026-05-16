@@ -522,12 +522,12 @@ namespace OpenGS
         /// ローカル待機所の全プレイヤー情報を返す。
         /// オフライン結果のプレイヤー一覧に使う。
         /// </summary>
-        protected List<PlayerInfo> ResolveLocalPlayers()
+        protected List<OpenGSCore.PlayerInfo> ResolveLocalPlayers()
         {
             var manager = matchRoomManager ?? MatchRoomManager();
             if (manager?.WaitRoom == null)
             {
-                return new List<PlayerInfo>();
+                return new List<OpenGSCore.PlayerInfo>();
             }
 
             return manager.WaitRoom.AllPlayers();

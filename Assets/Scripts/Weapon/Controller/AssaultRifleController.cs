@@ -1,4 +1,3 @@
-﻿
 using OpenGSCore;
 using UnityEngine;
 
@@ -24,7 +23,7 @@ namespace OpenGS
 
             var bullet = Instantiate(bulletPrefab, muzzle.position, Quaternion.identity);
             var dir = GetShotDirection();
-            
+
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
 

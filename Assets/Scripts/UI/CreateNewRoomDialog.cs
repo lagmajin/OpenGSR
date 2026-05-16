@@ -39,7 +39,7 @@ namespace OpenGS
 
         // ─── 内部状態 ───────────────────────────────────────────────
 
-        private string roomName = "";
+        private string roomName = "Room";
         private int maxPlayer = 8;
         private string password = "";
         private EGameMode selectedGameMode = EGameMode.TeamDeathMatch;
@@ -48,9 +48,8 @@ namespace OpenGS
 
         // ─── Unity ライフサイクル ────────────────────────────────────
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             InitializeUI();
             SetupListeners();
         }
@@ -84,7 +83,7 @@ namespace OpenGS
             if (gameModeDropdown != null)
             {
                 gameModeDropdown.ClearOptions();
-                var gameModes = GameMode.AllGameMode();
+                var gameModes = OpenGSCore.GameMode.AllGameMode();
                 var modeOptions = gameModes.Select(m => GetGameModeDisplayName(m)).ToList();
                 gameModeDropdown.AddOptions(modeOptions);
                 
@@ -205,7 +204,7 @@ namespace OpenGS
 
         private void OnGameModeChanged(int index)
         {
-            var gameModes = GameMode.AllGameMode();
+            var gameModes = OpenGSCore.GameMode.AllGameMode();
             if (index >= 0 && index < gameModes.Count)
             {
                 selectedGameMode = gameModes[index];
@@ -230,6 +229,14 @@ namespace OpenGS
             gameObject.SetActive(false);
         }
 
+        /// <summary>
+        /// 外部からダイアログを閉じるための公開メソッド。
+        /// </summary>
+        public void CloseDialog()
+        {
+            gameObject.SetActive(false);
+        }
+
         // ─── バリデーション ─────────────────────────────────────────
 
         /// <summary>
@@ -241,8 +248,7 @@ namespace OpenGS
             // ルーム名の検証
             if (string.IsNullOrWhiteSpace(roomName))
             {
-                ShowError("ルーム名を入力してください");
-                return false;
+                roomName = "Room";
             }
 
             if (roomName.Length > 20)
@@ -346,7 +352,7 @@ namespace OpenGS
         /// </summary>
         private void ResetDialog()
         {
-            roomName = "";
+            roomName = "Room";
             maxPlayer = 8;
             password = "";
             selectedGameMode = EGameMode.TeamDeathMatch;

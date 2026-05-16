@@ -21,8 +21,8 @@ namespace OpenGS
 
         // ─── 内部状態 ───────────────────────────────────────────────
 
-        private PlayerInfo playerInfo;
-        private Action<PlayerInfo> onSelected;
+        private OpenGSCore.PlayerInfo playerInfo;
+        private Action<OpenGSCore.PlayerInfo> onSelected;
         private bool isSelected = false;
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -32,7 +32,7 @@ namespace OpenGS
         /// </summary>
         /// <param name="player">プレイヤー情報</param>
         /// <param name="onSelectedCallback">選択時のコールバック</param>
-        public void Setup(PlayerInfo player, Action<PlayerInfo> onSelectedCallback)
+        public void Setup(OpenGSCore.PlayerInfo player, Action<OpenGSCore.PlayerInfo> onSelectedCallback)
         {
             playerInfo = player;
             onSelected = onSelectedCallback;
@@ -51,7 +51,7 @@ namespace OpenGS
             // プレイヤー名
             if (playerNameText != null)
             {
-                playerNameText.text = playerInfo.PlayerName;
+                playerNameText.text = playerInfo.Name;
             }
 
             // レベル
@@ -63,11 +63,11 @@ namespace OpenGS
             // ステータス画像
             if (statusImage != null)
             {
-                if (playerInfo.IsInRoom)
+                if (playerInfo.IsReady)
                 {
                     statusImage.color = Color.yellow; // ルーム参加中
                 }
-                else if (playerInfo.IsOnline)
+                else if (!string.IsNullOrEmpty(playerInfo.CurrentIp))
                 {
                     statusImage.color = Color.green; // オンライン
                 }
@@ -136,7 +136,7 @@ namespace OpenGS
         /// プレイヤー情報を取得する
         /// </summary>
         /// <returns>プレイヤー情報</returns>
-        public PlayerInfo GetPlayerInfo()
+        public OpenGSCore.PlayerInfo GetPlayerInfo()
         {
             return playerInfo;
         }

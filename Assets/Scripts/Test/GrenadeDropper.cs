@@ -29,7 +29,12 @@ namespace OpenGS
         [Button("グレネード投下")]
         public void DropGrenade()
         {
-            var dat=data.GrenadeMasterData(type);
+            var dat = data.dataList.Find(entry => entry != null && entry.Name == type.ToString());
+            if (dat == null || dat.GrenadePrefab == null)
+            {
+                Debug.LogWarning($"[GrenadeDropper] Grenade prefab not found for {type}");
+                return;
+            }
 
             var obj=Instantiate(dat.GrenadePrefab);
 

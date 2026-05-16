@@ -64,6 +64,11 @@ namespace OpenGSR.Audio
             _bgmSource2.playOnAwake = false;
             _currentBgmSource = _bgmSource1;
 
+            if (_audioConfig == null)
+            {
+                _audioConfig = Resources.Load<AudioConfig>("AudioConfig");
+            }
+
             for (int i = 0; i < INITIAL_SE_SOURCES; i++)
             {
                 var source = gameObject.AddComponent<AudioSource>();

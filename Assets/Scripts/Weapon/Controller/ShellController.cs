@@ -27,7 +27,7 @@ namespace OpenGS
 
         private void HitStageObject()
         {
-            PlaySound.PlaySE(shellSound);
+            SoundManager.Instance.PlayOneShotSafe(shellSound, context: nameof(ShellController));
             Destroy(gameObject);
         }
 

@@ -261,7 +261,151 @@ namespace OpenGS
         /// <summary>
         /// フラッグイベントをシリアライズ
         /// </summary>
-      
+        private static JObject SerializeFlagEvent(FlagEvent e)
+        {
+            string messageType = e.FlagEventType() switch
+            {
+                EFlagEventType.Captured => RUDPMessageTypes.FlagCaptured,
+                EFlagEventType.Lost => RUDPMessageTypes.FlagLost,
+                EFlagEventType.Returned => RUDPMessageTypes.FlagReturn,
+                EFlagEventType.Pickup => RUDPMessageTypes.FlagPickup,
+                EFlagEventType.Burst => RUDPMessageTypes.FlagBurst,
+                _ => RUDPMessageTypes.FlagPickup
+            };
+
+            return new JObject
+            {
+                ["MessageType"] = messageType,
+                ["PlayerId"] = e.PlayerID(),
+                ["Team"] = e.Team().ToString(),
+                ["FlagEventType"] = e.FlagEventType().ToString(),
+                ["PosX"] = e.Position().x,
+                ["PosY"] = e.Position().y,
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeRoundStartEvent(RoundStartEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.RoundStart,
+                ["RoundNumber"] = e.RoundNumber(),
+                ["TotalRounds"] = e.TotalRounds(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeRoundEndEvent(RoundEndEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.RoundEnd,
+                ["WinningTeam"] = e.WinningTeam(),
+                ["RoundNumber"] = e.RoundNumber(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeMatchPauseEvent(MatchPauseEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.MatchPause,
+                ["PausedByPlayerId"] = e.PausedByPlayerID(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeMatchResumeEvent(MatchResumeEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.MatchResume,
+                ["ResumedByPlayerId"] = e.ResumedByPlayerID(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeAmmoUpdateEvent(AmmoUpdateEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.AmmoUpdate,
+                ["PlayerId"] = e.PlayerID(),
+                ["WeaponType"] = e.WeaponType(),
+                ["CurrentAmmo"] = e.CurrentAmmo(),
+                ["MaxAmmo"] = e.MaxAmmo(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializePlayerMeleeEvent(PlayerMeleeEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.PlayerMelee,
+                ["PlayerId"] = e.PlayerID(),
+                ["PosX"] = e.Position().x,
+                ["PosY"] = e.Position().y,
+                ["DirX"] = e.Direction().x,
+                ["DirY"] = e.Direction().y,
+                ["WeaponId"] = e.WeaponID(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeBuffEvent(BuffEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = e.IsDebuff() ? RUDPMessageTypes.PlayerDebuff : RUDPMessageTypes.PlayerBuff,
+                ["PlayerId"] = e.PlayerID(),
+                ["BuffType"] = e.BuffType(),
+                ["Duration"] = e.Duration(),
+                ["Value"] = e.Value(),
+                ["IsDebuff"] = e.IsDebuff(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeObjectSpawnedEvent(ObjectSpawnedEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.ObjectSpawned,
+                ["ObjectId"] = e.ObjectID(),
+                ["ObjectType"] = e.ObjectType(),
+                ["PosX"] = e.Position().x,
+                ["PosY"] = e.Position().y,
+                ["Rotation"] = e.Rotation(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeObjectDestroyedEvent(ObjectDestroyedEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.ObjectDestroyed,
+                ["ObjectId"] = e.ObjectID(),
+                ["DestroyedBy"] = e.DestroyedBy(),
+                ["PosX"] = e.Position().x,
+                ["PosY"] = e.Position().y,
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeWarmupEvent(WarmupEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = e.IsStart() ? RUDPMessageTypes.WarmupStart : RUDPMessageTypes.WarmupEnd,
+                ["IsStart"] = e.IsStart(),
+                ["Duration"] = e.Duration(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
 
         #region システム系イベントシリアライズ
 
