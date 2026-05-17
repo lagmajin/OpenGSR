@@ -144,12 +144,7 @@ namespace OpenGS
 
         void Start()
         {
-            if (SoundManager.Instance.IsBgmPlaying())
-            {
-                SoundManager.Instance.StopBgm();
-            }
-
-            SoundManager.Instance.PlayBgm(bgm);
+            PlayWaitRoomBgm();
             SceneManager.sceneLoaded += GameSceneLoaded;
         }
 
@@ -223,6 +218,11 @@ namespace OpenGS
             {
                 weaponLimitDialog.SetActive(true);
             }
+        }
+
+        public void showWeaponLimitDialog()
+        {
+            ShowWeaponLimitDialog();
         }
 
         public void HideWeaponDialog()
@@ -544,6 +544,32 @@ namespace OpenGS
 
         protected override void OnStartFromEditorDirectly()
         {
+        }
+
+        private void PlayWaitRoomBgm()
+        {
+            if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
+            {
+                return;
+            }
+
+            SoundManager.Instance.StopBgm();
+            SoundManager.Instance.EnsureBgm(EBgm.WaitRoom, 0f);
+
+            if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
+            {
+                return;
+            }
+
+            var waitRoomClip = bgm != null ? bgm : Resources.Load<AudioClip>("BGM/BGM_WaitRoom");
+            if (waitRoomClip != null)
+            {
+                SoundManager.Instance.PlayBgm(waitRoomClip);
+            }
+            else
+            {
+                Debug.LogWarning("[OfflineWaitRoomScene] WaitRoom BGM clip was not found.");
+            }
         }
 
         private void InitializeOfflineState()

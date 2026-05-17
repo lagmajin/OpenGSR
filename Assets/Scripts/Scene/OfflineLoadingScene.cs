@@ -21,6 +21,8 @@ namespace OpenGS
 
         private void Start()
         {
+            EnsureLoadingBgm();
+
             if (DebugFlagManager.IsDebug())
             {
                 //GameGeneralManager.GetInstance.LoadDebugSelect();
@@ -47,6 +49,19 @@ namespace OpenGS
 
         private void OnApplicationQuit()
         {
+        }
+
+        private void EnsureLoadingBgm()
+        {
+            if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
+            {
+                return;
+            }
+
+            if (!SoundManager.Instance.IsBgmPlaying())
+            {
+                SoundManager.Instance.EnsureBgm(EBgm.WaitRoom, 0f);
+            }
         }
 
         public void LoadingStart()

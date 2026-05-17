@@ -85,6 +85,7 @@ namespace OpenGS
         private void Start()
         {
             loadingErrorFlag = false;
+            EnsureLoadingBgm();
 
             if (DebugFlagManager.IsDebug())
             {
@@ -142,6 +143,20 @@ namespace OpenGS
 
 
         }
+
+        private void EnsureLoadingBgm()
+        {
+            if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
+            {
+                return;
+            }
+
+            if (!SoundManager.Instance.IsBgmPlaying())
+            {
+                SoundManager.Instance.EnsureBgm(EBgm.WaitRoom, 0f);
+            }
+        }
+
         public void DebugConnect()
         {
 

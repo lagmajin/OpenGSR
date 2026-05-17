@@ -10,6 +10,7 @@ namespace OpenGS
     {
         [CanBeNull] public WaitRoom OnlineWaitRoom { get; private set; } = null;
         [CanBeNull] public MatchRoom OnlineMatchRoom { get; private set; } = null;
+        public WeaponLimit WeaponLimit { get; } = new();
 
         private readonly object _lockObj = new object();
 
@@ -23,6 +24,7 @@ namespace OpenGS
                 }
 
                 OnlineWaitRoom = new WaitRoom(roomName, "", capacity);
+                WeaponLimit.Clear();
             }
         }
 
@@ -122,6 +124,7 @@ namespace OpenGS
 
                 WaitRoom = new WaitRoom(resolvedRoomName, Guid.NewGuid().ToString(), capacity);
                 WaitRoom.ChangeGameMode(select?.GameMode ?? EGameMode.DeathMatch);
+                WeaponLimit.Clear();
 
                 MapInfo = new MapInfo
                 {

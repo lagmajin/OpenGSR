@@ -16,4 +16,7 @@ MonoBehaviour:
   - Name: Title
     Clip: {fileID: 8300000, guid: 65b7c6b63e1f9834fb3af6e038d53aed, type: 3}
     Volume: 1
+  - Name: WaitRoom
+    Clip: {fileID: 8300000, guid: d49e2874f59473644a9da86f8b7cb64d, type: 3}
+    Volume: 1
   SEList: []

@@ -37,6 +37,8 @@ namespace OpenGS
         public WaitRoomNetworkManager networkManager;
 
         [SerializeField] [Required] private WaitRoomMediateObject mediateObject;
+        [SerializeField] private GameObject weaponLimitDialog;
+        [SerializeField] private Button weaponLimitButton;
 
         private bool roomOwner =true;
 
@@ -58,11 +60,14 @@ namespace OpenGS
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
 
             mainThread=SynchronizationContext.Current;
-            
+            AutoBindIfNeeded();
+            SetupListeners();
 
         }
         void Start()
         {
+            PlayWaitRoomBgm();
+
             if (roomOwner)
             {
 
@@ -92,6 +97,32 @@ namespace OpenGS
             }
 
 
+        }
+
+        private void PlayWaitRoomBgm()
+        {
+            if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
+            {
+                return;
+            }
+
+            SoundManager.Instance.StopBgm();
+            SoundManager.Instance.EnsureBgm(EBgm.WaitRoom, 0f);
+
+            if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
+            {
+                return;
+            }
+
+            var waitRoomClip = Resources.Load<AudioClip>("BGM/BGM_WaitRoom");
+            if (waitRoomClip != null)
+            {
+                SoundManager.Instance.PlayBgm(waitRoomClip);
+            }
+            else
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] WaitRoom BGM clip was not found.");
+            }
         }
         private void DebugConnect()
         {
@@ -274,6 +305,22 @@ namespace OpenGS
             GoToLobby();
         }
 
+        public void ShowWeaponLimitDialog()
+        {
+            AutoBindIfNeeded();
+            if (weaponLimitDialog == null)
+            {
+                return;
+            }
+
+            weaponLimitDialog.SetActive(true);
+        }
+
+        public void showWeaponLimitDialog()
+        {
+            ShowWeaponLimitDialog();
+        }
+
 
         public void TimeUp()
         {
@@ -313,6 +360,65 @@ namespace OpenGS
 
 
 
+        }
+
+        private void AutoBindIfNeeded()
+        {
+            if (!weaponLimitDialog)
+            {
+                weaponLimitDialog = FindInactiveGameObject("WeaponLimitDialog");
+            }
+
+            if (!weaponLimitButton)
+            {
+                weaponLimitButton = FindInactiveComponent<Button>("WeaponLimitButton");
+            }
+        }
+
+        private void SetupListeners()
+        {
+            if (weaponLimitButton == null)
+            {
+                return;
+            }
+
+            weaponLimitButton.onClick.AddListener(ShowWeaponLimitDialog);
+        }
+
+        private static GameObject FindInactiveGameObject(string objectName)
+        {
+            if (string.IsNullOrWhiteSpace(objectName))
+            {
+                return null;
+            }
+
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
+            {
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                if (candidate.name != objectName)
+                {
+                    continue;
+                }
+
+                if (!candidate.scene.IsValid())
+                {
+                    continue;
+                }
+
+                return candidate;
+            }
+
+            return null;
+        }
+
+        private static T FindInactiveComponent<T>(string objectName) where T : Component
+        {
+            var gameObject = FindInactiveGameObject(objectName);
+            return gameObject != null ? gameObject.GetComponent<T>() : null;
         }
 
 
