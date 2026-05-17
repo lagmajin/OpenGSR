@@ -289,11 +289,46 @@ namespace OpenGS
         [Button("チャット送信テスト")]
         public void SendChat(string str)
         {
-            Debug.Log("SendChatAA");
+            var message = str;
+            if (string.IsNullOrWhiteSpace(message) && inputField != null)
+            {
+                message = inputField.text;
+            }
 
-            //generalNetworkManager.SendWaitRoomChat(text.text);
+            if (string.IsNullOrWhiteSpace(message) && text != null)
+            {
+                message = text.text;
+            }
 
-            //var form = GameObject.Find("ChatInputField").GetComponent<InputField>().text="";
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                return;
+            }
+
+            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                playerName = "Player";
+            }
+
+            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                playerId = "local_player";
+            }
+
+            if (networkManager == null)
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] WaitRoomNetworkManager is not assigned.");
+                return;
+            }
+
+            networkManager.SendWaitRoomChat(playerId, playerName, message);
+
+            if (inputField != null)
+            {
+                inputField.text = string.Empty;
+            }
 
         }
 
