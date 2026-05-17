@@ -38,6 +38,7 @@ namespace OpenGSR.Audio
 
         private AudioSource _currentBgmSource;
         private Coroutine _fadeCoroutine;
+        private string _currentBgmName;
 
         private Dictionary<string, AudioConfig.AudioItem> _bgmDict = new Dictionary<string, AudioConfig.AudioItem>();
         private Dictionary<string, AudioConfig.AudioItem> _seDict = new Dictionary<string, AudioConfig.AudioItem>();
@@ -92,6 +93,7 @@ namespace OpenGSR.Audio
                 Debug.LogWarning($"[SimpleAudioManager] BGM not found in config: {name}");
                 return;
             }
+            _currentBgmName = name;
             PlayBGM(item.Clip, item.Volume, true);
         }
 
@@ -115,6 +117,10 @@ namespace OpenGSR.Audio
             _currentBgmSource.loop = loop;
             _currentBgmSource.volume = Mathf.Clamp01(volume) * MasterBGMVolume;
             _currentBgmSource.Play();
+            if (string.IsNullOrWhiteSpace(_currentBgmName))
+            {
+                _currentBgmName = clip.name;
+            }
             
             Debug.Log($"[SimpleAudioManager] BGM Start Playing: {clip.name} (Volume: {_currentBgmSource.volume})");
         }
@@ -142,6 +148,7 @@ namespace OpenGSR.Audio
             }
 
             _currentBgmSource.Stop();
+            _currentBgmName = null;
             _currentBgmSource.volume = 0;
         }
 
@@ -182,6 +189,16 @@ namespace OpenGSR.Audio
         }
 
         public bool IsPlayingBGM() => _currentBgmSource != null && _currentBgmSource.isPlaying;
+        public bool IsPlayingBGM(string name)
+        {
+            return _currentBgmSource != null
+                && _currentBgmSource.isPlaying
+                && (
+                    string.Equals(_currentBgmName, name, System.StringComparison.OrdinalIgnoreCase)
+                    || (_currentBgmSource.clip != null && string.Equals(_currentBgmSource.clip.name, name, System.StringComparison.OrdinalIgnoreCase))
+                );
+        }
+        public void SetCurrentBGMName(string name) => _currentBgmName = name;
         public void SetBGMVolume(float volume) => MasterBGMVolume = Mathf.Clamp01(volume);
         public void SetSEVolume(float volume) => MasterSEVolume = Mathf.Clamp01(volume);
     }

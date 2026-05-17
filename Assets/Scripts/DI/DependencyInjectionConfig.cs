@@ -101,6 +101,7 @@ namespace OpenGS
             testServerBuilder.RegisterType<LocalTestMatchRUDPServer>().SingleInstance();
 
             _testContainer = testServerBuilder.Build();
+            EnsureLocalTestServerStarted();
 
             // If a local test TCP server is registered in the test container, start it automatically
             try
@@ -108,37 +109,10 @@ namespace OpenGS
                 var localTestServer = _testContainer.Resolve<LocalTestTcpServer>();
                 if (localTestServer != null)
                 {
-                    // Use debug settings if available to determine whether to start and which port to use.
-                    try
+                    Application.quitting += () =>
                     {
-                        // Ensure debug settings are loaded before using them. Load order of RuntimeInitializeOnLoadMethod
-                        // is not guaranteed, so call EnsureLoaded explicitly here.
-                        DebugSettingsManager.EnsureLoaded();
-                        var settings = DebugSettingsManager.settings;
-                        // Only start the local test server when test mode is enabled AND a valid port (>0) is provided.
-                        if (settings != null && settings.localServerTestMode && settings.localTCPPort > 0)
-                        {
-                            localTestServer.port = settings.localTCPPort;
-
-                            _ = localTestServer.StartAsync(localTestServer.port);
-
-                            Application.quitting += () =>
-                            {
-                                try { localTestServer.Stop(); } catch { }
-                            };
-
-                            Debug.Log($"DependencyInjectionConfig: LocalTestTcpServer started on port {localTestServer.port} (from DebugSettings)");
-                        }
-                        else
-                        {
-                            Debug.Log($"DependencyInjectionConfig: LocalTestTcpServer not started. testMode={settings?.localServerTestMode}, localTCPPort={settings?.localTCPPort}");
-                        }
-                    }
-                    catch (Exception exInner)
-                    {
-                        Debug.LogWarning($"DependencyInjectionConfig: Error applying DebugSettings to LocalTestTcpServer: {exInner.Message}");
-                        // Fallback: do not start automatically
-                    }
+                        try { localTestServer.Stop(); } catch { }
+                    };
                 }
             }
             catch (Exception ex)
@@ -174,6 +148,42 @@ namespace OpenGS
 
             // ビルドして _testContainer にセット
             _testContainer = builder.Build();
+            EnsureLocalTestServerStarted();
+        }
+
+        public static bool EnsureLocalTestServerStarted()
+        {
+            try
+            {
+                if (_testContainer == null)
+                {
+                    return false;
+                }
+
+                DebugSettingsManager.EnsureLoaded();
+                var settings = DebugSettingsManager.settings;
+                if (settings == null || !settings.localServerTestMode || settings.localTCPPort <= 0)
+                {
+                    Debug.Log($"DependencyInjectionConfig: LocalTestTcpServer not started. testMode={settings?.localServerTestMode}, localTCPPort={settings?.localTCPPort}");
+                    return false;
+                }
+
+                var localTestServer = _testContainer.Resolve<LocalTestTcpServer>();
+                if (localTestServer == null)
+                {
+                    return false;
+                }
+
+                localTestServer.port = settings.localTCPPort;
+                _ = localTestServer.StartAsync(localTestServer.port);
+                Debug.Log($"DependencyInjectionConfig: LocalTestTcpServer started on port {localTestServer.port} (requested by scene/startup)");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"DependencyInjectionConfig: Failed to start LocalTestTcpServer: {ex.Message}");
+                return false;
+            }
         }
 
         // Ensure the DI container is initialized. This can be called by callers that need the container

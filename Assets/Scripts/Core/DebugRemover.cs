@@ -21,22 +21,9 @@ namespace OpenGS
 
         public void OnProcessScene(UnityEngine.SceneManagement.Scene scene, BuildReport report)
         {
-            if (report == null)
+            if (report == null || !report.summary.options.HasFlag(BuildOptions.Development))
             {
-                Debug.LogError("BuildReport is null.");
                 return;
-            }
-
-            if (scene == null)
-            {
-                Debug.LogError("Scene is null.");
-                return;
-            }
-
-            if (report.summary.options.HasFlag(BuildOptions.Development))
-            {
-
-
             }
         }
     }

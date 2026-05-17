@@ -34,10 +34,12 @@ namespace OpenGS
             {
                 Debug.Log($"[SoundService] Found BGM clip for {bgm}: {clip.name}");
                 SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
+                SimpleAudioManager.Instance.SetCurrentBGMName(bgm.ToString());
             }
             else
             {
-                Debug.LogWarning($"[SoundService] BGM {bgm} not found in MasterData.");
+                Debug.Log($"[SoundService] BGM {bgm} not found in MasterData, falling back to named load.");
+                SimpleAudioManager.Instance.PlayBGM(bgm.ToString(), fadeTime);
             }
         }
 
@@ -55,6 +57,7 @@ namespace OpenGS
             {
                 Debug.Log($"[SoundService] Found BGM clip by name {bgmName}: {clip.name}");
                 SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
+                SimpleAudioManager.Instance.SetCurrentBGMName(bgmName);
             }
             else
             {
@@ -69,6 +72,7 @@ namespace OpenGS
             if (clip == null) return;
             Debug.Log($"[SoundService] PlayBGM(Clip): {clip.name}");
             SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
+            SimpleAudioManager.Instance.SetCurrentBGMName(clip.name);
         }
 
         public void StopBGM(float fadeTime = -1f) => SimpleAudioManager.Instance.StopBGM(fadeTime);

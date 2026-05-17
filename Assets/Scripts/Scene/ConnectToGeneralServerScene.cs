@@ -38,6 +38,8 @@ namespace OpenGS
         void Start()
         {
             currentContext = SynchronizationContext.Current;
+            DependencyInjectionConfig.EnsureLocalTestServerStarted();
+            EnsureTitleBgm();
 
             var serverIP = isOverrideServerAddress && !string.IsNullOrWhiteSpace(OverrideServerAddress)
                 ? OverrideServerAddress
@@ -52,6 +54,18 @@ namespace OpenGS
             {
                 Debug.LogWarning("ConnectToGeneralServerScene: mediateObject or networkManager is null.");
             }
+        }
+
+        private void EnsureTitleBgm()
+        {
+            if (SoundManager.Instance.IsBgmPlaying(EBgm.Title))
+            {
+                Debug.Log("[ConnectToGeneralServerScene] Title BGM is already playing.");
+                return;
+            }
+
+            Debug.Log("[ConnectToGeneralServerScene] Switching to Title BGM.");
+            SoundManager.Instance.EnsureBgm(EBgm.Title, 0f);
         }
 
 

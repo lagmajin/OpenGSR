@@ -1,5 +1,4 @@
 using Sirenix.OdinInspector;
-using OpenGSR.Audio;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -42,8 +41,7 @@ namespace OpenGS
 
             Debug.Log("TitleScene");
 
-            SimpleAudioManager.Instance.StopBGM(0f);
-            SimpleAudioManager.Instance.PlayBGM("Title");
+            SoundManager.Instance.EnsureBgm(EBgm.Title, 0f);
 
             var gameManager = GameGeneralManager.GetInstance;
 

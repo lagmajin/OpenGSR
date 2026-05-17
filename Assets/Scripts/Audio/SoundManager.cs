@@ -42,6 +42,7 @@ namespace OpenGS
         }
 
         public void PlayBGM(EMap map) => _service.PlayBGM(map);
+        public void PlayBgm(EBgm bgm, float fadeTime = -1f) => _service.PlayBGM(bgm, fadeTime);
         public void PlayBGM(string bgmName, float fadeTime = -1f) => _service.PlayBGM(bgmName, fadeTime);
         public void StopBgm(float fadeTime = -1f) => _service.StopBGM(fadeTime);
 
@@ -93,5 +94,16 @@ namespace OpenGS
 
         public void CrossFadeBgm(string bgmName, float fadeTime = -1f) => _service.PlayBGM(bgmName, fadeTime);
         public bool IsBgmPlaying() => SimpleAudioManager.Instance.IsPlayingBGM();
+        public bool IsBgmPlaying(string bgmName) => SimpleAudioManager.Instance.IsPlayingBGM(bgmName);
+        public bool IsBgmPlaying(EBgm bgm) => SimpleAudioManager.Instance.IsPlayingBGM(bgm.ToString());
+        public void EnsureBgm(EBgm bgm, float fadeTime = -1f)
+        {
+            if (IsBgmPlaying(bgm))
+            {
+                return;
+            }
+
+            PlayBgm(bgm, fadeTime);
+        }
     }
 }

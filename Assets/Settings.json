@@ -1,0 +1,6 @@
+{
+  "DebugMode": true,
+  "LocalTCPPort": 7777,
+  "LocalUDPPort": 7777,
+  "ExternalServerIP": "127.0.0.1"
+}
