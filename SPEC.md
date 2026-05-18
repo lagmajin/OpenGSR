@@ -158,6 +158,23 @@ The game should be able to use the same match flow while swapping the rule layer
 - last surviving team or equivalent survival condition wins
 - team lives and alive counts should be visible to the server rule layer
 
+## Weapon Categories
+
+The game uses these broad weapon families as its canonical high-level
+categories:
+
+- `AR` - Assault Rifle
+- `SR` - Sniper Rifle
+- `SMG` - Submachine Gun
+- `SG` - Shotgun
+- `MG` - Machine Gun
+- `HG` - Handgun
+- `Special Weapon` - special / unique weapons such as launchers or flamethrowers
+
+These are the labels the game should use for player-facing grouping, weapon
+filters, bans, and shop or inventory organization. Individual weapon IDs still
+live in code and master data.
+
 ## Networking Model
 
 OpenGSR uses a split network model:
@@ -245,7 +262,8 @@ The intended item model is:
 
 - field pickups that spawn in the arena
 - slot-based instant items that can be consumed from input
-- each player can bring up to 3 instant items into a match
+- each player can normally bring up to 3 instant items into a match
+- rare or special cases may allow up to 5
 - combat resources such as grenades and booster fuel
 - shop ownership and equipment state that persist between matches
 

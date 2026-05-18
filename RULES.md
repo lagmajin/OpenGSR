@@ -74,6 +74,23 @@ There are also older abbreviated names in some legacy code paths:
 
 New work should prefer the canonical `OpenGSCore` names.
 
+## Weapon Families
+
+The game uses these high-level weapon families when grouping, filtering, or
+applying weapon limits:
+
+- `AR` - Assault Rifle
+- `SR` - Sniper Rifle
+- `SMG` - Submachine Gun
+- `SG` - Shotgun
+- `MG` - Machine Gun
+- `HG` - Handgun
+- `Special Weapon` - unique or special-purpose weapons such as launchers and
+  flamethrowers
+
+These are the player-facing families. Specific weapon IDs and variants still
+live in code and master data.
+
 ## Rule Flow
 
 The rule layer should answer these questions:

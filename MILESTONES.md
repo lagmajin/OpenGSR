@@ -137,6 +137,145 @@ Done when:
 - Field-item pickup, inventory state, and player UI stay in sync.
 - The server/core contract defines what item usage means for the match layer.
 
+## M7. Input, Weapon, And Item Action Unification
+
+Goal: route all player intent through one shared action layer.
+
+Scope:
+- `Assets/Scripts/Player/AsmExport/PlayerInput.cs`
+- `Assets/Scripts/Player/AsmExport/PlayerController.cs`
+- `Assets/Scripts/Player/CharaController.cs`
+- `Assets/Scripts/Item/InstantItemSlot.cs`
+- `Assets/Scripts/Player/AsmExport/WeaponSlots.cs`
+
+Why this matters:
+- Weapon swap, reload, item use, and grenade input still branch through too
+  many local paths.
+- Input handling needs one canonical path before more network authority work is
+  added.
+
+Done when:
+- Reload, weapon swap, item use, and grenade input all route through the same
+  intent layer.
+- Slot state and equipped state stay consistent across scene transitions.
+
+## M8. In-Match HUD And Combat Feedback Sync
+
+Goal: make combat feedback and HUD state come from the same data contract.
+
+Scope:
+- `Assets/Scripts/UI/CTF/CTFScoreUIManager.cs`
+- `Assets/Scripts/UI/DamageTextSpawner.cs`
+- `Assets/Scripts/UI/KillLogEventListener.cs`
+- `Assets/Scripts/Manager/UIManagerInGameScript.cs`
+- `Assets/Scripts/BaseLib/UI/AbstractMatchResultUIManager.cs`
+
+Why this matters:
+- Score, damage, and kill feedback are split across several presentation paths.
+- The result screen should be fed by the same data that drives the HUD.
+
+Done when:
+- HUD score, timer, kill log, damage text, and result summary all agree on
+  match state.
+- Missing weapon or player details fail gracefully instead of breaking the feed.
+
+## M9. Bot, AI, And Offline Match Parity
+
+Goal: make offline matches and bots behave like a real fallback game mode.
+
+Scope:
+- `Assets/Scripts/Player/AIPlayerController.cs`
+- `Assets/Scripts/Enemy/*`
+- `Assets/Scripts/Scene/OfflineWaitRoomScene.cs`
+- `Assets/Scripts/Match/SUVMatchMainScript.cs`
+- `Assets/Scripts/Match/DMMatchMainScript.cs`
+- `Assets/Scripts/Match/CTFMatchMainScript.cs`
+
+Why this matters:
+- Offline play is only useful if bots can fill the gap with predictable
+  behavior.
+- AI and bot setup are scattered across several partial systems.
+
+Done when:
+- Offline matches can start with bots without manual scene fixes.
+- At least one rule path can complete with bots and return a valid result.
+
+## M10. Mission And Quest Route Completion
+
+Goal: make the mission branch playable end to end.
+
+Scope:
+- `Assets/Scripts/Scene/MissionLobbyScene.cs`
+- `Assets/Scripts/Scene/MissionAndQuestLobbyScene.cs`
+- `Assets/Scripts/Scene/OfflineMissionWaitRoom.cs`
+- `Assets/Scripts/Scene/MissionResultScene.cs`
+- `Assets/Scripts/Scene/Result/*`
+
+Why this matters:
+- The mission branch still contains placeholder throws and dead-end
+  transitions.
+- The route should behave like a real alternate game mode, not a stub.
+
+Done when:
+- Mission selection, wait room, loading, result, and return flow all work end
+  to end.
+- No mission scene terminates immediately because of placeholder code.
+
+## M11. Master Data And Content Pipeline
+
+Goal: keep maps, modes, and content selection data-driven.
+
+Scope:
+- `Assets/Scripts/MasterData/*`
+- `Assets/Scripts/Scene/ExportAssets/*`
+- `Assets/Scripts/Systems/WeaponSandboxTestHelper.cs`
+- `Assets/Scripts/Manager/GameModeSelectManager.cs`
+
+Why this matters:
+- Scene and content selection still depend on fragile string and data wiring.
+- Master data issues can break startup, map selection, and content previews.
+
+Done when:
+- Missing or incomplete content data is handled safely.
+- Map, mode, sound, and thumbnail selection stay data-driven and consistent.
+
+## M12. Persistence, Friends, And Social State
+
+Goal: make long-lived player state reliable across sessions.
+
+Scope:
+- `Assets/Scripts/Systems/UserSaveManager.cs`
+- `Assets/Scripts/Systems/EquipmentSaveManager.cs`
+- `Assets/Scripts/Systems/FriendManager.cs`
+- `Assets/Scripts/UI/FriendListUI.cs`
+- `Assets/Scripts/UI/FriendItem.cs`
+
+Why this matters:
+- Account, save, and social data should survive restarts without UI drift.
+- Friend and equipment updates are currently spread across multiple layers.
+
+Done when:
+- Save/load, equipment, and friend state persist reliably.
+- UI refreshes after add/remove/equip operations without stale entries.
+
+## M13. Match Observability And Scripted Validation
+
+Goal: reduce regressions with repeatable validation paths.
+
+Scope:
+- `Assets/Scripts/NetworkTest/*`
+- `Assets/Scripts/Network/*`
+- dedicated bootstrap or debug scenes
+
+Why this matters:
+- Current regression checks are mostly manual.
+- More milestones means more ways to break protocol and scene flow.
+
+Done when:
+- There is a repeatable scripted path for login -> lobby -> wait room ->
+  loading -> match -> result.
+- Key protocol changes fail fast in tests or automation.
+
 ## Suggested Order
 
 1. `M0`
@@ -144,8 +283,15 @@ Done when:
 3. `M3`
 4. `M2`
 5. `M4`
-6. `M5`
-7. `M6`
+6. `M7`
+7. `M8`
+8. `M5`
+9. `M6`
+10. `M11`
+11. `M12`
+12. `M9`
+13. `M10`
+14. `M13`
 
 ## Parallel Development
 
@@ -290,6 +436,65 @@ Done when:
 - Key protocol changes fail fast in tests or scripted validation instead of only
   failing during manual play.
 
+## S6. Mission Server Authority
+
+Goal: move the mission branch onto a dedicated server contract.
+
+Scope:
+- `Assets/Scripts/Scene/MissionLobbyScene.cs`
+- `Assets/Scripts/Scene/MissionAndQuestLobbyScene.cs`
+- `Assets/Scripts/Scene/OfflineMissionWaitRoom.cs`
+- `Assets/Scripts/Network/GeneralServerNetworkManager.cs`
+- `Assets/Scripts/NetworkTest/LocalTestTcpServer.cs`
+
+Why this matters:
+- Mission routing still depends too much on client-side scene switches.
+- The server needs to own the mission branch state transitions.
+
+Done when:
+- Mission selection and launch are validated by the server contract.
+- Mission flow survives reconnects and scene reloads in the intended
+  environment.
+
+## S7. Save, Shop, And Friend Authority
+
+Goal: make persistent player state authoritative instead of ad hoc.
+
+Scope:
+- `Assets/Scripts/Systems/UserSaveManager.cs`
+- `Assets/Scripts/Systems/EquipmentSaveManager.cs`
+- `Assets/Scripts/Systems/FriendManager.cs`
+- `Assets/Scripts/Network/GeneralServerNetworkManager.cs`
+- `Assets/Scripts/NetworkTest/LocalTestTcpServer.cs`
+
+Why this matters:
+- Account, inventory, shop, and friend state need one authority source.
+- Local mocks and saved state should not diverge from the server contract.
+
+Done when:
+- Save, equip, shop, and friend operations are backed by consistent backend
+  state.
+- Reconnects and restarts preserve the intended data.
+
+## S8. Protocol Regression Coverage
+
+Goal: reduce breakage from contract drift.
+
+Scope:
+- `Assets/Scripts/NetworkTest/*`
+- `Assets/Scripts/Network/*`
+- `Packages/com.opengs.logic/*`
+
+Why this matters:
+- Protocol drift is one of the easiest ways for the client and server to
+  silently break.
+- Milestone growth needs a repeatable safety net.
+
+Done when:
+- Canonical message names and payload shapes are covered by repeatable
+  validation.
+- Local test flows catch regressions before manual play.
+
 ## Suggested Server Order
 
 1. `S0`
@@ -298,6 +503,9 @@ Done when:
 4. `S3`
 5. `S4`
 6. `S5`
+7. `S6`
+8. `S7`
+9. `S8`
 
 ## Notes
 

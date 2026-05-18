@@ -37,7 +37,8 @@ So the design already expects the player to:
 - equip instant items into slots
 - trigger them from input
 - forward the action into match logic
-- bring up to 3 instant items into a match
+- bring up to 3 instant items into a match by default
+- in rare or special cases, allow up to 5
 
 This makes the instant-item system a pre-match loadout layer, not a separate
 shop-only concept.

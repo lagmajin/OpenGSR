@@ -102,6 +102,52 @@ Done when:
   match -> result.
 - Protocol changes fail fast in automated checks or scripted validation.
 
+## S6. Mission Server Authority
+
+Goal: move the mission branch onto a dedicated server contract.
+
+Targets:
+- `Assets/Scripts/Scene/MissionLobbyScene.cs`
+- `Assets/Scripts/Scene/MissionAndQuestLobbyScene.cs`
+- `Assets/Scripts/Scene/OfflineMissionWaitRoom.cs`
+- `Assets/Scripts/Network/GeneralServerNetworkManager.cs`
+- `Assets/Scripts/NetworkTest/LocalTestTcpServer.cs`
+
+Done when:
+- Mission selection and launch are validated by the server contract.
+- Mission flow survives reconnects and scene reloads in the intended
+  environment.
+
+## S7. Save, Shop, And Friend Authority
+
+Goal: make persistent player state authoritative instead of ad hoc.
+
+Targets:
+- `Assets/Scripts/Systems/UserSaveManager.cs`
+- `Assets/Scripts/Systems/EquipmentSaveManager.cs`
+- `Assets/Scripts/Systems/FriendManager.cs`
+- `Assets/Scripts/Network/GeneralServerNetworkManager.cs`
+- `Assets/Scripts/NetworkTest/LocalTestTcpServer.cs`
+
+Done when:
+- Save, equip, shop, and friend operations are backed by consistent backend
+  state.
+- Reconnects and restarts preserve the intended data.
+
+## S8. Protocol Regression Coverage
+
+Goal: reduce breakage from contract drift.
+
+Targets:
+- `Assets/Scripts/NetworkTest/*`
+- `Assets/Scripts/Network/*`
+- `Packages/com.opengs.logic/*`
+
+Done when:
+- Canonical message names and payload shapes are covered by repeatable
+  validation.
+- Local test flows catch regressions before manual play.
+
 ## Suggested Order
 
 1. `S0`
@@ -110,6 +156,9 @@ Done when:
 4. `S3`
 5. `S4`
 6. `S5`
+7. `S6`
+8. `S7`
+9. `S8`
 
 ## Parallel Development
 
