@@ -16,8 +16,20 @@ namespace OpenGS
     public class MatchServerInfo
     {
         public int? Port { get; set; } = null;
-
         public string IP { get; set; } = null;
+        public int? UdpPort { get; set; } = null;
+
+        public bool HasEndpoint()
+        {
+            return !string.IsNullOrWhiteSpace(IP) && (UdpPort.HasValue || Port.HasValue);
+        }
+
+        public void Clear()
+        {
+            Port = null;
+            IP = null;
+            UdpPort = null;
+        }
     }
     public class OnlineManager
     {

@@ -14,6 +14,9 @@ namespace OpenGS
         public string RoomId { get; set; }
         public int PlayerCount { get; set; } = 0;
         public int Capacity { get; set; } = 8;
+        public string OwnerId { get; set; } = "";
+        public EGameMode GameMode { get; set; } = EGameMode.DeathMatch;
+        public bool TeamBalance { get; set; } = false;
 
         public List<OpenGSCore.PlayerInfo> PlayerList { get; set; } = new();
 
@@ -28,25 +31,48 @@ namespace OpenGS
             RoomId = roomId;
 
             Capacity = capacity;
-
-
-
-
+            PlayerCount = 1;
         }
 
         public void AddNewPlayer(OpenGSCore.PlayerInfo info)
         {
-            info.Name = RoomName;
+            if (info == null)
+            {
+                return;
+            }
 
-            PlayerList.Add(info);
+            var existingIndex = PlayerList.FindIndex(player => player != null && player.Id == info.Id);
+            if (existingIndex >= 0)
+            {
+                PlayerList[existingIndex] = info;
+            }
+            else
+            {
+                PlayerList.Add(info);
+            }
 
-
-
+            PlayerCount = PlayerList.Count;
         }
 
         public void RemovePlayer(OpenGSCore.PlayerInfo info)
         {
+            if (info == null)
+            {
+                return;
+            }
 
+            RemovePlayer(info.Id);
+        }
+
+        public void RemovePlayer(string playerId)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return;
+            }
+
+            PlayerList.RemoveAll(player => player != null && player.Id == playerId);
+            PlayerCount = PlayerList.Count;
         }
 
     }

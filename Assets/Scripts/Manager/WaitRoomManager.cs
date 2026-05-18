@@ -15,9 +15,13 @@ namespace OpenGS
         public ClientWaitRoom WaitRoom { get; set; } = new();
 
 
-        public ClientWaitRoom CreateNewWaitRoom(string name, string id, int capacity)
+        public ClientWaitRoom CreateNewWaitRoom(string name, string id, int capacity, int playerCount = 1, EGameMode gameMode = EGameMode.DeathMatch, string ownerId = "", bool teamBalance = false)
         {
             var waitRoom = new ClientWaitRoom(name, id, capacity);
+            waitRoom.PlayerCount = playerCount > 0 ? playerCount : 1;
+            waitRoom.GameMode = gameMode;
+            waitRoom.OwnerId = ownerId ?? "";
+            waitRoom.TeamBalance = teamBalance;
             this.WaitRoom = waitRoom;
             return waitRoom;
         }

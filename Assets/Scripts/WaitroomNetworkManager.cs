@@ -26,6 +26,7 @@ namespace OpenGS
         [Required] [SerializeField] private WaitRoomMediateObject mediateObject;
         
         private GeneralServerNetworkManager networkManager;
+        private WaitRoomManager waitRoomManager;
         
         // 現在のルーム情報
         private string currentRoomId = "";
@@ -39,6 +40,7 @@ namespace OpenGS
         private readonly Subject<JObject> onPlayerJoined = new Subject<JObject>();
         private readonly Subject<JObject> onPlayerLeft = new Subject<JObject>();
         private readonly Subject<JObject> onPlayerReady = new Subject<JObject>();
+        private readonly Subject<JArray> onPlayerList = new Subject<JArray>();
         private readonly Subject<JObject> onRoomSettingsChanged = new Subject<JObject>();
         private readonly Subject<JObject> onChatMessage = new Subject<JObject>();
         private readonly Subject<int> onStartCountdown = new Subject<int>();
@@ -47,6 +49,7 @@ namespace OpenGS
         public IObservable<JObject> OnPlayerJoinedStream => onPlayerJoined.AsObservable();
         public IObservable<JObject> OnPlayerLeftStream => onPlayerLeft.AsObservable();
         public IObservable<JObject> OnPlayerReadyStream => onPlayerReady.AsObservable();
+        public IObservable<JArray> OnPlayerListStream => onPlayerList.AsObservable();
         public IObservable<JObject> OnRoomSettingsChangedStream => onRoomSettingsChanged.AsObservable();
         public IObservable<JObject> OnChatMessageStream => onChatMessage.AsObservable();
         public IObservable<int> OnStartCountdownStream => onStartCountdown.AsObservable();
@@ -56,6 +59,7 @@ namespace OpenGS
         void Start()
         {
             networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+            waitRoomManager = DependencyInjectionConfig.Resolve<WaitRoomManager>();
             
             // ネットワークマネージャのイベントを購読
             if (networkManager != null)
@@ -66,6 +70,7 @@ namespace OpenGS
                     .AddTo(this);
                     
                 networkManager.Subscribe(this);
+                EmitInitialState();
             }
         }
 
@@ -112,7 +117,7 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = "GameStartRequest";
-            json["PlayerAccountID"] = "";
+            json["PlayerAccountID"] = ResolveLocalPlayerId();
             json["RoomID"] = currentRoomId;
             SendMessage(json);
         }
@@ -122,7 +127,7 @@ namespace OpenGS
         /// </summary>
         public void SendReady()
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomPlayerReady("", currentRoomId);
+            var json = RUDPMessageBuilder.CreateWaitRoomPlayerReady(ResolveLocalPlayerId(), currentRoomId);
             isReady = true;
             SendMessage(json);
         }
@@ -132,7 +137,7 @@ namespace OpenGS
         /// </summary>
         public void SendUnready()
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomPlayerUnready("", currentRoomId);
+            var json = RUDPMessageBuilder.CreateWaitRoomPlayerUnready(ResolveLocalPlayerId(), currentRoomId);
             isReady = false;
             SendMessage(json);
         }
@@ -435,7 +440,37 @@ namespace OpenGS
             if (players != null)
             {
                 currentPlayers = players;
+                if (waitRoomManager?.WaitRoom != null)
+                {
+                    waitRoomManager.WaitRoom.PlayerCount = Mathf.Max(1, players.Count);
+                    waitRoomManager.WaitRoom.PlayerList.Clear();
+                    foreach (var token in players)
+                    {
+                        if (token is not JObject playerJson)
+                        {
+                            continue;
+                        }
+
+                        var info = new OpenGSCore.PlayerInfo(
+                            id: playerJson["PlayerId"]?.ToString() ?? playerJson["PlayerID"]?.ToString() ?? "",
+                            name: playerJson["PlayerName"]?.ToString() ?? "Player");
+                        info.IsReady = playerJson["IsReady"]?.ToObject<bool>() ?? false;
+                        waitRoomManager.WaitRoom.AddNewPlayer(info);
+
+                        if (string.Equals(info.Id, ResolveLocalPlayerId(), StringComparison.OrdinalIgnoreCase))
+                        {
+                            isReady = info.IsReady;
+                        }
+
+                        if (playerJson["IsOwner"]?.ToObject<bool>() == true)
+                        {
+                            waitRoomManager.WaitRoom.OwnerId = info.Id;
+                        }
+                    }
+                }
+
                 PrettyLogger.Bold("WaitRoom", $"Player list updated: {players.Count} players in room {roomId}");
+                onPlayerList.OnNext(players);
             }
         }
 
@@ -470,6 +505,24 @@ namespace OpenGS
         {
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var settings = json["Settings"] as JObject;
+
+            if (waitRoomManager?.WaitRoom != null && settings != null)
+            {
+                if (Enum.TryParse(settings["GameMode"]?.ToString(), out EGameMode gameMode))
+                {
+                    waitRoomManager.WaitRoom.GameMode = gameMode;
+                }
+
+                if (settings["Capacity"] != null)
+                {
+                    waitRoomManager.WaitRoom.Capacity = settings["Capacity"]!.ToObject<int>();
+                }
+
+                if (settings["TeamBalance"] != null)
+                {
+                    waitRoomManager.WaitRoom.TeamBalance = settings["TeamBalance"]!.ToObject<bool>();
+                }
+            }
             
             PrettyLogger.Bold("WaitRoom", $"Settings changed for room {roomId}");
             onRoomSettingsChanged.OnNext(json);
@@ -614,6 +667,26 @@ namespace OpenGS
         public void ParseMessageFromMatchServer(JObject json)
         {
 
+        }
+
+        private void EmitInitialState()
+        {
+            if (networkManager == null)
+            {
+                return;
+            }
+
+            var snapshot = networkManager.GetCurrentWaitRoomPlayerListSnapshot();
+            if (snapshot != null)
+            {
+                HandleWaitRoomPlayerList(snapshot);
+            }
+        }
+
+        private static string ResolveLocalPlayerId()
+        {
+            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
         }
 
 

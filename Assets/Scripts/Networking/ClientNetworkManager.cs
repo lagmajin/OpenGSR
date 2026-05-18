@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -46,6 +47,8 @@ namespace OpenGS
         // MatchRoomManagerへの参照
         private MatchRoomManager _matchRoomManager;
         private NetworkRequestClient _requestClient;
+        private Coroutine _matchConnectRoutine;
+        private bool _matchUdpConnectAttempted;
 
         private void Awake()
         {
@@ -76,7 +79,7 @@ namespace OpenGS
         private void Start()
         {
             ConnectToLobbyTcpServer();
-            ConnectToMatchUdpServer();
+            _matchConnectRoutine = StartCoroutine(ConnectToMatchUdpWhenReady());
         }
 
         private void Update()
@@ -229,6 +232,9 @@ namespace OpenGS
                 case MessageType.PlayerInfoResponse:
                     HandlePlayerInfoResponse(message);
                     break;
+                case MessageType.MatchServerInfoResponse:
+                    HandleMatchServerInfoResponse(message);
+                    break;
                 case MessageType.FriendRequestResponse:
                     FriendRequestResponseReceived?.Invoke(message);
                     break;
@@ -300,6 +306,41 @@ namespace OpenGS
             else
             {
                 Debug.LogError($"[ClientNetwork] Failed to get player info for {targetPlayerId}: {response.GetStringOrNull("Error")}");
+            }
+        }
+
+        private void HandleMatchServerInfoResponse(JObject response)
+        {
+            var ip = response.GetStringOrNull("IP") ?? response.GetStringOrNull("IPAddress");
+            var port = response["Port"]?.ToObject<int?>();
+            var udp = response["UdpPort"]?.ToObject<int?>();
+            var roomId = response.GetStringOrNull("RoomID");
+
+            if (!string.IsNullOrWhiteSpace(ip))
+            {
+                OnlineManager.Instance.MatchServerInfo.IP = ip;
+            }
+
+            if (port.HasValue)
+            {
+                OnlineManager.Instance.MatchServerInfo.Port = port.Value;
+            }
+
+            if (udp.HasValue)
+            {
+                OnlineManager.Instance.MatchServerInfo.UdpPort = udp.Value;
+            }
+
+            if (!string.IsNullOrWhiteSpace(roomId))
+            {
+                CurrentMatchRoomId = roomId;
+            }
+
+            Debug.Log($"[ClientNetwork] MatchServerInfo received: {OnlineManager.Instance.MatchServerInfo.IP}:{OnlineManager.Instance.MatchServerInfo.UdpPort ?? OnlineManager.Instance.MatchServerInfo.Port}");
+
+            if (!_matchUdpConnectAttempted && _matchConnectRoutine == null)
+            {
+                _matchConnectRoutine = StartCoroutine(ConnectToMatchUdpWhenReady());
             }
         }
 
@@ -415,11 +456,47 @@ namespace OpenGS
 
         #region UDP Match Connection
 
+        private IEnumerator ConnectToMatchUdpWhenReady()
+        {
+            const float timeoutSeconds = 10f;
+            var startTime = Time.realtimeSinceStartup;
+
+            while (!_matchUdpConnectAttempted && !OnlineManager.Instance.MatchServerInfo.HasEndpoint())
+            {
+                if (Time.realtimeSinceStartup - startTime >= timeoutSeconds)
+                {
+                    Debug.LogWarning("[ClientNetwork] Match server info was not provided in time. Falling back to configured UDP endpoint.");
+                    break;
+                }
+
+                yield return null;
+            }
+
+            if (!_matchUdpConnectAttempted)
+            {
+                ConnectToMatchUdpServer();
+            }
+
+            _matchConnectRoutine = null;
+        }
+
         private void ConnectToMatchUdpServer()
         {
+            if (_matchUdpConnectAttempted)
+            {
+                return;
+            }
+
+            var matchInfo = OnlineManager.Instance.MatchServerInfo;
+            var resolvedIp = !string.IsNullOrWhiteSpace(matchInfo.IP) ? matchInfo.IP : serverIp;
+            var resolvedUdpPort = matchInfo.UdpPort ?? matchInfo.Port ?? udpPort;
+
+            serverIp = resolvedIp;
+            udpPort = resolvedUdpPort;
+            _matchUdpConnectAttempted = true;
             _netClient.Start();
-            Debug.Log($"[ClientNetwork] Connecting to Match UDP {serverIp}:{udpPort} with PlayerID: {ClientPlayerId}...");
-            _netClient.Connect(serverIp, udpPort, "OpenGS"); // "OpenGS"は接続キー
+            Debug.Log($"[ClientNetwork] Connecting to Match UDP {resolvedIp}:{resolvedUdpPort} with PlayerID: {ClientPlayerId}...");
+            _netClient.Connect(resolvedIp, resolvedUdpPort, "OpenGS"); // "OpenGS"は接続キー
         }
 
         private void OnPeerConnected(NetPeer peer)
@@ -512,6 +589,7 @@ namespace OpenGS
 
         public void DisconnectAll()
         {
+            _matchUdpConnectAttempted = false;
             _netClient?.Stop();
             _tcpClient?.Close();
             _tcpClient?.Dispose();

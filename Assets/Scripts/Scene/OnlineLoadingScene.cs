@@ -1,25 +1,18 @@
-﻿
 using OpenGSCore;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
-using System.Globalization;
-using System.Threading;
+using System.Collections.Generic;
 using UniRx;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
-//using UnityEngine.Rendering.Universal;
 using UnityEngine.SceneManagement;
 using Zenject;
 
 #pragma warning disable 0414
 #pragma warning disable 0219
 
-
 namespace OpenGS
 {
-
     [DisallowMultipleComponent]
     public class OnlineLoadingScene : AbstractLoadingScene, IOnlineLoadingScene
     {
@@ -29,119 +22,64 @@ namespace OpenGS
         static bool loadingErrorFlag = false;
         public LoadingSpriteBGMasterData bgMasterData;
 
-        [SerializeField][Required][SceneObjectsOnly]public OnlineLoadingSceneMediateObject mediateObject;
+        [SerializeField] [Required] [SceneObjectsOnly] public OnlineLoadingSceneMediateObject mediateObject;
 
         [Inject] private OnlineLoadingManager onlineLoadingManager;
 
-        [SerializeField]public OnlineLoadingSceneNetworkManager networkManager;
+        [SerializeField] public OnlineLoadingSceneNetworkManager networkManager;
 
         private readonly ReactiveProperty<float> progress = new ReactiveProperty<float>(0f);
         public IReadOnlyReactiveProperty<float> Progress => progress;
 
-
         private AsyncOperation _sceneLoadOp;
-        public void DebugCreateMatchRoom()
-        {
-
-            Debug.Log("Debug room");
-
-            if (DebugFlagManager.FirstSceneName == this.GetType().FullName)
-            {
-                GameModeSelectManager.Instance.LoadDebugOnlineSelectFromFile();
-
-                Debug.Log("FirstScene");
-
-            }
-
-            DebugConnect();
-
-            var manager = MatchRoomManager();
-
-
-            manager.CreateNewOnlineWaitRoom("id", 8);
-
-
-            var waitRoom = manager.OnlineWaitRoom;
-
-            waitRoom.AddPlayer("id", "MyPlayer");
-
-            manager.CreateNewOnlineMatchRoom();
-
-
-
-
-
-        }
+        private readonly HashSet<string> completedPlayerIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        private bool localLoadingCompleted;
+        private bool enterMapAllowed;
 
         private void Awake()
         {
-
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
-
             Application.targetFrameRate = 30;
-
-
+            AutoBindIfNeeded();
         }
+
         private void Start()
         {
             loadingErrorFlag = false;
+            completedPlayerIds.Clear();
+            localLoadingCompleted = false;
+            enterMapAllowed = false;
+            count = 0f;
             EnsureLoadingBgm();
 
-            if (DebugFlagManager.IsDebug())
-            {
-                //DebugCreateMatchRoom();
+            networkManager?.SendLoadingSceneEntered();
+            TryConnectToMatchServer();
 
-            }
-
-
- 
-
-
-            SceneManager.sceneLoaded+= OnSceneLoaded;
- 
-
+            SceneManager.sceneLoaded += OnSceneLoaded;
             StartCoroutine(Loading());
-
-
-
         }
+
         void OnDisable()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
-
-            //SceneManager.MoveGameObjectsToScene()
         }
+
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
-            //throw new NotImplementedException();
         }
 
         void Reset()
         {
-            if (!mediateObject)
-            {
-                mediateObject = FindFirstObjectByType<OnlineLoadingSceneMediateObject>();
-            }
-
-
+            AutoBindIfNeeded();
         }
 
         private void Update()
         {
             count += Time.deltaTime;
-
             if (count >= timeout)
             {
                 BackToWaitRoom();
             }
-
-        }
-
-        private void OnApplicationQuit()
-        {
-            
-
-
         }
 
         private void EnsureLoadingBgm()
@@ -157,150 +95,126 @@ namespace OpenGS
             }
         }
 
-        public void DebugConnect()
-        {
-
-        }
-
-
         private IEnumerator Loading()
         {
-            PrettyLogger.Bold("Network","LoadingStart");
-
-            
+            PrettyLogger.Bold("Network", "LoadingStart");
 
             MatchRoomManager().CreateNewOnlineMatchRoom();
-
             yield return new WaitForSecondsRealtime(1);
 
-            var map=mediateObject.MapSceneMasterData().Map(EMap.DryDays);
+            var selectedMap = ResolveSelectedMap();
+            var selectedMode = ResolveSelectedGameMode();
+            var mapInfo = ResolveMapInfo(selectedMap);
+            if (mapInfo == null)
+            {
+                Debug.LogWarning($"[OnlineLoadingScene] Map info not found for {selectedMap}");
+                OnLoadingFailed();
+                yield break;
+            }
 
-            _sceneLoadOp = SceneManager.LoadSceneAsync(map.MapScene(), LoadSceneMode.Single);
+            onlineLoadingManager.LoadingInfo.MapName = mapInfo.MapScene();
+            onlineLoadingManager.LoadingInfo.GameMode = selectedMode;
+
+            _sceneLoadOp = SceneManager.LoadSceneAsync(mapInfo.MapScene(), LoadSceneMode.Single);
+            if (_sceneLoadOp == null)
+            {
+                OnLoadingFailed();
+                yield break;
+            }
 
             _sceneLoadOp.allowSceneActivation = false;
+            networkManager?.SendLoadingStart();
 
-            networkManager.SendLoadingStart();
-
-            float loadProgress = 0f;
-            while (!_sceneLoadOp.isDone)
+            while (_sceneLoadOp.progress < 0.9f)
             {
-                loadProgress = Mathf.Clamp01(_sceneLoadOp.progress / 0.9f);
+                var loadProgress = Mathf.Clamp01(_sceneLoadOp.progress / 0.9f);
                 progress.Value = loadProgress;
-                // サーバに進捗送信（モック）
-                //Debug.Log($"Sending progress {loadProgress * 100}% to server");
-                networkManager.SendLoadingProgress(loadProgress);
+                networkManager?.SendLoadingProgress(loadProgress);
                 yield return null;
             }
-            
-            progress.Value = 1f;
-            networkManager.SendLoadingComplete(); 
 
+            progress.Value = 1f;
+            networkManager?.SendLoadingProgress(1f);
+            localLoadingCompleted = true;
+            networkManager?.SendLoadingComplete();
+            TryEnterMap();
 
             yield return new WaitUntil(() => _sceneLoadOp.allowSceneActivation);
-
-
-        }
-
-        private void SendLoadingStartToServer()
-        {
-            var json = new AIXJsonObject();
-            json["MessageType"] = "LoadingStarted";
-
-            networkManager.SendLoadingStart();
-        }
-
-        private void SendProgressPercentToServer(float progress)
-        {
-            var json = new AIXJsonObject();
-            json["MessageType"] = "LoadingProgress";
-            json["PlayerID"] ="";
-            json["Progress"] = progress;
-
-            //networkManager.SendMessage(json);
-
+            yield return new WaitUntil(() => _sceneLoadOp.isDone);
         }
 
         public void TryConnectToMatchServer()
         {
-            
+            if (networkManager == null)
+            {
+                return;
+            }
 
-
+            if (!OnlineManager.Instance.MatchServerInfo.HasEndpoint())
+            {
+                networkManager.SendMatchServerInfoRequest();
+            }
         }
-
 
         public void OnMatchLoadingCompleted()
         {
+            TryEnterMap();
+        }
 
+        public void OnMatchLoadingCompleted(string playerId)
+        {
+            if (!string.IsNullOrWhiteSpace(playerId))
+            {
+                completedPlayerIds.Add(playerId);
+            }
+
+            TryEnterMap();
         }
 
         public void OnMatchServerConnected()
         {
-
-        }
-
-        private void SendLoadingError()
-        {
-
         }
 
         public void OnLoadingFailed()
         {
-
+            BackToWaitRoom();
         }
 
         void GoToBattleScene()
         {
-
-
         }
 
         void BackToWaitRoom()
         {
             loadingErrorFlag = true;
-
-            //mediateObject.BGMAndBGNManager().
-
-
+            var sceneName = GeneralSceneMasterData.Instance().OnlineWaitRoomScene();
+            SceneManager.LoadSceneAsync(sceneName);
         }
 
         void SendChat(string message)
         {
-            var myId = "";
-
-            
-
-
         }
-
 
         public void ParseServerMessage()
         {
-
         }
-
 
         [Button("ローディング")]
         public void LoadingScene(EGameMode mode = EGameMode.DeathMatch, EMap map = EMap.DryDays)
         {
+            var select = new OnlineGameModeSelect
+            {
+                GameMode = mode,
+                Map = map
+            };
 
-            var matchRoomManager = MatchRoomManager();
-
-            matchRoomManager.CreateNewOnlineMatchRoom("");
-
-
-            networkManager?.SendMessage("");
-
-
-
-
-
+            GameModeSelectManager.Instance.OnlineGameSelect = select;
+            StartCoroutine(Loading());
         }
 
         [Button("デバッグ選択")]
         public void CreateDebugSelect(EGameMode mode, EMap map)
         {
-
-
             var select = new OnlineGameModeSelect
             {
                 GameMode = mode,
@@ -309,53 +223,122 @@ namespace OpenGS
 
             var instance = GameModeSelectManager.Instance;
             instance.OnlineGameSelect = select;
-
             instance.SaveDebugOnlineSelectToFile();
-
-
         }
 
         [Button("デバッグステージへ")]
         public void GoToTestScene()
         {
-            var mapInfo = mapSelectMasterData.Map(EMap.DryDays);
-
-
-            //var sc = mapInfo.map;
-
-
-
-            //SceneManager.LoadScene(sc);
-
+            var mapInfo = ResolveMapInfo(ResolveSelectedMap());
+            if (mapInfo != null)
+            {
+                SceneManager.LoadScene(mapInfo.MapScene());
+            }
         }
 
         protected override void OnStartUnityEditor()
         {
-            //PrettyLogger.Log("System", "Test");
-
-            //throw new NotImplementedException();
         }
 
         protected override void OnQuitUnityEditor()
         {
-            //PrettyLogger.Log("System", "Test");
         }
 
         protected override void OnStartFromEditorDirectly()
         {
             PrettyLogger.Log("System", "Test");
-
-            //SetOnlineMode(true);
-
             IsOnlineMode = true;
         }
 
         public void OnEnterMapAllowed()
         {
+            enterMapAllowed = true;
+            TryEnterMap();
+        }
+
+        private void TryEnterMap()
+        {
+            if (!localLoadingCompleted || !enterMapAllowed || _sceneLoadOp == null)
+            {
+                return;
+            }
+
+            var expectedPlayers = GetExpectedPlayerCount();
+            if (completedPlayerIds.Count < expectedPlayers)
+            {
+                Debug.Log($"[OnlineLoadingScene] Waiting for players to finish loading: {completedPlayerIds.Count}/{expectedPlayers}");
+                return;
+            }
 
             _sceneLoadOp.allowSceneActivation = true;
+        }
 
+        private int GetExpectedPlayerCount()
+        {
+            try
+            {
+                var waitRoomManager = DependencyInjectionConfig.Resolve<WaitRoomManager>();
+                var waitRoom = waitRoomManager?.WaitRoom;
+                if (waitRoom != null && waitRoom.PlayerCount > 0)
+                {
+                    return waitRoom.PlayerCount;
+                }
+            }
+            catch
+            {
+            }
+
+            return 1;
+        }
+
+        private void AutoBindIfNeeded()
+        {
+            if (!mediateObject)
+            {
+                mediateObject = FindFirstObjectByType<OnlineLoadingSceneMediateObject>();
+            }
+
+            if (!networkManager)
+            {
+                networkManager = FindFirstObjectByType<OnlineLoadingSceneNetworkManager>();
+            }
+        }
+
+        private EMap ResolveSelectedMap()
+        {
+            var selected = GameModeSelectManager.Instance?.OnlineGameSelect;
+            if (selected != null && selected.Map != EMap.Unknown)
+            {
+                return selected.Map;
+            }
+
+            return EMap.DryDays;
+        }
+
+        private EGameMode ResolveSelectedGameMode()
+        {
+            var selected = GameModeSelectManager.Instance?.OnlineGameSelect;
+            if (selected != null && selected.GameMode != EGameMode.Unknown)
+            {
+                return selected.GameMode;
+            }
+
+            return EGameMode.DeathMatch;
+        }
+
+        private MapInfoMasterData ResolveMapInfo(EMap map)
+        {
+            if (mediateObject != null && mediateObject.MapSceneMasterData() != null)
+            {
+                return mediateObject.MapSceneMasterData().Map(map);
+            }
+
+            if (mapSelectMasterData != null)
+            {
+                return mapSelectMasterData.Map(map);
+            }
+
+            return null;
         }
     }
 }
-

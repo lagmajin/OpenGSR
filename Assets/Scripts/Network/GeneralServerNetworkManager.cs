@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System;
 using Newtonsoft.Json.Linq;
 using UniRx;
 using UnityEngine;
@@ -15,6 +15,13 @@ namespace OpenGS
     {
         private sealed class RoomRecord
         {
+            public sealed class RoomPlayerRecord
+            {
+                public string PlayerId { get; set; } = "";
+                public string PlayerName { get; set; } = "";
+                public bool IsReady { get; set; } = false;
+            }
+
             public string RoomId { get; set; } = "";
             public string RoomName { get; set; } = "";
             public string OwnerId { get; set; } = "";
@@ -22,6 +29,7 @@ namespace OpenGS
             public string GameMode { get; set; } = "TeamDeathMatch";
             public bool TeamBalance { get; set; } = true;
             public int PlayerCount { get; set; } = 0;
+            public List<RoomPlayerRecord> Players { get; } = new List<RoomPlayerRecord>();
         }
 
         private sealed class AccountRecord
@@ -41,8 +49,13 @@ namespace OpenGS
         private readonly List<INetworkManagerScript> scripts = new List<INetworkManagerScript>();
         private readonly List<RoomRecord> localRooms = new List<RoomRecord>();
         private readonly Dictionary<string, AccountRecord> accounts = new Dictionary<string, AccountRecord>();
+        private readonly HashSet<string> loadingCompletedPlayers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private int localRoomSequence = 1;
         private string currentAccountId = "";
+        private string currentRoomId = "";
+        private readonly string localMatchServerIp = "127.0.0.1";
+        private const int LocalMatchServerPort = 60001;
+        private const int LocalMatchServerUdpPort = 63000;
 
         public GeneralServerNetworkManager()
         {
@@ -91,6 +104,11 @@ namespace OpenGS
             Debug.Log($"[GeneralServerNetworkManager] SendMessage: {json?["MessageType"]}");
             if (json != null)
             {
+                if (HandleLocalWaitRoomMessage(json))
+                {
+                    return;
+                }
+
                 HandleAccountAndShopMessage(json);
                 CacheLastMatchResult(json);
 
@@ -122,6 +140,7 @@ namespace OpenGS
             var rooms = new JArray();
             foreach (var room in localRooms)
             {
+                room.PlayerCount = room.Players.Count > 0 ? room.Players.Count : room.PlayerCount;
                 rooms.Add(new JObject
                 {
                     ["RoomID"] = room.RoomId,
@@ -151,16 +170,27 @@ namespace OpenGS
         public void SendCreateNewWaitRoomRequest(string roomName, int capacity, string gameMode, bool teamBalance, string password = "")
         {
             var roomId = $"room-{localRoomSequence++:D4}";
-            localRooms.Add(new RoomRecord
+            var ownerId = ResolveLocalPlayerId();
+            var ownerName = ResolveLocalPlayerName();
+            currentRoomId = roomId;
+            loadingCompletedPlayers.Clear();
+            var room = new RoomRecord
             {
                 RoomId = roomId,
                 RoomName = string.IsNullOrWhiteSpace(roomName) ? "New Room" : roomName,
-                OwnerId = "local_player",
+                OwnerId = ownerId,
                 Capacity = capacity,
                 GameMode = string.IsNullOrWhiteSpace(gameMode) ? "TeamDeathMatch" : gameMode,
                 TeamBalance = teamBalance,
                 PlayerCount = 1
+            };
+            room.Players.Add(new RoomRecord.RoomPlayerRecord
+            {
+                PlayerId = ownerId,
+                PlayerName = ownerName,
+                IsReady = false
             });
+            localRooms.Add(room);
 
             EmitToClient(new JObject
             {
@@ -171,7 +201,7 @@ namespace OpenGS
                 ["Capacity"] = capacity,
                 ["GameMode"] = gameMode,
                 ["TeamBalance"] = teamBalance ? "True" : "False",
-                ["OwnerID"] = "local_player"
+                ["OwnerID"] = ownerId
             });
         }
 
@@ -202,7 +232,25 @@ namespace OpenGS
                 return;
             }
 
-            room.PlayerCount = Math.Min(room.Capacity, room.PlayerCount + 1);
+            var existingPlayer = room.Players.Find(player => string.Equals(player.PlayerId, playerId, StringComparison.OrdinalIgnoreCase));
+            if (existingPlayer == null)
+            {
+                room.Players.Add(new RoomRecord.RoomPlayerRecord
+                {
+                    PlayerId = playerId,
+                    PlayerName = string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName,
+                    IsReady = false
+                });
+            }
+            else
+            {
+                existingPlayer.PlayerName = string.IsNullOrWhiteSpace(playerName) ? existingPlayer.PlayerName : playerName;
+                existingPlayer.IsReady = false;
+            }
+
+            room.PlayerCount = room.Players.Count;
+            currentRoomId = room.RoomId;
+            loadingCompletedPlayers.Clear();
             EmitToClient(new JObject
             {
                 ["MessageType"] = MessageType.JoinRoomResponse,
@@ -214,6 +262,12 @@ namespace OpenGS
                 ["PlayerName"] = playerName,
                 ["Players"] = room.PlayerCount
             });
+        }
+
+        public JObject GetCurrentWaitRoomPlayerListSnapshot()
+        {
+            var room = localRooms.Find(candidate => string.Equals(candidate.RoomId, currentRoomId, StringComparison.OrdinalIgnoreCase));
+            return room == null ? null : BuildWaitRoomPlayerListMessage(room);
         }
 
         private void EmitToClient(JObject json)
@@ -480,8 +534,37 @@ namespace OpenGS
                     });
                     break;
                 }
+                case MessageType.MatchServerInfoRequest:
+                {
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.MatchServerInfoResponse,
+                        ["Success"] = true,
+                        ["IP"] = localMatchServerIp,
+                        ["Port"] = LocalMatchServerPort,
+                        ["UdpPort"] = LocalMatchServerUdpPort,
+                        ["RoomID"] = currentRoomId
+                    });
+                    break;
+                }
+                case "ClientLoadingSceneEntered":
+                {
+                    var playerId = json["PlayerID"]?.ToString() ?? ResolveLocalPlayerId();
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.MatchServerInfoResponse,
+                        ["Success"] = true,
+                        ["IP"] = localMatchServerIp,
+                        ["Port"] = LocalMatchServerPort,
+                        ["UdpPort"] = LocalMatchServerUdpPort,
+                        ["RoomID"] = currentRoomId,
+                        ["PlayerID"] = playerId
+                    });
+                    break;
+                }
                 case "LoadingStarted":
                 {
+                    loadingCompletedPlayers.Clear();
                     EmitToClient(new JObject
                     {
                         ["MessageType"] = "LoadingStartedNotification",
@@ -506,18 +589,43 @@ namespace OpenGS
                 case "LoadingCompleted":
                 {
                     var playerId = json["PlayerID"]?.ToString() ?? "";
+                    var normalizedPlayerId = string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
+                    loadingCompletedPlayers.Add(normalizedPlayerId);
                     EmitToClient(new JObject
                     {
                         ["MessageType"] = "LoadingCompletedNotification",
                         ["Success"] = true,
-                        ["PlayerID"] = playerId
+                        ["PlayerID"] = normalizedPlayerId
                     });
-                    EmitToClient(new JObject
+
+                    var room = localRooms.Find(r => string.Equals(r.RoomId, currentRoomId, StringComparison.OrdinalIgnoreCase));
+                    var expectedPlayers = Mathf.Max(1, room?.PlayerCount ?? 1);
+                    for (var index = loadingCompletedPlayers.Count; index < expectedPlayers; index++)
                     {
-                        ["MessageType"] = "AllowEnterMap",
-                        ["Success"] = true,
-                        ["PlayerID"] = playerId
-                    });
+                        var mockPlayerId = $"mock-player-{index + 1:D2}";
+                        if (!loadingCompletedPlayers.Add(mockPlayerId))
+                        {
+                            continue;
+                        }
+
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = "LoadingCompletedNotification",
+                            ["Success"] = true,
+                            ["PlayerID"] = mockPlayerId
+                        });
+                    }
+
+                    if (loadingCompletedPlayers.Count >= expectedPlayers)
+                    {
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = "AllowEnterMap",
+                            ["Success"] = true,
+                            ["PlayerID"] = normalizedPlayerId
+                        });
+                    }
+
                     break;
                 }
             }
@@ -530,7 +638,7 @@ namespace OpenGS
                 return;
             }
 
-            localRooms.Add(new RoomRecord
+            var dmRoom = new RoomRecord
             {
                 RoomId = $"room-{localRoomSequence++:D4}",
                 RoomName = "Default DM Room",
@@ -539,9 +647,12 @@ namespace OpenGS
                 GameMode = "DeathMatch",
                 TeamBalance = false,
                 PlayerCount = 2
-            });
+            };
+            dmRoom.Players.Add(new RoomRecord.RoomPlayerRecord { PlayerId = "host-001", PlayerName = "HostDM", IsReady = false });
+            dmRoom.Players.Add(new RoomRecord.RoomPlayerRecord { PlayerId = "guest-001", PlayerName = "GuestDM", IsReady = false });
+            localRooms.Add(dmRoom);
 
-            localRooms.Add(new RoomRecord
+            var tdmRoom = new RoomRecord
             {
                 RoomId = $"room-{localRoomSequence++:D4}",
                 RoomName = "Default TDM Room",
@@ -550,7 +661,194 @@ namespace OpenGS
                 GameMode = "TeamDeathMatch",
                 TeamBalance = true,
                 PlayerCount = 6
-            });
+            };
+            for (var i = 0; i < 6; i++)
+            {
+                tdmRoom.Players.Add(new RoomRecord.RoomPlayerRecord
+                {
+                    PlayerId = i == 0 ? "host-002" : $"guest-tdm-{i:D3}",
+                    PlayerName = i == 0 ? "HostTDM" : $"Guest{i}",
+                    IsReady = false
+                });
+            }
+
+            localRooms.Add(tdmRoom);
+        }
+
+        private bool HandleLocalWaitRoomMessage(JObject json)
+        {
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            if (string.IsNullOrWhiteSpace(messageType))
+            {
+                return false;
+            }
+
+            switch (messageType)
+            {
+                case RUDPMessageTypes.WaitRoomChat:
+                    EmitToClient(RUDPMessageBuilder.CreateWaitRoomChat(
+                        json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? ResolveLocalPlayerId(),
+                        json["PlayerName"]?.ToString() ?? ResolveLocalPlayerName(),
+                        json["Message"]?.ToString() ?? "",
+                        json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? currentRoomId));
+                    return true;
+
+                case RUDPMessageTypes.WaitRoomLeave:
+                    return HandleLocalWaitRoomLeave(json);
+
+                case RUDPMessageTypes.WaitRoomPlayerReady:
+                    return HandleLocalReadyState(json, true);
+
+                case RUDPMessageTypes.WaitRoomPlayerUnready:
+                    return HandleLocalReadyState(json, false);
+
+                case RUDPMessageTypes.WaitRoomSettingsChange:
+                    return HandleLocalWaitRoomSettingsChange(json);
+
+                case "GameStartRequest":
+                    if (!string.IsNullOrWhiteSpace(currentRoomId))
+                    {
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = MessageType.MatchServerInfoResponse,
+                            ["Success"] = true,
+                            ["IP"] = localMatchServerIp,
+                            ["Port"] = LocalMatchServerPort,
+                            ["UdpPort"] = LocalMatchServerUdpPort,
+                            ["RoomID"] = currentRoomId
+                        });
+                        EmitToClient(RUDPMessageBuilder.CreateWaitRoomStartCountdown(currentRoomId, 5));
+                        return true;
+                    }
+
+                    return false;
+            }
+
+            return false;
+        }
+
+        private bool HandleLocalWaitRoomLeave(JObject json)
+        {
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? currentRoomId;
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? ResolveLocalPlayerId();
+            var room = localRooms.Find(candidate => string.Equals(candidate.RoomId, roomId, StringComparison.OrdinalIgnoreCase));
+            if (room == null)
+            {
+                return false;
+            }
+
+            room.Players.RemoveAll(player => string.Equals(player.PlayerId, playerId, StringComparison.OrdinalIgnoreCase));
+            room.PlayerCount = room.Players.Count;
+            if (string.Equals(currentRoomId, roomId, StringComparison.OrdinalIgnoreCase))
+            {
+                currentRoomId = "";
+            }
+            EmitToClient(RUDPMessageBuilder.CreateWaitRoomLeave(playerId, roomId));
+            EmitToClient(BuildWaitRoomPlayerListMessage(room));
+            return true;
+        }
+
+        private bool HandleLocalReadyState(JObject json, bool ready)
+        {
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? currentRoomId;
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? ResolveLocalPlayerId();
+            var room = localRooms.Find(candidate => string.Equals(candidate.RoomId, roomId, StringComparison.OrdinalIgnoreCase));
+            if (room == null)
+            {
+                return false;
+            }
+
+            var player = room.Players.Find(candidate => string.Equals(candidate.PlayerId, playerId, StringComparison.OrdinalIgnoreCase));
+            if (player == null)
+            {
+                player = new RoomRecord.RoomPlayerRecord
+                {
+                    PlayerId = playerId,
+                    PlayerName = ResolveLocalPlayerName(),
+                    IsReady = ready
+                };
+                room.Players.Add(player);
+            }
+            else
+            {
+                player.IsReady = ready;
+            }
+
+            EmitToClient(ready
+                ? RUDPMessageBuilder.CreateWaitRoomPlayerReady(playerId, roomId)
+                : RUDPMessageBuilder.CreateWaitRoomPlayerUnready(playerId, roomId));
+            EmitToClient(BuildWaitRoomPlayerListMessage(room));
+
+            if (ready && room.Players.Count > 0 && room.Players.TrueForAll(candidate => candidate.IsReady))
+            {
+                EmitToClient(RUDPMessageBuilder.CreateWaitRoomStartCountdown(roomId, 5));
+            }
+
+            return true;
+        }
+
+        private bool HandleLocalWaitRoomSettingsChange(JObject json)
+        {
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? currentRoomId;
+            var room = localRooms.Find(candidate => string.Equals(candidate.RoomId, roomId, StringComparison.OrdinalIgnoreCase));
+            var settings = json["Settings"] as JObject;
+            if (room == null || settings == null)
+            {
+                return false;
+            }
+
+            if (settings["GameMode"] != null)
+            {
+                room.GameMode = settings["GameMode"]!.ToString();
+            }
+
+            if (settings["Capacity"] != null)
+            {
+                room.Capacity = settings["Capacity"]!.ToObject<int>();
+            }
+
+            if (settings["TeamBalance"] != null)
+            {
+                room.TeamBalance = settings["TeamBalance"]!.ToObject<bool>();
+            }
+
+            room.PlayerCount = room.Players.Count;
+            EmitToClient(RUDPMessageBuilder.CreateWaitRoomSettingsChange(roomId, settings));
+            return true;
+        }
+
+        private static JObject BuildWaitRoomPlayerListMessage(RoomRecord room)
+        {
+            var players = new JArray();
+            foreach (var player in room.Players)
+            {
+                players.Add(new JObject
+                {
+                    ["PlayerId"] = player.PlayerId,
+                    ["PlayerName"] = player.PlayerName,
+                    ["IsReady"] = player.IsReady,
+                    ["IsOwner"] = string.Equals(player.PlayerId, room.OwnerId, StringComparison.OrdinalIgnoreCase)
+                });
+            }
+
+            return RUDPMessageBuilder.CreateWaitRoomPlayerList(room.RoomId, players);
+        }
+
+        private string ResolveLocalPlayerId()
+        {
+            if (!string.IsNullOrWhiteSpace(currentAccountId))
+            {
+                return currentAccountId;
+            }
+
+            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
+        }
+
+        private static string ResolveLocalPlayerName()
+        {
+            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            return string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
         }
     }
 }

@@ -15,7 +15,29 @@ namespace OpenGS
                 return typed;
             }
 
-            return GetComponent<IWaitRoomUiManager>();
+            var local = GetComponent<IWaitRoomUiManager>();
+            if (local != null)
+            {
+                return local;
+            }
+
+            foreach (var behaviour in GetComponentsInParent<MonoBehaviour>(true))
+            {
+                if (behaviour is IWaitRoomUiManager parentTyped)
+                {
+                    return parentTyped;
+                }
+            }
+
+            foreach (var behaviour in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None))
+            {
+                if (behaviour is IWaitRoomUiManager sceneTyped)
+                {
+                    return sceneTyped;
+                }
+            }
+
+            return null;
         }
     }
 }

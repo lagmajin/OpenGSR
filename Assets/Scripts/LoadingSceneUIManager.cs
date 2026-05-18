@@ -1,48 +1,34 @@
-using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using TMPro;
+using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
-
 
 namespace OpenGS
 {
     public interface ILoadingSceneUIManagerProvider
     {
-
     }
 
     [DisallowMultipleComponent]
     public class LoadingSceneUIManager : MonoBehaviour
     {
         [SerializeField] private OnlineLoadingSceneMediateObject mediateObject;
-        [SerializeField]private LoadingSceneCanvas canvas;
-
-
+        [SerializeField] private LoadingSceneCanvas canvas;
         [SerializeField] private TextMeshProUGUI textField;
         [SerializeField] private Slider progressbar;
+        [SerializeField] private OnlineLoadingScene onlineLoadingScene;
 
-        // Start is called before the first frame update
         void Start()
         {
+            AutoSet();
 
-            //textField.text = "a";
-
-
-        }
-
-
-        void OnDestroy()
-        {
-            //OnlineLoadingManager.Instance.UnSubscribe(this);
-
-            //Debug.Log("Destract");
-        }
-
-        void OnApplicationQuit()
-        {
-
+            if (onlineLoadingScene != null)
+            {
+                onlineLoadingScene.Progress
+                    .Subscribe(value => ChangeLoadingProgress(Mathf.RoundToInt(value * 100f)))
+                    .AddTo(this);
+            }
         }
 
         public LoadingSceneCanvas LoadingSceneCanvas()
@@ -52,47 +38,55 @@ namespace OpenGS
 
         public void SetGameMode(OpenGSCore.EGameMode mode)
         {
-
+            ChangeLoadingText(mode.ToString());
         }
 
         public void ChangeLoadingText(string text)
         {
-
+            if (textField != null)
+            {
+                textField.text = text ?? string.Empty;
+            }
         }
 
         public void ChangeLoadingProgress(int progress)
         {
             progress = Mathf.Clamp(progress, 0, 100);
-
+            if (progressbar != null)
+            {
+                progressbar.value = progress / 100f;
+            }
         }
 
         public void SetMapName(string name)
         {
-
+            ChangeLoadingText(name);
         }
-        [Button("�����Z�b�g")]
+
+        [Button("AutoSet")]
         public void AutoSet()
         {
             TryAssign(ref mediateObject);
             TryAssign(ref canvas);
-           // TryAssign(ref textField);
+            TryAssign(ref textField);
+            TryAssign(ref progressbar);
+            TryAssign(ref onlineLoadingScene);
         }
 
         private void TryAssign<T>(ref T field) where T : UnityEngine.Object
         {
-            if (field != null) return;
+            if (field != null)
+            {
+                return;
+            }
 
-            // �����̎q�I�u�W�F�N�g����T��
             field = GetComponentInChildren<T>(true);
-            if (field != null) return;
+            if (field != null)
+            {
+                return;
+            }
 
-            // �V�[���S�̂���T���i�񐄏������Ǖی��j
             field = FindFirstObjectByType<T>();
         }
-
-
-
-
     }
-
 }
