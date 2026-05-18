@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace OpenGS
 {
@@ -17,8 +16,7 @@ namespace OpenGS
                 return;
             }
 
-            var lobbyScene = GeneralSceneMasterData.Instance().LobbyScene();
-            SceneManager.LoadSceneAsync(lobbyScene);
+            Debug.LogWarning("[ConnectToLobbyNetworkManager] ConnectToGeneralServerScene not found, cannot request lobby transition.");
         }
     }
 }
