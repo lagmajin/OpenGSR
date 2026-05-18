@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using JetBrains.Annotations;
+using Newtonsoft.Json.Linq;
+using UniRx;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 #if UNITY_EDITOR
@@ -373,6 +375,82 @@ namespace OpenGS
 
         public virtual void GoToLobby()
         {
+            var lobbyScene = generalSceneMasterData != null
+                ? generalSceneMasterData.LobbyScene()
+                : GeneralSceneMasterData.Instance().LobbyScene();
+
+            RequestSceneTransition(lobbyScene, "GoToLobby");
+        }
+
+        protected void RequestSceneTransition(string nextSceneName, string reason = "")
+        {
+            RequestSceneTransition(nextSceneName, null, reason);
+        }
+
+        protected void RequestSceneTransition(string nextSceneName, System.Action onApproved, string reason = "")
+        {
+            var networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+            if (networkManager == null)
+            {
+                Debug.LogWarning($"{GetType().Name}: GeneralServerNetworkManager not available, loading {nextSceneName} directly.");
+                GoToScene(nextSceneName);
+                return;
+            }
+
+            var fromSceneName = SceneManager.GetActiveScene().name;
+            GameFlagsManager.GetInstance().BeforeSceneName = fromSceneName;
+            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                playerId = "local_player";
+            }
+
+            var request = new JObject
+            {
+                ["MessageType"] = "SceneTransitionRequest",
+                ["FromScene"] = fromSceneName,
+                ["ToScene"] = nextSceneName,
+                ["Reason"] = reason ?? string.Empty,
+                ["PlayerID"] = playerId
+            };
+
+            networkManager.DataReceivedStream
+                .ObserveOnMainThread()
+                .Where(json =>
+                {
+                    var messageType = MessageType.Normalize(json?["MessageType"]?.ToString());
+                    if (!string.Equals(messageType, "SceneTransitionResponse", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return false;
+                    }
+
+                    var responseFromScene = json?["FromScene"]?.ToString() ?? string.Empty;
+                    var responseToScene = json?["ToScene"]?.ToString() ?? string.Empty;
+                    return string.Equals(responseFromScene, fromSceneName, StringComparison.OrdinalIgnoreCase)
+                        && string.Equals(responseToScene, nextSceneName, StringComparison.OrdinalIgnoreCase);
+                })
+                .Take(1)
+                .Subscribe(json =>
+                {
+                    var approved = json?["Approved"]?.ToObject<bool>() ?? false;
+                    if (approved)
+                    {
+                        onApproved?.Invoke();
+                        GoToScene(nextSceneName);
+                        return;
+                    }
+
+                    var denialReason = json?["Reason"]?.ToString() ?? "Denied by server";
+                    OnSceneTransitionDenied(nextSceneName, denialReason);
+                })
+                .AddTo(this);
+
+            networkManager.SendMessage(request);
+        }
+
+        protected virtual void OnSceneTransitionDenied(string nextSceneName, string reason)
+        {
+            Debug.LogWarning($"{GetType().Name}: transition to {nextSceneName} denied. reason={reason}");
         }
 
         protected virtual void OnDestroy()

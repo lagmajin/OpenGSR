@@ -547,6 +547,11 @@ namespace OpenGS
                     });
                     break;
                 }
+                case "SceneTransitionRequest":
+                {
+                    HandleSceneTransitionRequest(json);
+                    break;
+                }
                 case "ClientLoadingSceneEntered":
                 {
                     var playerId = json["PlayerID"]?.ToString() ?? ResolveLocalPlayerId();
@@ -629,6 +634,88 @@ namespace OpenGS
                     break;
                 }
             }
+        }
+
+        private void HandleSceneTransitionRequest(JObject json)
+        {
+            var fromScene = json["FromScene"]?.ToString() ?? string.Empty;
+            var toScene = json["ToScene"]?.ToString() ?? string.Empty;
+            var reason = json["Reason"]?.ToString() ?? string.Empty;
+            var approved = IsSceneTransitionAllowed(fromScene, toScene, reason);
+
+            EmitToClient(new JObject
+            {
+                ["MessageType"] = "SceneTransitionResponse",
+                ["Approved"] = approved,
+                ["FromScene"] = fromScene,
+                ["ToScene"] = toScene,
+                ["Reason"] = approved ? "Approved" : BuildSceneTransitionDenyReason(fromScene, toScene, reason)
+            });
+        }
+
+        private bool IsSceneTransitionAllowed(string fromScene, string toScene, string reason)
+        {
+            var generalScenes = GeneralSceneMasterData.Instance();
+            var lobbyScene = generalScenes != null ? generalScenes.LobbyScene() : "LobbyScene";
+            var titleScene = generalScenes != null ? generalScenes.TitleScene() : "TitleScene";
+            var onlineWaitRoomScene = generalScenes != null ? generalScenes.OnlineWaitRoomScene() : "OnlineWaitRoom";
+            var offlineWaitRoomScene = generalScenes != null ? generalScenes.OfflineWaitRoomScene() : "OfflineWaitRoom";
+            var onlineLoadingScene = generalScenes != null ? generalScenes.OnlineLoadingScene() : "OnlineLoadingScene";
+            var resultScene = generalScenes != null ? generalScenes.ResultScene() : "ResultScene";
+
+            if (string.IsNullOrWhiteSpace(toScene))
+            {
+                return false;
+            }
+
+            if (string.Equals(toScene, lobbyScene, StringComparison.OrdinalIgnoreCase))
+            {
+                return string.Equals(fromScene, titleScene, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fromScene, resultScene, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fromScene, "ConnectToServerScene", StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fromScene, onlineWaitRoomScene, StringComparison.OrdinalIgnoreCase)
+                    || string.Equals(fromScene, offlineWaitRoomScene, StringComparison.OrdinalIgnoreCase);
+            }
+
+            if (string.Equals(toScene, onlineWaitRoomScene, StringComparison.OrdinalIgnoreCase))
+            {
+                return !string.IsNullOrWhiteSpace(currentRoomId) || LastMatchResult != null;
+            }
+
+            if (string.Equals(toScene, offlineWaitRoomScene, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (string.Equals(toScene, onlineLoadingScene, StringComparison.OrdinalIgnoreCase))
+            {
+                return !string.IsNullOrWhiteSpace(currentRoomId)
+                    && (string.Equals(fromScene, onlineWaitRoomScene, StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(reason, "GameStart", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(reason, "StartCountdown", StringComparison.OrdinalIgnoreCase));
+            }
+
+            if (string.Equals(toScene, resultScene, StringComparison.OrdinalIgnoreCase))
+            {
+                return !string.IsNullOrWhiteSpace(currentRoomId) || LastMatchResult != null;
+            }
+
+            if (string.Equals(toScene, titleScene, StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return true;
+        }
+
+        private static string BuildSceneTransitionDenyReason(string fromScene, string toScene, string reason)
+        {
+            if (string.IsNullOrWhiteSpace(reason))
+            {
+                return $"Transition denied from {fromScene} to {toScene}";
+            }
+
+            return $"Transition denied from {fromScene} to {toScene}: {reason}";
         }
 
         private void SeedLocalRooms()

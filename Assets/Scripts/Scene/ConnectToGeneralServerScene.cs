@@ -53,6 +53,7 @@ namespace OpenGS
             else
             {
                 Debug.LogWarning("ConnectToGeneralServerScene: mediateObject or networkManager is null.");
+                GoToLobby();
             }
         }
 
@@ -165,27 +166,8 @@ namespace OpenGS
 
         public override void GoToLobby()
         {
-            var context = MainThread();
-            context.Post(__ =>
-            {
-
-                var lobbyScene = generalSceneMasterData != null ? generalSceneMasterData.LobbyScene() : GeneralSceneMasterData.Instance().LobbyScene();
-                var asyncOperation = SceneManager.LoadSceneAsync(lobbyScene);
-
-                asyncOperation.completed += (operation) =>
-                {
-                    if (operation.isDone)
-                    {
-                        Debug.Log("LobbySceneのロードが完了しました");
-                    }
-                    else
-                    {
-                        Debug.LogError("LobbySceneのロードが失敗しました");
-                    }
-                };
-
-            }, null);
-
+            GameFlagsManager.GetInstance().BeforeSceneName = "ConnectToServerScene";
+            base.GoToLobby();
         }
 
         void PlayBeep()
