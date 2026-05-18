@@ -21,10 +21,12 @@ namespace OpenGSR.Editor.MCP
     [InitializeOnLoad]
     public static class MCPServer
     {
+        private const string SessionAutoStartKey = "OpenGSR.MCPServer.AutoStart";
         private static TcpListener _listener;
         private static Thread _serverThread;
         private static CancellationTokenSource _cts;
         private static readonly int Port = 51234;
+        private static readonly object _serverLock = new();
 
         private static readonly ConcurrentQueue<Action> _mainThreadQueue = new();
         private static SynchronizationContext _mainThreadContext;
@@ -34,30 +36,76 @@ namespace OpenGSR.Editor.MCP
             _mainThreadContext = SynchronizationContext.Current;
             EditorApplication.update += ProcessMainThreadQueue;
             EditorApplication.quitting += StopServer;
+
+            if (!SessionState.GetBool(SessionAutoStartKey, true))
+            {
+                Debug.Log("[MCP] Auto-start disabled for this editor session");
+                return;
+            }
+
             StartServer();
         }
 
         [MenuItem("OpenGSR/MCP/Start Server")]
         public static void StartServer()
         {
-            if (_serverThread?.IsAlive == true) return;
+            lock (_serverLock)
+            {
+                SessionState.SetBool(SessionAutoStartKey, true);
 
-            _cts = new CancellationTokenSource();
-            _listener = new TcpListener(IPAddress.Loopback, Port);
-            _listener.Start();
+                if (_serverThread?.IsAlive == true)
+                {
+                    Debug.Log($"[MCP] Server is already running on port {Port}");
+                    return;
+                }
 
-            _serverThread = new Thread(RunServer) { IsBackground = true, Name = "MCP" };
-            _serverThread.Start();
-            Debug.Log($"[MCP] Server listening on port {Port}");
+                CleanupServerState_NoLock();
+
+                try
+                {
+                    _cts = new CancellationTokenSource();
+                    _listener = new TcpListener(IPAddress.Loopback, Port);
+                    _listener.Start();
+
+                    _serverThread = new Thread(RunServer) { IsBackground = true, Name = "MCP" };
+                    _serverThread.Start();
+                    Debug.Log($"[MCP] Server listening on port {Port}");
+                }
+                catch (Exception ex)
+                {
+                    CleanupServerState_NoLock();
+                    Debug.LogError($"[MCP] Failed to start server on port {Port}: {ex.Message}");
+                }
+            }
         }
 
         [MenuItem("OpenGSR/MCP/Stop Server")]
         public static void StopServer()
         {
-            _cts?.Cancel();
-            _listener?.Stop();
-            _serverThread = null;
-            Debug.Log("[MCP] Server stopped");
+            lock (_serverLock)
+            {
+                SessionState.SetBool(SessionAutoStartKey, false);
+
+                if (_serverThread == null && _listener == null && _cts == null)
+                {
+                    Debug.Log("[MCP] Server is already stopped");
+                    return;
+                }
+
+                var thread = _serverThread;
+                var currentThread = Thread.CurrentThread;
+
+                _cts?.Cancel();
+                _listener?.Stop();
+
+                if (thread != null && thread.IsAlive && thread != currentThread)
+                {
+                    thread.Join(1000);
+                }
+
+                CleanupServerState_NoLock();
+                Debug.Log("[MCP] Server stopped");
+            }
         }
 
         private static void ProcessMainThreadQueue()
@@ -73,7 +121,7 @@ namespace OpenGSR.Editor.MCP
         {
             try
             {
-                while (!_cts.Token.IsCancellationRequested)
+                while (_cts != null && !_cts.Token.IsCancellationRequested)
                 {
                     var client = _listener.AcceptTcpClient();
                     ThreadPool.QueueUserWorkItem(HandleClient, client);
@@ -81,6 +129,13 @@ namespace OpenGSR.Editor.MCP
             }
             catch (SocketException) { }
             catch (ObjectDisposedException) { }
+            finally
+            {
+                lock (_serverLock)
+                {
+                    CleanupServerState_NoLock();
+                }
+            }
         }
 
         private static void HandleClient(object state)
@@ -89,7 +144,7 @@ namespace OpenGSR.Editor.MCP
             client.ReceiveTimeout = 0;
             using var stream = client.GetStream();
             using var reader = new StreamReader(stream, Encoding.UTF8);
-            using var writer = new StreamWriter(stream, Encoding.UTF8) { NewLine = "\n", AutoFlush = true };
+            using var writer = new StreamWriter(stream, new UTF8Encoding(false)) { NewLine = "\n", AutoFlush = true };
 
             while (!_cts.Token.IsCancellationRequested)
             {
@@ -2725,6 +2780,25 @@ public class {className} : MonoBehaviour
             if (pathOrGuid.Length == 32 && pathOrGuid.All(c => char.IsLetterOrDigit(c) || c == '-'))
                 return AssetDatabase.LoadMainAssetAtPath(AssetDatabase.GUIDToAssetPath(pathOrGuid));
             return AssetDatabase.LoadMainAssetAtPath(pathOrGuid);
+        }
+
+        private static void CleanupServerState_NoLock()
+        {
+            try
+            {
+                _listener?.Stop();
+            }
+            catch { }
+
+            try
+            {
+                _cts?.Dispose();
+            }
+            catch { }
+
+            _listener = null;
+            _serverThread = null;
+            _cts = null;
         }
 
         private static JToken SuccessResult() => new JObject { ["success"] = true };

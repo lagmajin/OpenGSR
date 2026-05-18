@@ -4,6 +4,7 @@ using TMPro;
 using OpenGSCore;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace OpenGS
 {
@@ -45,11 +46,19 @@ namespace OpenGS
         private EGameMode selectedGameMode = EGameMode.TeamDeathMatch;
         private bool teamBalance = true;
         private bool isPasswordEnabled = false;
+        private OnlineLobbyScene lobbyScene;
 
         // ─── Unity ライフサイクル ────────────────────────────────────
 
         private void Awake()
         {
+            lobbyScene = GetComponentInParent<OnlineLobbyScene>();
+            if (lobbyScene == null)
+            {
+                lobbyScene = FindFirstObjectByType<OnlineLobbyScene>();
+            }
+
+            AutoBindMissingReferences();
             InitializeUI();
             SetupListeners();
         }
@@ -164,6 +173,64 @@ namespace OpenGS
             }
         }
 
+        private void AutoBindMissingReferences()
+        {
+            roomNameInput ??= FindNamedComponent<TMP_InputField>(new[] { "RoomName", "InputField" });
+            passwordInput ??= FindNamedComponent<TMP_InputField>(new[] { "Password" });
+
+            var dropdowns = GetComponentsInChildren<TMP_Dropdown>(true);
+            if (maxPlayerDropdown == null && dropdowns.Length > 0)
+            {
+                maxPlayerDropdown = dropdowns.FirstOrDefault(d => ContainsAny(d.gameObject.name, "Max", "Player", "Capacity"))
+                    ?? dropdowns.FirstOrDefault();
+            }
+
+            if (gameModeDropdown == null && dropdowns.Length > 1)
+            {
+                gameModeDropdown = dropdowns.FirstOrDefault(d => !ReferenceEquals(d, maxPlayerDropdown) && ContainsAny(d.gameObject.name, "Mode", "GameMode"))
+                    ?? dropdowns.FirstOrDefault(d => !ReferenceEquals(d, maxPlayerDropdown));
+            }
+
+            var toggles = GetComponentsInChildren<Toggle>(true);
+            if (passwordToggle == null)
+            {
+                passwordToggle = toggles.FirstOrDefault(t => ContainsAny(t.gameObject.name, "Password"));
+            }
+
+            if (teamBalanceToggle == null)
+            {
+                teamBalanceToggle = toggles.FirstOrDefault(t => !ReferenceEquals(t, passwordToggle) && ContainsAny(t.gameObject.name, "Team", "Balance"))
+                    ?? toggles.FirstOrDefault(t => !ReferenceEquals(t, passwordToggle));
+            }
+
+            passwordPanel ??= FindNamedTransform(new[] { "PasswordPanel", "Password" })?.gameObject;
+            createButton ??= FindNamedComponent<Button>(new[] { "CreateButton", "Ok" });
+            cancelButton ??= FindNamedComponent<Button>(new[] { "CancelButton", "Cancel" });
+            errorText ??= FindNamedComponent<TextMeshProUGUI>(new[] { "Error" });
+        }
+
+        private T FindNamedComponent<T>(IEnumerable<string> nameHints) where T : Component
+        {
+            return GetComponentsInChildren<T>(true)
+                .FirstOrDefault(component => nameHints.Any(hint => component.gameObject.name.IndexOf(hint, StringComparison.OrdinalIgnoreCase) >= 0));
+        }
+
+        private Transform FindNamedTransform(IEnumerable<string> nameHints)
+        {
+            return GetComponentsInChildren<Transform>(true)
+                .FirstOrDefault(child => nameHints.Any(hint => child.gameObject.name.IndexOf(hint, StringComparison.OrdinalIgnoreCase) >= 0));
+        }
+
+        private static bool ContainsAny(string value, params string[] hints)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            return hints.Any(hint => value.IndexOf(hint, StringComparison.OrdinalIgnoreCase) >= 0);
+        }
+
         // ─── イベントハンドラ ─────────────────────────────────────────
 
         private void OnRoomNameChanged(string value)
@@ -218,10 +285,28 @@ namespace OpenGS
 
         private void OnCreateButtonClicked()
         {
-            if (ValidateInput())
+            if (!ValidateInput())
             {
-                ShowDialog();
+                return;
             }
+
+            if (lobbyScene == null)
+            {
+                lobbyScene = GetComponentInParent<OnlineLobbyScene>();
+                if (lobbyScene == null)
+                {
+                    lobbyScene = FindFirstObjectByType<OnlineLobbyScene>();
+                }
+            }
+
+            if (lobbyScene == null)
+            {
+                ShowError("ロビーシーンが見つからないため部屋を作成できません");
+                Debug.LogWarning("[CreateNewRoomDialog] OnlineLobbyScene was not found.");
+                return;
+            }
+
+            lobbyScene.OnCreateNewRoom(this);
         }
 
         private void OnCancelButtonClicked()

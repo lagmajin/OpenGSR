@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Concurrent;
+using System.Linq;
 using JetBrains.Annotations;
 using OpenGSCore;
 using Newtonsoft.Json.Linq;
@@ -51,6 +52,7 @@ namespace OpenGS
 
         public PlayerDatabase database = new(); // プレイヤー情報データベース
         public PlayerMatchManager PlayerManager { get; set; } = new(); // プレイヤーマッチ管理
+        public List<PlayerInfo> Players { get; } = new();
 
         private ClientNetworkManager _networkManager; // ネットワークマネージャーへの参照
 
@@ -164,16 +166,32 @@ namespace OpenGS
             }
 
             // プレイヤー情報の更新（もしスナップショットに含まれていれば）
-            // 例: JArray playersArray = snapshot.Value<JArray>("Players");
-            // if (playersArray != null) { /* プレイヤーリストを更新 */ }
+            var playersArray = snapshot.Value<JArray>("Players");
+            if (playersArray != null)
+            {
+                ReplacePlayers(ParsePlayers(playersArray));
+            }
         }
 
         public void AddPlayer(OpenGSCore.PlayerInfo info)
         {
             lock (_lockObj)
             {
-                // プレイヤー追加ロジック (クライアントのデータベースやUIに反映)
-                // database.AddPlayer(info);
+                if (info == null || string.IsNullOrWhiteSpace(info.Id))
+                {
+                    return;
+                }
+
+                var existingIndex = Players.FindIndex(player => player != null && player.Id == info.Id);
+                if (existingIndex >= 0)
+                {
+                    Players[existingIndex] = info;
+                }
+                else
+                {
+                    Players.Add(info);
+                }
+
                 Debug.Log($"[MatchRoom] Player {info.Name} ({info.Id}) added locally.");
             }
         }
@@ -193,8 +211,65 @@ namespace OpenGS
 
         public PlayerData MyPlayer()
         {
-            // クライアントのローカルプレイヤー情報を返すロジック
-            return null;
+            var playerId = _networkManager?.ClientPlayerId;
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return null;
+            }
+
+            return database.Player(playerId);
+        }
+
+        public void ReplacePlayers(IEnumerable<PlayerInfo> players)
+        {
+            lock (_lockObj)
+            {
+                Players.Clear();
+                if (players != null)
+                {
+                    Players.AddRange(players.Where(player => player != null && !string.IsNullOrWhiteSpace(player.Id)));
+                }
+            }
+        }
+
+        private static List<PlayerInfo> ParsePlayers(JArray playersArray)
+        {
+            var result = new List<PlayerInfo>();
+            if (playersArray == null)
+            {
+                return result;
+            }
+
+            foreach (var token in playersArray)
+            {
+                if (token is not JObject playerJson)
+                {
+                    continue;
+                }
+
+                var id = playerJson["Id"]?.ToString() ?? playerJson["PlayerID"]?.ToString() ?? "";
+                if (string.IsNullOrWhiteSpace(id))
+                {
+                    continue;
+                }
+
+                var player = new PlayerInfo(id, playerJson["Name"]?.ToString() ?? playerJson["PlayerName"]?.ToString() ?? "Player")
+                {
+                    IsBot = playerJson["IsBot"]?.ToObject<bool>() ?? false,
+                    IsReady = playerJson["IsReady"]?.ToObject<bool>() ?? false,
+                    Kills = playerJson["Kills"]?.ToObject<int>() ?? 0,
+                    Deaths = playerJson["Deaths"]?.ToObject<int>() ?? 0
+                };
+
+                if (System.Enum.TryParse(playerJson["Team"]?.ToString(), true, out OpenGSCore.ETeam team))
+                {
+                    player.Team = team;
+                }
+
+                result.Add(player);
+            }
+
+            return result;
         }
     }
 }

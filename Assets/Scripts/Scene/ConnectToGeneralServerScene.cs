@@ -47,6 +47,8 @@ namespace OpenGS
                 ? OverrideServerAddress
                 : defaultServerAddress;
             var port = ResolveServerPort();
+            OnlineManager.Instance.LobbyServerInfo.IPAddress = serverIP;
+            OnlineManager.Instance.LobbyServerInfo.Port = port;
             Debug.Log($"[ConnectToGeneralServerScene] Connecting to lobby server at {serverIP}:{port}");
 
             if (mediateObject != null && mediateObject.networkManager != null)

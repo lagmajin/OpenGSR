@@ -39,6 +39,7 @@ namespace OpenGS
         // ─── 内部状態 ───────────────────────────────────────────────
 
         private SoundSettings currentSettings;
+        private bool isSubscribedToSettingsChanges;
 
         // ─── Unity ライフサイクル ────────────────────────────────────
 
@@ -50,7 +51,18 @@ namespace OpenGS
 
         private void OnEnable()
         {
+            SettingsManager.Instance.OnSoundSettingsChanged += HandleSoundSettingsChanged;
+            isSubscribedToSettingsChanges = true;
             LoadCurrentSettings();
+        }
+
+        private void OnDisable()
+        {
+            if (isSubscribedToSettingsChanges)
+            {
+                SettingsManager.Instance.OnSoundSettingsChanged -= HandleSoundSettingsChanged;
+                isSubscribedToSettingsChanges = false;
+            }
         }
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -157,6 +169,11 @@ namespace OpenGS
         {
             currentSettings = SettingsManager.Instance.GetSoundSettings();
             UpdateUI();
+        }
+
+        private void HandleSoundSettingsChanged(SoundSettings _)
+        {
+            LoadCurrentSettings();
         }
 
         /// <summary>

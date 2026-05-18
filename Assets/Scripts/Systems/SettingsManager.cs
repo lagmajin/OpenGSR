@@ -293,10 +293,8 @@ namespace OpenGS
         /// </summary>
         private void ApplySoundSettings()
         {
-            // マスターボリューム
-            AudioListener.volume = settings.Sound.MasterVolume;
-
-            Debug.Log($"[SettingsManager] サウンド設定を適用: MasterVolume={settings.Sound.MasterVolume}");
+            SoundManager.Instance.ApplySoundSettings(settings.Sound);
+            Debug.Log($"[SettingsManager] サウンド設定を適用: MasterVolume={settings.Sound.MasterVolume}, BGMVolume={settings.Sound.BGMVolume}, SEVolume={settings.Sound.SEVolume}, MuteAll={settings.Sound.MuteAll}");
         }
     }
 

@@ -27,6 +27,9 @@ namespace OpenGS
         private bool _matchEnded;
         private int _totalDeathEvents;
         private readonly Dictionary<string, int> _teamKills = new();
+        private readonly HashSet<string> _joinedPlayers = new();
+        private string _roomId = "local-match-room";
+        private string _roomName = "Local Match";
 
         public event Action<JObject> MessageProduced;
 
@@ -168,6 +171,9 @@ namespace OpenGS
                 case "PlayerInput":
                     HandlePlayerInput(json);
                     break;
+                case "ClientConnect":
+                    HandleClientConnect(json);
+                    break;
                 case "ShootRequest":
                     HandleShootRequest(json);
                     break;
@@ -205,6 +211,51 @@ namespace OpenGS
         {
             // プレイヤー入力を受け取ったら、他のクライアントにブロードキャスト（今は自分に返す）
             PrettyLogger.Bold("RUDP Server", $"PlayerInput received: {json}");
+        }
+
+        private void HandleClientConnect(JObject json)
+        {
+            var playerId = json["PlayerID"]?.ToString() ?? "local_player";
+            var roomId = json["RoomID"]?.ToString();
+            if (!string.IsNullOrWhiteSpace(roomId))
+            {
+                _roomId = roomId;
+            }
+
+            if (_joinedPlayers.Add(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"ClientConnect: {playerId} joined {_roomId}");
+            }
+
+            var joined = new JObject
+            {
+                ["MessageType"] = "MatchJoined",
+                ["RoomID"] = _roomId,
+                ["RoomName"] = _roomName,
+                ["PlayerID"] = playerId,
+                ["Capacity"] = 8
+            };
+            SendJson(joined);
+
+            var snapshot = new JObject
+            {
+                ["MessageType"] = "Snapshot",
+                ["RoomID"] = _roomId,
+                ["RoomName"] = _roomName,
+                ["IsPlaying"] = true,
+                ["Players"] = BuildPlayersJson(),
+                ["Snapshot"] = new JObject()
+            };
+            SendJson(snapshot);
+
+            var matchStart = new JObject
+            {
+                ["MessageType"] = MessageType.GameStartNotification,
+                ["RoomID"] = _roomId,
+                ["MapName"] = "LocalMap",
+                ["GameMode"] = "DeathMatch"
+            };
+            SendJson(matchStart);
         }
 
         private void HandleShootRequest(JObject json)
@@ -489,6 +540,26 @@ namespace OpenGS
                 }
                 Thread.Sleep(16); // 約60FPS
             }
+        }
+
+        private JArray BuildPlayersJson()
+        {
+            var players = new JArray();
+            foreach (var playerId in _joinedPlayers.OrderBy(id => id, StringComparer.OrdinalIgnoreCase))
+            {
+                players.Add(new JObject
+                {
+                    ["Id"] = playerId,
+                    ["Name"] = playerId,
+                    ["Team"] = ETeam.NoTeam.ToString(),
+                    ["IsReady"] = true,
+                    ["IsBot"] = false,
+                    ["Kills"] = 0,
+                    ["Deaths"] = 0
+                });
+            }
+
+            return players;
         }
 
         public void StopServer()

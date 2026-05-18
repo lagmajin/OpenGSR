@@ -1,7 +1,7 @@
 {
     "unity-editor": {
         "command": "python",
-        "args": ["-u", "mcp_bridge.py"],
+        "args": ["-u", "X:\\dev\\opengsr\\mcp_bridge.py"],
         "env": {}
     }
 }

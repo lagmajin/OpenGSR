@@ -140,6 +140,7 @@ namespace OpenGS
                         var connectMsg = new AIXJsonObject();
                         connectMsg["MessageType"] = "ConnectServerSuccessful";
                         connectMsg["RSAPublicKey"] = "DUMMY_PUBLIC_KEY";
+                        Debug.Log("[LocalTestTcpServer] Sending ConnectServerSuccessful.");
                         SendJsonToClient(connectMsg);
                     }
                     catch (Exception ex)
@@ -471,7 +472,7 @@ namespace OpenGS
         }
         public void SendJsonToClient(JObject obj)
         {
-            if (_connectedClient == null || !_connectedClient.Connected)
+            if (_connectedClient == null)
             {
                 Debug.Log("[TcpServer] No connected client");
                 return;
@@ -504,7 +505,7 @@ namespace OpenGS
 
         public void SendJsonToClient(AIXJsonObject obj)
         {
-            if (_connectedClient == null || !_connectedClient.Connected)
+            if (_connectedClient == null)
             {
                 Debug.Log("[TcpServer] No connected client");
                 return;
@@ -546,8 +547,10 @@ namespace OpenGS
 
             // Use the message type expected by the client-side parser
             obj["MessageType"] = MessageType.LoginResponse;
+            obj["Success"] = true;
             obj["GlobalUserId"] = string.IsNullOrEmpty(userId) ? Guid.NewGuid().ToString("N") : userId;
 
+            Debug.Log($"[LocalTestTcpServer] Sending LoginResponse success=true for userId={obj["GlobalUserId"]}");
             SendJsonToClient(obj);
 
             // Optionally request equipment from client to continue flow

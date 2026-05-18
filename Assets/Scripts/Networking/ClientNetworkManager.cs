@@ -12,11 +12,15 @@ using Newtonsoft.Json;
 using LiteNetLib;
 using LiteNetLib.Utils;
 using OpenGSCore; // OpenGSCoreのMatchRoomMessageなどを使用
+using System.Linq;
 
 namespace OpenGS
 {
     public class ClientNetworkManager : MonoBehaviour
     {
+        public static ClientNetworkManager Instance { get; private set; }
+        private SynchronizationContext _mainThread;
+
         [Header("Server Settings")]
         [SerializeField] private string serverIp = "127.0.0.1";
         [SerializeField] private int tcpPort = 60000; // Lobby TCP
@@ -26,6 +30,8 @@ namespace OpenGS
         [Header("Client State")]
         public string ClientPlayerId { get; private set; } = Guid.NewGuid().ToString("N");
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
+        public bool IsLobbyConnected => _tcpClient != null && _tcpClient.Connected;
+        public bool IsMatchServerConnected => _serverPeer != null && _serverPeer.ConnectionState == ConnectionState.Connected;
 
         // LiteNetLib UDP Client
         private NetManager _netClient;
@@ -50,8 +56,20 @@ namespace OpenGS
         private Coroutine _matchConnectRoutine;
         private bool _matchUdpConnectAttempted;
 
+        public event Action MatchServerConnected;
+        public event Action MatchServerDisconnected;
+
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+            _mainThread = SynchronizationContext.Current;
             _listener = new EventBasedNetListener();
             _netClient = new NetManager(_listener);
             
@@ -78,8 +96,14 @@ namespace OpenGS
 
         private void Start()
         {
-            ConnectToLobbyTcpServer();
-            _matchConnectRoutine = StartCoroutine(ConnectToMatchUdpWhenReady());
+            RefreshConfiguredEndpoints();
+
+            if (!IsLobbyConnected)
+            {
+                ConnectToLobbyTcpServer();
+            }
+
+            EnsureMatchUdpConnection();
         }
 
         private void Update()
@@ -90,7 +114,29 @@ namespace OpenGS
 
         private void OnDestroy()
         {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+
             DisconnectAll();
+        }
+
+        public static ClientNetworkManager EnsureExists()
+        {
+            if (Instance != null)
+            {
+                return Instance;
+            }
+
+            var existing = FindFirstObjectByType<ClientNetworkManager>();
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            var go = new GameObject(nameof(ClientNetworkManager));
+            return go.AddComponent<ClientNetworkManager>();
         }
 
         #region TCP Lobby Connection
@@ -99,6 +145,12 @@ namespace OpenGS
         {
             try
             {
+                if (IsLobbyConnected)
+                {
+                    return;
+                }
+
+                RefreshConfiguredEndpoints();
                 _tcpClient = new TcpClient();
                 Debug.Log($"[ClientNetwork] Connecting to Lobby TCP {serverIp}:{tcpPort}...");
                 await _tcpClient.ConnectAsync(serverIp, tcpPort);
@@ -337,11 +389,7 @@ namespace OpenGS
             }
 
             Debug.Log($"[ClientNetwork] MatchServerInfo received: {OnlineManager.Instance.MatchServerInfo.IP}:{OnlineManager.Instance.MatchServerInfo.UdpPort ?? OnlineManager.Instance.MatchServerInfo.Port}");
-
-            if (!_matchUdpConnectAttempted && _matchConnectRoutine == null)
-            {
-                _matchConnectRoutine = StartCoroutine(ConnectToMatchUdpWhenReady());
-            }
+            EnsureMatchUdpConnection();
         }
 
         public void SendFriendRequest(string targetPlayerId)
@@ -487,6 +535,7 @@ namespace OpenGS
                 return;
             }
 
+            RefreshConfiguredEndpoints();
             var matchInfo = OnlineManager.Instance.MatchServerInfo;
             var resolvedIp = !string.IsNullOrWhiteSpace(matchInfo.IP) ? matchInfo.IP : serverIp;
             var resolvedUdpPort = matchInfo.UdpPort ?? matchInfo.Port ?? udpPort;
@@ -503,12 +552,14 @@ namespace OpenGS
         {
             _serverPeer = peer;
             Debug.Log("[ClientNetwork] Connected to Match UDP server.");
+            RunOnMainThread(() => MatchServerConnected?.Invoke());
 
             // サーバーにクライアントのPlayerIDを通知 (サーバー側のOnPeerConnectedでID取得できない場合のため)
             SendUdpInput(new JObject
             {
                 ["MessageType"] = "ClientConnect",
-                ["PlayerID"] = ClientPlayerId
+                ["PlayerID"] = ClientPlayerId,
+                ["RoomID"] = CurrentMatchRoomId
             }, DeliveryMethod.ReliableOrdered);
         }
 
@@ -516,6 +567,7 @@ namespace OpenGS
         {
             Debug.Log($"[ClientNetwork] Disconnected from Match UDP server: {disconnectInfo.Reason}");
             _serverPeer = null;
+            RunOnMainThread(() => MatchServerDisconnected?.Invoke());
         }
 
         private void OnNetworkError(IPEndPoint endPoint, SocketError socketError)
@@ -529,7 +581,7 @@ namespace OpenGS
             {
                 string jsonString = reader.GetString();
                 JObject message = JObject.Parse(jsonString);
-                ProcessUdpMessage(message);
+                RunOnMainThread(() => ProcessUdpMessage(message));
             }
             catch (Exception ex)
             {
@@ -553,12 +605,24 @@ namespace OpenGS
                     }
                     else
                     {
-                        Debug.LogWarning("[ClientNetwork] Received Snapshot but MatchRoom is not ready.");
+                        var roomId = message.GetStringOrNull("RoomID");
+                        EnsureOnlineMatchRoomExists(roomId);
+                        if (_matchRoomManager != null && _matchRoomManager.OnlineMatchRoom != null)
+                        {
+                            _matchRoomManager.OnlineMatchRoom.PushInput(message);
+                        }
+                        else
+                        {
+                            Debug.LogWarning("[ClientNetwork] Received Snapshot but MatchRoom could not be initialized.");
+                        }
                     }
                     break;
                 case "MatchJoined":
-                    CurrentMatchRoomId = message.GetStringOrNull("RoomID");
-                    Debug.Log($"[ClientNetwork] Joined Match Room: {CurrentMatchRoomId}");
+                    HandleMatchJoined(message);
+                    break;
+                case MessageType.GameStartNotification:
+                    EnsureOnlineMatchRoomExists(message.GetStringOrNull("RoomID"));
+                    _matchRoomManager?.OnlineMatchRoom?.StartMatch();
                     break;
                 // 他のUDPメッセージタイプをここで処理
                 default:
@@ -594,6 +658,169 @@ namespace OpenGS
             _tcpClient?.Close();
             _tcpClient?.Dispose();
             Debug.Log("[ClientNetwork] Disconnected from all servers.");
+        }
+
+        private void HandleMatchJoined(JObject message)
+        {
+            CurrentMatchRoomId = message.GetStringOrNull("RoomID");
+            EnsureOnlineMatchRoomExists(CurrentMatchRoomId);
+
+            var roomName = message.GetStringOrNull("RoomName");
+            if (_matchRoomManager?.OnlineMatchRoom != null)
+            {
+                if (!string.IsNullOrWhiteSpace(roomName))
+                {
+                    _matchRoomManager.OnlineMatchRoom.RoomName = roomName;
+                }
+
+                var capacity = message["Capacity"]?.ToObject<int?>();
+                if (capacity.HasValue && capacity.Value > 0)
+                {
+                    _matchRoomManager.OnlineMatchRoom.Capacity = capacity.Value;
+                }
+
+                _matchRoomManager.OnlineMatchRoom.ReplacePlayers(ResolveMatchPlayers());
+            }
+
+            Debug.Log($"[ClientNetwork] Joined Match Room: {CurrentMatchRoomId}");
+        }
+
+        private void EnsureOnlineMatchRoomExists(string roomId)
+        {
+            if (_matchRoomManager == null)
+            {
+                try
+                {
+                    _matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+                }
+                catch
+                {
+                    _matchRoomManager = null;
+                }
+            }
+
+            if (_matchRoomManager == null || _matchRoomManager.OnlineMatchRoom != null)
+            {
+                return;
+            }
+
+            _matchRoomManager.CreateNewOnlineMatchRoom(roomId);
+            _matchRoomManager.OnlineMatchRoom?.ReplacePlayers(ResolveMatchPlayers());
+        }
+
+        private List<PlayerInfo> ResolveMatchPlayers()
+        {
+            var players = new List<PlayerInfo>();
+            try
+            {
+                var waitRoomManager = DependencyInjectionConfig.Resolve<WaitRoomManager>();
+                var waitRoomPlayers = waitRoomManager?.WaitRoom?.PlayerList;
+                if (waitRoomPlayers != null && waitRoomPlayers.Count > 0)
+                {
+                    players.AddRange(waitRoomPlayers
+                        .Where(player => player != null && !string.IsNullOrWhiteSpace(player.Id))
+                        .Select(ClonePlayerInfo));
+                }
+            }
+            catch
+            {
+            }
+
+            if (players.Count == 0)
+            {
+                players.Add(BuildLocalPlayerInfo());
+            }
+
+            return players;
+        }
+
+        private PlayerInfo BuildLocalPlayerInfo()
+        {
+            var source = AccountManager.Instance.PlayerInfo;
+            var cloned = ClonePlayerInfo(source);
+            cloned.Id = string.IsNullOrWhiteSpace(cloned.Id) ? ClientPlayerId : cloned.Id;
+            cloned.Name = string.IsNullOrWhiteSpace(cloned.Name) ? "Player" : cloned.Name;
+            return cloned;
+        }
+
+        private static PlayerInfo ClonePlayerInfo(PlayerInfo source)
+        {
+            if (source == null)
+            {
+                return new PlayerInfo();
+            }
+
+            return new PlayerInfo(source.Id, source.Name, source.CurrentIp, source.Level, source.Exp, source.Health, source.AttackPower, source.DefensePower)
+            {
+                MaxHealth = source.MaxHealth,
+                Ping = source.Ping,
+                playerCharacter = source.playerCharacter,
+                Team = source.Team,
+                IsReady = source.IsReady,
+                Kills = source.Kills,
+                Deaths = source.Deaths,
+                IsBot = source.IsBot
+            };
+        }
+
+        public void EnsureMatchUdpConnection()
+        {
+            if (IsMatchServerConnected || _matchUdpConnectAttempted)
+            {
+                return;
+            }
+
+            if (_matchConnectRoutine == null)
+            {
+                _matchConnectRoutine = StartCoroutine(ConnectToMatchUdpWhenReady());
+            }
+        }
+
+        private void RefreshConfiguredEndpoints()
+        {
+            var lobbyInfo = OnlineManager.Instance.LobbyServerInfo;
+            if (!string.IsNullOrWhiteSpace(lobbyInfo.IPAddress))
+            {
+                serverIp = lobbyInfo.IPAddress;
+            }
+
+            if (lobbyInfo.Port.HasValue)
+            {
+                tcpPort = lobbyInfo.Port.Value;
+            }
+
+            var matchInfo = OnlineManager.Instance.MatchServerInfo;
+            if (!string.IsNullOrWhiteSpace(matchInfo.IP))
+            {
+                serverIp = matchInfo.IP;
+            }
+
+            if (matchInfo.Port.HasValue)
+            {
+                matchTcpPort = matchInfo.Port.Value;
+            }
+
+            if (matchInfo.UdpPort.HasValue)
+            {
+                udpPort = matchInfo.UdpPort.Value;
+            }
+        }
+
+        private void RunOnMainThread(Action action)
+        {
+            if (action == null)
+            {
+                return;
+            }
+
+            var context = _mainThread ?? SynchronizationContext.Current;
+            if (context == null || context == SynchronizationContext.Current)
+            {
+                action();
+                return;
+            }
+
+            context.Post(_ => action(), null);
         }
     }
 

@@ -50,11 +50,13 @@ Example config for Claude Code or other stdio MCP clients:
 {
   "unity-editor": {
     "command": "python",
-    "args": ["-u", "mcp_bridge.py"],
+    "args": ["-u", "X:\\dev\\opengsr\\mcp_bridge.py"],
     "env": {}
   }
 }
 ```
+
+On Windows, prefer an absolute path to `mcp_bridge.py`. Some MCP launchers do not start the process with the project root as the working directory, and `python -u mcp_bridge.py` will exit before replying to `initialize` if the relative path cannot be resolved.
 
 The bridge expects Unity to already be running with the MCP server enabled.
 
@@ -71,7 +73,7 @@ If your Codex environment accepts a local JSON tool config, point it at:
 
 That file launches:
 
-- `python -u mcp_bridge.py`
+- `python -u X:\dev\opengsr\mcp_bridge.py`
 
 Which forwards to the Unity TCP server on:
 

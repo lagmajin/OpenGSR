@@ -96,6 +96,35 @@ namespace OpenGS
         public bool IsBgmPlaying() => SimpleAudioManager.Instance.IsPlayingBGM();
         public bool IsBgmPlaying(string bgmName) => SimpleAudioManager.Instance.IsPlayingBGM(bgmName);
         public bool IsBgmPlaying(EBgm bgm) => SimpleAudioManager.Instance.IsPlayingBGM(bgm.ToString());
+
+        public void ApplySoundSettings(SoundSettings settings)
+        {
+            if (settings == null)
+            {
+                return;
+            }
+
+            var masterVolume = settings.MuteAll ? 0f : Mathf.Clamp01(settings.MasterVolume);
+            AudioListener.volume = masterVolume;
+            SimpleAudioManager.Instance.SetBGMVolume(Mathf.Clamp01(settings.BGMVolume));
+            SimpleAudioManager.Instance.SetSEVolume(Mathf.Clamp01(settings.SEVolume));
+        }
+
+        public void SetMasterVolume(float volume)
+        {
+            AudioListener.volume = Mathf.Clamp01(volume);
+        }
+
+        public void SetBgmVolume(float volume)
+        {
+            SimpleAudioManager.Instance.SetBGMVolume(Mathf.Clamp01(volume));
+        }
+
+        public void SetSeVolume(float volume)
+        {
+            SimpleAudioManager.Instance.SetSEVolume(Mathf.Clamp01(volume));
+        }
+
         public void EnsureBgm(EBgm bgm, float fadeTime = -1f)
         {
             if (IsBgmPlaying(bgm))

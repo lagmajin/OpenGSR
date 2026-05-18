@@ -35,6 +35,8 @@ namespace OpenGS
         private readonly HashSet<string> completedPlayerIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private bool localLoadingCompleted;
         private bool enterMapAllowed;
+        private bool matchServerConnected;
+        private ClientNetworkManager clientNetworkManager;
 
         private void Awake()
         {
@@ -49,8 +51,13 @@ namespace OpenGS
             completedPlayerIds.Clear();
             localLoadingCompleted = false;
             enterMapAllowed = false;
+            matchServerConnected = false;
             count = 0f;
             EnsureLoadingBgm();
+            clientNetworkManager = ClientNetworkManager.EnsureExists();
+            clientNetworkManager.MatchServerConnected += OnMatchServerConnected;
+            clientNetworkManager.MatchServerDisconnected += OnMatchServerDisconnected;
+            matchServerConnected = clientNetworkManager.IsMatchServerConnected;
 
             networkManager?.SendLoadingSceneEntered();
             TryConnectToMatchServer();
@@ -62,6 +69,11 @@ namespace OpenGS
         void OnDisable()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
+            if (clientNetworkManager != null)
+            {
+                clientNetworkManager.MatchServerConnected -= OnMatchServerConnected;
+                clientNetworkManager.MatchServerDisconnected -= OnMatchServerDisconnected;
+            }
         }
 
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -145,15 +157,13 @@ namespace OpenGS
 
         public void TryConnectToMatchServer()
         {
-            if (networkManager == null)
-            {
-                return;
-            }
-
-            if (!OnlineManager.Instance.MatchServerInfo.HasEndpoint())
+            if (!OnlineManager.Instance.MatchServerInfo.HasEndpoint() && networkManager != null)
             {
                 networkManager.SendMatchServerInfoRequest();
             }
+
+            clientNetworkManager ??= ClientNetworkManager.EnsureExists();
+            clientNetworkManager.EnsureMatchUdpConnection();
         }
 
         public void OnMatchLoadingCompleted()
@@ -173,6 +183,13 @@ namespace OpenGS
 
         public void OnMatchServerConnected()
         {
+            matchServerConnected = true;
+            TryEnterMap();
+        }
+
+        private void OnMatchServerDisconnected()
+        {
+            matchServerConnected = false;
         }
 
         public void OnLoadingFailed()
@@ -258,7 +275,7 @@ namespace OpenGS
 
         private void TryEnterMap()
         {
-            if (!localLoadingCompleted || !enterMapAllowed || _sceneLoadOp == null)
+            if (!localLoadingCompleted || !enterMapAllowed || _sceneLoadOp == null || !matchServerConnected)
             {
                 return;
             }

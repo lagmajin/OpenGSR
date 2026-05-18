@@ -48,7 +48,11 @@ namespace OpenGS
                 if (OnlineWaitRoom != null)
                 {
                     Debug.Log("OnlineMatchRoom created...");
-                    OnlineMatchRoom = new MatchRoom("");
+                    OnlineMatchRoom = new MatchRoom(string.IsNullOrWhiteSpace(id) ? Guid.NewGuid().ToString() : id)
+                    {
+                        RoomName = string.IsNullOrWhiteSpace(OnlineWaitRoom.RoomName) ? "Online Match" : OnlineWaitRoom.RoomName,
+                        Capacity = OnlineWaitRoom.Capacity
+                    };
                 }
             }
         }
@@ -65,7 +69,11 @@ namespace OpenGS
                 if (OnlineWaitRoom != null)
                 {
                     Debug.Log("OnlineMatchRoom created...");
-                    OnlineMatchRoom = new MatchRoom("");
+                    OnlineMatchRoom = new MatchRoom(Guid.NewGuid().ToString())
+                    {
+                        RoomName = string.IsNullOrWhiteSpace(OnlineWaitRoom.RoomName) ? "Online Match" : OnlineWaitRoom.RoomName,
+                        Capacity = OnlineWaitRoom.Capacity
+                    };
                 }
             }
         }
