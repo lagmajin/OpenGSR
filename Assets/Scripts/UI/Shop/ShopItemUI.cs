@@ -10,6 +10,7 @@ namespace OpenGS
     public class ShopItemUI : MonoBehaviour
     {
         [SerializeField] private Image iconImage;
+        [SerializeField] private Image accentImage;
         [SerializeField] private TextMeshProUGUI nameText;
         [SerializeField] private TextMeshProUGUI priceText;
         [SerializeField] private TextMeshProUGUI stateText;
@@ -25,12 +26,23 @@ namespace OpenGS
             itemData = data;
             onSelected = callback;
 
-            if (iconImage != null) iconImage.sprite = data.icon;
+            if (iconImage != null)
+            {
+                iconImage.sprite = data.icon;
+                iconImage.color = data.category == EShopCategory.Booster ? data.itemColor : Color.white;
+            }
+            if (accentImage != null)
+            {
+                accentImage.color = data.category == EShopCategory.Booster ? data.itemColor : Color.clear;
+            }
             if (nameText != null) nameText.text = data.itemName;
             if (priceText != null) priceText.text = $"{data.price} CR";
 
-            selectButton.onClick.RemoveAllListeners();
-            selectButton.onClick.AddListener(() => onSelected?.Invoke(itemData));
+            if (selectButton != null)
+            {
+                selectButton.onClick.RemoveAllListeners();
+                selectButton.onClick.AddListener(() => onSelected?.Invoke(itemData));
+            }
         }
 
         public void RefreshState(bool purchased, bool equipped)

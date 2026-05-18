@@ -67,12 +67,20 @@ namespace OpenGS
 
         private void LoadEquippedSettings()
         {
-            if (shopMasterData == null) return;
-
             string equippedId = UserSaveManager.GetEquippedId(EShopCategory.Booster);
             if (string.IsNullOrEmpty(equippedId)) return;
 
-            var data = shopMasterData.GetItemById(equippedId);
+            ShopItemData data = null;
+            if (shopMasterData != null)
+            {
+                data = shopMasterData.GetItemById(equippedId);
+            }
+
+            if (data == null)
+            {
+                data = ShopCatalogFactory.GetDefaultItemById(equippedId);
+            }
+
             if (data != null)
             {
                 boostColor = data.itemColor;

@@ -17,6 +17,7 @@ namespace OpenGS
     /// </summary>
     public class PlayerEquipLoader
     {
+        private const int InstantItemSlotCount = 3;
         private const int SAVE_VERSION = 1;
         private readonly string _fileName;
 
@@ -30,7 +31,7 @@ namespace OpenGS
             var fallback = new PlayerEquipData
             {
                 PlayerCharacter = EPlayerCharacter.Ami,
-                InstantItemSlots = Array.Empty<EInstantItemType>()
+                InstantItemSlots = Enumerable.Repeat(EInstantItemType.None, InstantItemSlotCount).ToArray()
             };
 
             var jObj = JsonStorage.LoadVersioned<JObject>(
@@ -63,7 +64,19 @@ namespace OpenGS
 
                 var items = itemArray != null
                     ? itemArray.Select(t => Enum.TryParse(t?.ToString(), out EInstantItemType type) ? type : default).ToArray()
-                    : Array.Empty<EInstantItemType>();
+                    : Enumerable.Repeat(EInstantItemType.None, InstantItemSlotCount).ToArray();
+
+                if (items.Length != InstantItemSlotCount)
+                {
+                    var normalized = Enumerable.Repeat(EInstantItemType.None, InstantItemSlotCount).ToArray();
+                    var copyLength = Mathf.Min(items.Length, normalized.Length);
+                    for (var index = 0; index < copyLength; index++)
+                    {
+                        normalized[index] = items[index];
+                    }
+
+                    items = normalized;
+                }
 
                 return new PlayerEquipData
                 {

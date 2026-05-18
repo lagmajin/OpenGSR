@@ -79,6 +79,10 @@ namespace OpenGS
             {
                 return UserSaveManager.GetEquippedInSlot(category, slot) == itemId;
             }
+            if (category == EShopCategory.Weapon)
+            {
+                return UserSaveManager.IsFavoriteWeapon(itemId);
+            }
             return UserSaveManager.GetEquippedId(category) == itemId;
         }
     }

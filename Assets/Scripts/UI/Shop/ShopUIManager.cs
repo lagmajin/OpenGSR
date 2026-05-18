@@ -13,6 +13,8 @@ namespace OpenGS
     /// </summary>
     public class ShopUIManager : MonoBehaviour
     {
+        private const int InstantItemSlotCount = 3;
+
         [Header("UI Containers")]
         [SerializeField] private Transform itemGridRoot;
         [SerializeField] private GameObject itemPrefab;
@@ -31,6 +33,8 @@ namespace OpenGS
         [SerializeField] private GameObject slotSelectionRoot;
         [SerializeField] private Button[] slotButtons; // 3個のボタン
         [SerializeField] private Image[] slotButtonImages;
+        [SerializeField] private TextMeshProUGUI[] slotButtonTexts;
+        [SerializeField] private TextMeshProUGUI slotSummaryText;
         [SerializeField] private Color selectedSlotColor = Color.yellow;
         [SerializeField] private Color normalSlotColor = Color.white;
 
@@ -79,10 +83,16 @@ namespace OpenGS
 
             if (actionButton) actionButton.onClick.AddListener(() => OnActionClicked().Forget());
 
-            for (int i = 0; i < slotButtons.Length; i++)
+            if (slotButtons != null)
             {
-                int index = i;
-                slotButtons[i].onClick.AddListener(() => SelectSlot(index));
+                for (int i = 0; i < slotButtons.Length; i++)
+                {
+                    int index = i;
+                    if (slotButtons[i] != null)
+                    {
+                        slotButtons[i].onClick.AddListener(() => SelectSlot(index));
+                    }
+                }
             }
 
             if (detailPanel) detailPanel.SetActive(false);
@@ -100,22 +110,53 @@ namespace OpenGS
         {
             UpdateCreditsDisplay();
             UpdateButtonState();
+            UpdateSlotSummary();
             RefreshItemStates();
         }
 
         private void SelectSlot(int index)
         {
-            currentSelectedSlot = index;
+            currentSelectedSlot = Mathf.Clamp(index, 0, InstantItemSlotCount - 1);
             UpdateSlotButtonsVisual();
+            UpdateSlotSummary();
             UpdateButtonState();
         }
 
         private void UpdateSlotButtonsVisual()
         {
-            for (int i = 0; i < slotButtonImages.Length; i++)
+            if (slotButtons != null)
             {
-                if (slotButtonImages[i] != null)
-                    slotButtonImages[i].color = (i == currentSelectedSlot) ? selectedSlotColor : normalSlotColor;
+                for (int i = 0; i < slotButtons.Length; i++)
+                {
+                    if (slotButtons[i] != null)
+                    {
+                        slotButtons[i].interactable = true;
+                    }
+                }
+            }
+
+            if (slotButtonImages != null)
+            {
+                for (int i = 0; i < slotButtonImages.Length; i++)
+                {
+                    if (slotButtonImages[i] != null)
+                    {
+                        slotButtonImages[i].color = (i == currentSelectedSlot) ? selectedSlotColor : normalSlotColor;
+                    }
+                }
+            }
+
+            if (slotButtonTexts != null)
+            {
+                for (int i = 0; i < slotButtonTexts.Length; i++)
+                {
+                    if (slotButtonTexts[i] != null)
+                    {
+                        var labelIndex = i + 1;
+                        slotButtonTexts[i].text = $"SLOT {labelIndex}";
+                        slotButtonTexts[i].color = (i == currentSelectedSlot) ? selectedSlotColor : normalSlotColor;
+                    }
+                }
             }
         }
 
@@ -169,6 +210,7 @@ namespace OpenGS
             {
                 detailPanel.SetActive(true);
                 if (detailIcon) detailIcon.sprite = item.icon;
+                if (detailIcon) detailIcon.color = item.category == EShopCategory.Booster ? item.itemColor : Color.white;
                 if (detailName) detailName.text = item.itemName;
                 if (detailDescription) detailDescription.text = item.description;
                 if (detailPrice) detailPrice.text = $"PRICE: {item.price} CR";
@@ -215,6 +257,8 @@ namespace OpenGS
                 actionButtonText.text = equipped ? "EQUIPPED" : "EQUIP";
                 actionButton.interactable = !equipped;
             }
+
+            UpdateSlotSummary();
         }
 
         private async UniTaskVoid OnActionClicked()
@@ -274,6 +318,37 @@ namespace OpenGS
                 var equipped = shopService.IsEquipped(itemData.id, itemData.category, currentSelectedSlot);
                 itemUi.RefreshState(purchased, equipped);
             }
+        }
+
+        private void UpdateSlotSummary()
+        {
+            if (slotSummaryText == null)
+            {
+                return;
+            }
+
+            var equippedItems = UserSaveManager.GetEquippedInstantItems();
+            if (equippedItems == null || equippedItems.Length == 0)
+            {
+                slotSummaryText.text = "SLOT 1-3: EMPTY";
+                return;
+            }
+
+            var lines = new List<string>();
+            for (var index = 0; index < Mathf.Min(InstantItemSlotCount, equippedItems.Length); index++)
+            {
+                var itemId = equippedItems[index];
+                var displayName = "EMPTY";
+                if (!string.IsNullOrWhiteSpace(itemId))
+                {
+                    var catalogItem = ShopCatalogFactory.GetDefaultItemById(itemId);
+                    displayName = catalogItem != null ? catalogItem.itemName : itemId;
+                }
+
+                lines.Add($"SLOT {index + 1}: {displayName}");
+            }
+
+            slotSummaryText.text = string.Join("\n", lines);
         }
     }
 }
