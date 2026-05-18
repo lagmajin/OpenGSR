@@ -31,7 +31,7 @@ namespace OpenGS
 
         protected override void GoToNextScene()
         {
-            SceneManager.LoadScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
+            RequestSceneTransition(GeneralSceneMasterData.Instance().OfflineWaitRoomScene(), "ResultToOfflineWaitRoom");
         }
 
         private static string ResolveMyTeam(JObject result)

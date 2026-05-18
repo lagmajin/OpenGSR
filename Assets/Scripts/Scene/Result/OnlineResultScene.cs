@@ -114,15 +114,14 @@ namespace OpenGS
 
         protected override void GoToNextScene()
         {
-            // オンライン版は、結果確認後オンラインのウェイトルームに戻る
-            // 正しいオンラインウェイトルームのシーン名は OnlineWaitRoom
-            SceneManager.LoadScene(GeneralSceneMasterData.Instance().OnlineWaitRoomScene());
-
-            // リザルトデータをクリア（次の試合のために）
-            if (networkManager != null)
+            var nextScene = GeneralSceneMasterData.Instance().OnlineWaitRoomScene();
+            RequestSceneTransition(nextScene, () =>
             {
-                networkManager.ClearLastMatchResult();
-            }
+                if (networkManager != null)
+                {
+                    networkManager.ClearLastMatchResult();
+                }
+            }, "ResultToWaitRoom");
         }
 
         public void TestFunc() {}

@@ -1,11 +1,10 @@
-﻿using System.Threading;
+using System.Threading;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 using Sirenix.Serialization;
 using System.ComponentModel;
-
 
 #pragma warning disable 0414
 #pragma warning disable 0219
@@ -19,21 +18,24 @@ namespace OpenGS
         private bool connectSucceeded = false;
         private bool isTimeout = false;
         private int reCconectCount = 0;
-        [SerializeField]private int maxReconnectCount = 3;
+        [SerializeField] private int maxReconnectCount = 3;
 
         private bool moveFlag = false;
 
-
         public bool isOverrideServerAddress = false;
-        [SerializeField]public string OverrideServerAddress;
+        [SerializeField] public string OverrideServerAddress;
         [SerializeField] private string defaultServerAddress = "127.0.0.1";
         [SerializeField] private int defaultServerPort = 60000;
-
-
 
         [SerializeField] private ConnectToLobbyServerSceneMediateObject mediateObject;
 
         //[Required][OdinSerialize] public ConnectToLobbyNetworkManager networkManager;
+
+        protected override void Awake()
+        {
+            sceneMediateObject = mediateObject;
+            base.Awake();
+        }
 
         void Start()
         {
@@ -44,7 +46,8 @@ namespace OpenGS
             var serverIP = isOverrideServerAddress && !string.IsNullOrWhiteSpace(OverrideServerAddress)
                 ? OverrideServerAddress
                 : defaultServerAddress;
-            var port = defaultServerPort;
+            var port = ResolveServerPort();
+            Debug.Log($"[ConnectToGeneralServerScene] Connecting to lobby server at {serverIP}:{port}");
 
             if (mediateObject != null && mediateObject.networkManager != null)
             {
@@ -53,7 +56,22 @@ namespace OpenGS
             else
             {
                 Debug.LogWarning("ConnectToGeneralServerScene: mediateObject or networkManager is null.");
+                GoToLobby();
             }
+        }
+
+        private int ResolveServerPort()
+        {
+            DebugSettingsManager.EnsureLoaded();
+            var settings = DebugSettingsManager.settings;
+            if (settings != null && settings.localTCPPort > 0)
+            {
+                Debug.Log($"[ConnectToGeneralServerScene] Using debug settings TCP port: {settings.localTCPPort}");
+                return settings.localTCPPort;
+            }
+
+            Debug.Log($"[ConnectToGeneralServerScene] Using default TCP port: {defaultServerPort}");
+            return defaultServerPort;
         }
 
         private void EnsureTitleBgm()
@@ -68,33 +86,23 @@ namespace OpenGS
             SoundManager.Instance.EnsureBgm(EBgm.Title, 0f);
         }
 
-
-
         void Update()
         {
-
-
-
-
         }
 
         void OnDestroy()
         {
             //networkManager.DisconnectFromServer();
-
-
-            
         }
 
         void LoginSucceeded()
         {
-           // BacktoTitle();
+            // BacktoTitle();
         }
 
         void LoginFail()
         {
             //BacktoTitle();
-
         }
 
         public void Timeout()
@@ -104,28 +112,20 @@ namespace OpenGS
             PlayBeep();
 
             //BacktoTitle();
-
         }
 
         public void OnConnected()
         {
- 
-            //mediateObject.networkManager.
-
-            //GoToLobby();
-
-
+            Debug.Log("[ConnectToGeneralServerScene] Connected to lobby server.");
         }
 
         public void OnDisconnected()
         {
-
         }
 
         public void OnLoginFailed()
         {
             //soundManager.PlayBeep();
-
             BackToTitle();
         }
 
@@ -136,13 +136,16 @@ namespace OpenGS
 
         public void EnterServerAccepted()
         {
-
             connectSucceeded = true;
+            if (!moveFlag)
+            {
+                moveFlag = true;
+                GoToLobby();
+            }
         }
 
         public void KickFromServer()
         {
-
         }
 
         public ConnectToLobbyNetworkManager NetworkManagerScript()
@@ -155,7 +158,6 @@ namespace OpenGS
             Debug.Log("BackToTitle");
             GameFlagsManager.GetInstance().BeforeSceneName = "ConnectToServerScene";
             GoToTitleScene();
-
         }
 
         public override SynchronizationContext MainThread()
@@ -165,36 +167,12 @@ namespace OpenGS
 
         public override void GoToLobby()
         {
-            var context = MainThread();
-            context.Post(__ =>
-            {
-
-                var lobbyScene = generalSceneMasterData != null ? generalSceneMasterData.LobbyScene() : GeneralSceneMasterData.Instance().LobbyScene();
-                var asyncOperation = SceneManager.LoadSceneAsync(lobbyScene);
-
-                asyncOperation.completed += (operation) =>
-                {
-                    if (operation.isDone)
-                    {
-                        Debug.Log("LobbySceneのロードが完了しました");
-                    }
-                    else
-                    {
-                        Debug.LogError("LobbySceneのロードが失敗しました");
-                    }
-                };
-
-            }, null);
-
+            GameFlagsManager.GetInstance().BeforeSceneName = "ConnectToServerScene";
+            base.GoToLobby();
         }
 
         void PlayBeep()
         {
-
-
         }
-
     }
-
-
 }
