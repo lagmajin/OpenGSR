@@ -37,6 +37,10 @@ So the design already expects the player to:
 - equip instant items into slots
 - trigger them from input
 - forward the action into match logic
+- bring up to 3 instant items into a match
+
+This makes the instant-item system a pre-match loadout layer, not a separate
+shop-only concept.
 
 ### Grenades And Booster
 
@@ -92,4 +96,3 @@ If we want to make the item system real, the next milestone should likely be:
 2. wire `UseItem` from input to match logic
 3. make item consumption update player state and UI
 4. keep field-item pickup and instant-item usage consistent
-

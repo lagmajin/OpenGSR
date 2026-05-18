@@ -245,6 +245,7 @@ The intended item model is:
 
 - field pickups that spawn in the arena
 - slot-based instant items that can be consumed from input
+- each player can bring up to 3 instant items into a match
 - combat resources such as grenades and booster fuel
 - shop ownership and equipment state that persist between matches
 
