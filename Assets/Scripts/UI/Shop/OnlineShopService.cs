@@ -118,7 +118,11 @@ namespace OpenGS
         {
             return serverManager != null
                 ? serverManager.IsEquipped(itemId, category, slot)
-                : UserSaveManager.IsEquippedAtAnySlot(itemId, category);
+                : (category == EShopCategory.InstantItem
+                    ? UserSaveManager.GetEquippedInSlot(category, slot) == itemId
+                    : category == EShopCategory.Weapon
+                        ? UserSaveManager.IsFavoriteWeapon(itemId)
+                        : UserSaveManager.GetEquippedId(category) == itemId);
         }
     }
 }

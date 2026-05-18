@@ -32,9 +32,9 @@ namespace OpenGS
                     }
                     break;
                 case EShopCategory.Booster:
-                    items.Add(CreateBoosterItem("BoostRed", "Red Booster", "Boosts jet color and vibe.", 400, Color.red));
-                    items.Add(CreateBoosterItem("BoostBlue", "Blue Booster", "Calm and stable boost color.", 400, Color.cyan));
-                    items.Add(CreateBoosterItem("BoostGreen", "Green Booster", "Fresh green booster pack.", 400, Color.green));
+                    items.Add(CreateBoosterItem("BoostRed", "Red Booster", "Cosmetic booster. Changes the jet flame color only.", 400, Color.red));
+                    items.Add(CreateBoosterItem("BoostBlue", "Blue Booster", "Cosmetic booster. Changes the jet flame color only.", 400, Color.cyan));
+                    items.Add(CreateBoosterItem("BoostGreen", "Green Booster", "Cosmetic booster. Changes the jet flame color only.", 400, Color.green));
                     break;
                 case EShopCategory.Character:
                     foreach (var character in GetDefaultCharacters())

@@ -28,6 +28,7 @@ namespace OpenGS
     /// </summary>
     public static class UserSaveManager
     {
+        private const int InstantItemSlotCount = 3;
         private const int SAVE_VERSION = 2;
         private const string SAVE_FILE = "UserData.json";
         private static UserSaveData data;
@@ -46,6 +47,7 @@ namespace OpenGS
                 {
                     // Backward compatibility for non-versioned legacy files.
                     data = JsonStorage.Load<UserSaveData>(SAVE_FILE, new UserSaveData());
+                    NormalizeInstantItemSlots(data);
                     JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
                 }
             }
@@ -65,7 +67,44 @@ namespace OpenGS
                 migrated.equippedCharacter = "";
             }
 
+            NormalizeInstantItemSlots(migrated);
+
             return migrated;
+        }
+
+        private static void NormalizeInstantItemSlots(UserSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            if (saveData.equippedInstantItems == null || saveData.equippedInstantItems.Length != InstantItemSlotCount)
+            {
+                var normalized = new string[InstantItemSlotCount];
+                for (var index = 0; index < normalized.Length; index++)
+                {
+                    normalized[index] = string.Empty;
+                }
+
+                if (saveData.equippedInstantItems != null)
+                {
+                    var copyLength = Mathf.Min(saveData.equippedInstantItems.Length, normalized.Length);
+                    for (var index = 0; index < copyLength; index++)
+                    {
+                        normalized[index] = saveData.equippedInstantItems[index] ?? string.Empty;
+                    }
+                }
+
+                saveData.equippedInstantItems = normalized;
+            }
+            else
+            {
+                for (var index = 0; index < saveData.equippedInstantItems.Length; index++)
+                {
+                    saveData.equippedInstantItems[index] = saveData.equippedInstantItems[index] ?? string.Empty;
+                }
+            }
         }
 
         public static bool IsPurchased(string itemId)
@@ -112,6 +151,7 @@ namespace OpenGS
             }
 
             LoadData();
+            NormalizeInstantItemSlots(data);
 
             if (category == EShopCategory.Character)
             {
@@ -144,6 +184,7 @@ namespace OpenGS
         public static string GetEquippedInSlot(EShopCategory category, int slotIndex)
         {
             LoadData();
+            NormalizeInstantItemSlots(data);
 
             if (category == EShopCategory.Character)
             {
@@ -188,6 +229,20 @@ namespace OpenGS
             }
             
             return GetEquippedId(category) == itemId;
+        }
+
+        public static string[] GetEquippedInstantItems()
+        {
+            LoadData();
+            NormalizeInstantItemSlots(data);
+
+            var copy = new string[data.equippedInstantItems.Length];
+            for (var index = 0; index < copy.Length; index++)
+            {
+                copy[index] = data.equippedInstantItems[index] ?? string.Empty;
+            }
+
+            return copy;
         }
 
         // --- Favorite Weapon Integration ---
