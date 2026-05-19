@@ -681,7 +681,7 @@ namespace OpenGS
 
             if (string.IsNullOrEmpty(roomId))
             {
-                PrettyLogger.Bold("LocalServer", "WaitRoomEnter: No RoomID provided");
+                PrettyLogger.Bold("LocalServer", "待機室入室: RoomID がありません");
                 return;
             }
 
@@ -776,7 +776,7 @@ namespace OpenGS
             var resp = RUDPMessageBuilder.CreateWaitRoomChat(playerId ?? "", playerName ?? "Unknown", message ?? "", roomId ?? "");
             SendJsonToClient(resp);
 
-            PrettyLogger.Bold("LocalServer", $"[WaitRoom Chat] {playerName}: {message}");
+            PrettyLogger.Bold("LocalServer", $"[待機室チャット] {playerName}: {message}");
         }
 
         private void HandleWaitRoomPlayerReady(JObject json)
