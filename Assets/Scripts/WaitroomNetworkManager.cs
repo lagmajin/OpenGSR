@@ -35,12 +35,14 @@ namespace OpenGS
 
         // プレイヤー一覧（ロビー/ウェイトルーム用）
         private JArray currentPlayers = new JArray();
+        private JArray currentRooms = new JArray();
 
         // Rx Subjects for UI updates
         private readonly Subject<JObject> onPlayerJoined = new Subject<JObject>();
         private readonly Subject<JObject> onPlayerLeft = new Subject<JObject>();
         private readonly Subject<JObject> onPlayerReady = new Subject<JObject>();
         private readonly Subject<JArray> onPlayerList = new Subject<JArray>();
+        private readonly Subject<JArray> onRoomList = new Subject<JArray>();
         private readonly Subject<JObject> onRoomSettingsChanged = new Subject<JObject>();
         private readonly Subject<JObject> onChatMessage = new Subject<JObject>();
         private readonly Subject<int> onStartCountdown = new Subject<int>();
@@ -50,6 +52,7 @@ namespace OpenGS
         public IObservable<JObject> OnPlayerLeftStream => onPlayerLeft.AsObservable();
         public IObservable<JObject> OnPlayerReadyStream => onPlayerReady.AsObservable();
         public IObservable<JArray> OnPlayerListStream => onPlayerList.AsObservable();
+        public IObservable<JArray> OnRoomListStream => onRoomList.AsObservable();
         public IObservable<JObject> OnRoomSettingsChangedStream => onRoomSettingsChanged.AsObservable();
         public IObservable<JObject> OnChatMessageStream => onChatMessage.AsObservable();
         public IObservable<int> OnStartCountdownStream => onStartCountdown.AsObservable();
@@ -574,10 +577,10 @@ namespace OpenGS
         {
             var rooms = json["Rooms"] as JArray;
             var roomCount = rooms?.Count ?? 0;
+            currentRooms = rooms ?? new JArray();
             
             PrettyLogger.Bold("RoomList", $"Room list updated: {roomCount} rooms");
-            
-            // TODO: UIのルームリストを更新
+            onRoomList.OnNext(currentRooms);
         }
 
         private void HandleRoomCreated(JObject json)
@@ -682,6 +685,8 @@ namespace OpenGS
                 HandleWaitRoomPlayerList(snapshot);
             }
         }
+
+        public JArray CurrentRoomList => currentRooms;
 
         private static string ResolveLocalPlayerId()
         {

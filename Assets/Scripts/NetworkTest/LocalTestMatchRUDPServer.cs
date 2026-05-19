@@ -181,6 +181,7 @@ namespace OpenGS
                     HandleTeamKill(json);
                     break;
                 case "ItemUseRequest":
+                case RUDPMessageTypes.ItemUse:
                     HandleItemUseRequest(json);
                     break;
                 case "ChatMessage":

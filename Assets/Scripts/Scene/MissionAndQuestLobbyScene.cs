@@ -1,37 +1,47 @@
-﻿
-
 using System.Threading;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace OpenGS
 {
+    [DisallowMultipleComponent]
     public class MissionAndQuestLobbyScene : AbstractNonBattleScene
     {
+        [SerializeField] private MissionAndQuestMediateObject mediateObject;
+        private SynchronizationContext mainThread;
+
+        private void Awake()
+        {
+            DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
+            mainThread = SynchronizationContext.Current;
+        }
+
         public override SynchronizationContext MainThread()
         {
-            throw new System.NotImplementedException();
+            return mainThread ?? SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
-        void Start()
+        private void Start()
         {
-
+            Debug.Log("[MissionAndQuestLobbyScene] Started");
         }
 
-        void Reset()
+        private void Reset()
         {
-
         }
 
-        void Update()
+        private void Update()
         {
-
         }
 
         [Button("バトルサーバへ移動")]
         public void ChangeToBattleLobby()
         {
-
+            var missionLobbyScene = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
+                ? mediateObject.GeneralSceneMasterData().MissionLobbyScene()
+                : GeneralSceneMasterData.Instance().MissionLobbyScene();
+            Debug.Log($"[MissionAndQuestLobbyScene] Switching to mission lobby: {missionLobbyScene}");
+            RequestSceneTransition(missionLobbyScene, "MissionAndQuestToMissionLobby");
         }
-
     }
 }

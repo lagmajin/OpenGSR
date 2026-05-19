@@ -303,8 +303,12 @@ namespace OpenGS
 
         public void SwitchToMissionServer()
         {
-            Debug.Log("SwitchToMissionServer");
-            // TODO: ミッションサーバーへの切り替え処理
+            var missionScene = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
+                ? mediateObject.GeneralSceneMasterData().MissionLobbyScene()
+                : GeneralSceneMasterData.Instance().MissionLobbyScene();
+
+            Debug.Log($"[OnlineLobbyScene] Switching to mission lobby: {missionScene}");
+            RequestSceneTransition(missionScene, "SwitchToMissionServer");
         }
 
         // ─── ネットワーク受信 ─────────────────────────────────────────

@@ -14,9 +14,11 @@ namespace OpenGS
         private float showTime = 2.0f;
 
         public GameObject skyFighterCanvas;
+        private SynchronizationContext mainThread;
         private void Awake()
         {
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
+            mainThread = SynchronizationContext.Current;
 
         }
         private void Start()
@@ -28,19 +30,25 @@ namespace OpenGS
         {
             if (Input.anyKeyDown)
             {
-
+                BacktoWaitRoom();
             }
         }
 
-        void BacktoWaitRoom()
+        private void BacktoWaitRoom()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = "SkyFighterRsultScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = "SkyFighterResultScene";
+
+            var nextScene = generalSceneMasterData != null
+                ? generalSceneMasterData.LobbyScene()
+                : GeneralSceneMasterData.Instance().LobbyScene();
+
+            RequestSceneTransition(nextScene, "SkyFighterResultToLobby");
 
         }
 
         public override SynchronizationContext MainThread()
         {
-            throw new System.NotImplementedException();
+            return mainThread ?? SynchronizationContext.Current ?? new SynchronizationContext();
         }
     }
 

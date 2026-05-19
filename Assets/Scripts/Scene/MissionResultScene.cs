@@ -1,48 +1,49 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Threading;
 using UnityEngine;
 
-
 #pragma warning disable 0414
-
 
 namespace OpenGS
 {
     public class MissionResultScene : AbstractScene
     {
-        private float showTime = 3.0f;
+        [SerializeField] private float showTime = 3.0f;
         private SynchronizationContext mainThread;
+
         public override SynchronizationContext MainThread()
         {
-            return null;
+            return mainThread ?? SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
-        IEnumerator WaitCoroutine()
-        {
-
-            yield return null;
-
-        }
         private void Awake()
         {
-
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
-
-            mainThread=SynchronizationContext.Current;
-            
+            mainThread = SynchronizationContext.Current;
         }
-        void Start()
+
+        private void Start()
         {
-
             StartCoroutine(WaitCoroutine());
-
         }
+
+        private IEnumerator WaitCoroutine()
+        {
+            yield return new WaitForSeconds(Mathf.Max(0.1f, showTime));
+            GoToMissionLobby();
+        }
+
+        private void GoToMissionLobby()
+        {
+            var nextScene = generalSceneMasterData != null
+                ? generalSceneMasterData.MissionLobbyScene()
+                : GeneralSceneMasterData.Instance().MissionLobbyScene();
+
+            RequestSceneTransition(nextScene, "MissionResultToMissionLobby");
+        }
+
         private void OnApplicationQuit()
         {
-
         }
-
     }
-
-
 }

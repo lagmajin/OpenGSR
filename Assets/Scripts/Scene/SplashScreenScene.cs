@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Threading;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,10 +20,17 @@ namespace OpenGS
         [SerializeField] private Color overlayColor = Color.black;
 
         private Image overlayImage;
+        private SynchronizationContext mainThread;
 
         public override SynchronizationContext MainThread()
         {
-            throw new System.NotImplementedException();
+            return mainThread ?? SynchronizationContext.Current ?? new SynchronizationContext();
+        }
+
+        private void Awake()
+        {
+            DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
+            mainThread = SynchronizationContext.Current;
         }
 
         private void Start()

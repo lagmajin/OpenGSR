@@ -502,6 +502,24 @@ namespace OpenGS
         }
 
         /// <summary>
+        /// アイテム使用リクエストメッセージを作成
+        /// </summary>
+        /// <param name="playerId">アイテムを使用したプレイヤーID</param>
+        /// <param name="itemId">アイテムID</param>
+        /// <param name="itemType">アイテムタイプ</param>
+        /// <param name="effect">エフェクト</param>
+        public static JObject CreateItemUseRequest(string playerId, string itemId, string itemType, string effect)
+        {
+            var json = new JObject();
+            json["MessageType"] = RUDPMessageTypes.ItemUseRequest;
+            json["PlayerId"] = playerId;
+            json["ItemId"] = itemId;
+            json["ItemType"] = itemType;
+            json["Effect"] = effect;
+            return json;
+        }
+
+        /// <summary>
         /// アイテム出現メッセージを作成
         /// </summary>
         /// <param name="itemId">アイテムID</param>

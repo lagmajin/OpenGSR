@@ -50,6 +50,8 @@ namespace OpenGS
         private bool leftKey = false;
 
         private List<KeyCommand> dashCommand = new List<KeyCommand>();
+        private readonly bool[] usedInstantItemSlots = new bool[3];
+        private MatchEventProvider matchEventProvider;
 
 
         private PlayerStatus status = GamePlayerManager.Instance.Status;
@@ -79,12 +81,14 @@ namespace OpenGS
         public override void OnSpawn()
         {
            // var uiManager = 0;
+            ResetInstantItemUsage();
 
 
         }
 
         public override void OnReSpawn()
         {
+            ResetInstantItemUsage();
 
         }
 
@@ -299,7 +303,48 @@ namespace OpenGS
 
         public override void UseItem(int num = 0)
         {
+            var slotIndex = num > 0 ? num - 1 : 0;
+            if (slotIndex < 0 || slotIndex >= usedInstantItemSlots.Length)
+            {
+                Debug.LogWarning($"[CharaController] Invalid instant item slot: {num}");
+                return;
+            }
 
+            if (usedInstantItemSlots[slotIndex])
+            {
+                Debug.Log($"[CharaController] Instant item slot {slotIndex + 1} already used.");
+                return;
+            }
+
+            var equippedItems = UserSaveManager.GetEquippedInstantItems();
+            if (equippedItems == null || slotIndex >= equippedItems.Length)
+            {
+                Debug.LogWarning($"[CharaController] No equipped instant items for slot {slotIndex + 1}.");
+                return;
+            }
+
+            var itemId = equippedItems[slotIndex];
+            if (string.IsNullOrWhiteSpace(itemId) || !Enum.TryParse(itemId, true, out EInstantItemType itemType))
+            {
+                Debug.LogWarning($"[CharaController] Invalid instant item in slot {slotIndex + 1}: {itemId}");
+                return;
+            }
+
+            if (itemType == EInstantItemType.None)
+            {
+                Debug.LogWarning($"[CharaController] Instant item slot {slotIndex + 1} is empty.");
+                return;
+            }
+
+            ApplyInstantItem(itemType);
+            usedInstantItemSlots[slotIndex] = true;
+
+            if (matchEventProvider == null)
+            {
+                matchEventProvider = FindFirstObjectByType<MatchEventProvider>();
+            }
+
+            matchEventProvider?.UseInstantItem(this, itemType);
         }
 
         GameObject CurrentWeapon()
@@ -310,6 +355,46 @@ namespace OpenGS
 
             return null;
 
+        }
+
+        private void ResetInstantItemUsage()
+        {
+            for (var index = 0; index < usedInstantItemSlots.Length; index++)
+            {
+                usedInstantItemSlots[index] = false;
+            }
+        }
+
+        private void ApplyInstantItem(EInstantItemType itemType)
+        {
+            switch (itemType)
+            {
+                case EInstantItemType.HealthKit:
+                    Status?.AddHp(100f);
+                    Debug.Log("[CharaController] Used HealthKit.");
+                    break;
+                case EInstantItemType.FireBullet:
+                    FireBullet(30f);
+                    Debug.Log("[CharaController] Used FireBullet.");
+                    break;
+                case EInstantItemType.PoisonBullet:
+                    PoisonBullet(30f);
+                    Debug.Log("[CharaController] Used PoisonBullet.");
+                    break;
+                case EInstantItemType.PowerGrenadePack:
+                case EInstantItemType.ClusterGrenadePack:
+                case EInstantItemType.MagnetGrenadePack:
+                case EInstantItemType.MineGrenadePack:
+                    if (Status != null)
+                    {
+                        Status.GrenadeCount = Mathf.Min(Status.GrenadeCount + 1, 3);
+                    }
+                    Debug.Log($"[CharaController] Used grenade pack: {itemType}.");
+                    break;
+                default:
+                    Debug.LogWarning($"[CharaController] Unsupported instant item: {itemType}");
+                    break;
+            }
         }
 
         public void FlipWeapon()
