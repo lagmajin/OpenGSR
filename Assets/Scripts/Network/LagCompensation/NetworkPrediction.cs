@@ -15,12 +15,13 @@ namespace OpenGS.Network
             public Vector3 position;
             public Quaternion rotation;
             public Vector3 velocity;
+            public PlayerInput input;
             public byte inputSequence;
             public float timestamp;
         }
 
         /// <summary>予測履歴（サーバーからの確認を待つ）</summary>
-        private readonly Queue<PredictedState> m_PredictionHistory = new Queue<PredictedState>();
+        private readonly List<PredictedState> m_PredictionHistory = new List<PredictedState>();
 
         /// <summary>現在のシーケンス番号</summary>
         private byte m_CurrentSequence;
@@ -28,14 +29,20 @@ namespace OpenGS.Network
         /// <summary>最大予測ステップ数</summary>
         private const int MaxPredictionSteps = 120;
 
+        /// <summary>ソフト補正を行う誤差閾値</summary>
+        private const float SoftCorrectionThreshold = 0.05f;
+
+        /// <summary>ハード補正を行う誤差閾値</summary>
+        private const float HardCorrectionThreshold = 1.0f;
+
         /// <summary>クライアント所有のオブジェクトかどうか</summary>
         private readonly bool m_IsLocalPlayer;
 
         /// <summary> Lerp係数（位置補正の強さ）</summary>
         private float m_CorrectionFactor = 0.1f;
 
-        /// <summary>現在校正中のシーケンス</summary>
-        private byte m_PendingCorrectionSequence;
+        /// <summary>最後に確定したシーケンス番号</summary>
+        private byte m_LastConfirmedSequence;
 
         public NetworkPrediction(bool isLocalPlayer)
         {
@@ -57,24 +64,22 @@ namespace OpenGS.Network
             input.sequenceNumber = m_CurrentSequence;
 
             // 現在の状態を保存（ロールバック用）
-            PredictedState currentState = new PredictedState
+            var currentState = new PredictedState
             {
                 position = transform.Position,
                 rotation = transform.Rotation,
                 velocity = transform.Velocity,
+                input = input,
                 inputSequence = m_CurrentSequence,
                 timestamp = Time.time
             };
 
-            m_PredictionHistory.Enqueue(currentState);
+            m_PredictionHistory.Add(currentState);
 
             // 履歴サイズ制限
-            while (m_PredictionHistory.Count > MaxPredictionSteps)
-            {
-                m_PredictionHistory.Dequeue();
-            }
+            TrimHistory();
 
-            // 予測移動を適用（実際のゲームロジックに置換が必要）
+            // 予測移動を適用
             ApplyPredictedMovement(transform, input);
         }
 
@@ -84,16 +89,25 @@ namespace OpenGS.Network
         /// </summary>
         private void ApplyPredictedMovement(INetworkTransform transform, PlayerInput input)
         {
-            // TODO: 実際のプレイヤー移動ロジックを実装
-            // 例:
-            // Vector3 newVelocity = CalculateVelocity(input.moveInput, transform.Velocity);
-            // transform.Position += newVelocity * input.deltaTime;
-            // transform.Rotation = Quaternion.Euler(input.lookInput);
+            float dt = Mathf.Max(0f, input.deltaTime);
+            Vector3 moveInput = input.moveInput;
 
-            // 簡易的な移動の実装（プレースホルダー）
-            Vector3 predictedVelocity = input.moveInput * 10f; // 移動速度定数
-            Vector3 newPosition = transform.Position + predictedVelocity * input.deltaTime;
+            if (moveInput.sqrMagnitude > 1f)
+            {
+                moveInput.Normalize();
+            }
+
+            const float moveSpeed = 10f;
+            Vector3 predictedVelocity = moveInput * moveSpeed;
+            Vector3 newPosition = transform.Position + predictedVelocity * dt;
             transform.Position = newPosition;
+
+            if (input.lookInput.sqrMagnitude > 0.0001f)
+            {
+                Vector3 look = input.lookInput.normalized;
+                float angle = Mathf.Atan2(look.y, look.x) * Mathf.Rad2Deg;
+                transform.Rotation = Quaternion.Euler(0f, 0f, angle);
+            }
         }
 
         /// <summary>
@@ -106,56 +120,115 @@ namespace OpenGS.Network
             // 自分のプレイヤーだけ校正を行う
             if (!m_IsLocalPlayer) return;
 
-            // 対応する予測状態を見つける
-            PredictedState? matchedState = FindMatchingPrediction(serverState.sequenceNumber);
-
-            if (matchedState.HasValue)
+            if (!IsSequenceNewerOrEqual(serverState.sequenceNumber, m_LastConfirmedSequence))
             {
-                // サーバーとの誤差を計算
-                Vector3 positionError = transform.Position - serverState.position;
-                float errorMagnitude = positionError.magnitude;
-
-                // 許容誤差内ならそのまま
-                if (errorMagnitude < 0.01f)
-                {
-                    // 小さい誤差はそのまま
-                    return;
-                }
-
-                // 大きい誤差的正好輯
-                if (errorMagnitude > 1.0f)
-                {
-                    // 大きな誤差的正好
-                    transform.Position = serverState.position;
-                    transform.Rotation = serverState.rotation;
-
-                    // 履歴を消去して再予測
-                    ClearHistory();
-                }
-                else
-                {
-                    // 中間の誤差的少しずつ校正
-                    transform.Position = Vector3.Lerp(transform.Position, serverState.position, m_CorrectionFactor);
-                }
-
-                // サーバー速度を採用
-                // 注意: 実際のゲームでは速度の校正も考慮すること
+                return;
             }
+
+            // 対応する予測状態を見つける
+            int matchedIndex = FindMatchingPredictionIndex(serverState.sequenceNumber);
+
+            if (matchedIndex < 0)
+            {
+                transform.Position = serverState.position;
+                transform.Rotation = serverState.rotation;
+                ClearHistory();
+                m_LastConfirmedSequence = serverState.sequenceNumber;
+                return;
+            }
+
+            // サーバーとの誤差を計算
+            Vector3 positionError = transform.Position - serverState.position;
+            float errorMagnitude = positionError.magnitude;
+
+            // 許容誤差内ならそのまま
+            if (errorMagnitude < SoftCorrectionThreshold)
+            {
+                TrimConfirmedHistory(matchedIndex);
+                m_LastConfirmedSequence = serverState.sequenceNumber;
+                return;
+            }
+
+            if (errorMagnitude > HardCorrectionThreshold)
+            {
+                transform.Position = serverState.position;
+                transform.Rotation = serverState.rotation;
+                TrimConfirmedHistory(matchedIndex);
+                ReplayPendingInputs(transform);
+            }
+            else
+            {
+                transform.Position = Vector3.Lerp(transform.Position, serverState.position, m_CorrectionFactor);
+                transform.Rotation = Quaternion.Slerp(transform.Rotation, serverState.rotation, m_CorrectionFactor);
+                TrimConfirmedHistory(matchedIndex);
+            }
+
+            m_LastConfirmedSequence = serverState.sequenceNumber;
         }
 
         /// <summary>
         /// 指定シーケンスの予測状態を見つける
         /// </summary>
-        private PredictedState? FindMatchingPrediction(byte targetSequence)
+        private int FindMatchingPredictionIndex(byte targetSequence)
         {
-            foreach (var state in m_PredictionHistory)
+            for (int i = m_PredictionHistory.Count - 1; i >= 0; i--)
             {
+                var state = m_PredictionHistory[i];
                 if (state.inputSequence == targetSequence)
                 {
-                    return state;
+                    return i;
                 }
             }
-            return null;
+
+            return -1;
+        }
+
+        /// <summary>
+        /// 予測履歴を最大件数に丸める
+        /// </summary>
+        private void TrimHistory()
+        {
+            while (m_PredictionHistory.Count > MaxPredictionSteps)
+            {
+                m_PredictionHistory.RemoveAt(0);
+            }
+        }
+
+        /// <summary>
+        /// サーバーで確定したシーケンスまでの履歴を捨てる
+        /// </summary>
+        private void TrimConfirmedHistory(int matchedIndex)
+        {
+            if (matchedIndex < 0)
+            {
+                return;
+            }
+
+            int removeCount = Mathf.Min(matchedIndex + 1, m_PredictionHistory.Count);
+            if (removeCount > 0)
+            {
+                m_PredictionHistory.RemoveRange(0, removeCount);
+            }
+        }
+
+        /// <summary>
+        /// 残っている予測入力を順に再適用する
+        /// </summary>
+        private void ReplayPendingInputs(INetworkTransform transform)
+        {
+            for (int i = 0; i < m_PredictionHistory.Count; i++)
+            {
+                ApplyPredictedMovement(transform, m_PredictionHistory[i].input);
+            }
+        }
+
+        /// <summary>
+        /// シーケンス番号比較（ラップアラウンド対応）
+        /// </summary>
+        private bool IsSequenceNewerOrEqual(byte newSeq, byte oldSeq)
+        {
+            byte delta = (byte)(newSeq - oldSeq);
+            return delta == 0 || delta < 128;
         }
 
         /// <summary>

@@ -15,7 +15,6 @@ namespace OpenGS.Network
             public Queue<TransformState> StateQueue = new Queue<TransformState>();
             public TransformState? PreviousState;
             public TransformState? NextState;
-            public float InterpolationTime = 0f;
             public float TargetTimeDelay = 0.1f; // 遅延	buffer
         }
 
@@ -39,7 +38,12 @@ namespace OpenGS.Network
             }
 
             // シーケンスが古ければスキップ
-            if (buffer.NextState.HasValue && IsSequenceNewer(state.sequenceNumber, buffer.NextState.Value.sequenceNumber))
+            if (buffer.NextState.HasValue && !IsSequenceNewer(state.sequenceNumber, buffer.NextState.Value.sequenceNumber))
+            {
+                return;
+            }
+
+            if (buffer.NextState.HasValue)
             {
                 buffer.StateQueue.Enqueue(state);
 
@@ -49,7 +53,7 @@ namespace OpenGS.Network
                     buffer.StateQueue.Dequeue();
                 }
             }
-            else if (!buffer.NextState.HasValue)
+            else
             {
                 // 最初の状態
                 buffer.NextState = state;
@@ -74,27 +78,34 @@ namespace OpenGS.Network
                 return false;
             }
 
-            // バッファに十分なデータがあるかチェック
-            if (buffer.NextState.HasValue && buffer.StateQueue.Count > 0)
+            float renderTimestamp = Time.time - buffer.TargetTimeDelay;
+
+            if (!buffer.NextState.HasValue && buffer.StateQueue.Count > 0)
             {
-                // 次の状態を取り出す
+                buffer.NextState = buffer.StateQueue.Dequeue();
+                buffer.PreviousState = buffer.NextState;
+            }
+
+            // サーバー時刻に合わせてバッファを進める
+            while (buffer.StateQueue.Count > 0 && buffer.NextState.HasValue && buffer.StateQueue.Peek().timestamp <= renderTimestamp)
+            {
                 buffer.PreviousState = buffer.NextState;
                 buffer.NextState = buffer.StateQueue.Dequeue();
+            }
 
-                if (!buffer.PreviousState.HasValue || !buffer.NextState.HasValue)
-                {
-                    return false;
-                }
+            if (!buffer.PreviousState.HasValue && !buffer.NextState.HasValue)
+            {
+                return false;
+            }
 
-                // 補間時間を計算
+            if (buffer.PreviousState.HasValue && buffer.NextState.HasValue)
+            {
                 float serverTimeDiff = buffer.NextState.Value.timestamp - buffer.PreviousState.Value.timestamp;
 
                 if (serverTimeDiff > 0)
                 {
-                    // 経過時間を正規化 (0.0 - 1.0)
-                    float t = Mathf.Clamp01(buffer.InterpolationTime / serverTimeDiff);
+                    float t = Mathf.Clamp01((renderTimestamp - buffer.PreviousState.Value.timestamp) / serverTimeDiff);
 
-                    // 補間を適用
                     currentPosition = Vector3.Lerp(
                         buffer.PreviousState.Value.position,
                         buffer.NextState.Value.position,
@@ -107,13 +118,18 @@ namespace OpenGS.Network
                         t
                     );
 
-                    buffer.InterpolationTime += Time.deltaTime;
-
                     return true;
                 }
             }
 
-            // データがない場合は現在の位置を返す
+            // データが少ない場合は最新状態を返す
+            if (buffer.PreviousState.HasValue)
+            {
+                currentPosition = buffer.PreviousState.Value.position;
+                currentRotation = buffer.PreviousState.Value.rotation;
+                return true;
+            }
+
             if (buffer.NextState.HasValue)
             {
                 currentPosition = buffer.NextState.Value.position;
@@ -147,6 +163,7 @@ namespace OpenGS.Network
                 buffer.StateQueue.Clear();
                 buffer.PreviousState = null;
                 buffer.NextState = null;
+                buffer.TargetTimeDelay = 0.1f;
             }
         }
 
