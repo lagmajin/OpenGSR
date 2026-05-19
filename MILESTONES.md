@@ -9,20 +9,46 @@ the unfinished code paths that still appear in the gameplay flow.
 These are the best near-term milestones after the current investigation of the
 client, core, and server repos.
 
-1. `T0` - transport split cleanup first.
-2. `M0` / `S0` - contract and scene/bootstrap cleanup second.
-3. `M1` / `S1` - lobby and room authority third.
-4. `M3` / `S2` - match flow and result loop fourth.
-5. `M2` / `S3` - loading and offline/online transition handshakes next.
-6. `M6` / item contract work - once the core and server contracts are stable.
+1. `U0` - Unity boundary reduction and pure core/server contract capture first.
+2. `T0` - transport split cleanup second.
+3. `M0` / `S0` - contract and scene/bootstrap cleanup third.
+4. `M1` / `S1` - lobby and room authority fourth.
+5. `M3` / `S2` - match flow and result loop fifth.
+6. `M2` / `S3` - loading and offline/online transition handshakes next.
+7. `M6` / item contract work - once the core and server contracts are stable.
 
 Why this order:
 - the transport boundary must be clear before deeper protocol changes land
+- the client should become a thin adapter so the project can survive a Unity
+  replacement if needed
 - the contract layer is the shared dependency
 - lobby and room flow is the main entry point for both online and offline play
 - match flow is the core value path
 - loading and item work are easier to finish once the underlying state flow is
   consistent
+
+## U0. Unity Boundary Reduction
+
+Goal: move gameplay rules and persistent state out of Unity-specific scripts.
+
+Scope:
+- `Assets/Scripts/Player/AsmExport/AbstractPlayer.cs`
+- `Assets/Scripts/Player/PlayerAgent.cs`
+- `Assets/Scripts/Interface/PlayerStatus.cs`
+- `Assets/Scripts/Item/*`
+- `Assets/Scripts/Match/*`
+- `Assets/Scripts/Scene/*`
+
+Why this matters:
+- If Unity is replaced later, the pure rules and state must still survive.
+- The current client carries both gameplay logic and presentation logic in the
+  same objects.
+- Separating the adapter layer now reduces the cost of any later engine move.
+
+Done when:
+- gameplay state can be represented in Core and Server without Unity types
+- Unity classes forward input and visuals instead of owning rules
+- item, damage, and match behavior are defined in shared contracts first
 
 ## M0. Scene Name And Transition Cleanup
 
@@ -159,18 +185,22 @@ Done when:
 
 ## Suggested Order
 
-1. `M0`
-2. `M1`
-3. `M3`
-4. `M2`
-5. `M4`
-6. `M5`
-7. `M6`
+1. `U0`
+2. `M0`
+3. `M1`
+4. `M3`
+5. `M2`
+6. `M4`
+7. `M5`
+8. `M6`
 
 ## Parallel Development
 
 If you want to work on client and server at the same time, see
 [PARALLEL_DEV_PLAN.md](/x:/Dev/OpenGSR/PARALLEL_DEV_PLAN.md).
+
+For the engine-agnostic boundary map, see
+[ARCHITECTURE_BOUNDARY.md](/C:/Users/kukul/OneDrive/デスクトップ/Programming/opengsr/ARCHITECTURE_BOUNDARY.md).
 
 ## Server Side Roadmap
 
