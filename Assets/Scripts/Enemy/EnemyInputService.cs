@@ -14,6 +14,12 @@ namespace OpenGS
         public bool FirePressed { get; set; }
         public bool FireJustPressed { get; set; }
         public bool ReloadJustPressed { get; set; }
+        public bool SwapWeaponJustPressed { get; set; }
+        public bool DropWeaponJustPressed { get; set; }
+        public bool JumpJustPressed { get; set; }
+        public bool SitJustPressed { get; set; }
+        public bool LieDownJustPressed { get; set; }
+        public int InstantItemSlotJustPressed { get; set; }
         public bool JumpPressed { get; set; }
         public bool BoosterPressed { get; set; }
 
@@ -27,6 +33,12 @@ namespace OpenGS
         public bool IsFirePressed() => FirePressed;
         public bool IsFireJustPressed() => FireJustPressed;
         public bool IsReloadJustPressed() => ReloadJustPressed;
+        public bool IsSwapWeaponJustPressed() => SwapWeaponJustPressed;
+        public bool IsDropWeaponJustPressed() => DropWeaponJustPressed;
+        public bool IsJumpJustPressed() => JumpJustPressed;
+        public bool IsSitJustPressed() => SitJustPressed;
+        public bool IsLieDownJustPressed() => LieDownJustPressed;
+        public int GetInstantItemSlotJustPressed() => InstantItemSlotJustPressed;
         public float GetHorizontalAxis() => Horizontal;
         public float GetVerticalAxis() => Vertical;
         public bool IsJumpPressed() => JumpPressed;
@@ -42,6 +54,12 @@ namespace OpenGS
             FirePressed = false;
             FireJustPressed = false;
             ReloadJustPressed = false;
+            SwapWeaponJustPressed = false;
+            DropWeaponJustPressed = false;
+            JumpJustPressed = false;
+            SitJustPressed = false;
+            LieDownJustPressed = false;
+            InstantItemSlotJustPressed = 0;
             JumpPressed = false;
             BoosterPressed = false;
         }

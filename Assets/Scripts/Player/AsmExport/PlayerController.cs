@@ -100,28 +100,61 @@ namespace OpenGS
 
         private void HandleActions()
         {
-            if (weaponSlots == null) return;
-
-            var currentGun = weaponSlots.GetCurrentGun();
+            var currentGun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
 
             // 射撃入力
             if (inputService.IsFirePressed())
             {
-                if (currentGun != null) currentGun.StartFire();
+                currentGun?.StartFire();
             }
             else
             {
-                if (currentGun != null) currentGun.StopFire();
+                currentGun?.StopFire();
             }
 
-            // リロード入力 (TODO: IInputService に追加が必要)
+            // リロード入力
             if (inputService.IsReloadJustPressed())
             {
-                if (currentGun != null) currentGun.ReloadStart();
+                currentGun?.ReloadStart();
             }
 
-            // 武器切り替え入力 (TODO: 共通化が必要。現在は仮でキーボード直参照を避ける)
-            // if (inputService.IsSwapWeaponJustPressed()) { weaponSlots.FlipWeapon(); }
+            if (inputService.IsJumpJustPressed())
+            {
+                Jump();
+            }
+
+            if (inputService.IsSitJustPressed())
+            {
+                if (Sitting())
+                {
+                    StandUp();
+                }
+                else
+                {
+                    Sit();
+                }
+            }
+
+            if (inputService.IsLieDownJustPressed())
+            {
+                LieDown();
+            }
+
+            if (weaponSlots != null && inputService.IsSwapWeaponJustPressed())
+            {
+                weaponSlots.FlipWeapon();
+            }
+
+            if (weaponSlots != null && inputService.IsDropWeaponJustPressed())
+            {
+                weaponSlots.DropCurrentWeapon();
+            }
+
+            int instantItemSlot = inputService.GetInstantItemSlotJustPressed();
+            if (instantItemSlot > 0)
+            {
+                UseItem(instantItemSlot);
+            }
         }
 
         public new void Jump()

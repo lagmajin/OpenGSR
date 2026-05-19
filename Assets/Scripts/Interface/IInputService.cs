@@ -34,6 +34,36 @@ namespace OpenGS
         bool IsReloadJustPressed();
 
         /// <summary>
+        /// 武器切り替えボタンが押された瞬間か
+        /// </summary>
+        bool IsSwapWeaponJustPressed();
+
+        /// <summary>
+        /// 現在の武器をドロップするボタンが押された瞬間か
+        /// </summary>
+        bool IsDropWeaponJustPressed();
+
+        /// <summary>
+        /// ジャンプボタンが押された瞬間か
+        /// </summary>
+        bool IsJumpJustPressed();
+
+        /// <summary>
+        /// しゃがみ切り替えボタンが押された瞬間か
+        /// </summary>
+        bool IsSitJustPressed();
+
+        /// <summary>
+        /// 伏せボタンが押された瞬間か
+        /// </summary>
+        bool IsLieDownJustPressed();
+
+        /// <summary>
+        /// 瞬間アイテムの使用スロット。未入力なら 0 を返す。
+        /// </summary>
+        int GetInstantItemSlotJustPressed();
+
+        /// <summary>
         /// 移動（横方向 -1.0 ~ 1.0）
         /// </summary>
         float GetHorizontalAxis();
