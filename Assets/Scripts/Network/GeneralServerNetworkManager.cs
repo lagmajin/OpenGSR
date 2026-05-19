@@ -292,19 +292,15 @@ namespace OpenGS
                 return false;
             }
 
-            if (string.Equals(messageType, "LoginSuccessful", StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(messageType, "LogoutSuccess", StringComparison.OrdinalIgnoreCase))
+            var normalizedMessageType = MessageType.Normalize(messageType);
+
+            if (normalizedMessageType.EndsWith("Response", StringComparison.OrdinalIgnoreCase) ||
+                normalizedMessageType.EndsWith("Notification", StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
 
-            if (messageType.EndsWith("Response", StringComparison.OrdinalIgnoreCase) ||
-                messageType.EndsWith("Notification", StringComparison.OrdinalIgnoreCase))
-            {
-                return true;
-            }
-
-            return messageType == MessageType.LoginResponse || messageType == MessageType.LogoutSuccessful;
+            return normalizedMessageType == MessageType.LoginResponse || normalizedMessageType == MessageType.LogoutSuccessful;
         }
 
         public void SetCurrentAccount(string accountName, string globalUserId)

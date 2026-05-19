@@ -389,10 +389,10 @@ namespace OpenGS
                         SendJsonToClient(result);
                     }
 
-                    PrettyLogger.Bold("Network", "Progress");
+                    PrettyLogger.Bold("Network", MessageType.LoadingProgressNotification);
                 }
 
-                if(messageType==MessageType.LoadingCompleted)
+                if (messageType == MessageType.LoadingCompleted)
                 {
                     var completeResp = new JObject
                     {
@@ -412,7 +412,7 @@ namespace OpenGS
 
                 }
 
-                #region ロビー・ウェイトルーム系ハンドラー
+                #region ロビー・待機室系ハンドラー
 
                 if (messageType == MessageType.LobbyEnter)
                 {
@@ -594,11 +594,6 @@ namespace OpenGS
 
         }
 
-        private void UpdateProgress()
-        {
-
-        }
-
         public void Stop()
         {
             if (!_isRunning) return;
@@ -613,7 +608,7 @@ namespace OpenGS
             _debugLogEnabled = enabled;
         }
 
-        #region ロビー・ウェイトルームハンドラーメソッド
+        #region ロビー・待機室ハンドラーメソッド
 
         private void HandleLobbyEnter(JObject json)
         {

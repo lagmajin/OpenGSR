@@ -109,33 +109,31 @@ namespace OpenGS
         public const string PlayerDebuff = "PlayerDebuff";        // デバフ付与
         public const string BuffExpired = "BuffExpired";          // バフ期限切れ
 
-        // ======== ロビー・ウェイトルーム系通信 ========
+        // ======== 制御系メッセージ (TCP 互換) ========
+        // 旧コード互換の別名。実体は OpenGSCore.MessageType 側を参照する。
 
-        // ロビー関連 - 双方向
-        public const string LobbyEnter = MessageType.LobbyEnter;              // ロビー入室
-        public const string LobbyLeave = MessageType.LobbyLeave;              // ロビー退室
-        public const string LobbyPlayerList = MessageType.LobbyPlayerList;    // ロビープレイヤー一覧
-        public const string LobbyChat = MessageType.LobbyChat;                // ロビーチャット
+        public const string LobbyEnter = MessageType.LobbyEnter; // ロビー入室
+        public const string LobbyLeave = MessageType.LobbyLeave; // ロビー退室
+        public const string LobbyPlayerList = MessageType.LobbyPlayerList; // ロビー一覧
+        public const string LobbyChat = MessageType.LobbyChat; // ロビーチャット
 
-        // ウェイトルーム関連 - 双方向
-        public const string WaitRoomEnter = MessageType.WaitRoomEnter;            // ウェイトルーム入室
-        public const string WaitRoomLeave = MessageType.WaitRoomLeave;            // ウェイトルーム退室
-        public const string WaitRoomPlayerList = MessageType.WaitRoomPlayerList;  // ウェイトルームプレイヤー一覧
-        public const string WaitRoomChat = MessageType.WaitRoomChat;              // ウェイトルームチャット
-        public const string WaitRoomPlayerReady = MessageType.WaitRoomPlayerReady;     // プレイヤー準備完了
-        public const string WaitRoomPlayerUnready = MessageType.WaitRoomPlayerUnready; // プレイヤー準備解除
+        public const string WaitRoomEnter = MessageType.WaitRoomEnter; // 待機室入室
+        public const string WaitRoomLeave = MessageType.WaitRoomLeave; // 待機室退室
+        public const string WaitRoomPlayerList = MessageType.WaitRoomPlayerList; // 待機室一覧
+        public const string WaitRoomChat = MessageType.WaitRoomChat; // 待機室チャット
+        public const string WaitRoomPlayerReady = MessageType.WaitRoomPlayerReady; // 準備完了
+        public const string WaitRoomPlayerUnready = MessageType.WaitRoomPlayerUnready; // 準備解除
         public const string WaitRoomSettingsChange = MessageType.WaitRoomSettingsChange; // ルーム設定変更
-        public const string WaitRoomKickPlayer = MessageType.WaitRoomKickPlayer;   // プレイヤーキック
+        public const string WaitRoomKickPlayer = MessageType.WaitRoomKickPlayer; // キック
         public const string WaitRoomOwnerChange = MessageType.WaitRoomOwnerChange; // オーナー変更
         public const string WaitRoomStartCountdown = MessageType.WaitRoomStartCountdown; // 開始カウントダウン
-        public const string WaitRoomCancelCountdown = MessageType.WaitRoomCancelCountdown; // カウントダウンキャンセル
-        public const string WaitRoomUpdateNotification = MessageType.WaitRoomUpdateNotification; // ルーム情報の一括更新通知
+        public const string WaitRoomCancelCountdown = MessageType.WaitRoomCancelCountdown; // カウントダウン中止
+        public const string WaitRoomUpdateNotification = MessageType.WaitRoomUpdateNotification; // 一括更新通知
 
-        // ルームリスト関連 - サーバー → クライアント
-        public const string RoomListUpdate = MessageType.RoomListUpdateNotification;      // ルーム一覧更新
-        public const string RoomCreated = MessageType.RoomCreated;            // ルーム作成通知
-        public const string RoomDeleted = MessageType.RoomDeleted;            // ルーム削除通知
-        public const string RoomFull = MessageType.RoomFull;                  // ルーム満員通知
+        public const string RoomListUpdate = MessageType.RoomListUpdateNotification; // ルーム一覧更新
+        public const string RoomCreated = MessageType.RoomCreated; // ルーム作成通知
+        public const string RoomDeleted = MessageType.RoomDeleted; // ルーム削除通知
+        public const string RoomFull = MessageType.RoomFull; // ルーム満員通知
     }
 
     /// <summary>
@@ -1073,7 +1071,7 @@ namespace OpenGS
 
         #endregion
 
-        #region ロビー・ウェイトルーム系ビルダー
+        #region ロビー・待機室系ビルダー
 
         #region ロビー関連
 
@@ -1127,10 +1125,10 @@ namespace OpenGS
 
         #endregion
 
-        #region ウェイトルーム関連
+        #region 待機室関連
 
         /// <summary>
-        /// ウェイトルーム入室メッセージを作成
+        /// 待機室入室メッセージを作成
         /// </summary>
         public static JObject CreateWaitRoomEnter(string playerId, string playerName, string roomId)
         {
@@ -1143,7 +1141,7 @@ namespace OpenGS
         }
 
         /// <summary>
-        /// ウェイトルーム退室メッセージを作成
+        /// 待機室退室メッセージを作成
         /// </summary>
         public static JObject CreateWaitRoomLeave(string playerId, string roomId)
         {
@@ -1155,7 +1153,7 @@ namespace OpenGS
         }
 
         /// <summary>
-        /// ウェイトルームプレイヤー一覧メッセージを作成
+        /// 待機室プレイヤー一覧メッセージを作成
         /// </summary>
         public static JObject CreateWaitRoomPlayerList(string roomId, JArray players)
         {
@@ -1167,7 +1165,7 @@ namespace OpenGS
         }
 
         /// <summary>
-        /// ウェイトルームチャットメッセージを作成
+        /// 待機室チャットメッセージを作成
         /// </summary>
         public static JObject CreateWaitRoomChat(string playerId, string playerName, string message, string roomId)
         {
