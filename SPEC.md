@@ -169,6 +169,7 @@ categories:
 - `SG` - Shotgun
 - `MG` - Machine Gun
 - `HG` - Handgun
+- `GR` - legacy gunner / handgun-family label used by older UI
 - `Special Weapon` - special / unique weapons such as launchers or flamethrowers
 
 These are the labels the game should use for player-facing grouping, weapon

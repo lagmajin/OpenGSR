@@ -85,6 +85,7 @@ applying weapon limits:
 - `SG` - Shotgun
 - `MG` - Machine Gun
 - `HG` - Handgun
+- `GR` - legacy gunner / handgun-family label used by older UI
 - `Special Weapon` - unique or special-purpose weapons such as launchers and
   flamethrowers
 

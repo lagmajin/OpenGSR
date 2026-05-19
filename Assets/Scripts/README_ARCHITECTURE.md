@@ -31,7 +31,7 @@ This document defines ownership boundaries to reduce coupling while the project 
 
 ## 6) Weapon Families
 - The canonical high-level weapon families are `AR`, `SR`, `SMG`, `SG`, `MG`,
-  `HG`, and `Special Weapon`.
+  `HG`, `GR`, and `Special Weapon`.
 - These families are used by weapon limits, shop grouping, and player-facing
   UI labels.
 - Specific weapon IDs still live in `eWeaponType`, master data, and individual
