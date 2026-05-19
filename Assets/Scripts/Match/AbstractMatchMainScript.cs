@@ -487,12 +487,57 @@ namespace OpenGS
 
         protected virtual void HandlePlayerBuff(JObject json)
         {
+            var player = ResolveLocalPlayer();
+            var buffType = json["BuffType"]?.ToString() ?? "";
+            var duration = json["Duration"]?.ToObject<int>() ?? 0;
+            var value = json["Value"]?.ToObject<float>() ?? 0f;
+
+            if (player != null)
+            {
+                switch (buffType)
+                {
+                    case "HpRecovery":
+                        player.Heal(value);
+                        break;
+                    case "BulletEnhance":
+                        player.IncreaseAttack(duration);
+                        break;
+                    case "GrenadePack":
+                        player.Status.GrenadeCount = Mathf.Min(player.Status.GrenadeCount + Mathf.RoundToInt(value), 3);
+                        break;
+                }
+            }
+
             Debug.Log($"[{GetType().Name}] PlayerBuff received: {json}");
         }
 
         protected virtual void HandlePlayerDebuff(JObject json)
         {
+            var player = ResolveLocalPlayer();
+            var debuffType = json["DebuffType"]?.ToString() ?? "";
+            var duration = json["Duration"]?.ToObject<int>() ?? 0;
+
+            if (player != null)
+            {
+                switch (debuffType)
+                {
+                    case "PoisonBullet":
+                        player.PoisonBullet(duration);
+                        break;
+                }
+            }
+
             Debug.Log($"[{GetType().Name}] PlayerDebuff received: {json}");
+        }
+
+        protected virtual AbstractPlayer ResolveLocalPlayer()
+        {
+            if (player == null)
+            {
+                return null;
+            }
+
+            return player.GetComponent<AbstractPlayer>();
         }
 
         void OnDestory()

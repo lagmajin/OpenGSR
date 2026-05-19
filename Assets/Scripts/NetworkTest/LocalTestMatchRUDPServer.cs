@@ -411,6 +411,54 @@ namespace OpenGS
 
             var itemUseMsg = RUDPMessageBuilder.CreateItemUse(playerId, itemId, itemType, effect);
             SendJson(itemUseMsg);
+
+            if (!Enum.TryParse<EInstantItemType>(itemType, true, out var parsedType))
+            {
+                PrettyLogger.Bold("RUDP Server", $"ItemUseRequest parsed as unknown item type: {itemType}");
+                return;
+            }
+
+            foreach (var response in BuildItemUseResponses(playerId, parsedType))
+            {
+                SendJson(response);
+            }
+        }
+
+        private IEnumerable<JObject> BuildItemUseResponses(string playerId, EInstantItemType itemType)
+        {
+            switch (itemType)
+            {
+                case EInstantItemType.HealthKit:
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "HpRecovery", 0, 100f);
+                    yield break;
+
+                case EInstantItemType.FireBullet:
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "BulletEnhance", 30, 30f);
+                    yield break;
+
+                case EInstantItemType.PoisonBullet:
+                    yield return RUDPMessageBuilder.CreatePlayerDebuff(playerId, "PoisonBullet", 30, 30f);
+                    yield break;
+
+                case EInstantItemType.PowerGrenadePack:
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
+                    yield break;
+
+                case EInstantItemType.ClusterGrenadePack:
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
+                    yield break;
+
+                case EInstantItemType.MagnetGrenadePack:
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
+                    yield break;
+
+                case EInstantItemType.MineGrenadePack:
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
+                    yield break;
+
+                default:
+                    yield break;
+            }
         }
 
         /// <summary>
