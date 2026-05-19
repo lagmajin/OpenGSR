@@ -459,7 +459,40 @@ namespace OpenGS
 
         protected virtual void OnNetworkDataRecved(JObject obj)
         {
+            var messageType = MessageType.Normalize(obj["MessageType"]?.ToString());
 
+            switch (messageType)
+            {
+                case RUDPMessageTypes.ItemUse:
+                    HandleItemUse(obj);
+                    break;
+                case RUDPMessageTypes.PlayerBuff:
+                    HandlePlayerBuff(obj);
+                    break;
+                case RUDPMessageTypes.PlayerDebuff:
+                    HandlePlayerDebuff(obj);
+                    break;
+            }
+        }
+
+        protected virtual void HandleItemUse(JObject json)
+        {
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var itemId = json["ItemId"]?.ToString() ?? "";
+            var itemType = json["ItemType"]?.ToString() ?? "";
+            var effect = json["Effect"]?.ToString() ?? "";
+
+            Debug.Log($"[{GetType().Name}] ItemUse received: player={playerId}, item={itemId}, type={itemType}, effect={effect}");
+        }
+
+        protected virtual void HandlePlayerBuff(JObject json)
+        {
+            Debug.Log($"[{GetType().Name}] PlayerBuff received: {json}");
+        }
+
+        protected virtual void HandlePlayerDebuff(JObject json)
+        {
+            Debug.Log($"[{GetType().Name}] PlayerDebuff received: {json}");
         }
 
         void OnDestory()

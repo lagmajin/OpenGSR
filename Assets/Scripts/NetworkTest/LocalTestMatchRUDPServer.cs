@@ -403,6 +403,14 @@ namespace OpenGS
         private void HandleItemUseRequest(JObject json)
         {
             PrettyLogger.Bold("RUDP Server", $"ItemUseRequest received: {json}");
+
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var itemId = json["ItemId"]?.ToString() ?? "";
+            var itemType = json["ItemType"]?.ToString() ?? "";
+            var effect = json["Effect"]?.ToString() ?? "";
+
+            var itemUseMsg = RUDPMessageBuilder.CreateItemUse(playerId, itemId, itemType, effect);
+            SendJson(itemUseMsg);
         }
 
         /// <summary>
