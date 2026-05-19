@@ -11,7 +11,7 @@ using UnityEngine.Audio;
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    public class PlayerAgent : AbstractPlayerAgent, IDamagableObject, IPowerupable
+    public class PlayerAgent : AbstractPlayerAgent, IDamagableObject, IPowerupable, IDamageable
     {
         [SerializeField] private BoxCollider2D standingCollider;
         [SerializeField] private BoxCollider2D sitingCollider;
@@ -78,6 +78,7 @@ namespace OpenGS
         private const float BuffedMultiplier = 2f;
         private const float InvisibleAlpha = 0.3f;
         private float baseMovementSpeed;
+        private float baseDashSpeed;
         private float attackMultiplier = 1f;
         private float defenseMultiplier = 1f;
         private float moveSpeedMultiplier = 1f;
@@ -87,6 +88,8 @@ namespace OpenGS
         private int invisibleBuffVersion;
         private int normalGrenadeCount = 3;
         private bool invisibleBuffActive = false;
+
+        public int NormalGrenadeCount => normalGrenadeCount;
 
         void Start()
         {
@@ -124,6 +127,7 @@ namespace OpenGS
             spriteRendereres = list.ToArray();
 
             baseMovementSpeed = movementSpeed;
+            baseDashSpeed = dashSpeed;
             ResetPowerupState();
             StartInvincibility(2.0f);
 
@@ -648,11 +652,71 @@ namespace OpenGS
         public void RefillGrenade()
         {
             normalGrenadeCount = 3;
-            Debug.Log("[PlayerAgent] Normal grenade refilled.");
+            Debug.Log($"[PlayerAgent] Normal grenade refilled: {NormalGrenadeCount}");
         }
 
         public void Berserk()
         {
+        }
+
+        public void AddDamage(Vector2 source, float damage, eDamageType type)
+        {
+            if (damage <= 0f)
+            {
+                return;
+            }
+
+            if (invincible || IsIncreaseDefenseNow())
+            {
+                Debug.Log("[PlayerAgent] Damage ignored by invincibility or defense buff.");
+                return;
+            }
+
+            TakeDamage();
+        }
+
+        public void AddDamageAndForce(float damage, Vector3 vec, float force = 1.0f)
+        {
+            if (damage <= 0f)
+            {
+                return;
+            }
+
+            if (invincible || IsIncreaseDefenseNow())
+            {
+                Debug.Log("[PlayerAgent] Damage ignored by invincibility or defense buff.");
+                return;
+            }
+
+            if (rigidbody2D != null)
+            {
+                rigidbody2D.AddForce(new Vector2(vec.x, vec.y).normalized * force, ForceMode2D.Impulse);
+            }
+
+            TakeDamage();
+        }
+
+        public void AddDamageAndForce2(float damage, Vector2 point)
+        {
+            AddDamage(point, damage, eDamageType.None);
+        }
+
+        public void Heal(float heal = 0)
+        {
+            Debug.Log($"[PlayerAgent] Heal requested: {heal}");
+        }
+
+        public void TakeLavaDamage()
+        {
+            TakeDamage();
+        }
+
+        public void AddSlipDamage(float v, string id)
+        {
+            if (v > 0f)
+            {
+                TakeDamage();
+            }
         }
 
         private void ResetPowerupState()
@@ -669,6 +733,7 @@ namespace OpenGS
             invincible = false;
             normalGrenadeCount = 3;
             movementSpeed = baseMovementSpeed;
+            dashSpeed = baseDashSpeed;
             SetSpriteAlpha(1f);
         }
 
@@ -705,11 +770,13 @@ namespace OpenGS
             var version = ++speedBuffVersion;
             moveSpeedMultiplier = BuffedMultiplier;
             movementSpeed = baseMovementSpeed * moveSpeedMultiplier;
+            dashSpeed = baseDashSpeed * moveSpeedMultiplier;
             yield return new WaitForSecondsRealtime(time);
             if (version == speedBuffVersion)
             {
                 moveSpeedMultiplier = 1f;
                 movementSpeed = baseMovementSpeed;
+                dashSpeed = baseDashSpeed;
             }
         }
 
