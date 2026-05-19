@@ -13,6 +13,7 @@ namespace OpenGS
         void IncreaseAttack(float sec = 30.0f);
         void IncreaseDefense(float sec = 30.0f);
         void Invisible(float sec = 30.0f);
+        void RefillGrenade();
 
         void Berserk();
     }

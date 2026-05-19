@@ -43,9 +43,14 @@ namespace OpenGS
             GameObject prefab = null;
             switch (type)
             {
+                case EFieldItemType.GranadeLauncher: prefab = randomItemPrefab; break;
+                case EFieldItemType.FlameThrower: prefab = randomItemPrefab; break;
                 case EFieldItemType.PowerUpItem: prefab = powerUpItemPrefab; break;
                 case EFieldItemType.DefenceUpItem: prefab = defenceUpItemPrefab; break;
-                // 他のタイプも必要に応じて追加
+                case EFieldItemType.SpeedUpItem: prefab = speedUpItemPrefab; break;
+                case EFieldItemType.StealthItem: prefab = stealthItemPrefab; break;
+                case EFieldItemType.GrenadePack: prefab = grenadePackItemPrefab; break;
+                case EFieldItemType.HealItem: prefab = healItemPrefab; break;
             }
 
             if (prefab != null && transform.childCount == 0)
@@ -99,14 +104,54 @@ namespace OpenGS
 
 
             }
- 
+        }
 
+        [Button("テストスピードアップアイテム生成")]
+        public void TestSpawnSpeedUpItem()
+        {
+            if (gameObject.transform.childCount == 0 && speedUpItemPrefab != null)
+            {
+                var item = Instantiate(speedUpItemPrefab, gameObject.transform);
+                var itemPos = gameObject.transform.position;
+                itemPos.y += heightOffset;
+                item.transform.position = itemPos;
+            }
+        }
 
+        [Button("テストステルスアイテム生成")]
+        public void TestSpawnStealthItem()
+        {
+            if (gameObject.transform.childCount == 0 && stealthItemPrefab != null)
+            {
+                var item = Instantiate(stealthItemPrefab, gameObject.transform);
+                var itemPos = gameObject.transform.position;
+                itemPos.y += heightOffset;
+                item.transform.position = itemPos;
+            }
+        }
 
+        [Button("テストグレネード補充アイテム生成")]
+        public void TestSpawnGrenadePackItem()
+        {
+            if (gameObject.transform.childCount == 0 && grenadePackItemPrefab != null)
+            {
+                var item = Instantiate(grenadePackItemPrefab, gameObject.transform);
+                var itemPos = gameObject.transform.position;
+                itemPos.y += heightOffset;
+                item.transform.position = itemPos;
+            }
+        }
 
-
-
-
+        [Button("テスト回復アイテム生成")]
+        public void TestSpawnHealItem()
+        {
+            if (gameObject.transform.childCount == 0 && healItemPrefab != null)
+            {
+                var item = Instantiate(healItemPrefab, gameObject.transform);
+                var itemPos = gameObject.transform.position;
+                itemPos.y += heightOffset;
+                item.transform.position = itemPos;
+            }
         }
 
     }

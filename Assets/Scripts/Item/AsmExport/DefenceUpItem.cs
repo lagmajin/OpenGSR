@@ -1,40 +1,26 @@
-﻿
 using UnityEngine;
-
 
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    public class DefenceUpItem : AbstractFieldItem
+    [RequireComponent(typeof(MultipleTags))]
+    public class DefenceUpItem : TimedFieldItem
     {
         public float time = 30.0f;
-        //private int heal = 25;
 
-        //private float fHeal = 0.25f;
-
-        private float step_time=0.0f;
-        // Start is called before the first frame update
-        void Start()
+        protected override float GetEffectDuration()
         {
-
+            return time > 0f ? time : 30f;
         }
 
-        // Update is called once per frame
-        void Update()
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            step_time += Time.deltaTime;
-
-            // 3秒後に画面遷移（scene2へ移動）
-            if (step_time >= 3.0f)
-            {
-               // SceneManager.LoadScene("scene2");
-            }
+            TryApplyToPlayer(collision, powerupable => powerupable.IncreaseDefense(GetEffectDuration()));
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            
+            TryApplyToPlayer(collision, powerupable => powerupable.IncreaseDefense(GetEffectDuration()));
         }
     }
-
 }

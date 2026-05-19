@@ -36,7 +36,7 @@ namespace OpenGS
             var bullet = bulletObj.GetComponent<BulletController>();
             if (bullet != null)
             {
-                bullet.Init(shotDir, bulletSpeed, damage);
+                bullet.Init(shotDir, bulletSpeed, GetEffectiveDamage());
             }
         }
     }

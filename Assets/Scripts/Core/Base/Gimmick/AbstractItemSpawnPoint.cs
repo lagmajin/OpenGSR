@@ -21,6 +21,10 @@ namespace OpenGS
 
         public GameObject powerUpItemPrefab;
         public GameObject defenceUpItemPrefab;
+        public GameObject speedUpItemPrefab;
+        public GameObject stealthItemPrefab;
+        public GameObject grenadePackItemPrefab;
+        public GameObject healItemPrefab;
         public GameObject randomItemPrefab;
 
         private string path;

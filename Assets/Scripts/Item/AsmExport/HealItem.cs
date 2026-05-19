@@ -8,8 +8,7 @@ namespace OpenGS
     public class HealItem : AbstractFieldItem
     {
         public AudioClip takeSound;
-
-        
+        [SerializeField] private float healAmount = 25f;
 
         // Start is called before the first frame update
 
@@ -38,14 +37,34 @@ namespace OpenGS
         {
             var tags=collision.GetComponent<MultipleTags>();
 
-            if(tags.HasPlayerTag())
+            if(tags != null && (tags.HasPlayerTag() || tags.HasMyPlayerTag() || tags.HasBotTag()))
             {
-                var aa=collision.GetComponent<IDamageable>();
+                var player = collision.GetComponent<AbstractPlayer>();
+                if (player != null)
+                {
+                    player.Heal(healAmount);
+                }
 
                 Destroy(gameObject);
             }
 
 
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            var tags = collision.gameObject.GetComponent<MultipleTags>();
+
+            if (tags != null && (tags.HasPlayerTag() || tags.HasMyPlayerTag() || tags.HasBotTag()))
+            {
+                var player = collision.gameObject.GetComponent<AbstractPlayer>();
+                if (player != null)
+                {
+                    player.Heal(healAmount);
+                }
+
+                Destroy(gameObject);
+            }
         }
 
 

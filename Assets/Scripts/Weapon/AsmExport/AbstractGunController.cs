@@ -143,6 +143,17 @@ namespace OpenGS
                 Instantiate(shotEffectPrefab, muzzle.position, muzzle.rotation);
         }
 
+        protected float GetDamageMultiplier()
+        {
+            var player = GetComponentInParent<AbstractPlayer>();
+            return player != null ? player.AttackMultiplier() : 1f;
+        }
+
+        protected float GetEffectiveDamage()
+        {
+            return damage * GetDamageMultiplier();
+        }
+
         protected virtual void CreateBullet(EBulletType type = EBulletType.Normal) { }
 
         protected virtual void CreateEmptyShellCasing()

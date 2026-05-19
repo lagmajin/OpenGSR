@@ -44,6 +44,7 @@ namespace OpenGS
         {
             Set("TakePowerUpItemEffect", ref TakePowerUpItemEffect);
             Set("TakeDefenseUpItemEffect", ref TakeDefenseUpItemEffect);
+            Set("TakeSpeedUpItemEffect", ref TakeSpeedUpItemEffect);
         }
 
 #endif

@@ -500,10 +500,29 @@ namespace OpenGS
                         player.Heal(value);
                         break;
                     case "BulletEnhance":
+                    case "PowerUp":
+                    case "PowerUpItem":
+                    case "AttackUp":
                         player.IncreaseAttack(duration);
                         break;
+                    case "DefenceUp":
+                    case "DefenceUpItem":
+                    case "DefenseUpItem":
+                    case "DefenseUp":
+                        player.IncreaseDefense(duration);
+                        break;
+                    case "SpeedUp":
+                    case "SpeedUpItem":
+                        player.SpeedUp(duration);
+                        break;
+                    case "Stealth":
+                    case "StealthItem":
+                    case "Invisible":
+                        player.Invisible(duration);
+                        break;
                     case "GrenadePack":
-                        player.Status.GrenadeCount = Mathf.Min(player.Status.GrenadeCount + Mathf.RoundToInt(value), 3);
+                    case "NormalGrenadePack":
+                        player.RefillGrenade();
                         break;
                 }
             }

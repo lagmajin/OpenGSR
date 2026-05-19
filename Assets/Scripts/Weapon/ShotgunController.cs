@@ -33,7 +33,7 @@ namespace OpenGS
                 if (bullet != null)
                 {
                     // 各弾の速度とダメージを微調整してバラけさせる
-                    bullet.Init(shotDir, bulletSpeed * Random.Range(0.95f, 1.05f), damage);
+                    bullet.Init(shotDir, bulletSpeed * Random.Range(0.95f, 1.05f), GetEffectiveDamage());
                 }
             }
         }

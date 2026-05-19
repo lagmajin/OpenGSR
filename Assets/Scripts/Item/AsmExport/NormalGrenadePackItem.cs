@@ -4,7 +4,7 @@ namespace OpenGS
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MultipleTags))]
-    public class PowerUpItem : TimedFieldItem
+    public class NormalGrenadePackItem : TimedFieldItem
     {
         public float time = 30.0f;
 
@@ -15,12 +15,12 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            TryApplyToPlayer(collision, powerupable => powerupable.IncreaseAttack(GetEffectDuration()));
+            TryApplyToPlayer(collision, powerupable => powerupable.RefillGrenade());
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            TryApplyToPlayer(collision, powerupable => powerupable.IncreaseAttack(GetEffectDuration()));
+            TryApplyToPlayer(collision, powerupable => powerupable.RefillGrenade());
         }
     }
 }

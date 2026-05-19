@@ -462,49 +462,23 @@ namespace OpenGS
 
         public override void IncreaseAttack(float sec)
         {
-            StartCoroutine(IncreaseAttackCounter());
-
-
-            //var effectStorage=PlayerEffectStorage.GetComponent<IPlayerEffectManager>().TakePowerUpItemEffectPrefab();
-
-            //Instantiate(effectStorage, gameObject.transform.position, Quaternion.identity);
-
-
-            Debug.Log("dfdetr");
+            base.IncreaseAttack(sec);
         }
 
         public override void IncreaseDefense(float sec)
         {
-            //var effectStorage = PlayerEffectStorage.GetComponent<IPlayerEffectManager>().TakePowerUpItemEffectPrefab();
-
-            //Instantiate(effectStorage, gameObject.transform.position, Quaternion.identity);
+            base.IncreaseDefense(sec);
         }
 
 
 
         public override void SpeedUp(float sec)
         {
-
-            StartCoroutine(WaitCallback(sec, () => { }));
-
+            base.SpeedUp(sec);
         }
         public override void Invisible(float sec)
         {
-            spriteRenderer.color = new Color(1f, 1f, 1f, .3f);
-
-
-        }
-        IEnumerator WaitCallback(float sec, Action callback)
-        {
-            if (sec < 0)
-            {
-                sec = 0.0f;
-            }
-
-            yield return new WaitForSeconds(sec);
-
-            callback();
-
+            base.Invisible(sec);
         }
 
         /*

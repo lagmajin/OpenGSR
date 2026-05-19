@@ -65,6 +65,12 @@ namespace OpenGS
         // ─── 状態フィールド ─────────────────────────────────────────
 
         public float moveSpeed = 0.4f;
+        protected float baseMoveSpeed = 0.4f;
+        protected float attackMultiplier = 1f;
+        protected float defenseMultiplier = 1f;
+        protected float moveSpeedMultiplier = 1f;
+        protected const float BuffedMultiplier = 2f;
+        protected const float InvisibleAlpha = 0.3f;
 
         protected bool isDead = false;
         protected bool isJump = false;
@@ -84,6 +90,11 @@ namespace OpenGS
         private MultipleTags myTags;
 
         protected SpriteRenderer spriteRenderer;
+
+        private int attackBuffVersion;
+        private int defenseBuffVersion;
+        private int speedBuffVersion;
+        private int invisibleBuffVersion;
 
         // ─── PlayerStatus (HP・Booster を一元管理) ──────────────────
 
@@ -112,6 +123,7 @@ namespace OpenGS
 
         public virtual void OnSpawn()
         {
+            ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
 
             if (PlayerRegistry.Instance != null)
@@ -122,6 +134,7 @@ namespace OpenGS
 
         public virtual void OnReSpawn()
         {
+            ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
 
             if (PlayerRegistry.Instance != null)
@@ -233,11 +246,11 @@ namespace OpenGS
         {
             if (isDead || Status == null) return;
 
-            // Armor reduction logic: Armor absorbs 10% of damage
+            // Armor reduction logic: Armor absorbs 10% of damage, boosted by defense buff.
             float finalDamage = damage;
             if (Status.Armor > 0)
             {
-                float absorbed = damage * 0.1f;
+                float absorbed = damage * 0.1f * defenseMultiplier;
                 if (absorbed > Status.Armor)
                 {
                     absorbed = Status.Armor;
@@ -290,11 +303,17 @@ namespace OpenGS
 
         // ─── IPowerupable ────────────────────────────────────────────
 
-        public bool IsSpeedUpNow() => false;
+        public bool IsSpeedUpNow() => moveSpeedMultiplier > 1f;
 
-        public bool IsIncreaseAttackNow() => false;
+        public bool IsIncreaseAttackNow() => attackMultiplier > 1f;
 
-        public bool IsIncreaseDefenseNow() => false;
+        public bool IsIncreaseDefenseNow() => defenseMultiplier > 1f;
+
+        public float AttackMultiplier() => attackMultiplier;
+
+        public float DefenseMultiplier() => defenseMultiplier;
+
+        public float MoveSpeedMultiplier() => moveSpeedMultiplier;
 
         public virtual void Burst()
         {
@@ -306,20 +325,30 @@ namespace OpenGS
 
         public virtual void IncreaseAttack(float sec)
         {
+            SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakePowerUpItemEffect : null);
             StartCoroutine(IncreaseAttackCounter(sec));
         }
 
         public virtual void IncreaseDefense(float sec)
         {
+            SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakeDefenseUpItemEffect : null);
             StartCoroutine(IncreaseDefenseCounter(sec));
         }
 
         public virtual void Invisible(float sec)
         {
+            StartCoroutine(InvisibleCounter(sec));
         }
 
         public virtual void SpeedUp(float sec)
         {
+            SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakeSpeedUpItemEffect : null);
+            StartCoroutine(SpeedUpCounter(sec));
+        }
+
+        public virtual void RefillGrenade()
+        {
+            Status?.RefillGrenade();
         }
 
         public virtual void PoisonBullet(float sec)
@@ -415,11 +444,12 @@ namespace OpenGS
         {
             if (time <= 0) time = 30.0f;
 
-            increaseItemCounter = time;
-            while (increaseItemCounter >= 0f)
+            var version = ++attackBuffVersion;
+            attackMultiplier = BuffedMultiplier;
+            yield return new WaitForSecondsRealtime(time);
+            if (version == attackBuffVersion)
             {
-                yield return new WaitForSecondsRealtime(itemInterval);
-                increaseItemCounter -= itemInterval;
+                attackMultiplier = 1f;
             }
         }
 
@@ -427,11 +457,42 @@ namespace OpenGS
         {
             if (time <= 0) time = 30.0f;
 
-            increaseItemCounter = time;
-            while (increaseItemCounter >= 0f)
+            var version = ++defenseBuffVersion;
+            defenseMultiplier = BuffedMultiplier;
+            yield return new WaitForSecondsRealtime(time);
+            if (version == defenseBuffVersion)
             {
-                yield return new WaitForSecondsRealtime(itemInterval);
-                increaseItemCounter -= itemInterval;
+                defenseMultiplier = 1f;
+            }
+        }
+
+        protected IEnumerator SpeedUpCounter(float time = 30.0f)
+        {
+            if (time <= 0) time = 30.0f;
+
+            var version = ++speedBuffVersion;
+            moveSpeedMultiplier = BuffedMultiplier;
+            moveSpeed = baseMoveSpeed * moveSpeedMultiplier;
+            yield return new WaitForSecondsRealtime(time);
+            if (version == speedBuffVersion)
+            {
+                moveSpeedMultiplier = 1f;
+                moveSpeed = baseMoveSpeed;
+            }
+        }
+
+        protected IEnumerator InvisibleCounter(float time = 30.0f)
+        {
+            if (time <= 0) time = 30.0f;
+
+            var version = ++invisibleBuffVersion;
+            invisible = true;
+            SetSpriteAlpha(InvisibleAlpha);
+            yield return new WaitForSecondsRealtime(time);
+            if (version == invisibleBuffVersion)
+            {
+                invisible = false;
+                SetSpriteAlpha(1f);
             }
         }
 
@@ -492,6 +553,54 @@ namespace OpenGS
         public void KnockBack(Vector2 direction)
         {
             AddDamageAndForce(0f, direction, 1.0f);
+        }
+
+        protected virtual void Awake()
+        {
+            baseMoveSpeed = moveSpeed;
+        }
+
+        protected void ResetPowerupState()
+        {
+            attackBuffVersion++;
+            defenseBuffVersion++;
+            speedBuffVersion++;
+            invisibleBuffVersion++;
+
+            attackMultiplier = 1f;
+            defenseMultiplier = 1f;
+            moveSpeedMultiplier = 1f;
+            invisible = false;
+            moveSpeed = baseMoveSpeed;
+            SetSpriteAlpha(1f);
+        }
+
+        protected void SetSpriteAlpha(float alpha)
+        {
+            if (spriteRenderer == null)
+            {
+                spriteRenderer = GetComponent<SpriteRenderer>();
+            }
+
+            if (spriteRenderer == null)
+            {
+                return;
+            }
+
+            var color = spriteRenderer.color;
+            color.a = Mathf.Clamp01(alpha);
+            spriteRenderer.color = color;
+        }
+
+        protected void SpawnPlayerEffect(GameObject effectPrefab)
+        {
+            if (effectPrefab == null)
+            {
+                return;
+            }
+
+            var effect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
+            effect.transform.SetParent(transform, true);
         }
     }
 }

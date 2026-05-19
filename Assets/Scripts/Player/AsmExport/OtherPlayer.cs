@@ -28,22 +28,22 @@ namespace OpenGS
 
         public override void IncreaseAttack(float sec)
         {
-            //throw new NotImplementedException();
+            base.IncreaseAttack(sec);
         }
 
         public override void IncreaseDefense(float sec)
         {
-            //throw new NotImplementedException();
+            base.IncreaseDefense(sec);
         }
 
         public override void Invisible(float sec)
         {
-            //throw new NotImplementedException();
+            base.Invisible(sec);
         }
 
         public override void SpeedUp(float sec)
         {
-            //throw new NotImplementedException();
+            base.SpeedUp(sec);
         }
     }
 

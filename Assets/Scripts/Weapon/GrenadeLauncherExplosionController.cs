@@ -19,6 +19,12 @@ namespace OpenGS
             Destroy(this.gameObject, activeTime);
         }
 
+        private float GetEffectiveDamage()
+        {
+            var player = GetComponentInParent<AbstractPlayer>();
+            return player != null ? damage * player.AttackMultiplier() : damage;
+        }
+
         // ─── 衝突処理 ────────────────────────────────────────────────
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -31,7 +37,7 @@ namespace OpenGS
                 var damageable = collision.gameObject.GetComponent<IDamageable>();
                 if (damageable != null)
                 {
-                    damageable.AddDamage(transform.position, damage, eDamageType.Explosion);
+                    damageable.AddDamage(transform.position, GetEffectiveDamage(), eDamageType.Explosion);
                 }
             }
         }

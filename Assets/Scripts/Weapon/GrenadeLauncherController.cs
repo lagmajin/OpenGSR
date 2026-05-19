@@ -24,7 +24,7 @@ namespace OpenGS
             var bullet = grenadeObj.GetComponent<BulletController>();
             if (bullet != null)
             {
-                bullet.Init(shotDir, bulletSpeed, damage);
+                bullet.Init(shotDir, bulletSpeed, GetEffectiveDamage());
                 bullet.EnableGravity(); // 重力を有効化
             }
 
