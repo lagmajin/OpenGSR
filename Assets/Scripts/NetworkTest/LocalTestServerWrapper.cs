@@ -203,7 +203,7 @@ namespace OpenGS.Network
             {
                 var countdown = new JObject
                 {
-                    ["MessageType"] = RUDPMessageTypes.WaitRoomStartCountdown,
+                    ["MessageType"] = MessageType.WaitRoomStartCountdown,
                     ["Countdown"] = 5,
                     ["RoomID"] = roomId
                 };

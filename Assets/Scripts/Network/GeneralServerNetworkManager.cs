@@ -552,7 +552,7 @@ namespace OpenGS
                     HandleSceneTransitionRequest(json);
                     break;
                 }
-                case "ClientLoadingSceneEntered":
+                case MessageType.ClientLoadingSceneEntered:
                 {
                     var playerId = json["PlayerID"]?.ToString() ?? ResolveLocalPlayerId();
                     EmitToClient(new JObject
@@ -567,38 +567,38 @@ namespace OpenGS
                     });
                     break;
                 }
-                case "LoadingStarted":
+                case MessageType.LoadingStarted:
                 {
                     loadingCompletedPlayers.Clear();
                     EmitToClient(new JObject
                     {
-                        ["MessageType"] = "LoadingStartedNotification",
+                        ["MessageType"] = MessageType.LoadingStartedNotification,
                         ["Success"] = true,
                         ["PlayerID"] = json["PlayerID"]?.ToString() ?? "",
                         ["Progress"] = 0f
                     });
                     break;
                 }
-                case "LoadingProgress":
+                case MessageType.LoadingProgress:
                 {
                     var progress = json["Progress"]?.ToObject<float>() ?? 0f;
                     EmitToClient(new JObject
                     {
-                        ["MessageType"] = "LoadingProgressNotification",
+                        ["MessageType"] = MessageType.LoadingProgressNotification,
                         ["Success"] = true,
                         ["PlayerID"] = json["PlayerID"]?.ToString() ?? "",
                         ["Progress"] = Mathf.Clamp01(progress)
                     });
                     break;
                 }
-                case "LoadingCompleted":
+                case MessageType.LoadingCompleted:
                 {
                     var playerId = json["PlayerID"]?.ToString() ?? "";
                     var normalizedPlayerId = string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
                     loadingCompletedPlayers.Add(normalizedPlayerId);
                     EmitToClient(new JObject
                     {
-                        ["MessageType"] = "LoadingCompletedNotification",
+                        ["MessageType"] = MessageType.LoadingCompletedNotification,
                         ["Success"] = true,
                         ["PlayerID"] = normalizedPlayerId
                     });
@@ -615,7 +615,7 @@ namespace OpenGS
 
                         EmitToClient(new JObject
                         {
-                            ["MessageType"] = "LoadingCompletedNotification",
+                            ["MessageType"] = MessageType.LoadingCompletedNotification,
                             ["Success"] = true,
                             ["PlayerID"] = mockPlayerId
                         });
@@ -625,7 +625,7 @@ namespace OpenGS
                     {
                         EmitToClient(new JObject
                         {
-                            ["MessageType"] = "AllowEnterMap",
+                            ["MessageType"] = MessageType.AllowEnterMap,
                             ["Success"] = true,
                             ["PlayerID"] = normalizedPlayerId
                         });
@@ -772,27 +772,30 @@ namespace OpenGS
 
             switch (messageType)
             {
-                case RUDPMessageTypes.WaitRoomChat:
-                    EmitToClient(RUDPMessageBuilder.CreateWaitRoomChat(
-                        json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? ResolveLocalPlayerId(),
-                        json["PlayerName"]?.ToString() ?? ResolveLocalPlayerName(),
-                        json["Message"]?.ToString() ?? "",
-                        json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? currentRoomId));
+                case MessageType.WaitRoomChat:
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.WaitRoomChat,
+                        ["PlayerID"] = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? ResolveLocalPlayerId(),
+                        ["PlayerName"] = json["PlayerName"]?.ToString() ?? ResolveLocalPlayerName(),
+                        ["Message"] = json["Message"]?.ToString() ?? "",
+                        ["RoomID"] = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? currentRoomId
+                    });
                     return true;
 
-                case RUDPMessageTypes.WaitRoomLeave:
+                case MessageType.WaitRoomLeave:
                     return HandleLocalWaitRoomLeave(json);
 
-                case RUDPMessageTypes.WaitRoomPlayerReady:
+                case MessageType.WaitRoomPlayerReady:
                     return HandleLocalReadyState(json, true);
 
-                case RUDPMessageTypes.WaitRoomPlayerUnready:
+                case MessageType.WaitRoomPlayerUnready:
                     return HandleLocalReadyState(json, false);
 
-                case RUDPMessageTypes.WaitRoomSettingsChange:
+                case MessageType.WaitRoomSettingsChange:
                     return HandleLocalWaitRoomSettingsChange(json);
 
-                case "GameStartRequest":
+                case MessageType.GameStartRequest:
                     if (!string.IsNullOrWhiteSpace(currentRoomId))
                     {
                         EmitToClient(new JObject
@@ -804,7 +807,12 @@ namespace OpenGS
                             ["UdpPort"] = LocalMatchServerUdpPort,
                             ["RoomID"] = currentRoomId
                         });
-                        EmitToClient(RUDPMessageBuilder.CreateWaitRoomStartCountdown(currentRoomId, 5));
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = MessageType.WaitRoomStartCountdown,
+                            ["RoomID"] = currentRoomId,
+                            ["Countdown"] = 5
+                        });
                         return true;
                     }
 
@@ -830,7 +838,12 @@ namespace OpenGS
             {
                 currentRoomId = "";
             }
-            EmitToClient(RUDPMessageBuilder.CreateWaitRoomLeave(playerId, roomId));
+            EmitToClient(new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomLeave,
+                ["PlayerID"] = playerId,
+                ["RoomID"] = roomId
+            });
             EmitToClient(BuildWaitRoomPlayerListMessage(room));
             return true;
         }
@@ -861,14 +874,22 @@ namespace OpenGS
                 player.IsReady = ready;
             }
 
-            EmitToClient(ready
-                ? RUDPMessageBuilder.CreateWaitRoomPlayerReady(playerId, roomId)
-                : RUDPMessageBuilder.CreateWaitRoomPlayerUnready(playerId, roomId));
+            EmitToClient(new JObject
+            {
+                ["MessageType"] = ready ? MessageType.WaitRoomPlayerReady : MessageType.WaitRoomPlayerUnready,
+                ["PlayerID"] = playerId,
+                ["RoomID"] = roomId
+            });
             EmitToClient(BuildWaitRoomPlayerListMessage(room));
 
             if (ready && room.Players.Count > 0 && room.Players.TrueForAll(candidate => candidate.IsReady))
             {
-                EmitToClient(RUDPMessageBuilder.CreateWaitRoomStartCountdown(roomId, 5));
+                EmitToClient(new JObject
+                {
+                    ["MessageType"] = MessageType.WaitRoomStartCountdown,
+                    ["RoomID"] = roomId,
+                    ["Countdown"] = 5
+                });
             }
 
             return true;
@@ -900,7 +921,12 @@ namespace OpenGS
             }
 
             room.PlayerCount = room.Players.Count;
-            EmitToClient(RUDPMessageBuilder.CreateWaitRoomSettingsChange(roomId, settings));
+            EmitToClient(new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomSettingsChange,
+                ["RoomID"] = roomId,
+                ["Settings"] = settings
+            });
             return true;
         }
 
@@ -918,7 +944,12 @@ namespace OpenGS
                 });
             }
 
-            return RUDPMessageBuilder.CreateWaitRoomPlayerList(room.RoomId, players);
+            return new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomPlayerList,
+                ["RoomID"] = room.RoomId,
+                ["Players"] = players
+            };
         }
 
         private string ResolveLocalPlayerId()

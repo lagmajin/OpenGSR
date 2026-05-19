@@ -53,24 +53,24 @@ namespace OpenGS.Network
             Register(MessageType.PlayerInfo, HandlePlayerInfo);
 
             // ロビー
-            Register(RUDPMessageTypes.LobbyEnter, HandleLobbyEnter);
-            Register(RUDPMessageTypes.LobbyLeave, HandleLobbyLeave);
-            Register(RUDPMessageTypes.LobbyChat, HandleLobbyChat);
+            Register(MessageType.LobbyEnter, HandleLobbyEnter);
+            Register(MessageType.LobbyLeave, HandleLobbyLeave);
+            Register(MessageType.LobbyChat, HandleLobbyChat);
 
             // ルーム
             Register(MessageType.CreateRoomRequest, HandleCreateRoom);
             Register(MessageType.RoomListUpdateRequest, HandleUpdateRoom);
             Register(MessageType.JoinRoomRequest, HandleEnterRoom);
             Register(MessageType.LeaveRoomRequest, HandleLeaveRoom);
-            Register("RoomChat", HandleRoomChat);
+            Register(MessageType.WaitRoomChat, HandleRoomChat);
             Register(MessageType.PlayerReadyRequest, HandlePlayerReady);
             Register(MessageType.PlayerUnready, HandlePlayerUnready);
-            Register("KickPlayer", HandleKickPlayer);
+            Register(MessageType.WaitRoomKickPlayer, HandleKickPlayer);
             Register(MessageType.GameStartRequest, HandleGameStart);
-            Register("CancelCountdown", HandleCancelCountdown);
+            Register(MessageType.WaitRoomCancelCountdown, HandleCancelCountdown);
 
             // マッチ
-            Register("LoadingFinished", HandleLoadingFinished);
+            Register(MessageType.LoadingCompletedNotification, HandleLoadingFinished);
             Register(RUDPMessageTypes.PlayerShot, HandlePlayerShot);
             Register("PlayerKilled", HandlePlayerKilled);
             Register("PlayerDamaged", HandlePlayerDamaged);
@@ -146,7 +146,7 @@ namespace OpenGS.Network
             var playerName = json["PlayerName"]?.ToString() ?? "Unknown";
             var resp = new JObject
             {
-                ["MessageType"] = RUDPMessageTypes.LobbyEnter,
+                ["MessageType"] = MessageType.LobbyEnter,
                 ["Success"] = true,
                 ["PlayerName"] = playerName
             };
@@ -157,7 +157,7 @@ namespace OpenGS.Network
         {
             var resp = new JObject
             {
-                ["MessageType"] = RUDPMessageTypes.LobbyLeave,
+                ["MessageType"] = MessageType.LobbyLeave,
                 ["Success"] = true
             };
             sender(resp);
@@ -285,7 +285,7 @@ namespace OpenGS.Network
 
             var countdown = new JObject
             {
-                ["MessageType"] = RUDPMessageTypes.WaitRoomStartCountdown,
+                ["MessageType"] = MessageType.WaitRoomStartCountdown,
                 ["Countdown"] = 5,
                 ["RoomID"] = roomId
             };
@@ -298,7 +298,7 @@ namespace OpenGS.Network
 
             var cancel = new JObject
             {
-                ["MessageType"] = RUDPMessageTypes.WaitRoomCancelCountdown,
+                ["MessageType"] = MessageType.WaitRoomCancelCountdown,
                 ["Reason"] = reason
             };
             sender(cancel);

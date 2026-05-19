@@ -251,14 +251,14 @@ namespace OpenGS
                 }
                 
 
-                if (messageType == "ClientLoadingSceneEntered")
+                if (messageType == MessageType.ClientLoadingSceneEntered)
                 {
 
                 }
 
-                if (messageType == "LoadingStarted")
+                if (messageType == MessageType.LoadingStarted)
                 {
-                    PrettyLogger.Bold("Network", "LoadingStarted");
+                    PrettyLogger.Bold("Network", MessageType.LoadingStarted);
 
 
                 }
@@ -365,16 +365,25 @@ namespace OpenGS
                     HandleFriendListRequest(json);
                 }
 
-                if (messageType == "UpdateProgress")
+                if (messageType == MessageType.LoadingProgress)
                 {
                     var progress = float.Parse(json["Progress"].ToString());
+
+                    var progressResp = new JObject
+                    {
+                        ["MessageType"] = MessageType.LoadingProgressNotification,
+                        ["Success"] = true,
+                        ["PlayerID"] = json["PlayerID"]?.ToString() ?? "",
+                        ["Progress"] = Mathf.Clamp01(progress)
+                    };
+                    SendJsonToClient(progressResp);
 
                     if(progress>=1.0f)
                     {
                         var id = json["id"].ToString();
 
                         var result = new AIXJsonObject();
-                        result["MessageType"] = "AllowEnterMap";
+                        result["MessageType"] = MessageType.AllowEnterMap;
 
 
                         SendJsonToClient(result);
@@ -383,70 +392,84 @@ namespace OpenGS
                     PrettyLogger.Bold("Network", "Progress");
                 }
 
-                if(messageType=="LoadingCompleted")
+                if(messageType==MessageType.LoadingCompleted)
                 {
+                    var completeResp = new JObject
+                    {
+                        ["MessageType"] = MessageType.LoadingCompletedNotification,
+                        ["Success"] = true,
+                        ["PlayerID"] = json["PlayerID"]?.ToString() ?? ""
+                    };
+                    SendJsonToClient(completeResp);
 
+                    var result = new JObject
+                    {
+                        ["MessageType"] = MessageType.AllowEnterMap,
+                        ["Success"] = true,
+                        ["PlayerID"] = json["PlayerID"]?.ToString() ?? ""
+                    };
+                    SendJsonToClient(result);
 
                 }
 
                 #region ロビー・ウェイトルーム系ハンドラー
 
-                if (messageType == RUDPMessageTypes.LobbyEnter)
+                if (messageType == MessageType.LobbyEnter)
                 {
                     HandleLobbyEnter(json);
                 }
 
-                if (messageType == RUDPMessageTypes.LobbyLeave)
+                if (messageType == MessageType.LobbyLeave)
                 {
                     HandleLobbyLeave(json);
                 }
 
-                if (messageType == RUDPMessageTypes.LobbyChat)
+                if (messageType == MessageType.LobbyChat)
                 {
                     HandleLobbyChat(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomEnter)
+                if (messageType == MessageType.WaitRoomEnter)
                 {
                     HandleWaitRoomEnter(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomLeave)
+                if (messageType == MessageType.WaitRoomLeave)
                 {
                     HandleWaitRoomLeave(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomChat)
+                if (messageType == MessageType.WaitRoomChat)
                 {
                     HandleWaitRoomChat(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomPlayerReady)
+                if (messageType == MessageType.WaitRoomPlayerReady)
                 {
                     HandleWaitRoomPlayerReady(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomPlayerUnready)
+                if (messageType == MessageType.WaitRoomPlayerUnready)
                 {
                     HandleWaitRoomPlayerUnready(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomSettingsChange)
+                if (messageType == MessageType.WaitRoomSettingsChange)
                 {
                     HandleWaitRoomSettingsChange(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomKickPlayer)
+                if (messageType == MessageType.WaitRoomKickPlayer)
                 {
                     HandleWaitRoomKickPlayer(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomStartCountdown)
+                if (messageType == MessageType.WaitRoomStartCountdown)
                 {
                     HandleWaitRoomStartCountdown(json);
                 }
 
-                if (messageType == RUDPMessageTypes.WaitRoomCancelCountdown)
+                if (messageType == MessageType.WaitRoomCancelCountdown)
                 {
                     HandleWaitRoomCancelCountdown(json);
                 }

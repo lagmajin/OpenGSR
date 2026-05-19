@@ -119,7 +119,7 @@ namespace OpenGS
         public void SendGameStart()
         {
             var json = new JObject();
-            json["MessageType"] = "GameStartRequest";
+            json["MessageType"] = MessageType.GameStartRequest;
             json["PlayerAccountID"] = ResolveLocalPlayerId();
             json["RoomID"] = currentRoomId;
             SendMessage(json);
@@ -130,7 +130,12 @@ namespace OpenGS
         /// </summary>
         public void SendReady()
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomPlayerReady(ResolveLocalPlayerId(), currentRoomId);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomPlayerReady,
+                ["PlayerID"] = ResolveLocalPlayerId(),
+                ["RoomID"] = currentRoomId
+            };
             isReady = true;
             SendMessage(json);
         }
@@ -140,7 +145,12 @@ namespace OpenGS
         /// </summary>
         public void SendUnready()
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomPlayerUnready(ResolveLocalPlayerId(), currentRoomId);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomPlayerUnready,
+                ["PlayerID"] = ResolveLocalPlayerId(),
+                ["RoomID"] = currentRoomId
+            };
             isReady = false;
             SendMessage(json);
         }
@@ -150,7 +160,12 @@ namespace OpenGS
         /// </summary>
         public void SendLobbyEnter(string playerId, string playerName)
         {
-            var json = RUDPMessageBuilder.CreateLobbyEnter(playerId, playerName);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.LobbyEnter,
+                ["PlayerID"] = playerId,
+                ["PlayerName"] = playerName
+            };
             SendMessage(json);
         }
 
@@ -159,7 +174,11 @@ namespace OpenGS
         /// </summary>
         public void SendLobbyLeave(string playerId)
         {
-            var json = RUDPMessageBuilder.CreateLobbyLeave(playerId);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.LobbyLeave,
+                ["PlayerID"] = playerId
+            };
             SendMessage(json);
         }
 
@@ -168,7 +187,13 @@ namespace OpenGS
         /// </summary>
         public void SendLobbyChat(string playerId, string playerName, string message)
         {
-            var json = RUDPMessageBuilder.CreateLobbyChat(playerId, playerName, message);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.LobbyChat,
+                ["PlayerID"] = playerId,
+                ["PlayerName"] = playerName,
+                ["Message"] = message
+            };
             SendMessage(json);
         }
 
@@ -177,7 +202,13 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomEnter(string playerId, string playerName, string roomId)
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomEnter(playerId, playerName, roomId);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomEnter,
+                ["PlayerID"] = playerId,
+                ["PlayerName"] = playerName,
+                ["RoomID"] = roomId
+            };
             currentRoomId = roomId;
             SendMessage(json);
         }
@@ -187,7 +218,12 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomLeave(string playerId)
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomLeave(playerId, currentRoomId);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomLeave,
+                ["PlayerID"] = playerId,
+                ["RoomID"] = currentRoomId
+            };
             SendMessage(json);
         }
 
@@ -196,7 +232,14 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomChat(string playerId, string playerName, string message)
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomChat(playerId, playerName, message, currentRoomId);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomChat,
+                ["PlayerID"] = playerId,
+                ["PlayerName"] = playerName,
+                ["Message"] = message,
+                ["RoomID"] = currentRoomId
+            };
             SendMessage(json);
         }
 
@@ -205,7 +248,12 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomSettingsChange(JObject settings)
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomSettingsChange(currentRoomId, settings);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomSettingsChange,
+                ["RoomID"] = currentRoomId,
+                ["Settings"] = settings
+            };
             SendMessage(json);
         }
 
@@ -214,7 +262,13 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomKickPlayer(string targetPlayerId, string reason)
         {
-            var json = RUDPMessageBuilder.CreateWaitRoomKickPlayer(targetPlayerId, currentRoomId, reason);
+            var json = new JObject
+            {
+                ["MessageType"] = MessageType.WaitRoomKickPlayer,
+                ["PlayerID"] = targetPlayerId,
+                ["RoomID"] = currentRoomId,
+                ["Reason"] = reason
+            };
             SendMessage(json);
         }
 
@@ -301,65 +355,65 @@ namespace OpenGS
             switch (messageType)
             {
                 // ロビー関連
-                case RUDPMessageTypes.LobbyEnter:
+                case MessageType.LobbyEnter:
                     HandleLobbyEnter(json);
                     break;
-                case RUDPMessageTypes.LobbyLeave:
+                case MessageType.LobbyLeave:
                     HandleLobbyLeave(json);
                     break;
-                case RUDPMessageTypes.LobbyPlayerList:
+                case MessageType.LobbyPlayerList:
                     HandleLobbyPlayerList(json);
                     break;
-                case RUDPMessageTypes.LobbyChat:
+                case MessageType.LobbyChat:
                     HandleLobbyChat(json);
                     break;
 
                 // ウェイトルーム関連
-                case RUDPMessageTypes.WaitRoomEnter:
+                case MessageType.WaitRoomEnter:
                     HandleWaitRoomEnter(json);
                     break;
-                case RUDPMessageTypes.WaitRoomLeave:
+                case MessageType.WaitRoomLeave:
                     HandleWaitRoomLeave(json);
                     break;
-                case RUDPMessageTypes.WaitRoomPlayerList:
+                case MessageType.WaitRoomPlayerList:
                     HandleWaitRoomPlayerList(json);
                     break;
-                case RUDPMessageTypes.WaitRoomChat:
+                case MessageType.WaitRoomChat:
                     HandleWaitRoomChat(json);
                     break;
-                case RUDPMessageTypes.WaitRoomPlayerReady:
+                case MessageType.WaitRoomPlayerReady:
                     HandleWaitRoomPlayerReady(json);
                     break;
-                case RUDPMessageTypes.WaitRoomPlayerUnready:
+                case MessageType.WaitRoomPlayerUnready:
                     HandleWaitRoomPlayerUnready(json);
                     break;
-                case RUDPMessageTypes.WaitRoomSettingsChange:
+                case MessageType.WaitRoomSettingsChange:
                     HandleWaitRoomSettingsChange(json);
                     break;
-                case RUDPMessageTypes.WaitRoomKickPlayer:
+                case MessageType.WaitRoomKickPlayer:
                     HandleWaitRoomKickPlayer(json);
                     break;
-                case RUDPMessageTypes.WaitRoomOwnerChange:
+                case MessageType.WaitRoomOwnerChange:
                     HandleWaitRoomOwnerChange(json);
                     break;
-                case RUDPMessageTypes.WaitRoomStartCountdown:
+                case MessageType.WaitRoomStartCountdown:
                     HandleWaitRoomStartCountdown(json);
                     break;
-                case RUDPMessageTypes.WaitRoomCancelCountdown:
+                case MessageType.WaitRoomCancelCountdown:
                     HandleWaitRoomCancelCountdown(json);
                     break;
 
                 // ルームリスト関連
-                case RUDPMessageTypes.RoomListUpdate:
+                case MessageType.RoomListUpdateNotification:
                     HandleRoomListUpdate(json);
                     break;
-                case RUDPMessageTypes.RoomCreated:
+                case MessageType.RoomCreated:
                     HandleRoomCreated(json);
                     break;
-                case RUDPMessageTypes.RoomDeleted:
+                case MessageType.RoomDeleted:
                     HandleRoomDeleted(json);
                     break;
-                case RUDPMessageTypes.RoomFull:
+                case MessageType.RoomFull:
                     HandleRoomFull(json);
                     break;
 

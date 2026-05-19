@@ -112,30 +112,30 @@ namespace OpenGS
         // ======== ロビー・ウェイトルーム系通信 ========
 
         // ロビー関連 - 双方向
-        public const string LobbyEnter = "LobbyEnter";              // ロビー入室
-        public const string LobbyLeave = "LobbyLeave";              // ロビー退室
-        public const string LobbyPlayerList = "LobbyPlayerList";    // ロビープレイヤー一覧
-        public const string LobbyChat = "LobbyChat";                // ロビーチャット
+        public const string LobbyEnter = MessageType.LobbyEnter;              // ロビー入室
+        public const string LobbyLeave = MessageType.LobbyLeave;              // ロビー退室
+        public const string LobbyPlayerList = MessageType.LobbyPlayerList;    // ロビープレイヤー一覧
+        public const string LobbyChat = MessageType.LobbyChat;                // ロビーチャット
 
         // ウェイトルーム関連 - 双方向
-        public const string WaitRoomEnter = "WaitRoomEnter";            // ウェイトルーム入室
-        public const string WaitRoomLeave = "WaitRoomLeave";            // ウェイトルーム退室
-        public const string WaitRoomPlayerList = "WaitRoomPlayerList";  // ウェイトルームプレイヤー一覧
-        public const string WaitRoomChat = "WaitRoomChat";              // ウェイトルームチャット
-        public const string WaitRoomPlayerReady = "WaitRoomPlayerReady";     // プレイヤー準備完了
-        public const string WaitRoomPlayerUnready = "WaitRoomPlayerUnready"; // プレイヤー準備解除
-        public const string WaitRoomSettingsChange = "WaitRoomSettingsChange"; // ルーム設定変更
-        public const string WaitRoomKickPlayer = "WaitRoomKickPlayer";   // プレイヤーキック
-        public const string WaitRoomOwnerChange = "WaitRoomOwnerChange"; // オーナー変更
-        public const string WaitRoomStartCountdown = "WaitRoomStartCountdown"; // 開始カウントダウン
-        public const string WaitRoomCancelCountdown = "WaitRoomCancelCountdown"; // カウントダウンキャンセル
-        public const string WaitRoomUpdateNotification = "WaitRoomUpdateNotification"; // ルーム情報の一括更新通知
+        public const string WaitRoomEnter = MessageType.WaitRoomEnter;            // ウェイトルーム入室
+        public const string WaitRoomLeave = MessageType.WaitRoomLeave;            // ウェイトルーム退室
+        public const string WaitRoomPlayerList = MessageType.WaitRoomPlayerList;  // ウェイトルームプレイヤー一覧
+        public const string WaitRoomChat = MessageType.WaitRoomChat;              // ウェイトルームチャット
+        public const string WaitRoomPlayerReady = MessageType.WaitRoomPlayerReady;     // プレイヤー準備完了
+        public const string WaitRoomPlayerUnready = MessageType.WaitRoomPlayerUnready; // プレイヤー準備解除
+        public const string WaitRoomSettingsChange = MessageType.WaitRoomSettingsChange; // ルーム設定変更
+        public const string WaitRoomKickPlayer = MessageType.WaitRoomKickPlayer;   // プレイヤーキック
+        public const string WaitRoomOwnerChange = MessageType.WaitRoomOwnerChange; // オーナー変更
+        public const string WaitRoomStartCountdown = MessageType.WaitRoomStartCountdown; // 開始カウントダウン
+        public const string WaitRoomCancelCountdown = MessageType.WaitRoomCancelCountdown; // カウントダウンキャンセル
+        public const string WaitRoomUpdateNotification = MessageType.WaitRoomUpdateNotification; // ルーム情報の一括更新通知
 
         // ルームリスト関連 - サーバー → クライアント
-        public const string RoomListUpdate = "RoomListUpdate";      // ルーム一覧更新
-        public const string RoomCreated = "RoomCreated";            // ルーム作成通知
-        public const string RoomDeleted = "RoomDeleted";            // ルーム削除通知
-        public const string RoomFull = "RoomFull";                  // ルーム満員通知
+        public const string RoomListUpdate = MessageType.RoomListUpdateNotification;      // ルーム一覧更新
+        public const string RoomCreated = MessageType.RoomCreated;            // ルーム作成通知
+        public const string RoomDeleted = MessageType.RoomDeleted;            // ルーム削除通知
+        public const string RoomFull = MessageType.RoomFull;                  // ルーム満員通知
     }
 
     /// <summary>
@@ -1083,7 +1083,7 @@ namespace OpenGS
         public static JObject CreateLobbyEnter(string playerId, string playerName)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.LobbyEnter;
+            json["MessageType"] = MessageType.LobbyEnter;
             json["PlayerId"] = playerId;
             json["PlayerName"] = playerName;
             return json;
@@ -1095,7 +1095,7 @@ namespace OpenGS
         public static JObject CreateLobbyLeave(string playerId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.LobbyLeave;
+            json["MessageType"] = MessageType.LobbyLeave;
             json["PlayerId"] = playerId;
             return json;
         }
@@ -1117,7 +1117,7 @@ namespace OpenGS
         public static JObject CreateLobbyChat(string playerId, string playerName, string message)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.LobbyChat;
+            json["MessageType"] = MessageType.LobbyChat;
             json["PlayerId"] = playerId;
             json["PlayerName"] = playerName;
             json["Message"] = message;
@@ -1135,7 +1135,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomEnter(string playerId, string playerName, string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomEnter;
+            json["MessageType"] = MessageType.WaitRoomEnter;
             json["PlayerId"] = playerId;
             json["PlayerName"] = playerName;
             json["RoomId"] = roomId;
@@ -1148,7 +1148,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomLeave(string playerId, string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomLeave;
+            json["MessageType"] = MessageType.WaitRoomLeave;
             json["PlayerId"] = playerId;
             json["RoomId"] = roomId;
             return json;
@@ -1160,7 +1160,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomPlayerList(string roomId, JArray players)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomPlayerList;
+            json["MessageType"] = MessageType.WaitRoomPlayerList;
             json["RoomId"] = roomId;
             json["Players"] = players;
             return json;
@@ -1172,7 +1172,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomChat(string playerId, string playerName, string message, string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomChat;
+            json["MessageType"] = MessageType.WaitRoomChat;
             json["PlayerId"] = playerId;
             json["PlayerName"] = playerName;
             json["Message"] = message;
@@ -1187,7 +1187,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomPlayerReady(string playerId, string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomPlayerReady;
+            json["MessageType"] = MessageType.WaitRoomPlayerReady;
             json["PlayerId"] = playerId;
             json["RoomId"] = roomId;
             return json;
@@ -1199,7 +1199,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomPlayerUnready(string playerId, string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomPlayerUnready;
+            json["MessageType"] = MessageType.WaitRoomPlayerUnready;
             json["PlayerId"] = playerId;
             json["RoomId"] = roomId;
             return json;
@@ -1211,7 +1211,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomSettingsChange(string roomId, JObject settings)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomSettingsChange;
+            json["MessageType"] = MessageType.WaitRoomSettingsChange;
             json["RoomId"] = roomId;
             json["Settings"] = settings;
             return json;
@@ -1223,7 +1223,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomKickPlayer(string playerId, string roomId, string reason)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomKickPlayer;
+            json["MessageType"] = MessageType.WaitRoomKickPlayer;
             json["PlayerId"] = playerId;
             json["RoomId"] = roomId;
             json["Reason"] = reason;
@@ -1236,7 +1236,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomOwnerChange(string roomId, string newOwnerId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomOwnerChange;
+            json["MessageType"] = MessageType.WaitRoomOwnerChange;
             json["RoomId"] = roomId;
             json["NewOwnerId"] = newOwnerId;
             return json;
@@ -1248,7 +1248,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomStartCountdown(string roomId, int countdownSeconds)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomStartCountdown;
+            json["MessageType"] = MessageType.WaitRoomStartCountdown;
             json["RoomId"] = roomId;
             json["Countdown"] = countdownSeconds;
             return json;
@@ -1260,7 +1260,7 @@ namespace OpenGS
         public static JObject CreateWaitRoomCancelCountdown(string roomId, string reason)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.WaitRoomCancelCountdown;
+            json["MessageType"] = MessageType.WaitRoomCancelCountdown;
             json["RoomId"] = roomId;
             json["Reason"] = reason;
             return json;
@@ -1276,7 +1276,7 @@ namespace OpenGS
         public static JObject CreateRoomListUpdate(JArray rooms)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.RoomListUpdate;
+            json["MessageType"] = MessageType.RoomListUpdateNotification;
             json["Rooms"] = rooms;
             return json;
         }
@@ -1287,7 +1287,7 @@ namespace OpenGS
         public static JObject CreateRoomCreated(string roomId, string roomName, string ownerId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.RoomCreated;
+            json["MessageType"] = MessageType.RoomCreated;
             json["RoomId"] = roomId;
             json["RoomName"] = roomName;
             json["OwnerId"] = ownerId;
@@ -1300,7 +1300,7 @@ namespace OpenGS
         public static JObject CreateRoomDeleted(string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.RoomDeleted;
+            json["MessageType"] = MessageType.RoomDeleted;
             json["RoomId"] = roomId;
             return json;
         }
@@ -1311,7 +1311,7 @@ namespace OpenGS
         public static JObject CreateRoomFull(string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = RUDPMessageTypes.RoomFull;
+            json["MessageType"] = MessageType.RoomFull;
             json["RoomId"] = roomId;
             return json;
         }

@@ -39,7 +39,7 @@ namespace OpenGS
         {
             var json = new JObject
             {
-                ["MessageType"] = "ClientLoadingSceneEntered",
+                ["MessageType"] = MessageType.ClientLoadingSceneEntered,
                 ["PlayerID"] = ResolveLocalPlayerId(),
                 ["AccountName"] = ResolveLocalPlayerName()
             };
@@ -61,24 +61,24 @@ namespace OpenGS
 
         public void SendLoadingStart()
         {
-            SendLoadingState("LoadingStarted", 0f, "loading-started");
+            SendLoadingState(MessageType.LoadingStarted, 0f, "loading-started");
         }
 
         public void SendLoadingProgress(float progress)
         {
-            SendLoadingState("LoadingProgress", Mathf.Clamp01(progress), "loading-progress");
+            SendLoadingState(MessageType.LoadingProgress, Mathf.Clamp01(progress), "loading-progress");
         }
 
         public void SendLoadingComplete()
         {
-            SendLoadingState("LoadingCompleted", 1f, "loading-complete");
+            SendLoadingState(MessageType.LoadingCompleted, 1f, "loading-complete");
         }
 
         public void SendLoadingMessage(string message)
         {
             var json = new JObject
             {
-                ["MessageType"] = "LoadingMessage",
+                ["MessageType"] = MessageType.LoadingMessage,
                 ["Message"] = message ?? string.Empty
             };
             SendToServer(json);
@@ -149,10 +149,10 @@ namespace OpenGS
             }
 
             var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
-            if (messageType == "AllowEnterMap")
+            if (messageType == MessageType.AllowEnterMap)
             {
                 enterMapAllowedReceived = true;
-                onlineLoadingManager?.SetLoadingMessage("AllowEnterMap");
+                onlineLoadingManager?.SetLoadingMessage(MessageType.AllowEnterMap);
                 TryAllowEnterMap();
                 return;
             }
@@ -180,15 +180,15 @@ namespace OpenGS
                 return;
             }
 
-            if (messageType == "LoadingFailed")
+            if (messageType == MessageType.LoadingFailed)
             {
                 ResolveDependencies();
-                onlineLoadingManager?.SetLoadingMessage(json["Message"]?.ToString() ?? "LoadingFailed");
+                onlineLoadingManager?.SetLoadingMessage(json["Message"]?.ToString() ?? MessageType.LoadingFailed);
                 onlineLoadingScene?.OnLoadingFailed();
                 return;
             }
 
-            if (messageType == "LoadingStartedNotification")
+            if (messageType == MessageType.LoadingStartedNotification)
             {
                 ResolveDependencies();
                 var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? string.Empty;
@@ -198,11 +198,11 @@ namespace OpenGS
                     onlineLoadingManager?.UpdateLoading(playerId, 0f);
                 }
 
-                onlineLoadingManager?.SetLoadingMessage("LoadingStarted");
+                onlineLoadingManager?.SetLoadingMessage(MessageType.LoadingStarted);
                 return;
             }
 
-            if (messageType == "LoadingProgressNotification")
+            if (messageType == MessageType.LoadingProgressNotification)
             {
                 ResolveDependencies();
                 var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? string.Empty;
@@ -216,7 +216,7 @@ namespace OpenGS
                 return;
             }
 
-            if (messageType == "LoadingCompletedNotification")
+            if (messageType == MessageType.LoadingCompletedNotification)
             {
                 ResolveDependencies();
                 var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? string.Empty;

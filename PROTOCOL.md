@@ -28,6 +28,13 @@ For the transport split, see [NETWORK_TRANSPORT_POLICY.md](/C:/Users/kukul/OneDr
 - `RoomListUpdateNotification`
 - `LobbyChatRequest`
 - `LobbyChatNotification`
+- `LobbyEnter`
+- `LobbyLeave`
+- `LobbyPlayerList`
+- `LobbyChat`
+- `RoomCreated`
+- `RoomDeleted`
+- `RoomFull`
 
 ### Match and readiness
 
@@ -35,9 +42,36 @@ For the transport split, see [NETWORK_TRANSPORT_POLICY.md](/C:/Users/kukul/OneDr
 - `MatchServerInfoResponse`
 - `PlayerReadyRequest`
 - `PlayerReadyNotification`
+- `PlayerUnready`
+- `GameStartRequest`
 - `GameStartNotification`
 - `ItemSpawnNotification`
 - `ItemDespawnNotification`
+
+### Wait room and loading
+
+- `WaitRoomEnter`
+- `WaitRoomLeave`
+- `WaitRoomPlayerList`
+- `WaitRoomChat`
+- `WaitRoomPlayerReady`
+- `WaitRoomPlayerUnready`
+- `WaitRoomSettingsChange`
+- `WaitRoomKickPlayer`
+- `WaitRoomOwnerChange`
+- `WaitRoomStartCountdown`
+- `WaitRoomCancelCountdown`
+- `WaitRoomUpdateNotification`
+- `ClientLoadingSceneEntered`
+- `LoadingStarted`
+- `LoadingProgress`
+- `LoadingCompleted`
+- `LoadingStartedNotification`
+- `LoadingProgressNotification`
+- `LoadingCompletedNotification`
+- `LoadingFailed`
+- `LoadingMessage`
+- `AllowEnterMap`
 
 ### Profile and shop
 
