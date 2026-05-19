@@ -3,6 +3,8 @@
 This project currently supports a canonical protocol plus legacy aliases.
 New code should use the canonical names below. Existing clients and local test servers still accept the legacy aliases where noted.
 
+For the transport split, see [NETWORK_TRANSPORT_POLICY.md](/C:/Users/kukul/OneDrive/デスクトップ/Programming/opengsr/NETWORK_TRANSPORT_POLICY.md).
+
 ## Canonical message types
 
 ### Authentication
@@ -51,6 +53,22 @@ New code should use the canonical names below. Existing clients and local test s
 ### Match result
 
 - `MatchEndNotification`
+
+## Transport boundary
+
+The canonical message list above does not automatically define the transport.
+Use the transport policy document for the actual split:
+
+- `TCP` for authentication, lobby, room, wait-room, loading, shop, friend, and
+  result flow
+- `RUDP` for match-time player state, combat events, and fast sync
+
+In practice:
+
+- control-plane messages should stay on `TCP`
+- match-plane messages should stay on `RUDP`
+- if a message is currently named from the wrong layer, move the contract to the
+  correct layer instead of normalizing the mistake
 
 ## Legacy aliases currently accepted
 
@@ -102,3 +120,5 @@ Legacy casing such as `PlayerId`, `RoomId`, and `OwnerPlayerID` is still tolerat
 - `OpenGSCore.MessageType.Normalize(...)` is the canonical compatibility helper.
 - New handlers should normalize incoming `MessageType` values before switching on them.
 - When adding a new message, prefer defining it in `Packages/com.opengs.logic/MessageType.cs` first, then update server, client, and local test handlers together.
+- When a message belongs to the wrong transport, move it into the correct layer
+  before adding more callers.

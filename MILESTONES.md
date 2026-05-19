@@ -9,13 +9,15 @@ the unfinished code paths that still appear in the gameplay flow.
 These are the best near-term milestones after the current investigation of the
 client, core, and server repos.
 
-1. `M0` / `S0` - contract and scene/bootstrap cleanup first.
-2. `M1` / `S1` - lobby and room authority second.
-3. `M3` / `S2` - match flow and result loop third.
-4. `M2` / `S3` - loading and offline/online transition handshakes next.
-5. `M6` / item contract work - once the core and server contracts are stable.
+1. `T0` - transport split cleanup first.
+2. `M0` / `S0` - contract and scene/bootstrap cleanup second.
+3. `M1` / `S1` - lobby and room authority third.
+4. `M3` / `S2` - match flow and result loop fourth.
+5. `M2` / `S3` - loading and offline/online transition handshakes next.
+6. `M6` / item contract work - once the core and server contracts are stable.
 
 Why this order:
+- the transport boundary must be clear before deeper protocol changes land
 - the contract layer is the shared dependency
 - lobby and room flow is the main entry point for both online and offline play
 - match flow is the core value path
