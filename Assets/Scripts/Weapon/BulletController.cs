@@ -21,11 +21,21 @@ namespace OpenGS
 
         public ETeam Team   { get; set; } = ETeam.NoTeam;
         public int   Damage { get; set; } = 50;
+        public string OwnerPlayerId { get; private set; } = string.Empty;
+        public string WeaponName { get; private set; } = "Unknown";
 
         public void Init(Vector2 direction, float speed, float damage)
         {
+            Init(direction, speed, damage, string.Empty, "Unknown", ETeam.NoTeam);
+        }
+
+        public void Init(Vector2 direction, float speed, float damage, string ownerPlayerId, string weaponName, ETeam team)
+        {
             this.speed = speed;
             this.Damage = Mathf.RoundToInt(damage);
+            OwnerPlayerId = ownerPlayerId ?? string.Empty;
+            WeaponName = string.IsNullOrWhiteSpace(weaponName) ? "Unknown" : weaponName;
+            Team = team;
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
@@ -54,10 +64,42 @@ namespace OpenGS
                 return;
             }
 
-            var tags = collision.GetComponent<IMultipleTags>();
-            if (tags != null && tags.HasPlayerTag())
+            var targetPlayer = collision.GetComponentInParent<AbstractPlayer>();
+            if (targetPlayer != null)
             {
-                // TODO: プレイヤーへのダメージ処理
+                bool shouldDestroy = true;
+
+                if (!string.IsNullOrWhiteSpace(OwnerPlayerId) && targetPlayer.UniqueID().ToString() == OwnerPlayerId)
+                {
+                    Destroy(gameObject);
+                    return;
+                }
+
+                if (Team != ETeam.NoTeam && targetPlayer.Team() != ETeam.NoTeam && targetPlayer.Team() == Team)
+                {
+                    Destroy(gameObject);
+                    return;
+                }
+
+                var registry = PlayerRegistry.Instance;
+                if (registry != null)
+                {
+                    var source = (Vector2)(targetPlayer.transform.position - transform.position);
+                    registry.ApplyDamage(
+                        targetPlayer.UniqueID(),
+                        source,
+                        Damage,
+                        eDamageType.Bullet,
+                        OwnerPlayerId,
+                        WeaponName,
+                        false
+                    );
+                }
+
+                if (shouldDestroy)
+                {
+                    Destroy(gameObject);
+                }
             }
         }
 

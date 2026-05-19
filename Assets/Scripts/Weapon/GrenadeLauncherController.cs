@@ -1,4 +1,5 @@
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -24,7 +25,8 @@ namespace OpenGS
             var bullet = grenadeObj.GetComponent<BulletController>();
             if (bullet != null)
             {
-                bullet.Init(shotDir, bulletSpeed, GetEffectiveDamage());
+                var owner = GetComponentInParent<AbstractPlayer>();
+                bullet.Init(shotDir, bulletSpeed, GetEffectiveDamage(), GetPlayerID(), Name, owner != null ? owner.Team() : ETeam.NoTeam);
                 bullet.EnableGravity(); // 重力を有効化
             }
 

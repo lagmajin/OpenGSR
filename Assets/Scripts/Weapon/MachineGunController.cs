@@ -1,4 +1,5 @@
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -36,7 +37,8 @@ namespace OpenGS
             var bullet = bulletObj.GetComponent<BulletController>();
             if (bullet != null)
             {
-                bullet.Init(shotDir, bulletSpeed, GetEffectiveDamage());
+                var owner = GetComponentInParent<AbstractPlayer>();
+                bullet.Init(shotDir, bulletSpeed, GetEffectiveDamage(), GetPlayerID(), Name, owner != null ? owner.Team() : ETeam.NoTeam);
             }
         }
     }

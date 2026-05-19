@@ -1,4 +1,5 @@
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -33,7 +34,15 @@ namespace OpenGS
                 if (bullet != null)
                 {
                     // 各弾の速度とダメージを微調整してバラけさせる
-                    bullet.Init(shotDir, bulletSpeed * Random.Range(0.95f, 1.05f), GetEffectiveDamage());
+                    var owner = GetComponentInParent<AbstractPlayer>();
+                    bullet.Init(
+                        shotDir,
+                        bulletSpeed * Random.Range(0.95f, 1.05f),
+                        GetEffectiveDamage(),
+                        GetPlayerID(),
+                        Name,
+                        owner != null ? owner.Team() : ETeam.NoTeam
+                    );
                 }
             }
         }
