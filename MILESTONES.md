@@ -4,6 +4,24 @@ This document tracks the next most important feature milestones for the project.
 It is based on the current repository state, the rescued scene/resource layout, and
 the unfinished code paths that still appear in the gameplay flow.
 
+## Current Working Set For `dev/2026-05-19`
+
+These are the best near-term milestones after the current investigation of the
+client, core, and server repos.
+
+1. `M0` / `S0` - contract and scene/bootstrap cleanup first.
+2. `M1` / `S1` - lobby and room authority second.
+3. `M3` / `S2` - match flow and result loop third.
+4. `M2` / `S3` - loading and offline/online transition handshakes next.
+5. `M6` / item contract work - once the core and server contracts are stable.
+
+Why this order:
+- the contract layer is the shared dependency
+- lobby and room flow is the main entry point for both online and offline play
+- match flow is the core value path
+- loading and item work are easier to finish once the underlying state flow is
+  consistent
+
 ## M0. Scene Name And Transition Cleanup
 
 Goal: make all scene transitions consistent and safe.
