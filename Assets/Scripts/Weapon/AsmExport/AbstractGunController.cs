@@ -145,6 +145,12 @@ namespace OpenGS
 
         protected float GetDamageMultiplier()
         {
+            var powerupable = GetComponentInParent<IPowerupable>();
+            if (powerupable != null)
+            {
+                return powerupable.IsIncreaseAttackNow() ? 2f : 1f;
+            }
+
             var player = GetComponentInParent<AbstractPlayer>();
             return player != null ? player.AttackMultiplier() : 1f;
         }

@@ -16,7 +16,8 @@ namespace OpenGS
                 return false;
             }
 
-            if (!collision.gameObject.TryGetComponent<IMultipleTags>(out var tags))
+            var tags = collision.GetComponentInParent<IMultipleTags>();
+            if (tags == null)
             {
                 return false;
             }
@@ -26,7 +27,8 @@ namespace OpenGS
                 return false;
             }
 
-            if (!collision.gameObject.TryGetComponent<IPowerupable>(out var powerupable))
+            var powerupable = collision.GetComponentInParent<IPowerupable>();
+            if (powerupable == null)
             {
                 return false;
             }

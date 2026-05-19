@@ -11,7 +11,7 @@ using UnityEngine.Audio;
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    public class PlayerAgent : AbstractPlayerAgent,IDamagableObject
+    public class PlayerAgent : AbstractPlayerAgent, IDamagableObject, IPowerupable
     {
         [SerializeField] private BoxCollider2D standingCollider;
         [SerializeField] private BoxCollider2D sitingCollider;
@@ -75,6 +75,19 @@ namespace OpenGS
         bool isJumping = false;
         float jumpTimer = 0f;
 
+        private const float BuffedMultiplier = 2f;
+        private const float InvisibleAlpha = 0.3f;
+        private float baseMovementSpeed;
+        private float attackMultiplier = 1f;
+        private float defenseMultiplier = 1f;
+        private float moveSpeedMultiplier = 1f;
+        private int attackBuffVersion;
+        private int defenseBuffVersion;
+        private int speedBuffVersion;
+        private int invisibleBuffVersion;
+        private int normalGrenadeCount = 3;
+        private bool invisibleBuffActive = false;
+
         void Start()
         {
 
@@ -93,9 +106,6 @@ namespace OpenGS
             leftScale = transform.localScale;
             leftScale.x *= -1;
 
-
-            StartInvincibility(2.0f);
-
             var list = new List<SpriteRenderer>();
             if (spriteRenderer != null) list.Add(spriteRenderer);
 
@@ -113,6 +123,10 @@ namespace OpenGS
 
             spriteRendereres = list.ToArray();
 
+            baseMovementSpeed = movementSpeed;
+            ResetPowerupState();
+            StartInvincibility(2.0f);
+
             AutoSetMediateObject();
         }
 
@@ -127,16 +141,16 @@ namespace OpenGS
 
         void StartInvincibility(float duration)
         {
+            invincible = true;
             Sequence seq = DOTween.Sequence();
 
             seq.AppendCallback(() =>
             {
-                invincible = true;
-
                 // 全てのSpriteRendererに対して点滅開始
+                if (spriteRendereres == null) return;
                 foreach (var sr in spriteRendereres)
                 {
-                    sr.DOFade(0f, 0.2f).SetLoops(-1, LoopType.Yoyo).SetId("invincible");
+                    sr?.DOFade(0f, 0.2f).SetLoops(-1, LoopType.Yoyo).SetId("invincible");
                 }
             });
 
@@ -149,9 +163,10 @@ namespace OpenGS
                 // DOTweenのIDを使って全部止める
                 DOTween.Kill("invincible");
 
+                if (spriteRendereres == null) return;
                 foreach (var sr in spriteRendereres)
                 {
-                    sr.DOFade(1f, 0f); // 完全表示に戻す
+                    sr?.DOFade(invisibleBuffActive ? InvisibleAlpha : 1f, 0f); // 完全表示に戻す
                 }
             });
         }
@@ -586,9 +601,148 @@ namespace OpenGS
         {
             Debug.Log("TakeDamage Func");
 
-            
+            if (invincible || IsIncreaseDefenseNow())
+            {
+                Debug.Log("TakeDamage ignored by invincibility or defense buff");
+                return;
+            }
 
             Die();
+        }
+
+        public bool IsSpeedUpNow()
+        {
+            return moveSpeedMultiplier > 1f;
+        }
+
+        public bool IsIncreaseAttackNow()
+        {
+            return attackMultiplier > 1f;
+        }
+
+        public bool IsIncreaseDefenseNow()
+        {
+            return defenseMultiplier > 1f;
+        }
+
+        public void SpeedUp(float sec = 30.0f)
+        {
+            StartCoroutine(SpeedUpCounter(sec));
+        }
+
+        public void IncreaseAttack(float sec = 30.0f)
+        {
+            StartCoroutine(IncreaseAttackCounter(sec));
+        }
+
+        public void IncreaseDefense(float sec = 30.0f)
+        {
+            StartCoroutine(IncreaseDefenseCounter(sec));
+        }
+
+        public void Invisible(float sec = 30.0f)
+        {
+            StartCoroutine(InvisibleCounter(sec));
+        }
+
+        public void RefillGrenade()
+        {
+            normalGrenadeCount = 3;
+            Debug.Log("[PlayerAgent] Normal grenade refilled.");
+        }
+
+        public void Berserk()
+        {
+        }
+
+        private void ResetPowerupState()
+        {
+            attackBuffVersion++;
+            defenseBuffVersion++;
+            speedBuffVersion++;
+            invisibleBuffVersion++;
+
+            attackMultiplier = 1f;
+            defenseMultiplier = 1f;
+            moveSpeedMultiplier = 1f;
+            invisibleBuffActive = false;
+            invincible = false;
+            normalGrenadeCount = 3;
+            movementSpeed = baseMovementSpeed;
+            SetSpriteAlpha(1f);
+        }
+
+        private IEnumerator IncreaseAttackCounter(float time)
+        {
+            if (time <= 0f) time = 30f;
+
+            var version = ++attackBuffVersion;
+            attackMultiplier = BuffedMultiplier;
+            yield return new WaitForSecondsRealtime(time);
+            if (version == attackBuffVersion)
+            {
+                attackMultiplier = 1f;
+            }
+        }
+
+        private IEnumerator IncreaseDefenseCounter(float time)
+        {
+            if (time <= 0f) time = 30f;
+
+            var version = ++defenseBuffVersion;
+            defenseMultiplier = BuffedMultiplier;
+            yield return new WaitForSecondsRealtime(time);
+            if (version == defenseBuffVersion)
+            {
+                defenseMultiplier = 1f;
+            }
+        }
+
+        private IEnumerator SpeedUpCounter(float time)
+        {
+            if (time <= 0f) time = 30f;
+
+            var version = ++speedBuffVersion;
+            moveSpeedMultiplier = BuffedMultiplier;
+            movementSpeed = baseMovementSpeed * moveSpeedMultiplier;
+            yield return new WaitForSecondsRealtime(time);
+            if (version == speedBuffVersion)
+            {
+                moveSpeedMultiplier = 1f;
+                movementSpeed = baseMovementSpeed;
+            }
+        }
+
+        private IEnumerator InvisibleCounter(float time)
+        {
+            if (time <= 0f) time = 30f;
+
+            var version = ++invisibleBuffVersion;
+            invisibleBuffActive = true;
+            SetSpriteAlpha(InvisibleAlpha);
+            yield return new WaitForSecondsRealtime(time);
+            if (version == invisibleBuffVersion)
+            {
+                invisibleBuffActive = false;
+                SetSpriteAlpha(1f);
+            }
+        }
+
+        private void SetSpriteAlpha(float alpha)
+        {
+            if (spriteRendereres == null)
+            {
+                return;
+            }
+
+            foreach (var sr in spriteRendereres)
+            {
+                if (sr == null) continue;
+
+                var color = sr.color;
+                color.a = Mathf.Clamp01(alpha);
+                sr.color = color;
+            }
         }
 
         /*
