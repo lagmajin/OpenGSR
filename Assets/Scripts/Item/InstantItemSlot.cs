@@ -82,6 +82,66 @@ namespace OpenGS
             items[i] = CreateItem(type);
         }
 
+        public void SetFromEquippedItems(IEnumerable<EInstantItemType> equippedItems)
+        {
+            Clear();
+
+            if (equippedItems == null)
+            {
+                return;
+            }
+
+            var index = 0;
+            foreach (var type in equippedItems)
+            {
+                if (index >= items.Count)
+                {
+                    break;
+                }
+
+                InsertInstantItem(index, type);
+                index++;
+            }
+        }
+
+        public void Clear()
+        {
+            for (var index = 0; index < items.Count; index++)
+            {
+                items[index] = null;
+            }
+        }
+
+        public bool TryUse(int i, out EInstantItemType type)
+        {
+            type = EInstantItemType.None;
+
+            if (i < 0 || i >= items.Count)
+            {
+                return false;
+            }
+
+            var item = items[i];
+            if (item == null || !item.CanUse())
+            {
+                return false;
+            }
+
+            type = item.Type;
+            item.Use();
+            return true;
+        }
+
+        public EInstantItemType GetSlotType(int i)
+        {
+            if (i < 0 || i >= items.Count || items[i] == null)
+            {
+                return EInstantItemType.None;
+            }
+
+            return items[i].Type;
+        }
+
         public bool IsUsed(int i)
         {
             if (i < 0 || i >= items.Count || items[i] == null)
@@ -102,6 +162,11 @@ namespace OpenGS
             return items.Count;
         }
 
+        public IReadOnlyList<AbstractInstantItem> GetItems()
+        {
+            return items;
+        }
+
         public AbstractInstantItem GetItemFromSlot(int i = 0)
         {
             if (i < 0 || i >= items.Count)
@@ -120,7 +185,8 @@ namespace OpenGS
                 EInstantItemType.PowerGrenadePack => new InstantPowerGrenadePack(),
                 EInstantItemType.MagnetGrenadePack => new InstantMagneticGrenadePack(),
                 EInstantItemType.HealthKit => new InstantBandAid(),
-                _ => new InstantBandAid()
+                EInstantItemType.None => null,
+                _ => null
             };
         }
     }

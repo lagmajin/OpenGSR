@@ -50,7 +50,7 @@ namespace OpenGS
         private bool leftKey = false;
 
         private List<KeyCommand> dashCommand = new List<KeyCommand>();
-        private readonly bool[] usedInstantItemSlots = new bool[3];
+        private readonly InstantItemSlots instantItemSlots = new InstantItemSlots();
         private MatchEventProvider matchEventProvider;
 
 
@@ -81,14 +81,14 @@ namespace OpenGS
         public override void OnSpawn()
         {
            // var uiManager = 0;
-            ResetInstantItemUsage();
+            ResetInstantItems();
 
 
         }
 
         public override void OnReSpawn()
         {
-            ResetInstantItemUsage();
+            ResetInstantItems();
 
         }
 
@@ -304,40 +304,34 @@ namespace OpenGS
         public override void UseItem(int num = 0)
         {
             var slotIndex = num > 0 ? num - 1 : 0;
-            if (slotIndex < 0 || slotIndex >= usedInstantItemSlots.Length)
+            if (slotIndex < 0 || slotIndex >= instantItemSlots.Count())
             {
                 Debug.LogWarning($"[CharaController] Invalid instant item slot: {num}");
                 return;
             }
 
-            if (usedInstantItemSlots[slotIndex])
-            {
-                Debug.Log($"[CharaController] Instant item slot {slotIndex + 1} already used.");
-                return;
-            }
+            EnsureInstantItemsLoaded();
 
-            var equippedItems = UserSaveManager.GetEquippedInstantItems();
-            if (equippedItems == null || slotIndex >= equippedItems.Length)
-            {
-                Debug.LogWarning($"[CharaController] No equipped instant items for slot {slotIndex + 1}.");
-                return;
-            }
-
-            var itemId = equippedItems[slotIndex];
-            if (string.IsNullOrWhiteSpace(itemId) || !Enum.TryParse(itemId, true, out EInstantItemType itemType))
-            {
-                Debug.LogWarning($"[CharaController] Invalid instant item in slot {slotIndex + 1}: {itemId}");
-                return;
-            }
-
-            if (itemType == EInstantItemType.None)
+            var slotType = instantItemSlots.GetSlotType(slotIndex);
+            if (slotType == EInstantItemType.None)
             {
                 Debug.LogWarning($"[CharaController] Instant item slot {slotIndex + 1} is empty.");
                 return;
             }
 
+            if (instantItemSlots.IsUsed(slotIndex))
+            {
+                Debug.Log($"[CharaController] Instant item slot {slotIndex + 1} already used.");
+                return;
+            }
+
+            if (!instantItemSlots.TryUse(slotIndex, out var itemType))
+            {
+                Debug.LogWarning($"[CharaController] No usable instant item in slot {slotIndex + 1}.");
+                return;
+            }
+
             ApplyInstantItem(itemType);
-            usedInstantItemSlots[slotIndex] = true;
 
             if (matchEventProvider == null)
             {
@@ -357,11 +351,16 @@ namespace OpenGS
 
         }
 
-        private void ResetInstantItemUsage()
+        private void ResetInstantItems()
         {
-            for (var index = 0; index < usedInstantItemSlots.Length; index++)
+            instantItemSlots.SetFromEquippedItems(GetEquippedInstantItemTypes());
+        }
+
+        private void EnsureInstantItemsLoaded()
+        {
+            if (instantItemSlots.Count() == 0)
             {
-                usedInstantItemSlots[index] = false;
+                instantItemSlots.SetFromEquippedItems(GetEquippedInstantItemTypes());
             }
         }
 
@@ -395,6 +394,29 @@ namespace OpenGS
                     Debug.LogWarning($"[CharaController] Unsupported instant item: {itemType}");
                     break;
             }
+        }
+
+        private static IEnumerable<EInstantItemType> GetEquippedInstantItemTypes()
+        {
+            var equippedItems = UserSaveManager.GetEquippedInstantItems();
+            if (equippedItems == null || equippedItems.Length == 0)
+            {
+                return Array.Empty<EInstantItemType>();
+            }
+
+            var result = new List<EInstantItemType>(equippedItems.Length);
+            foreach (var itemId in equippedItems)
+            {
+                if (string.IsNullOrWhiteSpace(itemId) || !Enum.TryParse(itemId, true, out EInstantItemType itemType))
+                {
+                    result.Add(EInstantItemType.None);
+                    continue;
+                }
+
+                result.Add(itemType);
+            }
+
+            return result;
         }
 
         public void FlipWeapon()
