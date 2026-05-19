@@ -112,6 +112,11 @@ namespace OpenGS
         /// </summary>
         public bool ApplyDamage(Guid id, Vector2 source, float damage, eDamageType type)
         {
+            return ApplyDamage(id, source, damage, type, string.Empty, "Unknown", false);
+        }
+
+        public bool ApplyDamage(Guid id, Vector2 source, float damage, eDamageType type, string attackerId, string weaponType, bool headshot)
+        {
             if (!TryGetPlayer(id, out var p) || p == null) return false;
 
             float prevHp = GetPlayerHpSafe(p);
@@ -139,12 +144,28 @@ namespace OpenGS
             if (!Mathf.Approximately(prevHp, newHp))
             {
                 OnPlayerHealthChanged?.Invoke(p, newHp);
+                GameEventBroker.Publish(new PlayerDamageEvent(
+                    targetId: p.UniqueID().ToString(),
+                    attackerId: attackerId ?? string.Empty,
+                    damage: Mathf.Max(0, Mathf.RoundToInt(prevHp - newHp)),
+                    remainingHp: Mathf.Max(0, Mathf.RoundToInt(newHp))
+                ));
             }
 
             if (!wasDead && p.IsDead())
             {
                 if (p.Status != null) p.Status.DeathCount++;
                 OnPlayerDied?.Invoke(p);
+
+                var deadReason = string.IsNullOrWhiteSpace(attackerId) ? EDeadReason.Unknown : EDeadReason.KilledBy;
+                var deadEvent = new PlayerDeadEvent(deadReason, p.gameObject.name, p.UniqueID().ToString(), p.Team());
+                if (!string.IsNullOrWhiteSpace(attackerId))
+                {
+                    deadEvent.SetKillerID(attackerId);
+                    GameEventBroker.Publish(new PlayerKillEvent(attackerId, p.UniqueID().ToString(), weaponType, headshot));
+                }
+
+                GameEventBroker.Publish(deadEvent);
             }
 
             return true;

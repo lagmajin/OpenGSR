@@ -25,6 +25,38 @@ namespace OpenGS
         private readonly Queue<KillLogItem> activeLogs = new();
 
         /// <summary>
+        /// 純データを使ってキルログを追加する。
+        /// </summary>
+        public void AddLog(KillLogEntryData entry, Sprite weaponSprite = null)
+        {
+            if (logPrefab == null)
+            {
+                Debug.LogWarning("KillLogManager: logPrefab がアサインされていません。");
+                return;
+            }
+
+            var newLog = Instantiate(logPrefab, transform);
+            newLog.Setup(
+                entry.KillerName,
+                entry.VictimName,
+                weaponSprite,
+                KillLogFormatter.ResolveKillerColor(entry),
+                KillLogFormatter.ResolveVictimColor(entry)
+            );
+
+            activeLogs.Enqueue(newLog);
+
+            if (activeLogs.Count > maxLogCount)
+            {
+                var oldestLog = activeLogs.Dequeue();
+                if (oldestLog != null)
+                {
+                    oldestLog.ForceFadeOut();
+                }
+            }
+        }
+
+        /// <summary>
         /// キル時のログを新しく追加する。
         /// </summary>
         /// <param name="killerName">キルしたプレイヤー名</param>

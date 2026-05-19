@@ -1,82 +1,115 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace OpenGS
 {
     /// <summary>
-    /// PlayerRegistry の死亡イベントを監視し、KillLogManager にキルログを追加するリスナー。
-    /// バトルシーンに1つ配置しておくだけで、キルが発生するたびに画面にキルログが流れる。
-    ///
-    /// 【使い方】
-    ///   バトルシーンの Canvas 等に配置するだけ。KillLogManager が同シーンに必要。
+    /// GameEventBroker と PlayerRegistry の死亡イベントを監視し、
+    /// KillLogManager にキルログを追加するリスナー。
     /// </summary>
     [DisallowMultipleComponent]
     public class KillLogEventListener : MonoBehaviour
     {
+        private IDisposable killSub;
+        private IDisposable deadSub;
+        private readonly Dictionary<string, string> nameCache = new();
+        private readonly HashSet<string> handledDeadVictims = new();
+
         private void OnEnable()
         {
-            if (PlayerRegistry.Instance == null) return;
+            killSub?.Dispose();
+            deadSub?.Dispose();
 
-            PlayerRegistry.Instance.OnPlayerDied += HandlePlayerDied;
+            killSub = GameEventBroker.Subscribe<PlayerKillEvent>(HandlePlayerKillEvent);
+            deadSub = GameEventBroker.Subscribe<PlayerDeadEvent>(HandlePlayerDeadEvent);
         }
 
         private void OnDisable()
         {
-            if (PlayerRegistry.Instance == null) return;
-
-            PlayerRegistry.Instance.OnPlayerDied -= HandlePlayerDied;
+            killSub?.Dispose();
+            deadSub?.Dispose();
+            killSub = null;
+            deadSub = null;
+            nameCache.Clear();
+            handledDeadVictims.Clear();
         }
 
-        /// <summary>
-        /// プレイヤーが死亡したときに呼ばれる。
-        /// キルしたプレイヤーの情報を取得してキルログに表示する。
-        /// </summary>
-        private void HandlePlayerDied(AbstractPlayer victim)
+        private void HandlePlayerKillEvent(PlayerKillEvent evt)
         {
-            if (victim == null) return;
-            if (KillLogManager.Instance == null) return;
+            if (evt == null || KillLogManager.Instance == null) return;
 
-            // 被害者の名前
-            string victimName = GetPlayerName(victim);
-
-            // キルしたプレイヤーの名前（LastDamagedBy などから取得）
-            // TODO: AbstractPlayer に「最後にダメージを与えたプレイヤー」情報が追加されたら、
-            //       ここで正しいキラー名を取得する。
-            string killerName = "???";
-
-            // 自分が関係しているかどうかの判定
-            bool isVictimMe = victim.PlayerType() == EPlayerType.MyPlayer;
-            bool isKillerMe = false;
-
-            // キラーの情報が取れる場合の処理（将来の拡張用）
-            // if (killer != null) {
-            //     killerName = GetPlayerName(killer);
-            //     isKillerMe = killer.PlayerType() == EPlayerType.MyPlayer;
-            // }
-
-            KillLogManager.Instance.AddLog(
-                killerName: killerName,
-                victimName: victimName,
-                weaponSprite: null, // TODO: 武器スプライトの参照先が決まったらここに渡す
-                isKillerMe: isKillerMe,
-                isVictimMe: isVictimMe
+            var entry = KillLogFormatter.Create(
+                killerName: ResolvePlayerName(evt.KillerID()),
+                victimName: ResolvePlayerName(evt.VictimID()),
+                weaponName: evt.WeaponType(),
+                isKillerMe: IsMyPlayer(evt.KillerID()),
+                isVictimMe: IsMyPlayer(evt.VictimID()),
+                isHeadshot: evt.IsHeadshot()
             );
+
+            handledDeadVictims.Add(evt.VictimID());
+            KillLogManager.Instance.AddLog(entry);
         }
 
-        private string GetPlayerName(AbstractPlayer player)
+        private void HandlePlayerDeadEvent(PlayerDeadEvent evt)
         {
-            if (player == null) return "Unknown";
+            if (evt == null || KillLogManager.Instance == null) return;
 
-            // プレイヤー名を取得する試み
-            try
+            if (!string.IsNullOrWhiteSpace(evt.PlayerID()) && handledDeadVictims.Remove(evt.PlayerID()))
             {
-                string name = player.gameObject.name;
-                return string.IsNullOrEmpty(name) ? "Unknown" : name;
+                return;
             }
-            catch
+
+            var killerId = evt.KillerID();
+            var killerName = string.IsNullOrWhiteSpace(killerId) ? "Unknown" : ResolvePlayerName(killerId);
+            var entry = KillLogFormatter.Create(
+                killerName: killerName,
+                victimName: ResolvePlayerName(evt.PlayerID()),
+                weaponName: string.Empty,
+                isKillerMe: IsMyPlayer(killerId),
+                isVictimMe: IsMyPlayer(evt.PlayerID()),
+                isHeadshot: false
+            );
+
+            KillLogManager.Instance.AddLog(entry);
+        }
+
+        private string ResolvePlayerName(string playerId)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
             {
                 return "Unknown";
             }
+
+            if (nameCache.TryGetValue(playerId, out var cached) && !string.IsNullOrWhiteSpace(cached))
+            {
+                return cached;
+            }
+
+            if (PlayerRegistry.Instance != null && Guid.TryParse(playerId, out var guid) && PlayerRegistry.Instance.TryGetPlayer(guid, out var player) && player != null)
+            {
+                var name = string.IsNullOrWhiteSpace(player.gameObject.name) ? "Unknown" : player.gameObject.name;
+                nameCache[playerId] = name;
+                return name;
+            }
+
+            return playerId;
+        }
+
+        private bool IsMyPlayer(string playerId)
+        {
+            if (string.IsNullOrWhiteSpace(playerId) || PlayerRegistry.Instance == null)
+            {
+                return false;
+            }
+
+            if (!Guid.TryParse(playerId, out var guid))
+            {
+                return false;
+            }
+
+            return PlayerRegistry.Instance.TryGetPlayer(guid, out var player) && player != null && player.PlayerType() == EPlayerType.MyPlayer;
         }
     }
 }

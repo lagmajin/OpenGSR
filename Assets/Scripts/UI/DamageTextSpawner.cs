@@ -1,4 +1,6 @@
 using UnityEngine;
+using System;
+using System.Collections.Generic;
 
 namespace OpenGS
 {
@@ -24,6 +26,9 @@ namespace OpenGS
         [Header("設定")]
         [SerializeField] private Vector2 randomOffset = new Vector2(20f, 10f); // ランダムずれ幅(px)
 
+        private readonly Dictionary<string, AbstractPlayer> playerCache = new();
+        private IDisposable damageSub;
+
         private void Awake()
         {
             if (targetCamera == null)
@@ -35,39 +40,75 @@ namespace OpenGS
 
         private void OnEnable()
         {
-            if (PlayerRegistry.Instance == null) return;
-            PlayerRegistry.Instance.OnPlayerHealthChanged += HandleHealthChanged;
+            damageSub?.Dispose();
+            damageSub = GameEventBroker.Subscribe<PlayerDamageEvent>(HandlePlayerDamageEvent);
         }
 
         private void OnDisable()
         {
-            if (PlayerRegistry.Instance == null) return;
-            PlayerRegistry.Instance.OnPlayerHealthChanged -= HandleHealthChanged;
+            damageSub?.Dispose();
+            damageSub = null;
+            playerCache.Clear();
         }
 
         /// <summary>
-        /// HP が変動したとき、減少分をダメージとして表示する。
+        /// ダメージイベントを受けたら、被弾位置にダメージを表示する。
         /// </summary>
-        private void HandleHealthChanged(AbstractPlayer player, float newHp)
+        private void HandlePlayerDamageEvent(PlayerDamageEvent evt)
         {
-            if (player == null || damagePrefab == null || targetCamera == null) return;
+            if (evt == null || damagePrefab == null || targetCamera == null) return;
 
-            // ダメージ量を計算（HP が減った場合のみ表示）
-            float prevHp = newHp; // NOTE: 厳密には前の値が必要だがイベントから取得できないため下記で代用
-            // PlayerStatus.HpStream を直接購読する方がより正確だが、
-            // ここでは簡易的にイベント引数の newHp と MaxHp から推測する
-            // → 将来的に PlayerRegistry.OnPlayerDamaged(player, damageAmount) イベントを追加するのが理想
+            var player = ResolvePlayer(evt.TargetID());
+            if (player == null) return;
 
-            // 現状は「HP変化 = 何かあった」としてポップアップを出す
-            // 回復時は出さないようにするため、Status から直近の変化量を判定
-            // TODO: ダメージ量を正確に取得できるイベントに置き換える
-            int displayDamage = Mathf.RoundToInt(player.GetMaxHP() - newHp);
-            if (displayDamage <= 0) return; // 回復やフルHPの場合は表示しない
+            float currentHp = Mathf.Max(0, evt.RemainingHp());
+            float previousHp = currentHp + Mathf.Max(0, evt.Damage());
+            var feedback = DamageFeedbackCalculator.FromHealthSnapshot(
+                evt.TargetID(),
+                evt.AttackerID(),
+                previousHp,
+                currentHp,
+                player.GetMaxHP(),
+                false
+            );
 
-            SpawnDamageText(player, displayDamage);
+            if (!feedback.ShouldShow) return;
+
+            SpawnDamageText(player, feedback.Damage, feedback.IsCritical);
         }
 
-        private void SpawnDamageText(AbstractPlayer player, int damage)
+        private AbstractPlayer ResolvePlayer(string playerId)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return null;
+            }
+
+            if (playerCache.TryGetValue(playerId, out var cached) && cached != null)
+            {
+                return cached;
+            }
+
+            if (PlayerRegistry.Instance == null)
+            {
+                return null;
+            }
+
+            if (!Guid.TryParse(playerId, out var guid))
+            {
+                return null;
+            }
+
+            if (PlayerRegistry.Instance.TryGetPlayer(guid, out var player) && player != null)
+            {
+                playerCache[playerId] = player;
+                return player;
+            }
+
+            return null;
+        }
+
+        private void SpawnDamageText(AbstractPlayer player, int damage, bool isCritical)
         {
             // プレイヤーのワールド座標をスクリーン座標に変換
             Vector3 worldPos = player.transform.position + new Vector3(0, 0.3f, 0); // 少し頭上
@@ -91,7 +132,7 @@ namespace OpenGS
             var textUI = obj.GetComponent<DamageTextUI>();
             if (textUI != null)
             {
-                textUI.SetDamage(damage);
+                textUI.SetDamage(damage, isCritical);
                 return;
             }
 
@@ -99,7 +140,7 @@ namespace OpenGS
             var spriteUI = obj.GetComponent<DamageTextSprite>();
             if (spriteUI != null)
             {
-                spriteUI.SetDamage(damage);
+                spriteUI.SetDamage(damage, isCritical);
             }
         }
     }
