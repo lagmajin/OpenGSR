@@ -7,6 +7,7 @@
 - `SceneController/`: scene input/controller scripts
 - `WaitRoom/`: wait room event/server scripts
 - `ExportAssets/`: editor/export helper scene scripts, including map JSON export
+  and import
 
 ## Rescue rule
 - Copy from old OpenGS with original relative paths.

@@ -149,6 +149,8 @@ namespace OpenGS
                 ["localScale"] = VectorToJson(current.localScale),
                 ["prefab"] = GetPrefabInfo(current.gameObject),
                 ["components"] = GetComponentNames(current.gameObject),
+                ["spriteRenderers"] = ExportSpriteRenderers(current.gameObject),
+                ["colliders"] = ExportColliders(current.gameObject),
                 ["children"] = new JArray()
             };
 
@@ -189,6 +191,107 @@ namespace OpenGS
             {
                 ((JArray)special["flagStands"]).Add(ExportFlagStand(go, flagStand));
             }
+        }
+
+        private static JArray ExportSpriteRenderers(GameObject go)
+        {
+            var result = new JArray();
+            if (go == null)
+            {
+                return result;
+            }
+
+            foreach (var renderer in go.GetComponents<SpriteRenderer>())
+            {
+                if (renderer == null)
+                {
+                    continue;
+                }
+
+                result.Add(new JObject
+                {
+                    ["type"] = renderer.GetType().Name,
+                    ["enabled"] = renderer.enabled,
+                    ["sprite"] = GetAssetReference(renderer.sprite),
+                    ["color"] = ColorToJson(renderer.color),
+                    ["sortingLayerID"] = renderer.sortingLayerID,
+                    ["sortingLayerName"] = renderer.sortingLayerName,
+                    ["sortingOrder"] = renderer.sortingOrder,
+                    ["flipX"] = renderer.flipX,
+                    ["flipY"] = renderer.flipY,
+                    ["drawMode"] = renderer.drawMode.ToString(),
+                    ["size"] = VectorToJson(renderer.size),
+                    ["maskInteraction"] = renderer.maskInteraction.ToString()
+                });
+            }
+
+            return result;
+        }
+
+        private static JArray ExportColliders(GameObject go)
+        {
+            var result = new JArray();
+            if (go == null)
+            {
+                return result;
+            }
+
+            foreach (var collider in go.GetComponents<Collider2D>())
+            {
+                if (collider == null)
+                {
+                    continue;
+                }
+
+                var entry = new JObject
+                {
+                    ["type"] = collider.GetType().Name,
+                    ["enabled"] = collider.enabled,
+                    ["isTrigger"] = collider.isTrigger,
+                    ["offset"] = VectorToJson(collider.offset),
+                    ["sharedMaterial"] = GetAssetReference(collider.sharedMaterial)
+                };
+
+                if (collider is BoxCollider2D box)
+                {
+                    entry["size"] = VectorToJson(box.size);
+                    entry["edgeRadius"] = box.edgeRadius;
+                    entry["usedByEffector"] = box.usedByEffector;
+                    entry["usedByComposite"] = box.usedByComposite;
+                }
+                else if (collider is CircleCollider2D circle)
+                {
+                    entry["radius"] = circle.radius;
+                    entry["usedByEffector"] = circle.usedByEffector;
+                    entry["usedByComposite"] = circle.usedByComposite;
+                }
+                else if (collider is CapsuleCollider2D capsule)
+                {
+                    entry["size"] = VectorToJson(capsule.size);
+                    entry["direction"] = capsule.direction;
+                    entry["usedByEffector"] = capsule.usedByEffector;
+                    entry["usedByComposite"] = capsule.usedByComposite;
+                }
+                else if (collider is EdgeCollider2D edge)
+                {
+                    entry["edgeRadius"] = edge.edgeRadius;
+                    entry["points"] = PointsToJson(edge.points);
+                }
+                else if (collider is PolygonCollider2D polygon)
+                {
+                    entry["pathCount"] = polygon.pathCount;
+                    var paths = new JArray();
+                    for (var i = 0; i < polygon.pathCount; i++)
+                    {
+                        paths.Add(PointsToJson(polygon.GetPath(i)));
+                    }
+                    entry["paths"] = paths;
+                }
+
+                result.Add(entry);
+            }
+
+            return result;
         }
 
         private static JObject ExportItemSpawnPoint(GameObject go, ItemSpawnPoint itemSpawnPoint)
@@ -330,6 +433,42 @@ namespace OpenGS
                 ["y"] = value.y,
                 ["z"] = value.z
             };
+        }
+
+        private static JObject VectorToJson(Vector2 value)
+        {
+            return new JObject
+            {
+                ["x"] = value.x,
+                ["y"] = value.y
+            };
+        }
+
+        private static JObject ColorToJson(Color value)
+        {
+            return new JObject
+            {
+                ["r"] = value.r,
+                ["g"] = value.g,
+                ["b"] = value.b,
+                ["a"] = value.a
+            };
+        }
+
+        private static JArray PointsToJson(Vector2[] points)
+        {
+            var result = new JArray();
+            if (points == null)
+            {
+                return result;
+            }
+
+            foreach (var point in points)
+            {
+                result.Add(VectorToJson(point));
+            }
+
+            return result;
         }
 
         private static string GetPath(Transform root, Transform current)
