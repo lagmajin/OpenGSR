@@ -30,6 +30,13 @@ namespace OpenGS
                 bullet.EnableGravity(); // 重力を有効化
             }
 
+            var grenadeBullet = grenadeObj.GetComponent<GrenadeLauncherBulletController>();
+            if (grenadeBullet != null)
+            {
+                var owner = GetComponentInParent<AbstractPlayer>();
+                grenadeBullet.Init(shotDir, bulletSpeed, GetEffectiveDamage(), GetPlayerID(), Name, owner != null ? owner.Team() : ETeam.NoTeam);
+            }
+
             // Rigidbody2D があれば初速を与える（物理ベースの場合）
             var rb = grenadeObj.GetComponent<Rigidbody2D>();
             if (rb != null && usePhysics)

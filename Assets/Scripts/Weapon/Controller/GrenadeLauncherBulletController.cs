@@ -11,9 +11,13 @@ namespace OpenGS
     {
         //public Rigidbody2D body;
         public ETeam Team { get; set; } = ETeam.NoTeam;
+        public string OwnerPlayerId { get; private set; } = string.Empty;
+        public string WeaponName { get; private set; } = "Unknown";
 
         [SerializeField] public int damage = 120;
         [SerializeField] public float speed = 15.0f;
+        [SerializeField] private float explosionRadius = 2.5f;
+        [SerializeField] private float minDamageMultiplier = 0.35f;
 
 
         [SerializeField] [Required] private Rigidbody2D _rigidbody;
@@ -24,6 +28,18 @@ namespace OpenGS
 
 
         //[SerializeField] private float speed = 5.2f;
+
+        public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerPlayerId, string weaponName, ETeam team)
+        {
+            speed = initSpeed;
+            damage = Mathf.RoundToInt(initDamage);
+            OwnerPlayerId = ownerPlayerId ?? string.Empty;
+            WeaponName = string.IsNullOrWhiteSpace(weaponName) ? "Unknown" : weaponName;
+            Team = team;
+
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, 0, angle);
+        }
 
         void Start()
         {
@@ -58,13 +74,10 @@ namespace OpenGS
             {
                 var exp = Instantiate(explosion);
                 exp.transform.position = gameObject.transform.position;
-
-
             }
 
+            ApplyExplosionDamage();
             Destroy(gameObject);
-
-
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
@@ -87,15 +100,55 @@ namespace OpenGS
                 }
 
             }
+        }
 
+        private void ApplyExplosionDamage()
+        {
+            var registry = PlayerRegistry.Instance;
+            if (registry == null)
+            {
+                return;
+            }
 
+            var hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+            foreach (var hit in hits)
+            {
+                if (hit == null)
+                {
+                    continue;
+                }
 
+                var player = hit.GetComponentInParent<AbstractPlayer>();
+                if (player == null)
+                {
+                    continue;
+                }
 
+                var playerId = player.UniqueID().ToString();
+                if (!string.IsNullOrWhiteSpace(OwnerPlayerId) && playerId == OwnerPlayerId)
+                {
+                    continue;
+                }
 
+                if (Team != ETeam.NoTeam && player.Team() != ETeam.NoTeam && player.Team() == Team)
+                {
+                    continue;
+                }
 
-            //Destroy(gameObject);
+                float distance = Vector2.Distance(transform.position, player.transform.position);
+                float ratio = Mathf.Clamp01(1f - (distance / Mathf.Max(0.01f, explosionRadius)));
+                float finalDamage = Mathf.Max(1f, damage * Mathf.Lerp(minDamageMultiplier, 1f, ratio));
 
-
+                registry.ApplyDamage(
+                    player.UniqueID(),
+                    player.transform.position - transform.position,
+                    finalDamage,
+                    eDamageType.Explosion,
+                    OwnerPlayerId,
+                    WeaponName,
+                    false
+                );
+            }
         }
 
 
