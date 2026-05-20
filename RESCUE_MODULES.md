@@ -3,6 +3,9 @@
 このファイルは、旧プロジェクト (OpenGS) から救出・改善された主要なモジュールとクラスの索引です。
 AIがプロジェクトの構造を理解し、機能拡張を容易にすることを目的としています。
 
+- AI作業テンプレート: [AI_INSTRUCTIONS.md](./AI_INSTRUCTIONS.md)
+- Asset safety checklist: [ASSET_SAFETY.md](./ASSET_SAFETY.md)
+
 ## 1. Core Services (抽象化レイヤー)
 
 ### `IInputService` / `UnityInputService` / `EnemyInputService`

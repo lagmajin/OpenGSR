@@ -18,7 +18,7 @@ namespace OpenGS
 
         private void Awake()
         {
-            DebugFlagManager.SetFirstSceneName("ShopScene");
+            DebugFlagManager.SetFirstSceneName(SceneManager.GetActiveScene().name);
         }
 
         private void Start()
@@ -49,28 +49,47 @@ namespace OpenGS
         [Button("ロビー移動テスト")]
         private void BackToLobby()
         {
-            
-
-            GameFlagsManager.GetInstance().BeforeSceneName = "ShopScene";
-
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
+            GoToLobby();
         }
 
         [Button("ウェイトルーム移動テスト")]
         private void BackToOnlineWaitroom()
         {
-
+            var nextScene = DetermineReturnScene();
+            if (!string.IsNullOrWhiteSpace(nextScene))
+            {
+                SceneManager.LoadSceneAsync(nextScene);
+            }
         }
         [Button("オフラインウェイトルーム移動テスト")]
         private void BackToOfflineWaitRoom()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = "ShopScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
         }
         [Button("タイトル移動テスト")]
         private void GoToTitle()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = "ShopScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
 
             SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
+        }
+
+        private static string DetermineReturnScene()
+        {
+            var beforeScene = GameFlagsManager.GetInstance().BeforeSceneName;
+            if (beforeScene == GeneralSceneMasterData.Instance().OnlineWaitRoomScene())
+            {
+                return GeneralSceneMasterData.Instance().OnlineWaitRoomScene();
+            }
+
+            if (beforeScene == GeneralSceneMasterData.Instance().OfflineWaitRoomScene())
+            {
+                return GeneralSceneMasterData.Instance().OfflineWaitRoomScene();
+            }
+
+            return GeneralSceneMasterData.Instance().LobbyScene();
         }
 
         public override SynchronizationContext MainThread()

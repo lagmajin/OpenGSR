@@ -104,6 +104,8 @@ namespace OpenGS
             Debug.Log($"[GeneralServerNetworkManager] SendMessage: {json?["MessageType"]}");
             if (json != null)
             {
+                NormalizeMessageType(json);
+
                 if (HandleLocalWaitRoomMessage(json))
                 {
                     return;
@@ -272,16 +274,31 @@ namespace OpenGS
 
         private void EmitToClient(JObject json)
         {
+            NormalizeMessageType(json);
             CacheLastMatchResult(json);
             dataReceivedSubject.OnNext(json);
         }
 
         private void CacheLastMatchResult(JObject json)
         {
-            var messageType = json?["MessageType"]?.ToString();
+            var messageType = MessageType.Normalize(json?["MessageType"]?.ToString());
             if (messageType == MessageType.MatchResult || messageType == MessageType.MatchEndNotification)
             {
                 LastMatchResult = json;
+            }
+        }
+
+        private static void NormalizeMessageType(JObject json)
+        {
+            if (json == null)
+            {
+                return;
+            }
+
+            var normalized = MessageType.Normalize(json["MessageType"]?.ToString());
+            if (!string.IsNullOrWhiteSpace(normalized))
+            {
+                json["MessageType"] = normalized;
             }
         }
 

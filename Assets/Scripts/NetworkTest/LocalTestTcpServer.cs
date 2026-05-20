@@ -37,6 +37,7 @@ namespace OpenGS
             Debug.Log($"LocalTestTcpServer: ctor invoked. default port={port}");
             NetworkFoundationBootstrap.RegisterDefaultHandlers(_requestRouter);
             RegisterFoundationHandlers();
+            SeedDefaultRooms();
         }
         public bool IsRunning => _isRunning;
 
@@ -307,6 +308,21 @@ namespace OpenGS
 
                         // Generate a unique room ID
                         var roomId = Guid.NewGuid().ToString("N").Substring(0, 8);
+                        var ownerId = !string.IsNullOrWhiteSpace(_currentPlayerId)
+                            ? _currentPlayerId
+                            : (json["PlayerID"]?.ToString() ?? "owner");
+
+                        _rooms[roomId] = new RoomInfo
+                        {
+                            RoomId = roomId,
+                            RoomName = roomName,
+                            OwnerId = ownerId,
+                            Capacity = int.TryParse(capacity, out var parsedCapacity) ? parsedCapacity : 8,
+                            GameMode = gameMode,
+                            TeamBalance = bool.TryParse(teamBalance, out var parsedTeamBalance) ? parsedTeamBalance : true,
+                            Password = password,
+                            Players = new List<string> { ownerId }
+                        };
 
                         var resp = new JObject();
                         resp["MessageType"] = MessageType.CreateRoomResponse;
@@ -316,6 +332,8 @@ namespace OpenGS
                         resp["Capacity"] = capacity;
                         resp["GameMode"] = gameMode;
                         resp["TeamBalance"] = teamBalance;
+                        resp["OwnerID"] = ownerId;
+                        resp["PlayerCount"] = 1;
 
                         SendJsonToClient(resp);
                         PrettyLogger.Bold("LocalServer", $"Created room: {roomName} (ID: {roomId})");
@@ -338,9 +356,7 @@ namespace OpenGS
                     {
                         var resp = new JObject();
                         resp["MessageType"] = MessageType.RoomListUpdateNotification;
-                        var rooms = new JArray();
-                        // For now, return empty list (can be extended later)
-                        resp["Rooms"] = rooms;
+                        resp["Rooms"] = BuildRoomListSnapshot();
                         SendJsonToClient(resp);
                         PrettyLogger.Bold("LocalServer", "Sent RoomListUpdateNotification");
                     }
@@ -724,12 +740,83 @@ namespace OpenGS
 
             // 入室通知を送信
             var resp = RUDPMessageBuilder.CreateWaitRoomEnter(playerId, playerName, roomId);
+            resp["RoomName"] = _rooms[roomId].RoomName;
+            resp["Capacity"] = _rooms[roomId].Capacity;
+            resp["GameMode"] = _rooms[roomId].GameMode;
+            resp["OwnerID"] = _rooms[roomId].OwnerId;
+            resp["PlayerCount"] = _rooms[roomId].Players.Count;
             SendJsonToClient(resp);
 
             // ルームのプレイヤー一覧を送信
             SendWaitRoomPlayerList(roomId);
 
             PrettyLogger.Bold("LocalServer", $"Player entered waitroom: {playerName} in room {roomId}");
+        }
+
+        private void SeedDefaultRooms()
+        {
+            if (_rooms.Count > 0)
+            {
+                return;
+            }
+
+            _rooms["room-0001"] = new RoomInfo
+            {
+                RoomId = "room-0001",
+                RoomName = "Default DM Room",
+                OwnerId = "host-001",
+                Capacity = 8,
+                GameMode = "DeathMatch",
+                TeamBalance = true,
+                Players = new List<string> { "host-001" }
+            };
+
+            _rooms["room-0002"] = new RoomInfo
+            {
+                RoomId = "room-0002",
+                RoomName = "Default TDM Room",
+                OwnerId = "host-002",
+                Capacity = 12,
+                GameMode = "TeamDeathMatch",
+                TeamBalance = true,
+                Players = new List<string> { "host-002" }
+            };
+
+            _lobbyPlayers["host-001"] = new PlayerLobbyInfo
+            {
+                PlayerId = "host-001",
+                PlayerName = "HostDM",
+                IsReady = false,
+                CurrentRoomId = "room-0001"
+            };
+
+            _lobbyPlayers["host-002"] = new PlayerLobbyInfo
+            {
+                PlayerId = "host-002",
+                PlayerName = "HostTDM",
+                IsReady = false,
+                CurrentRoomId = "room-0002"
+            };
+        }
+
+        private JArray BuildRoomListSnapshot()
+        {
+            var rooms = new JArray();
+            foreach (var room in _rooms.Values)
+            {
+                rooms.Add(new JObject
+                {
+                    ["RoomID"] = room.RoomId,
+                    ["RoomName"] = room.RoomName,
+                    ["OwnerID"] = room.OwnerId,
+                    ["Capacity"] = room.Capacity,
+                    ["GameMode"] = room.GameMode,
+                    ["TeamBalance"] = room.TeamBalance,
+                    ["PlayerCount"] = room.Players.Count,
+                });
+            }
+
+            return rooms;
         }
 
         private void HandleWaitRoomLeave(JObject json)

@@ -1,6 +1,7 @@
 using System;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -23,7 +24,7 @@ namespace OpenGS
         {
             if (json == null) return null;
 
-            var messageType = json["MessageType"]?.ToString();
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
             if (string.IsNullOrEmpty(messageType)) return null;
 
             return messageType switch

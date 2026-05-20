@@ -2,6 +2,8 @@
 
 This document defines ownership boundaries to reduce coupling while the project is being migrated.
 
+- AI作業テンプレート: [AI_INSTRUCTIONS.md](../../AI_INSTRUCTIONS.md)
+
 ## 1) Scene Layer
 - `Assets/Scripts/Scene/*`: scene lifecycle and user-flow orchestration only.
 - `Assets/Scripts/Scene/SceneController/*`: input/UI orchestration and scene-local control logic.

@@ -156,7 +156,7 @@ namespace OpenGS
         void BackToTitle()
         {
             Debug.Log("BackToTitle");
-            GameFlagsManager.GetInstance().BeforeSceneName = "ConnectToServerScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             GoToTitleScene();
         }
 
@@ -167,7 +167,7 @@ namespace OpenGS
 
         public override void GoToLobby()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = "ConnectToServerScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
             base.GoToLobby();
         }
 

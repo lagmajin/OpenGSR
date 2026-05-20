@@ -60,6 +60,7 @@ namespace OpenGS.Network
         {
             m_EventHandler = new UnifiedEventHandler();
             RegisterCustomHandlers();
+            SeedDefaultRooms();
         }
 
         /// <summary>
@@ -69,6 +70,9 @@ namespace OpenGS.Network
         {
             // ルーム作成のカスタム実装
             m_EventHandler.Register(MessageType.CreateRoomRequest, HandleCreateRoom);
+
+            // ルーム一覧のカスタム実装
+            m_EventHandler.Register(MessageType.RoomListUpdateRequest, HandleUpdateRoom);
 
             // ルーム参加のカスタム実装
             m_EventHandler.Register(MessageType.JoinRoomRequest, HandleEnterRoom);
@@ -97,6 +101,7 @@ namespace OpenGS.Network
             var roomName = json["RoomName"]?.ToString() ?? "New Room";
             var ownerId = json["PlayerID"]?.ToString() ?? "owner";
             var gameMode = json["GameMode"]?.ToString() ?? "DeathMatch";
+            var capacity = json["Capacity"]?.ToObject<int>() ?? 8;
 
             var roomId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
@@ -105,6 +110,7 @@ namespace OpenGS.Network
                 RoomId = roomId,
                 RoomName = roomName,
                 OwnerId = ownerId,
+                Capacity = capacity,
                 GameMode = gameMode,
                 Players = new List<string> { ownerId },
                 PlayerReady = new Dictionary<string, bool> { { ownerId, false } }
@@ -119,11 +125,36 @@ namespace OpenGS.Network
                 ["RoomID"] = roomId,
                 ["RoomName"] = roomName,
                 ["GameMode"] = gameMode,
-                ["OwnerID"] = ownerId
+                ["OwnerID"] = ownerId,
+                ["Capacity"] = capacity,
+                ["PlayerCount"] = 1
             };
 
             sender(resp);
             Log($"Room created: {roomName} (ID: {roomId})");
+        }
+
+        private void HandleUpdateRoom(JObject json, Action<JObject> sender)
+        {
+            var rooms = new JArray();
+            foreach (var room in m_Rooms.Values)
+            {
+                rooms.Add(new JObject
+                {
+                    ["RoomID"] = room.RoomId,
+                    ["RoomName"] = room.RoomName,
+                    ["OwnerID"] = room.OwnerId,
+                    ["Capacity"] = room.Capacity,
+                    ["GameMode"] = room.GameMode,
+                    ["PlayerCount"] = room.Players.Count
+                });
+            }
+
+            sender(new JObject
+            {
+                ["MessageType"] = MessageType.RoomListUpdateNotification,
+                ["Rooms"] = rooms
+            });
         }
 
         private void HandleEnterRoom(JObject json, Action<JObject> sender)
@@ -166,6 +197,9 @@ namespace OpenGS.Network
                 ["RoomID"] = roomId,
                 ["RoomName"] = room.RoomName,
                 ["PlayerID"] = playerId,
+                ["Capacity"] = room.Capacity,
+                ["GameMode"] = room.GameMode,
+                ["OwnerID"] = room.OwnerId,
                 ["Players"] = JArray.FromObject(room.Players)
             };
 
@@ -209,6 +243,36 @@ namespace OpenGS.Network
                 };
                 sender(countdown);
             }
+        }
+
+        private void SeedDefaultRooms()
+        {
+            if (m_Rooms.Count > 0)
+            {
+                return;
+            }
+
+            m_Rooms["room-0001"] = new RoomData
+            {
+                RoomId = "room-0001",
+                RoomName = "Default DM Room",
+                OwnerId = "host-001",
+                Capacity = 8,
+                GameMode = "DeathMatch",
+                Players = new List<string> { "host-001" },
+                PlayerReady = new Dictionary<string, bool> { { "host-001", false } }
+            };
+
+            m_Rooms["room-0002"] = new RoomData
+            {
+                RoomId = "room-0002",
+                RoomName = "Default TDM Room",
+                OwnerId = "host-002",
+                Capacity = 12,
+                GameMode = "TeamDeathMatch",
+                Players = new List<string> { "host-002" },
+                PlayerReady = new Dictionary<string, bool> { { "host-002", false } }
+            };
         }
 
         private void CheckAllReady(RoomData room)

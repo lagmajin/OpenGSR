@@ -117,7 +117,7 @@ namespace OpenGS
 
             SceneManager.LoadScene(GeneralSceneMasterData.Instance().ConnectToServerScene());
 
-            GameFlagsManager.GetInstance().BeforeSceneName = "TitleScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
         }
 
         [Button("オフラインウェイトルーム")]
@@ -127,7 +127,7 @@ namespace OpenGS
 
             SceneManager.LoadScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
 
-            GameFlagsManager.GetInstance().BeforeSceneName = "TitleScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
         }
 
         [Button("アセットエクスポートシーンへ移動")]

@@ -326,7 +326,7 @@ namespace OpenGS
 
             Debug.Log($"GameStart mode={offlineSelect.GameMode} map={offlineSelect.Map} capacity={offlineSelect.Capacity}");
 
-            GameFlagsManager.GetInstance().BeforeSceneName = "OfflineWaitRoom";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
             SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().OfflineLoadingScene());
         }
 
@@ -519,13 +519,13 @@ namespace OpenGS
 
         public void GotoTitleScene()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = "OfflineWaitRoom";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
             SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
         }
 
         public void GotoShopScene()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = "ShopScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
             SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().ShopScene());
         }
 

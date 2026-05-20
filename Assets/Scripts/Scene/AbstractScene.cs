@@ -344,6 +344,7 @@ namespace OpenGS
         public void GoToShopScene()
         {
             var shopScene = generalSceneMasterData != null ? generalSceneMasterData.ShopScene() : GeneralSceneMasterData.Instance().ShopScene();
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
             GoToScene(shopScene);
         }
 

@@ -2022,7 +2022,7 @@ MonoBehaviour:
   timer: {fileID: 366503647}
   sceneController: {fileID: 0}
   sceneMediateObject: {fileID: 0}
-  createNewRoomDialog: {fileID: 0}
+  createNewRoomDialog: {fileID: 1615708782}
   RoomButton: {fileID: 0}
   InfoDialog: {fileID: 0}
   robbyNetworkManager: {fileID: 0}

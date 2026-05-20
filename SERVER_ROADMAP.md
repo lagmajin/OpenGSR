@@ -34,6 +34,14 @@ Done when:
 - Legacy aliases only exist for compatibility.
 - Payload field names are documented and consistent.
 
+Current status:
+- `MessageType.Normalize(...)` is the compatibility gate for incoming message
+  names
+- the first implementation pass is wiring more receive paths through that gate
+- general server responses now normalize their `MessageType` before forwarding
+- local test loading completion now emits the canonical
+  `LoadingCompletedNotification`
+
 ## S1. Lobby And Account Authority
 
 Goal: make lobby, account, shop, and friend state authoritative.
@@ -42,11 +50,15 @@ Targets:
 - `Assets/Scripts/Network/GeneralServerNetworkManager.cs`
 - `Assets/Scripts/NetworkTest/LocalTestTcpServer.cs`
 - `Assets/Scripts/NetworkTest/LocalTestServerWrapper.cs`
+- `Assets/Scripts/Scene/OnlineWaitRoomScene.cs`
+- `Assets/Scenes/Waitroom/OnlineWaitRoom.unity`
 
 Done when:
 - Login, account creation, room list, room creation, join, shop, and friend
   flows all use one backend contract.
 - State survives reconnects in the intended environment.
+- Online wait room settings, weapon limit, and return-to-lobby transitions are
+  backed by the same authoritative room state.
 
 ## S2. Match Server Core
 

@@ -1,6 +1,7 @@
 ﻿
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace OpenGS
 {
@@ -32,7 +33,7 @@ namespace OpenGS
 
         void BacktoWaitRoom()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = "MetalBreakerResultScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
         }
 
     }

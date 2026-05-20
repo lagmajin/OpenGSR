@@ -4,6 +4,23 @@ This document tracks the next most important feature milestones for the project.
 It is based on the current repository state, the rescued scene/resource layout, and
 the unfinished code paths that still appear in the gameplay flow.
 
+## Current Implementation Focus
+
+The first concrete implementation target is the shared protocol contract:
+
+- `C0` in `Packages/com.opengs.logic/MILESTONES.md`
+- `S0` in `SERVER_ROADMAP.md`
+
+The first code-level step is to make incoming message handling normalize legacy
+message names before dispatching them. That keeps the current client and local
+test servers compatible while new code moves toward the canonical contract.
+The current follow-through is also cleaning local test responses so loading flow
+uses `LoadingCompletedNotification` instead of legacy names.
+The next pass is aligning scene-return bookkeeping with the real asset names so
+title, lobby, shop, and wait-room transitions stay consistent.
+The online lobby work is now extending the local test servers so room lists,
+room creation, and room entry can be exercised end to end.
+
 ## Current Working Set For `dev/2026-05-19`
 
 These are the best near-term milestones after the current investigation of the
@@ -238,6 +255,8 @@ Scope:
 - `Assets/Scripts/NetworkTest/LocalTestServerWrapper.cs`
 - `Assets/Scripts/Scene/Account/LoginAndSignUpScene.cs`
 - `Assets/Scripts/Scene/CreateNewAccountScene.cs`
+- `Assets/Scripts/Scene/OnlineWaitRoomScene.cs`
+- `Assets/Scenes/Waitroom/OnlineWaitRoom.unity`
 
 Why this matters:
 - `GeneralServerNetworkManager` is still mostly an in-memory simulation.
@@ -245,6 +264,8 @@ Why this matters:
   server contract is not yet centralized or durable.
 - Account creation, login, credits, inventory, room list, and friend state all
   need the same source of truth.
+- The online wait room scene is the handoff point for room settings, weapon
+  limit, and room membership changes.
 
 Done when:
 - Login, account creation, room creation, room join, shop, and friends all flow

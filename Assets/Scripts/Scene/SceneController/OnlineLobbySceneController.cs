@@ -54,7 +54,7 @@ namespace OpenGS
             System.Action<string, string, int> onRoomCreateSuccess,
             System.Action<string> onRoomCreateFailed,
             System.Action<JArray> onRoomListUpdated,
-            System.Action<string, string, int> onRoomEnterSuccess = null,
+            System.Action<string, string, int, int> onRoomEnterSuccess = null,
             System.Action<string> onRoomEnterFailed = null)
         {
             var messageType = json?["MessageType"]?.ToString();
@@ -102,7 +102,7 @@ namespace OpenGS
 
         private static void HandleEnterWaitRoomResponse(
             JObject json,
-            System.Action<string, string, int> onRoomEnterSuccess,
+            System.Action<string, string, int, int> onRoomEnterSuccess,
             System.Action<string> onRoomEnterFailed)
         {
             bool success = json["Success"]?.ToObject<bool>() ?? false;
@@ -111,12 +111,40 @@ namespace OpenGS
                 string roomId = json["RoomID"]?.ToString();
                 string roomName = json["RoomName"]?.ToString();
                 int capacity = json["Capacity"]?.ToObject<int>() ?? 0;
-                onRoomEnterSuccess?.Invoke(roomId, roomName, capacity);
+                int playerCount = ReadPlayerCount(json);
+                onRoomEnterSuccess?.Invoke(roomId, roomName, capacity, playerCount);
                 return;
             }
 
             string errorMessage = json["ErrorMessage"]?.ToString() ?? "Unknown error";
             onRoomEnterFailed?.Invoke(errorMessage);
+        }
+
+        private static int ReadPlayerCount(JObject json)
+        {
+            if (json == null)
+            {
+                return 1;
+            }
+
+            var playerCountToken = json["PlayerCount"];
+            if (playerCountToken != null && int.TryParse(playerCountToken.ToString(), out var playerCount))
+            {
+                return playerCount;
+            }
+
+            var playersToken = json["Players"];
+            if (playersToken is JArray playersArray)
+            {
+                return playersArray.Count;
+            }
+
+            if (playersToken != null && int.TryParse(playersToken.ToString(), out playerCount))
+            {
+                return playerCount;
+            }
+
+            return 1;
         }
     }
 }

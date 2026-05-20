@@ -21,7 +21,7 @@ MonoBehaviour:
   InstantItemDialog: {fileID: 0}
   WeaponLimitDialog: {fileID: 0}
   InviteDialog: {fileID: 0}
-  createNewRoomDialog: {fileID: 4265133594825993451, guid: 70cf34b2b112e51408503741fb736750,
+  createNewRoomDialog: {fileID: 3770645929957561130, guid: 5c28601275fa489469e3fe8622d63890,
     type: 3}
   helpDialog: {fileID: 0}
   WeaponSelectDialog: {fileID: 7068208961843555485, guid: a5da16c5422256f4c976434dc02ac5ac,

@@ -2,6 +2,7 @@
 
 using System.Threading;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 
 #pragma warning disable 0414
@@ -36,7 +37,7 @@ namespace OpenGS
 
         private void BacktoWaitRoom()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = "SkyFighterResultScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
 
             var nextScene = generalSceneMasterData != null
                 ? generalSceneMasterData.LobbyScene()

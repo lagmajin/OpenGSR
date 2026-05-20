@@ -58,7 +58,7 @@ namespace OpenGS
                 // ローカルのみでも続行できるようにする
             }
 
-            GameFlagsManager.GetInstance().BeforeSceneName = "CreateNewAccountScene";
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
             SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
         }
     }

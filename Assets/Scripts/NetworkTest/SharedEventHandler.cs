@@ -25,10 +25,23 @@ namespace OpenGS.Network
     /// </summary>
     public class UnifiedEventHandler : ISharedEventHandler
     {
+        private sealed class RoomData
+        {
+            public string RoomId { get; set; } = "";
+            public string RoomName { get; set; } = "";
+            public string OwnerId { get; set; } = "";
+            public int Capacity { get; set; } = 8;
+            public string GameMode { get; set; } = "DeathMatch";
+            public bool TeamBalance { get; set; } = true;
+            public List<string> Players { get; set; } = new();
+            public Dictionary<string, bool> PlayerReady { get; set; } = new();
+        }
+
         /// <summary>
         /// メッセージタイプごとの処理
         /// </summary>
         private readonly Dictionary<string, Action<JObject, Action<JObject>>> m_EventHandlers = new();
+        private readonly Dictionary<string, RoomData> m_Rooms = new();
 
         /// <summary>
         /// 応答送信コールバック
@@ -38,6 +51,7 @@ namespace OpenGS.Network
         public UnifiedEventHandler()
         {
             RegisterDefaultHandlers();
+            SeedDefaultRooms();
         }
 
         /// <summary>
@@ -180,14 +194,35 @@ namespace OpenGS.Network
         private void HandleCreateRoom(JObject json, Action<JObject> sender)
         {
             var roomName = json["RoomName"]?.ToString() ?? "New Room";
+            var capacity = json["Capacity"]?.ToObject<int>() ?? 8;
+            var teamBalance = json["TeamBalance"]?.ToObject<bool?>() ?? true;
+            var gameMode = json["GameMode"]?.ToString() ?? "DeathMatch";
+            var ownerId = json["PlayerID"]?.ToString() ?? "owner";
             var roomId = Guid.NewGuid().ToString("N").Substring(0, 8);
+
+            m_Rooms[roomId] = new RoomData
+            {
+                RoomId = roomId,
+                RoomName = roomName,
+                OwnerId = ownerId,
+                Capacity = capacity,
+                GameMode = gameMode,
+                TeamBalance = teamBalance,
+                Players = new List<string> { ownerId },
+                PlayerReady = new Dictionary<string, bool> { { ownerId, false } }
+            };
 
             var resp = new JObject
             {
                 ["MessageType"] = MessageType.CreateRoomResponse,
                 ["Success"] = true,
                 ["RoomID"] = roomId,
-                ["RoomName"] = roomName
+                ["RoomName"] = roomName,
+                ["Capacity"] = capacity,
+                ["TeamBalance"] = teamBalance,
+                ["GameMode"] = gameMode,
+                ["OwnerID"] = ownerId,
+                ["PlayerCount"] = 1
             };
             sender(resp);
         }
@@ -197,7 +232,7 @@ namespace OpenGS.Network
             var resp = new JObject
             {
                 ["MessageType"] = MessageType.RoomListUpdateNotification,
-                ["Rooms"] = new JArray()
+                ["Rooms"] = BuildRoomListSnapshot()
             };
             sender(resp);
         }
@@ -207,12 +242,47 @@ namespace OpenGS.Network
             var roomId = json["RoomID"]?.ToString() ?? "";
             var playerName = json["PlayerName"]?.ToString() ?? "Unknown";
 
+            if (!m_Rooms.TryGetValue(roomId, out var room))
+            {
+                sender(new JObject
+                {
+                    ["MessageType"] = MessageType.JoinRoomResponse,
+                    ["Success"] = false,
+                    ["ErrorMessage"] = "Room not found",
+                    ["RoomID"] = roomId
+                });
+                return;
+            }
+
+            if (room.Players.Count >= room.Capacity)
+            {
+                sender(new JObject
+                {
+                    ["MessageType"] = MessageType.JoinRoomResponse,
+                    ["Success"] = false,
+                    ["ErrorMessage"] = "Room is full",
+                    ["RoomID"] = roomId
+                });
+                return;
+            }
+
+            var playerId = json["PlayerID"]?.ToString() ?? Guid.NewGuid().ToString("N");
+            if (!room.Players.Contains(playerId))
+            {
+                room.Players.Add(playerId);
+            }
+            room.PlayerReady[playerId] = false;
+
             var resp = new JObject
             {
                 ["MessageType"] = MessageType.JoinRoomResponse,
                 ["Success"] = true,
                 ["RoomID"] = roomId,
-                ["PlayerName"] = playerName
+                ["PlayerName"] = playerName,
+                ["Capacity"] = room.Capacity,
+                ["GameMode"] = room.GameMode,
+                ["OwnerID"] = room.OwnerId,
+                ["PlayerCount"] = room.Players.Count
             };
             sender(resp);
         }
@@ -225,6 +295,58 @@ namespace OpenGS.Network
                 ["Success"] = true
             };
             sender(resp);
+        }
+
+        private void SeedDefaultRooms()
+        {
+            if (m_Rooms.Count > 0)
+            {
+                return;
+            }
+
+            m_Rooms["room-0001"] = new RoomData
+            {
+                RoomId = "room-0001",
+                RoomName = "Default DM Room",
+                OwnerId = "host-001",
+                Capacity = 8,
+                GameMode = "DeathMatch",
+                TeamBalance = true,
+                Players = new List<string> { "host-001" },
+                PlayerReady = new Dictionary<string, bool> { { "host-001", false } }
+            };
+
+            m_Rooms["room-0002"] = new RoomData
+            {
+                RoomId = "room-0002",
+                RoomName = "Default TDM Room",
+                OwnerId = "host-002",
+                Capacity = 12,
+                GameMode = "TeamDeathMatch",
+                TeamBalance = true,
+                Players = new List<string> { "host-002" },
+                PlayerReady = new Dictionary<string, bool> { { "host-002", false } }
+            };
+        }
+
+        private JArray BuildRoomListSnapshot()
+        {
+            var rooms = new JArray();
+            foreach (var room in m_Rooms.Values)
+            {
+                rooms.Add(new JObject
+                {
+                    ["RoomID"] = room.RoomId,
+                    ["RoomName"] = room.RoomName,
+                    ["OwnerID"] = room.OwnerId,
+                    ["Capacity"] = room.Capacity,
+                    ["GameMode"] = room.GameMode,
+                    ["TeamBalance"] = room.TeamBalance,
+                    ["PlayerCount"] = room.Players.Count
+                });
+            }
+
+            return rooms;
         }
 
         private void HandleRoomChat(JObject json, Action<JObject> sender)
@@ -312,7 +434,8 @@ namespace OpenGS.Network
             // ローディング完了をブロードキャスト
             var broadcast = new JObject
             {
-                ["MessageType"] = "LoadingFinished",
+                ["MessageType"] = MessageType.LoadingCompletedNotification,
+                ["Success"] = true,
                 ["PlayerID"] = playerId,
                 ["RoomID"] = roomId
             };
