@@ -28,3 +28,9 @@
 - Archived UI-like assets: `Assets/Sprites/Archive/UI`
 - Archived weapon-like assets: `Assets/Sprites/Archive/Weapon`
 - Misc archived assets: `Assets/Sprites/Archive/Other`
+
+## Helper tool
+
+- Use `OpenGSR/Tools/Sprite Scene Usage Report` to generate a scene-by-scene sprite reference list
+- The report scans both scenes and prefabs, then writes Markdown and JSON under `Assets/Reports`
+- It is meant as a recovery aid, not a deletion tool
