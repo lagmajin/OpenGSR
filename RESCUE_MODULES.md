@@ -6,6 +6,7 @@ AIがプロジェクトの構造を理解し、機能拡張を容易にするこ
 - AI作業テンプレート: [AI_INSTRUCTIONS.md](./AI_INSTRUCTIONS.md)
 - Asset safety checklist: [ASSET_SAFETY.md](./ASSET_SAFETY.md)
 - Sprites layout guide: [SPRITES_LAYOUT.md](./SPRITES_LAYOUT.md)
+- Sprite naming guide: [SPRITE_NAMING.md](./SPRITE_NAMING.md)
 
 ## 1. Core Services (抽象化レイヤー)
 

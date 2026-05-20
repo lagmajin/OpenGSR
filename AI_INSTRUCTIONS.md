@@ -6,6 +6,7 @@ This document is a copy-paste friendly prompt template for letting an AI edit th
 Before editing any Unity asset, read this first:
 - [ASSET_SAFETY.md](./ASSET_SAFETY.md)
 - [SPRITES_LAYOUT.md](./SPRITES_LAYOUT.md) when reorganizing anything under `Assets/Sprites`
+- [SPRITE_NAMING.md](./SPRITE_NAMING.md) before renaming any sprite asset
 
 ## When to use
 - Asset recovery
@@ -18,6 +19,7 @@ Before editing any Unity asset, read this first:
 ## Core rules
 - Always read `ASSET_SAFETY.md` before touching Unity assets.
 - Read `SPRITES_LAYOUT.md` before reorganizing `Assets/Sprites`.
+- Read `SPRITE_NAMING.md` before renaming sprites or sprite folders.
 - Work inside the requested scope only.
 - Treat each Unity asset as `file + .meta` unless it is a pure text file.
 - When moving assets, preserve GUIDs by moving the `.meta` file with the asset.

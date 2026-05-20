@@ -36,3 +36,7 @@
 - Use `OpenGSR/Tools/Sprite Scene Usage Report` to generate a scene-by-scene sprite reference list
 - The report scans both scenes and prefabs, then writes Markdown and JSON under `Assets/Reports`
 - It is meant as a recovery aid, not a deletion tool
+
+## Naming guide
+
+- See [SPRITE_NAMING.md](./SPRITE_NAMING.md) for the active naming conventions and safe rename rules
