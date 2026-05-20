@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -150,6 +151,11 @@ namespace OpenGS
                     damage: Mathf.Max(0, Mathf.RoundToInt(prevHp - newHp)),
                     remainingHp: Mathf.Max(0, Mathf.RoundToInt(newHp))
                 ));
+
+                if (ShouldPlayLocalPlayerSound(p))
+                {
+                    SoundManager.Instance.PlayPlayerSound(GetDamageSound(p));
+                }
             }
 
             if (!wasDead && p.IsDead())
@@ -166,6 +172,11 @@ namespace OpenGS
                 }
 
                 GameEventBroker.Publish(deadEvent);
+
+                if (ShouldPlayLocalPlayerSound(p))
+                {
+                    SoundManager.Instance.PlayPlayerSound(GetDeathSound(p));
+                }
             }
 
             return true;
@@ -254,6 +265,45 @@ namespace OpenGS
         {
             if (player == null) return;
             OnPlayerRespawned?.Invoke(player);
+        }
+
+        private static bool ShouldPlayLocalPlayerSound(AbstractPlayer player)
+        {
+            return player != null && player.PlayerType() == EPlayerType.MyPlayer;
+        }
+
+        private static bool IsFemaleCharacter(AbstractPlayer player)
+        {
+            if (player == null)
+            {
+                return false;
+            }
+
+            return player.Character() switch
+            {
+                EPlayerCharacter.Ami => true,
+                EPlayerCharacter.Yumi => true,
+                EPlayerCharacter.Misty => true,
+                EPlayerCharacter.Mary => true,
+                EPlayerCharacter.Jackle => true,
+                _ => false
+            };
+        }
+
+        private static EPlayerSound GetDamageSound(AbstractPlayer player)
+        {
+            return IsFemaleCharacter(player)
+                ? EPlayerSound.DamageFemale1
+                : EPlayerSound.DamageMale1;
+        }
+
+        private static EPlayerSound GetDeathSound(AbstractPlayer player)
+        {
+            var female = IsFemaleCharacter(player);
+            var offset = UnityEngine.Random.Range(0, 4);
+            return female
+                ? (EPlayerSound)((int)EPlayerSound.DeathFemale1 + offset)
+                : (EPlayerSound)((int)EPlayerSound.DeathMale1 + offset);
         }
     }
 }

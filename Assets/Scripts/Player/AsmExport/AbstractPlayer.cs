@@ -388,6 +388,8 @@ namespace OpenGS
 
         public EPlayerType PlayerType() => playerType;
 
+        public EPlayerCharacter Character() => character;
+
         public void SetPlayerType(EPlayerType type = EPlayerType.Unknown)
         {
             playerType = type;
