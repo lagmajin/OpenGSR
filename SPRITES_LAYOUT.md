@@ -15,6 +15,8 @@
   - name-string search for path-based loading
 - Keep `*.meta` together with the asset when moving
 - If a sprite is later needed again, move it back together with its `*.meta`
+- Archived asset names use an `arch_` prefix plus a normalized lowercase name
+- Active root assets keep their original names until they are proven safe to rename
 
 ## Notes
 
