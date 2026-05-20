@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -11,8 +12,10 @@ namespace OpenGS
     {
         [SerializeField] public float damage = 100.0f;
         [SerializeField] public float activeTime = 2.0f;
-
-        // ─── Unity ライフサイクル ────────────────────────────────────
+        [SerializeField] private GrenadeExplosionMasterData explosionMasterData;
+        [SerializeField] private string ownerPlayerId = "";
+        [SerializeField] private string weaponName = "GrenadeLauncher";
+        private bool exploded;
 
         private void Start()
         {
@@ -25,21 +28,39 @@ namespace OpenGS
             return player != null ? damage * player.AttackMultiplier() : damage;
         }
 
-        // ─── 衝突処理 ────────────────────────────────────────────────
-
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var tags = collision.gameObject.GetComponent<IMultipleTags>();
-            if (tags == null) return;
-
-            if (tags.HasPlayerTag())
+            if (exploded)
             {
-                var damageable = collision.gameObject.GetComponent<IDamageable>();
-                if (damageable != null)
-                {
-                    damageable.AddDamage(transform.position, GetEffectiveDamage(), eDamageType.Explosion);
-                }
+                return;
             }
+
+            var tags = collision.gameObject.GetComponent<IMultipleTags>();
+            if (tags == null || !tags.HasPlayerTag())
+            {
+                return;
+            }
+
+            var owner = GetComponentInParent<AbstractPlayer>();
+            var resolvedOwnerId = !string.IsNullOrWhiteSpace(ownerPlayerId)
+                ? ownerPlayerId
+                : owner != null ? owner.UniqueID().ToString() : string.Empty;
+            var resolvedTeam = owner != null ? owner.Team() : ETeam.NoTeam;
+            var effectiveDamage = GetEffectiveDamage();
+            var baseDamage = explosionMasterData != null ? explosionMasterData.BaseDamage() : Mathf.Max(1f, damage);
+            var multiplier = effectiveDamage / Mathf.Max(1f, baseDamage);
+
+            exploded = true;
+            GrenadeExplosionDamageUtility.ApplyCircularDamage(
+                (Vector2)transform.position,
+                explosionMasterData,
+                resolvedOwnerId,
+                weaponName,
+                resolvedTeam,
+                multiplier
+            );
+
+            Destroy(gameObject, 0.1f);
         }
     }
 }

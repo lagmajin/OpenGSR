@@ -16,8 +16,7 @@ namespace OpenGS
 
         [SerializeField] public int damage = 120;
         [SerializeField] public float speed = 15.0f;
-        [SerializeField] private float explosionRadius = 2.5f;
-        [SerializeField] private float minDamageMultiplier = 0.35f;
+        [SerializeField] private GrenadeExplosionMasterData explosionMasterData;
 
 
         [SerializeField] [Required] private Rigidbody2D _rigidbody;
@@ -104,51 +103,14 @@ namespace OpenGS
 
         private void ApplyExplosionDamage()
         {
-            var registry = PlayerRegistry.Instance;
-            if (registry == null)
-            {
-                return;
-            }
-
-            var hits = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
-            foreach (var hit in hits)
-            {
-                if (hit == null)
-                {
-                    continue;
-                }
-
-                var player = hit.GetComponentInParent<AbstractPlayer>();
-                if (player == null)
-                {
-                    continue;
-                }
-
-                var playerId = player.UniqueID().ToString();
-                if (!string.IsNullOrWhiteSpace(OwnerPlayerId) && playerId == OwnerPlayerId)
-                {
-                    continue;
-                }
-
-                if (Team != ETeam.NoTeam && player.Team() != ETeam.NoTeam && player.Team() == Team)
-                {
-                    continue;
-                }
-
-                float distance = Vector2.Distance(transform.position, player.transform.position);
-                float ratio = Mathf.Clamp01(1f - (distance / Mathf.Max(0.01f, explosionRadius)));
-                float finalDamage = Mathf.Max(1f, damage * Mathf.Lerp(minDamageMultiplier, 1f, ratio));
-
-                registry.ApplyDamage(
-                    player.UniqueID(),
-                    player.transform.position - transform.position,
-                    finalDamage,
-                    eDamageType.Explosion,
-                    OwnerPlayerId,
-                    WeaponName,
-                    false
-                );
-            }
+            GrenadeExplosionDamageUtility.ApplyCircularDamage(
+                (Vector2)transform.position,
+                explosionMasterData,
+                OwnerPlayerId,
+                WeaponName,
+                Team,
+                damage / Mathf.Max(1f, explosionMasterData != null ? explosionMasterData.BaseDamage() : 100f)
+            );
         }
 
 

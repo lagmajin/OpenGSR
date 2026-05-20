@@ -44,6 +44,20 @@ namespace OpenGS
                         owner != null ? owner.Team() : ETeam.NoTeam
                     );
                 }
+
+                var shotgunBullet = pellet.GetComponent<ShotgunBulletController>();
+                if (shotgunBullet != null)
+                {
+                    var owner = GetComponentInParent<AbstractPlayer>();
+                    shotgunBullet.Init(
+                        shotDir,
+                        bulletSpeed * Random.Range(0.95f, 1.05f),
+                        GetEffectiveDamage(),
+                        GetPlayerID(),
+                        Name,
+                        owner != null ? owner.Team() : ETeam.NoTeam
+                    );
+                }
             }
         }
     }
