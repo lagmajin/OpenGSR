@@ -14,11 +14,9 @@ namespace OpenGS
 
         public GameObject childGrenadePrefab;
         [SerializeField] private GrenadeExplosionMasterData explosionMasterData;
+        [SerializeField] private ClusterGrenadeMasterData clusterGrenadeMasterData;
         [SerializeField] private string ownerPlayerId = "";
         [SerializeField] private string weaponName = "ClusterGrenade";
-        [SerializeField] private int childGrenadeCount = 3;
-        [SerializeField] private float childLaunchSpeed = 8f;
-        [SerializeField] private float childSpreadAngle = 45f;
 
         public static string Description()
         {
@@ -63,6 +61,11 @@ namespace OpenGS
 
         private void SpawnChildGrenades(string resolvedOwnerId, ETeam resolvedTeam)
         {
+            var masterData = clusterGrenadeMasterData != null ? clusterGrenadeMasterData : ClusterGrenadeMasterData.Instance();
+            var childGrenadeCount = masterData != null ? masterData.ChildGrenadeCount() : 3;
+            var childLaunchSpeed = masterData != null ? masterData.ChildLaunchSpeed() : 8f;
+            var childSpreadAngle = masterData != null ? masterData.ChildSpreadAngle() : 45f;
+
             if (childGrenadePrefab == null || childGrenadeCount <= 0)
             {
                 return;
