@@ -9,9 +9,13 @@ namespace OpenGS
     public class ChildClusterGrenadeController : AbstractGrenadeController
     {
        public float defaultDamage = 30.0f;
+       private bool exploded;
        [SerializeField] private GrenadeExplosionMasterData explosionMasterData;
        [SerializeField] private string ownerPlayerId = "";
        [SerializeField] private string weaponName = "ChildClusterGrenade";
+       [SerializeField] private Rigidbody2D childBody;
+       [SerializeField] private float launchSpeed = 8.0f;
+       private Vector2 launchDirection = Vector2.right;
 
 
         private void Start()
@@ -24,6 +28,22 @@ namespace OpenGS
 
         }
 
+        public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerId, string weapon, ETeam team)
+        {
+            launchDirection = direction.sqrMagnitude > 0f ? direction.normalized : Vector2.right;
+            launchSpeed = initSpeed;
+            defaultDamage = initDamage;
+            ownerPlayerId = ownerId ?? string.Empty;
+            weaponName = string.IsNullOrWhiteSpace(weapon) ? "ChildClusterGrenade" : weapon;
+
+            var body = childBody != null ? childBody : GetComponent<Rigidbody2D>();
+            if (body != null)
+            {
+                body.bodyType = RigidbodyType2D.Dynamic;
+                body.linearVelocity = launchDirection * launchSpeed;
+            }
+        }
+
         private void OnCollisionEnter2D(Collision2D collision)
         {
             Explosion();
@@ -32,6 +52,12 @@ namespace OpenGS
 
         private void Explosion()
         {
+            if (exploded)
+            {
+                return;
+            }
+
+            exploded = true;
             var obj = Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
             var owner = GetComponentInParent<AbstractPlayer>();
             var resolvedOwnerId = !string.IsNullOrWhiteSpace(ownerPlayerId)
@@ -47,7 +73,7 @@ namespace OpenGS
                 defaultDamage / Mathf.Max(1f, explosionMasterData != null ? explosionMasterData.BaseDamage() : defaultDamage)
             );
 
-            Destroy(this.gameObject, 0.3f);
+            Destroy(this.gameObject, 0.1f);
 
         }
 
