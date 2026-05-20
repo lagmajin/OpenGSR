@@ -54,12 +54,13 @@ namespace OpenGS
         public void PlayReloadSound(EWeaponType type) => _service.PlayWeaponReload(type);
         public void PlayHitSound(EWeaponType type) => _service.PlayWeaponHit(type);
         public void PlayThrowGrenadeSound(EGrenadeType type) => _service.PlayGrenadeThrow(type);
+        public void PlayPlayerSound(EPlayerSound sound) => _service.PlayPlayerSound(sound);
 
         public bool ValidateSoundSetup(bool logWarnings = true) => _service.ValidateSoundSetup(logWarnings);
 
         // 互換性のためのメソッド
         public void PlayGameSound(EMatchSound sound) => PlayMatchSound(sound);
-        public void PlayPlayerSound() { /* 未実装 */ }
+        public void PlayPlayerSound() => PlayPlayerSound(EPlayerSound.DamageMale1);
 
         public bool PlayOneShotSafe(AudioClip clip, float volume = 1.0f, float pitch = 1.0f, string context = null, bool warnIfMissing = false)
         {

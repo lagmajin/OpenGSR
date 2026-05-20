@@ -18,6 +18,7 @@ namespace OpenGS
         private readonly Dictionary<string, AudioClip> _weaponReloadClipCache = new();
         private readonly Dictionary<string, AudioClip> _weaponHitClipCache = new();
         private readonly Dictionary<string, AudioClip> _grenadeThrowClipCache = new();
+        private readonly Dictionary<string, AudioClip> _playerSoundClipCache = new();
 
         public SoundService(SoundMasterData soundMasterData, BGMMasterData bgmMasterData = null)
         {
@@ -99,6 +100,7 @@ namespace OpenGS
         public void PlayWeaponReload(EWeaponType type, float pitch = 1.0f) => PlayOneShot(GetWeaponClip(type, "reload", _weaponReloadClipCache), 1.0f, pitch);
         public void PlayWeaponHit(EWeaponType type, float pitch = 1.0f) => PlayOneShot(GetWeaponClip(type, "hit", _weaponHitClipCache), 1.0f, pitch);
         public void PlayGrenadeThrow(EGrenadeType type, float pitch = 1.0f) => PlayOneShot(GetGrenadeThrowClip(type), 1.0f, pitch);
+        public void PlayPlayerSound(EPlayerSound sound) => PlayOneShot(GetPlayerSoundClip(sound), 1.0f, 1.0f);
 
         public void PlayOneShot(AudioClip clip, float volume = 1.0f, float pitch = 1.0f)
         {
@@ -142,6 +144,33 @@ namespace OpenGS
             if (_grenadeThrowClipCache.TryGetValue(key, out var cached)) return cached;
             AudioClip loaded = LoadFirst($"Sound/Grenade/{type}_throw", "Sound/Weapon/grenade_throw");
             _grenadeThrowClipCache[key] = loaded;
+            return loaded;
+        }
+
+        private AudioClip GetPlayerSoundClip(EPlayerSound sound)
+        {
+            string key = sound.ToString();
+            if (_playerSoundClipCache.TryGetValue(key, out var cached))
+            {
+                return cached;
+            }
+
+            AudioClip loaded = sound switch
+            {
+                EPlayerSound.DamageFemale1 => LoadFirst("Sound/Player/sfx_pl_hit01", "Sound/Player/sfx_pl_deathF01"),
+                EPlayerSound.DamageMale1 => LoadFirst("Sound/Player/sfx_pl_hit01", "Sound/Player/sfx_pl_deathM01"),
+                EPlayerSound.DeathFemale1 => LoadFirst("Sound/Player/sfx_pl_deathF01"),
+                EPlayerSound.DeathFemale2 => LoadFirst("Sound/Player/sfx_pl_deathF02"),
+                EPlayerSound.DeathFemale3 => LoadFirst("Sound/Player/sfx_pl_deathF03"),
+                EPlayerSound.DeathFemale4 => LoadFirst("Sound/Player/sfx_pl_deathF04"),
+                EPlayerSound.DeathMale1 => LoadFirst("Sound/Player/sfx_pl_deathM01"),
+                EPlayerSound.DeathMale2 => LoadFirst("Sound/Player/sfx_pl_deathM02"),
+                EPlayerSound.DeathMale3 => LoadFirst("Sound/Player/sfx_pl_deathM03"),
+                EPlayerSound.DeathMale4 => LoadFirst("Sound/Player/sfx_pl_deathM04"),
+                _ => null
+            };
+
+            _playerSoundClipCache[key] = loaded;
             return loaded;
         }
 

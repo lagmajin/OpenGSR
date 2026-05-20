@@ -25,6 +25,7 @@ namespace OpenGS
         void PlayWeaponReload(EWeaponType type, float pitch = 1.0f);
         void PlayWeaponHit(EWeaponType type, float pitch = 1.0f);
         void PlayGrenadeThrow(EGrenadeType type, float pitch = 1.0f);
+        void PlayPlayerSound(EPlayerSound sound);
 
         // 汎用再生
         void PlayOneShot(AudioClip clip, float volume = 1.0f, float pitch = 1.0f);
