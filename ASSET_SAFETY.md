@@ -22,6 +22,7 @@ This note is about preventing Unity asset regressions rather than restoring them
 - Reusable UI or dialog: prefab + `.meta` + master-data entry
 - Scene-local wiring: keep it in the scene, but avoid spreading the same reference across multiple scene objects
 - Sprite groups: keep a stable folder, and move the `.meta` with the folder asset
+- For `Assets/Sprites`, follow [SPRITES_LAYOUT.md](./SPRITES_LAYOUT.md) so archive moves stay predictable
 
 ## Red flags
 - `fileID: 0` on a field that should clearly be wired
