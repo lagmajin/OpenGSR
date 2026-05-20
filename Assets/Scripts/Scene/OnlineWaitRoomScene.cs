@@ -467,6 +467,11 @@ namespace OpenGS
                 .ObserveOnMainThread()
                 .Subscribe(_ => GoToLobby())
                 .AddTo(this);
+
+            networkManager.OnSelfKickedStream
+                .ObserveOnMainThread()
+                .Subscribe(_ => GoToLobby())
+                .AddTo(this);
         }
 
         private void RefreshWaitRoomUi()

@@ -49,6 +49,7 @@ namespace OpenGS
         private readonly Subject<string> onCancelCountdown = new Subject<string>();
         private readonly Subject<JObject> onRoomDeleted = new Subject<JObject>();
         private readonly Subject<JObject> onRoomNotFound = new Subject<JObject>();
+        private readonly Subject<JObject> onSelfKicked = new Subject<JObject>();
 
         public IObservable<JObject> OnPlayerJoinedStream => onPlayerJoined.AsObservable();
         public IObservable<JObject> OnPlayerLeftStream => onPlayerLeft.AsObservable();
@@ -61,6 +62,7 @@ namespace OpenGS
         public IObservable<string> OnCancelCountdownStream => onCancelCountdown.AsObservable();
         public IObservable<JObject> OnRoomDeletedStream => onRoomDeleted.AsObservable();
         public IObservable<JObject> OnRoomNotFoundStream => onRoomNotFound.AsObservable();
+        public IObservable<JObject> OnSelfKickedStream => onSelfKicked.AsObservable();
 
         // Start is called before the first frame update
         void Start()
@@ -549,8 +551,12 @@ namespace OpenGS
             
             PrettyLogger.Bold("WaitRoom", $"Player kicked: {playerId}, reason: {reason}");
             
-            // 自分がキックされた場合
-            // TODO: 自分のプレイヤーIDと比較してロビーに戻す処理
+            if (!string.IsNullOrWhiteSpace(playerId) &&
+                string.Equals(playerId, ResolveLocalPlayerId(), StringComparison.OrdinalIgnoreCase))
+            {
+                ClearCurrentRoomState();
+                onSelfKicked.OnNext(json);
+            }
         }
 
         private void HandleWaitRoomOwnerChange(JObject json)
@@ -608,6 +614,10 @@ namespace OpenGS
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
             PrettyLogger.Bold("RoomList", $"Room deleted: {roomId}");
+            if (string.IsNullOrWhiteSpace(roomId) || string.Equals(roomId, currentRoomId, StringComparison.OrdinalIgnoreCase))
+            {
+                ClearCurrentRoomState();
+            }
             onRoomDeleted.OnNext(json);
         }
 
@@ -623,6 +633,10 @@ namespace OpenGS
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
 
             PrettyLogger.Bold("RoomList", $"Room not found: {roomId}");
+            if (string.IsNullOrWhiteSpace(roomId) || string.Equals(roomId, currentRoomId, StringComparison.OrdinalIgnoreCase))
+            {
+                ClearCurrentRoomState();
+            }
             onRoomNotFound.OnNext(json);
         }
 
@@ -748,6 +762,14 @@ namespace OpenGS
         {
             var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
             return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
+        }
+
+        private void ClearCurrentRoomState()
+        {
+            currentRoomId = "";
+            currentRoomName = "";
+            isReady = false;
+            currentPlayers = new JArray();
         }
 
 
