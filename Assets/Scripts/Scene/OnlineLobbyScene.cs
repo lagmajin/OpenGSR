@@ -333,10 +333,7 @@ namespace OpenGS
                     errorMessage =>
                     {
                         Debug.LogWarning($"OnlineLobbyScene: Failed to create room: {errorMessage}");
-                        if (InfoDialog != null)
-                        {
-                            InfoDialog.SetActive(true);
-                        }
+                        ShowInfoDialog("ルーム作成に失敗しました", errorMessage);
                     },
                     rooms =>
                     {
@@ -394,11 +391,9 @@ namespace OpenGS
                 }
                 else
                 {
-                    Debug.LogWarning($"OnlineLobbyScene: Failed to create room: {json["ErrorMessage"]?.ToString()}");
-                    if (InfoDialog != null)
-                    {
-                        InfoDialog.SetActive(true);
-                    }
+                    var errorMessage = json["ErrorMessage"]?.ToString();
+                    Debug.LogWarning($"OnlineLobbyScene: Failed to create room: {errorMessage}");
+                    ShowInfoDialog("ルーム作成に失敗しました", errorMessage);
                 }
             }
             else if (messageType == MessageType.JoinRoomResponse)
@@ -423,7 +418,9 @@ namespace OpenGS
                 }
                 else
                 {
-                    Debug.LogWarning($"OnlineLobbyScene: Enter room failed: {json["ErrorMessage"]?.ToString()}");
+                    var errorMessage = json["ErrorMessage"]?.ToString();
+                    Debug.LogWarning($"OnlineLobbyScene: Enter room failed: {errorMessage}");
+                    ShowInfoDialog("ルームに入れませんでした", errorMessage);
                 }
             }
         }
@@ -662,6 +659,32 @@ namespace OpenGS
             currentRoomList = new JArray();
             ClearSpawnedRoomButtons();
             RemoveAllRoom();
+        }
+
+        private void ShowInfoDialog(string title, string message)
+        {
+            if (InfoDialog == null)
+            {
+                return;
+            }
+
+            var lines = string.IsNullOrWhiteSpace(message)
+                ? new[] { title }
+                : new[] { title, message };
+
+            var legacyText = InfoDialog.GetComponentInChildren<Text>(true);
+            if (legacyText != null)
+            {
+                legacyText.text = string.Join("\n", lines);
+            }
+
+            var tmpText = InfoDialog.GetComponentInChildren<TMPro.TMP_Text>(true);
+            if (tmpText != null)
+            {
+                tmpText.text = string.Join("\n", lines);
+            }
+
+            InfoDialog.SetActive(true);
         }
 
         private static JArray FilterRooms(JArray rooms, string filter)

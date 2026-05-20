@@ -440,7 +440,7 @@ namespace OpenGS
                 currentRoomName = roomName;
             }
             
-            PrettyLogger.Bold("WaitRoom", $"Player entered: {playerName} ({playerId}) in room {roomId}");
+            PrettyLogger.Bold("WaitRoom", $"入室: {playerName} ({playerId}) -> room={roomId}");
             onPlayerJoined.OnNext(json);
         }
 
@@ -449,7 +449,7 @@ namespace OpenGS
             var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
-            PrettyLogger.Bold("WaitRoom", $"Player left: {playerId} from room {roomId}");
+            PrettyLogger.Bold("WaitRoom", $"退室: {playerId} <- room={roomId}");
             onPlayerLeft.OnNext(json);
         }
 
@@ -501,7 +501,7 @@ namespace OpenGS
                     }
                 }
 
-                PrettyLogger.Bold("WaitRoom", $"Player list updated: {players.Count} players in room {roomId}");
+                PrettyLogger.Bold("WaitRoom", $"参加者更新: {players.Count}人 room={roomId}");
                 onPlayerList.OnNext(players);
             }
         }
@@ -513,7 +513,7 @@ namespace OpenGS
             var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
-            PrettyLogger.Bold("WaitRoom", $"[Chat] {playerName} ({playerId}) in {roomId}: {message}");
+            PrettyLogger.Bold("WaitRoom", $"チャット[{roomId}] {playerName}: {message}");
             onChatMessage.OnNext(json);
         }
 
@@ -521,7 +521,7 @@ namespace OpenGS
         {
             var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             
-            PrettyLogger.Bold("WaitRoom", $"Player ready: {playerId}");
+            PrettyLogger.Bold("WaitRoom", $"準備完了: {playerId}");
             onPlayerReady.OnNext(json);
         }
 
@@ -529,7 +529,7 @@ namespace OpenGS
         {
             var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             
-            PrettyLogger.Bold("WaitRoom", $"Player unready: {playerId}");
+            PrettyLogger.Bold("WaitRoom", $"準備解除: {playerId}");
             onPlayerReady.OnNext(json);
         }
 
@@ -567,7 +567,7 @@ namespace OpenGS
                 }
             }
             
-            PrettyLogger.Bold("WaitRoom", $"Settings changed for room {roomId}");
+            PrettyLogger.Bold("WaitRoom", $"ルーム設定更新: room={roomId}");
             onRoomSettingsChanged.OnNext(json);
         }
 
@@ -576,7 +576,7 @@ namespace OpenGS
             var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
             var reason = json["Reason"]?.ToString();
             
-            PrettyLogger.Bold("WaitRoom", $"Player kicked: {playerId}, reason: {reason}");
+            PrettyLogger.Bold("WaitRoom", $"キック通知: {playerId}, reason={reason}");
             
             if (!string.IsNullOrWhiteSpace(playerId) &&
                 string.Equals(playerId, ResolveLocalPlayerId(), StringComparison.OrdinalIgnoreCase))
@@ -591,7 +591,7 @@ namespace OpenGS
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var newOwnerId = json["NewOwnerId"]?.ToString();
             
-            PrettyLogger.Bold("WaitRoom", $"Owner changed in room {roomId} to {newOwnerId}");
+            PrettyLogger.Bold("WaitRoom", $"オーナー変更: room={roomId} -> {newOwnerId}");
             onRoomSettingsChanged.OnNext(json);
         }
 
@@ -600,7 +600,7 @@ namespace OpenGS
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var countdown = json["Countdown"]?.ToObject<int>() ?? 0;
             
-            PrettyLogger.Bold("WaitRoom", $"Game starting in {countdown} seconds");
+            PrettyLogger.Bold("WaitRoom", $"ゲーム開始カウントダウン: {countdown}s");
             onStartCountdown.OnNext(countdown);
         }
 
@@ -609,7 +609,7 @@ namespace OpenGS
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var reason = json["Reason"]?.ToString() ?? "Unknown";
             
-            PrettyLogger.Bold("WaitRoom", $"Countdown cancelled: {reason}");
+            PrettyLogger.Bold("WaitRoom", $"カウントダウン中止: {reason}");
             onCancelCountdown.OnNext(reason);
         }
 
@@ -623,7 +623,7 @@ namespace OpenGS
             var roomCount = rooms?.Count ?? 0;
             currentRooms = rooms ?? new JArray();
             
-            PrettyLogger.Bold("RoomList", $"Room list updated: {roomCount} rooms");
+            PrettyLogger.Bold("RoomList", $"ルーム一覧更新: {roomCount}件");
             onRoomList.OnNext(currentRooms);
         }
 
@@ -642,14 +642,14 @@ namespace OpenGS
                 currentRoomName = roomName;
             }
             
-            PrettyLogger.Bold("RoomList", $"Room created: {roomName} ({roomId}) by {ownerId}");
+            PrettyLogger.Bold("RoomList", $"ルーム作成: {roomName} ({roomId}) owner={ownerId}");
         }
 
         private void HandleRoomDeleted(JObject json)
         {
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
-            PrettyLogger.Bold("RoomList", $"Room deleted: {roomId}");
+            PrettyLogger.Bold("RoomList", $"ルーム削除: {roomId}");
             if (string.IsNullOrWhiteSpace(roomId) || string.Equals(roomId, currentRoomId, StringComparison.OrdinalIgnoreCase))
             {
                 ClearCurrentRoomState();
@@ -661,14 +661,14 @@ namespace OpenGS
         {
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
-            PrettyLogger.Bold("RoomList", $"Room full: {roomId}");
+            PrettyLogger.Bold("RoomList", $"満室ルーム: {roomId}");
         }
 
         private void HandleRoomNotFound(JObject json)
         {
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
 
-            PrettyLogger.Bold("RoomList", $"Room not found: {roomId}");
+            PrettyLogger.Bold("RoomList", $"ルーム未検出: {roomId}");
             if (string.IsNullOrWhiteSpace(roomId) || string.Equals(roomId, currentRoomId, StringComparison.OrdinalIgnoreCase))
             {
                 ClearCurrentRoomState();
@@ -708,7 +708,7 @@ namespace OpenGS
                 }
             }
 
-            PrettyLogger.Bold("WaitRoom", $"Settings changed for room {currentRoomId}");
+            PrettyLogger.Bold("WaitRoom", $"ルーム設定適用: room={currentRoomId}");
             onRoomSettingsChanged.OnNext(json);
         }
 
