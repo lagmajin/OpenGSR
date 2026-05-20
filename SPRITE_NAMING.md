@@ -43,3 +43,7 @@ The following root sprites are still intentionally left in place because they ha
 - Then check string-based name references.
 - If either exists, do not rename casually.
 - If a rename is still needed, move the `*.meta` together and update all references in the same change.
+
+## Helper tool
+
+- Use `OpenGSR/Tools/Sprite Rename Audit` to generate a rename-safety report for active root sprites

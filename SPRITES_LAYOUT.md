@@ -40,3 +40,4 @@
 ## Naming guide
 
 - See [SPRITE_NAMING.md](./SPRITE_NAMING.md) for the active naming conventions and safe rename rules
+- Use `OpenGSR/Tools/Sprite Rename Audit` when you want to check whether root sprites are safe to rename
