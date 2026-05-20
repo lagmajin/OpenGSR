@@ -268,7 +268,7 @@ namespace OpenGS
                 else if (collider is CapsuleCollider2D capsule)
                 {
                     entry["size"] = VectorToJson(capsule.size);
-                    entry["direction"] = capsule.direction;
+                    entry["direction"] = capsule.direction.ToString();
                     entry["usedByEffector"] = capsule.usedByEffector;
                     entry["usedByComposite"] = capsule.usedByComposite;
                 }

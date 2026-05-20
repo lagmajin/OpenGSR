@@ -457,6 +457,16 @@ namespace OpenGS
                 .ObserveOnMainThread()
                 .Subscribe(_ => CancelCountdown())
                 .AddTo(this);
+
+            networkManager.OnRoomDeletedStream
+                .ObserveOnMainThread()
+                .Subscribe(_ => GoToLobby())
+                .AddTo(this);
+
+            networkManager.OnRoomNotFoundStream
+                .ObserveOnMainThread()
+                .Subscribe(_ => GoToLobby())
+                .AddTo(this);
         }
 
         private void RefreshWaitRoomUi()
@@ -464,6 +474,8 @@ namespace OpenGS
             var room = ResolveWaitRoom();
             if (room == null)
             {
+                SetText(roomTitleText, roomTitleTmpText, "Wait Room");
+                SetText(gameModeText, gameModeTmpText, "");
                 return;
             }
 

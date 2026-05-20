@@ -13,8 +13,9 @@ namespace OpenGS
         private bool exploded;
 
         public GameObject childGrenadePrefab;
-        [SerializeField] private GrenadeExplosionMasterData explosionMasterData;
-        [SerializeField] private ClusterGrenadeMasterData clusterGrenadeMasterData;
+        [SerializeField] private int childGrenadeCount = 3;
+        [SerializeField] private float childLaunchSpeed = 8f;
+        [SerializeField] private float childSpreadAngle = 45f;
         [SerializeField] private string ownerPlayerId = "";
         [SerializeField] private string weaponName = "ClusterGrenade";
 
@@ -46,13 +47,55 @@ namespace OpenGS
                 ? ownerPlayerId
                 : owner != null ? owner.UniqueID().ToString() : string.Empty;
             var resolvedTeam = owner != null ? owner.Team() : ETeam.NoTeam;
-            GrenadeExplosionDamageUtility.ApplyCircularDamage(
-                (Vector2)transform.position,
-                explosionMasterData,
-                resolvedOwnerId,
-                weaponName,
-                resolvedTeam
-            );
+            const float radius = 2.5f;
+            const float minDamageMultiplier = 0.35f;
+            const float baseDamage = 100f;
+            var hits = Physics2D.OverlapCircleAll(transform.position, radius);
+            var processed = new System.Collections.Generic.HashSet<string>();
+            foreach (var hit in hits)
+            {
+                if (hit == null)
+                {
+                    continue;
+                }
+
+                var player = hit.GetComponentInParent<AbstractPlayer>();
+                if (player == null)
+                {
+                    continue;
+                }
+
+                var playerId = player.UniqueID().ToString();
+                if (!processed.Add(playerId))
+                {
+                    continue;
+                }
+
+                if (!string.IsNullOrWhiteSpace(resolvedOwnerId) && playerId == resolvedOwnerId)
+                {
+                    continue;
+                }
+
+                if (resolvedTeam != ETeam.NoTeam && player.Team() != ETeam.NoTeam && player.Team() == resolvedTeam)
+                {
+                    continue;
+                }
+
+                float distance = Vector2.Distance(transform.position, player.transform.position);
+                float normalized = Mathf.Clamp01(distance / radius);
+                float multiplier = Mathf.Lerp(1f, minDamageMultiplier, normalized);
+                float finalDamage = Mathf.Max(1f, baseDamage * multiplier);
+
+                PlayerRegistry.Instance?.ApplyDamage(
+                    player.UniqueID(),
+                    player.transform.position - transform.position,
+                    finalDamage,
+                    eDamageType.Explosion,
+                    resolvedOwnerId,
+                    weaponName,
+                    false
+                );
+            }
 
             SpawnChildGrenades(resolvedOwnerId, resolvedTeam);
 
@@ -61,11 +104,6 @@ namespace OpenGS
 
         private void SpawnChildGrenades(string resolvedOwnerId, ETeam resolvedTeam)
         {
-            var masterData = clusterGrenadeMasterData != null ? clusterGrenadeMasterData : ClusterGrenadeMasterData.Instance();
-            var childGrenadeCount = masterData != null ? masterData.ChildGrenadeCount() : 3;
-            var childLaunchSpeed = masterData != null ? masterData.ChildLaunchSpeed() : 8f;
-            var childSpreadAngle = masterData != null ? masterData.ChildSpreadAngle() : 45f;
-
             if (childGrenadePrefab == null || childGrenadeCount <= 0)
             {
                 return;

@@ -33,7 +33,7 @@ namespace OpenGS
 
         protected override void Awake()
         {
-            sceneMediateObject = mediateObject;
+            sceneMediateObject = null;
             base.Awake();
         }
 

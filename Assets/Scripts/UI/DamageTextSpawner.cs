@@ -123,8 +123,8 @@ namespace OpenGS
             if (rt != null)
             {
                 // ランダムなオフセットを加えて複数ヒットが重ならないようにする
-                float rx = Random.Range(-randomOffset.x, randomOffset.x);
-                float ry = Random.Range(-randomOffset.y, randomOffset.y);
+                float rx = UnityEngine.Random.Range(-randomOffset.x, randomOffset.x);
+                float ry = UnityEngine.Random.Range(-randomOffset.y, randomOffset.y);
                 rt.position = new Vector3(screenPos.x + rx, screenPos.y + ry, 0);
             }
 

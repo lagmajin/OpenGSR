@@ -16,7 +16,6 @@ namespace OpenGS
 
         [SerializeField] public int damage = 120;
         [SerializeField] public float speed = 15.0f;
-        [SerializeField] private GrenadeExplosionMasterData explosionMasterData;
 
 
         [SerializeField] [Required] private Rigidbody2D _rigidbody;
@@ -103,14 +102,56 @@ namespace OpenGS
 
         private void ApplyExplosionDamage()
         {
-            GrenadeExplosionDamageUtility.ApplyCircularDamage(
-                (Vector2)transform.position,
-                explosionMasterData,
-                OwnerPlayerId,
-                WeaponName,
-                Team,
-                damage / Mathf.Max(1f, explosionMasterData != null ? explosionMasterData.BaseDamage() : 100f)
-            );
+            const float radius = 2.5f;
+            const float minDamageMultiplier = 0.35f;
+            const float baseDamage = 100f;
+
+            var hits = Physics2D.OverlapCircleAll(transform.position, radius);
+            var processed = new System.Collections.Generic.HashSet<string>();
+            foreach (var hit in hits)
+            {
+                if (hit == null)
+                {
+                    continue;
+                }
+
+                var player = hit.GetComponentInParent<AbstractPlayer>();
+                if (player == null)
+                {
+                    continue;
+                }
+
+                var playerId = player.UniqueID().ToString();
+                if (!processed.Add(playerId))
+                {
+                    continue;
+                }
+
+                if (!string.IsNullOrWhiteSpace(OwnerPlayerId) && playerId == OwnerPlayerId)
+                {
+                    continue;
+                }
+
+                if (Team != ETeam.NoTeam && player.Team() != ETeam.NoTeam && player.Team() == Team)
+                {
+                    continue;
+                }
+
+                float distance = Vector2.Distance(transform.position, player.transform.position);
+                float normalized = Mathf.Clamp01(distance / radius);
+                float multiplier = Mathf.Lerp(1f, minDamageMultiplier, normalized);
+                float finalDamage = Mathf.Max(1f, baseDamage * multiplier * (damage / 100f));
+
+                PlayerRegistry.Instance?.ApplyDamage(
+                    player.UniqueID(),
+                    player.transform.position - transform.position,
+                    finalDamage,
+                    eDamageType.Explosion,
+                    OwnerPlayerId,
+                    WeaponName,
+                    false
+                );
+            }
         }
 
 

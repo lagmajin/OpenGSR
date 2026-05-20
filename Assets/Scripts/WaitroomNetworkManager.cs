@@ -47,6 +47,8 @@ namespace OpenGS
         private readonly Subject<JObject> onChatMessage = new Subject<JObject>();
         private readonly Subject<int> onStartCountdown = new Subject<int>();
         private readonly Subject<string> onCancelCountdown = new Subject<string>();
+        private readonly Subject<JObject> onRoomDeleted = new Subject<JObject>();
+        private readonly Subject<JObject> onRoomNotFound = new Subject<JObject>();
 
         public IObservable<JObject> OnPlayerJoinedStream => onPlayerJoined.AsObservable();
         public IObservable<JObject> OnPlayerLeftStream => onPlayerLeft.AsObservable();
@@ -57,6 +59,8 @@ namespace OpenGS
         public IObservable<JObject> OnChatMessageStream => onChatMessage.AsObservable();
         public IObservable<int> OnStartCountdownStream => onStartCountdown.AsObservable();
         public IObservable<string> OnCancelCountdownStream => onCancelCountdown.AsObservable();
+        public IObservable<JObject> OnRoomDeletedStream => onRoomDeleted.AsObservable();
+        public IObservable<JObject> OnRoomNotFoundStream => onRoomNotFound.AsObservable();
 
         // Start is called before the first frame update
         void Start()
@@ -355,30 +359,17 @@ namespace OpenGS
             switch (messageType)
             {
                 // ロビー関連
-                case MessageType.LobbyEnter:
-                    HandleLobbyEnter(json);
-                    break;
-                case MessageType.LobbyLeave:
-                    HandleLobbyLeave(json);
-                    break;
-                case MessageType.LobbyPlayerList:
-                    HandleLobbyPlayerList(json);
-                    break;
-                case MessageType.LobbyChat:
-                    HandleLobbyChat(json);
-                    break;
-
                 // ウェイトルーム関連
-                case MessageType.WaitRoomEnter:
+                case MessageType.JoinRoomRequest:
                     HandleWaitRoomEnter(json);
                     break;
-                case MessageType.WaitRoomLeave:
+                case MessageType.LeaveRoomRequest:
                     HandleWaitRoomLeave(json);
                     break;
                 case MessageType.WaitRoomPlayerList:
                     HandleWaitRoomPlayerList(json);
                     break;
-                case MessageType.WaitRoomChat:
+                case MessageType.LobbyChatRequest:
                     HandleWaitRoomChat(json);
                     break;
                 case MessageType.WaitRoomPlayerReady:
@@ -416,52 +407,18 @@ namespace OpenGS
                 case MessageType.RoomFull:
                     HandleRoomFull(json);
                     break;
+                case MessageType.RoomNotFound:
+                    HandleRoomNotFound(json);
+                    break;
+                case MessageType.RoomSettingChanged:
+                    HandleRoomSettingChanged(json);
+                    break;
 
                 default:
                     Debug.Log($"[WaitRoomNetworkManager] Unhandled message type: {messageType}");
                     break;
             }
         }
-
-        #region ロビーハンドラー
-
-        private void HandleLobbyEnter(JObject json)
-        {
-            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
-            var playerName = json["PlayerName"]?.ToString();
-            
-            PrettyLogger.Bold("Lobby", $"Player entered: {playerName} ({playerId})");
-            onPlayerJoined.OnNext(json);
-        }
-
-        private void HandleLobbyLeave(JObject json)
-        {
-            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString();
-            
-            PrettyLogger.Bold("Lobby", $"Player left: {playerId}");
-            onPlayerLeft.OnNext(json);
-        }
-
-        private void HandleLobbyPlayerList(JObject json)
-        {
-            var players = json["Players"] as JArray;
-            if (players != null)
-            {
-                currentPlayers = players;
-                PrettyLogger.Bold("Lobby", $"Player list updated: {players.Count} players");
-            }
-        }
-
-        private void HandleLobbyChat(JObject json)
-        {
-            var playerName = json["PlayerName"]?.ToString();
-            var message = json["Message"]?.ToString();
-            
-            PrettyLogger.Bold("Lobby", $"[Chat] {playerName}: {message}");
-            onChatMessage.OnNext(json);
-        }
-
-        #endregion
 
         #region ウェイトルームハンドラー
 
@@ -651,6 +608,7 @@ namespace OpenGS
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
             PrettyLogger.Bold("RoomList", $"Room deleted: {roomId}");
+            onRoomDeleted.OnNext(json);
         }
 
         private void HandleRoomFull(JObject json)
@@ -658,6 +616,50 @@ namespace OpenGS
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             
             PrettyLogger.Bold("RoomList", $"Room full: {roomId}");
+        }
+
+        private void HandleRoomNotFound(JObject json)
+        {
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
+
+            PrettyLogger.Bold("RoomList", $"Room not found: {roomId}");
+            onRoomNotFound.OnNext(json);
+        }
+
+        private void HandleRoomSettingChanged(JObject json)
+        {
+            var roomInfo = json["RoomInfo"] as JObject;
+            if (roomInfo != null)
+            {
+                currentRoomId = roomInfo["RoomId"]?.ToString() ?? currentRoomId;
+                currentRoomName = roomInfo["RoomName"]?.ToString() ?? currentRoomName;
+
+                if (waitRoomManager?.WaitRoom != null)
+                {
+                    waitRoomManager.WaitRoom.RoomName = currentRoomName;
+                    waitRoomManager.WaitRoom.Capacity = roomInfo["Capacity"]?.ToObject<int>() ?? waitRoomManager.WaitRoom.Capacity;
+
+                    var gameModeToken = roomInfo["GameMode"];
+                    if (gameModeToken != null && Enum.TryParse(gameModeToken.ToString(), true, out EGameMode gameMode))
+                    {
+                        waitRoomManager.WaitRoom.GameMode = gameMode;
+                    }
+
+                    var players = roomInfo["Players"] as JArray;
+                    if (players != null)
+                    {
+                        HandleWaitRoomPlayerList(new JObject
+                        {
+                            ["MessageType"] = MessageType.WaitRoomPlayerList,
+                            ["RoomId"] = currentRoomId,
+                            ["Players"] = players
+                        });
+                    }
+                }
+            }
+
+            PrettyLogger.Bold("WaitRoom", $"Settings changed for room {currentRoomId}");
+            onRoomSettingsChanged.OnNext(json);
         }
 
         #endregion

@@ -10,6 +10,7 @@ using UnityEngine.SceneManagement;
 
 using OpenGSCore;
 using Sirenix.OdinInspector;
+using MessageType = OpenGSCore.MessageType;
 
 //using Unity.Cinemachine;
 using Zenject;
