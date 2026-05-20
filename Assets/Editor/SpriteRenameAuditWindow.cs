@@ -90,9 +90,12 @@ namespace OpenGS.EditorTools
             var fileName = Path.GetFileName(path);
             var stem = Path.GetFileNameWithoutExtension(path);
             var guid = AssetDatabase.AssetPathToGUID(path);
-            var exactPathRefs = CountMatches(path);
-            var exactFileRefs = CountMatches(fileName);
-            var exactStemRefs = CountMatches(stem);
+            var exactPathHits = FindMatches(path);
+            var exactFileHits = FindMatches(fileName);
+            var exactStemHits = FindMatches(stem);
+            var exactPathRefs = exactPathHits.Count;
+            var exactFileRefs = exactFileHits.Count;
+            var exactStemRefs = exactStemHits.Count;
             var status = (exactPathRefs == 0 && exactFileRefs == 0 && exactStemRefs == 0)
                 ? "safe_candidate"
                 : "keep_in_place";
@@ -105,18 +108,21 @@ namespace OpenGS.EditorTools
                 PathRefs = exactPathRefs,
                 FileRefs = exactFileRefs,
                 StemRefs = exactStemRefs,
+                PathHitFiles = exactPathHits,
+                FileHitFiles = exactFileHits,
+                StemHitFiles = exactStemHits,
                 Status = status,
             };
         }
 
-        private static int CountMatches(string needle)
+        private static List<string> FindMatches(string needle)
         {
             if (string.IsNullOrEmpty(needle))
             {
-                return 0;
+                return new List<string>();
             }
 
-            var hits = 0;
+            var hits = new List<string>();
             var files = Directory.GetFiles("X:\\Dev\\OpenGSR", "*", SearchOption.AllDirectories)
                 .Where(path => !path.EndsWith(".meta", StringComparison.OrdinalIgnoreCase))
                 .Where(path =>
@@ -132,7 +138,7 @@ namespace OpenGS.EditorTools
                     var text = File.ReadAllText(file);
                     if (text.IndexOf(needle, StringComparison.OrdinalIgnoreCase) >= 0)
                     {
-                        hits++;
+                        hits.Add(NormalizePath(file));
                     }
                 }
                 catch
@@ -141,7 +147,7 @@ namespace OpenGS.EditorTools
                 }
             }
 
-            return hits;
+            return hits.Distinct(StringComparer.OrdinalIgnoreCase).OrderBy(x => x).ToList();
         }
 
         private static void WriteReport(List<AuditRow> rows)
@@ -158,10 +164,36 @@ namespace OpenGS.EditorTools
             foreach (var row in rows)
             {
                 sb.AppendLine($"| `{row.Path}` | `{row.Guid}` | {row.PathRefs} | {row.FileRefs} | {row.StemRefs} | `{row.Status}` |");
+                WriteHitList(sb, "Path hits", row.PathHitFiles);
+                WriteHitList(sb, "File hits", row.FileHitFiles);
+                WriteHitList(sb, "Stem hits", row.StemHitFiles);
             }
 
             File.WriteAllText(ReportPath, sb.ToString(), Encoding.UTF8);
             AssetDatabase.Refresh();
+        }
+
+        private static void WriteHitList(StringBuilder sb, string label, IReadOnlyList<string> hits)
+        {
+            if (hits == null || hits.Count == 0)
+            {
+                return;
+            }
+
+            sb.AppendLine($"- {label}:");
+            foreach (var hit in hits.Take(10))
+            {
+                sb.AppendLine($"  - `{hit}`");
+            }
+            if (hits.Count > 10)
+            {
+                sb.AppendLine($"  - ... and {hits.Count - 10} more");
+            }
+        }
+
+        private static string NormalizePath(string path)
+        {
+            return path.Replace("X:\\Dev\\OpenGSR\\", "").Replace('\\', '/');
         }
 
         [Serializable]
@@ -173,6 +205,9 @@ namespace OpenGS.EditorTools
             public int PathRefs;
             public int FileRefs;
             public int StemRefs;
+            public List<string> PathHitFiles;
+            public List<string> FileHitFiles;
+            public List<string> StemHitFiles;
             public string Status;
         }
     }
