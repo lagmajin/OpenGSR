@@ -489,6 +489,7 @@ namespace OpenGS
             readyButton ??= FindInactiveComponent<Button>("ReadyButton");
             startButton ??= FindInactiveComponent<Button>("StartButton");
             exitButton ??= FindInactiveComponent<Button>("ExitButton");
+            map ??= FindInactiveComponent<Button>("MapSelectButton");
             plusButton ??= FindInactiveComponent<Button>("Plus");
             minusButton ??= FindInactiveComponent<Button>("Minus");
             gameModeButton ??= FindInactiveComponent<Button>("GameModeButton");
@@ -749,6 +750,11 @@ namespace OpenGS
             if (gameModeButton != null)
             {
                 gameModeButton.interactable = roomOwner;
+            }
+
+            if (map != null)
+            {
+                map.interactable = roomOwner;
             }
 
             if (roomNameApplyButton != null)
