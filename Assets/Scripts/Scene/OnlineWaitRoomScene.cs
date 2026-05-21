@@ -155,6 +155,11 @@ namespace OpenGS
 
         public void ChangeGameMode()
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             var room = ResolveWaitRoom();
             if (room == null)
             {
@@ -167,6 +172,11 @@ namespace OpenGS
 
         public void ChangeGameMode(EGameMode mode)
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             ApplyGameMode(mode, true);
         }
 
@@ -196,6 +206,11 @@ namespace OpenGS
 
         public void ChangeTeamBalance(bool balance)
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             var room = ResolveWaitRoom();
             if (room != null)
             {
@@ -360,6 +375,11 @@ namespace OpenGS
 
         public void ChangeRoomTitle(string roomTitle)
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             ApplyRoomTitle(roomTitle, true);
         }
 
@@ -681,6 +701,36 @@ namespace OpenGS
                 startButton.gameObject.SetActive(roomOwner);
                 startButton.interactable = roomOwner;
             }
+
+            if (plusButton != null)
+            {
+                plusButton.interactable = roomOwner;
+            }
+
+            if (minusButton != null)
+            {
+                minusButton.interactable = roomOwner;
+            }
+
+            if (gameModeButton != null)
+            {
+                gameModeButton.interactable = roomOwner;
+            }
+
+            if (roomNameApplyButton != null)
+            {
+                roomNameApplyButton.interactable = roomOwner;
+            }
+
+            if (roomNameLegacyInputField != null)
+            {
+                roomNameLegacyInputField.interactable = roomOwner;
+            }
+
+            if (roomNameTmpInputField != null)
+            {
+                roomNameTmpInputField.interactable = roomOwner;
+            }
         }
 
         private void RenderPlayerSlots(List<PlayerInfo> players)
@@ -999,6 +1049,11 @@ namespace OpenGS
 
         private void ApplyRoomNameFromInput()
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             var roomName = roomNameTmpInputField != null ? roomNameTmpInputField.text : null;
             if (string.IsNullOrWhiteSpace(roomName) && roomNameLegacyInputField != null)
             {
