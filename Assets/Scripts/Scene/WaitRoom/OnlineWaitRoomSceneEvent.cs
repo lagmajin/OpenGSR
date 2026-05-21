@@ -8,43 +8,32 @@ namespace OpenGS
     {
         private void OnApplicationQuit()
         {
-
-
-
-
-
         }
 
         public void OnNewGameStarted()
         {
-            
+            GameStarted();
         }
 
         public void OnOtherPlayerEntered()
         {
-
+            RefreshWaitRoomUi();
         }
 
         public void ExitRoomRequested()
         {
-            Debug.Log("ExitRoomRequested");
-
+            ExitWaitRoom();
         }
 
         [Button("ゲーム開始テスト")]
         public void GameStartRequested()
         {
-            Debug.Log("GameStartRequested From Server...");
-
-
-            LoadGameScene();
-
-
+            RequestGameStart();
         }
 
         public void ReadyRequested()
         {
-            Debug.Log("ReadyRequest");
+            ToggleReadyState();
         }
 
 
