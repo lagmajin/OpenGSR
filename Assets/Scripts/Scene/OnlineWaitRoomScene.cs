@@ -46,6 +46,8 @@ namespace OpenGS
         [SerializeField] private TMP_InputField roomNameTmpInputField;
         [SerializeField] private Text gameModeText;
         [SerializeField] private TMP_Text gameModeTmpText;
+        [SerializeField] private Text teamBalanceText;
+        [SerializeField] private TMP_Text teamBalanceTmpText;
         [SerializeField] private Transform waitRoomPlayerSlotsRoot;
         [SerializeField] private GameObject playerSlotTemplate;
         [SerializeField] private InviteDialog inviteDialog;
@@ -221,6 +223,8 @@ namespace OpenGS
             {
                 ["TeamBalance"] = balance
             });
+
+            SetTeamBalanceText();
         }
 
         public bool IsRoomOwner()
@@ -478,6 +482,8 @@ namespace OpenGS
             roomTitleTmpText ??= FindInactiveComponent<TMP_Text>("RoomTitle");
             gameModeText ??= FindInactiveComponent<Text>("GameModeText");
             gameModeTmpText ??= FindInactiveComponent<TMP_Text>("GameModeText");
+            teamBalanceText ??= FindInactiveComponent<Text>("TeamBalanceText");
+            teamBalanceTmpText ??= FindInactiveComponent<TMP_Text>("TeamBalanceText");
 
             if (waitRoomPlayerSlotsRoot == null)
             {
@@ -632,6 +638,7 @@ namespace OpenGS
             {
                 SetText(roomTitleText, roomTitleTmpText, "Wait Room");
                 SetText(gameModeText, gameModeTmpText, "");
+                SetText(teamBalanceText, teamBalanceTmpText, "");
                 InitializePlayerInfoUi();
                 return;
             }
@@ -640,6 +647,7 @@ namespace OpenGS
             ApplyRoomTitle(room.RoomName, false);
             ApplyRoomCapacity(room.Capacity, false);
             ApplyGameMode(room.GameMode, false);
+            SetTeamBalanceText();
             UpdateReadyButtonVisual();
             UpdateActionButtons();
             RenderPlayerSlots(room.PlayerList);
@@ -966,6 +974,13 @@ namespace OpenGS
             {
                 tmpText.text = value;
             }
+        }
+
+        private void SetTeamBalanceText()
+        {
+            var room = ResolveWaitRoom();
+            var value = room != null && room.TeamBalance ? "Team Balance: ON" : "Team Balance: OFF";
+            SetText(teamBalanceText, teamBalanceTmpText, value);
         }
 
         private static void ToggleNamedChild(Transform root, string childName, bool active)
