@@ -70,6 +70,7 @@ namespace OpenGS
             public string OwnerId { get; set; }
             public int Capacity { get; set; } = 8;
             public string GameMode { get; set; } = "DeathMatch";
+            public string Map { get; set; } = "";
             public bool TeamBalance { get; set; } = true;
             public string Password { get; set; } = "";
             public List<string> Players { get; set; } = new();
@@ -923,6 +924,8 @@ namespace OpenGS
                 // 設定を更新
                 if (settings?["GameMode"] != null)
                     _rooms[roomId].GameMode = settings["GameMode"].ToString();
+                if (settings?["Map"] != null && Enum.TryParse(settings["Map"].ToString(), out EMap map))
+                    _rooms[roomId].Map = map.ToString();
                 if (settings?["Capacity"] != null)
                     _rooms[roomId].Capacity = int.Parse(settings["Capacity"].ToString());
                 if (settings?["TeamBalance"] != null)

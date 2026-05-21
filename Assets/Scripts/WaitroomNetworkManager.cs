@@ -556,6 +556,11 @@ namespace OpenGS
                     waitRoomManager.WaitRoom.GameMode = gameMode;
                 }
 
+                if (Enum.TryParse(settings["Map"]?.ToString(), out EMap map))
+                {
+                    waitRoomManager.WaitRoom.Map = map;
+                }
+
                 if (settings["Capacity"] != null)
                 {
                     waitRoomManager.WaitRoom.Capacity = settings["Capacity"]!.ToObject<int>();

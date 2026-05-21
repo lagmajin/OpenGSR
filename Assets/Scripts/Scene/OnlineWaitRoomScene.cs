@@ -203,7 +203,21 @@ namespace OpenGS
 
         public void ChangeMap(EMap map)
         {
-            Debug.Log("Map " + map);
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
+            var room = ResolveWaitRoom();
+            if (room != null)
+            {
+                room.Map = map;
+            }
+
+            SendWaitRoomSettingsChange(new JObject
+            {
+                ["Map"] = map.ToString()
+            });
         }
 
         public void ChangeTeamBalance(bool balance)

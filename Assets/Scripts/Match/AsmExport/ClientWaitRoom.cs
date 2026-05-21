@@ -16,6 +16,7 @@ namespace OpenGS
         public int Capacity { get; set; } = 8;
         public string OwnerId { get; set; } = "";
         public EGameMode GameMode { get; set; } = EGameMode.DeathMatch;
+        public EMap Map { get; set; } = EMap.Unknown;
         public bool TeamBalance { get; set; } = false;
 
         public List<OpenGSCore.PlayerInfo> PlayerList { get; set; } = new();

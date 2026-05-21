@@ -27,6 +27,7 @@ namespace OpenGS
             public string OwnerId { get; set; } = "";
             public int Capacity { get; set; } = 8;
             public string GameMode { get; set; } = "TeamDeathMatch";
+            public string Map { get; set; } = "";
             public bool TeamBalance { get; set; } = true;
             public int PlayerCount { get; set; } = 0;
             public List<RoomPlayerRecord> Players { get; } = new List<RoomPlayerRecord>();
@@ -921,6 +922,11 @@ namespace OpenGS
             if (settings["GameMode"] != null)
             {
                 room.GameMode = settings["GameMode"]!.ToString();
+            }
+
+            if (settings["Map"] != null && Enum.TryParse(settings["Map"]!.ToString(), out EMap map))
+            {
+                room.Map = map.ToString();
             }
 
             if (settings["Capacity"] != null)
