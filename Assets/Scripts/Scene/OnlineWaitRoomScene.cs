@@ -208,16 +208,7 @@ namespace OpenGS
                 return;
             }
 
-            var room = ResolveWaitRoom();
-            if (room != null)
-            {
-                room.Map = map;
-            }
-
-            SendWaitRoomSettingsChange(new JObject
-            {
-                ["Map"] = map.ToString()
-            });
+            ApplyMap(map, true);
         }
 
         public void ChangeTeamBalance(bool balance)
@@ -444,6 +435,25 @@ namespace OpenGS
             SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
         }
 
+        private void ApplyMap(EMap map, bool sendToServer)
+        {
+            var room = ResolveWaitRoom();
+            if (room != null)
+            {
+                room.Map = map;
+            }
+
+            if (sendToServer)
+            {
+                SendWaitRoomSettingsChange(new JObject
+                {
+                    ["Map"] = map.ToString()
+                });
+            }
+
+            SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
+        }
+
         private void LoadRoomSetting()
         {
             var room = ResolveWaitRoom();
@@ -460,6 +470,7 @@ namespace OpenGS
 
             ApplyRoomTitle(room.RoomName, false);
             ApplyRoomCapacity(room.Capacity, false);
+            ApplyMap(room.Map, false);
             ApplyGameMode(room.GameMode, false);
         }
 
@@ -660,6 +671,7 @@ namespace OpenGS
             roomOwner = IsLocalPlayerOwner(room);
             ApplyRoomTitle(room.RoomName, false);
             ApplyRoomCapacity(room.Capacity, false);
+            ApplyMap(room.Map, false);
             ApplyGameMode(room.GameMode, false);
             SetTeamBalanceText();
             UpdateReadyButtonVisual();
@@ -974,7 +986,8 @@ namespace OpenGS
                 return "Wait Room";
             }
 
-            return $"{room.RoomName}  {room.PlayerCount}/{room.Capacity}";
+            var mapLabel = room.Map != EMap.Unknown ? $"  [{room.Map}]" : string.Empty;
+            return $"{room.RoomName}  {room.PlayerCount}/{room.Capacity}{mapLabel}";
         }
 
         private static void SetText(Text legacyText, TMP_Text tmpText, string value)
