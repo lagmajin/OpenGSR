@@ -162,10 +162,15 @@ namespace OpenGS
             }
 
             var nextMode = ResolveNextGameMode(room.GameMode);
-            ChangeGameMode(nextMode);
+            ApplyGameMode(nextMode, true);
         }
 
         public void ChangeGameMode(EGameMode mode)
+        {
+            ApplyGameMode(mode, true);
+        }
+
+        private void ApplyGameMode(EGameMode mode, bool sendToServer)
         {
             var room = ResolveWaitRoom();
             if (room != null)
@@ -173,10 +178,14 @@ namespace OpenGS
                 room.GameMode = mode;
             }
 
-            SendWaitRoomSettingsChange(new JObject
+            if (sendToServer)
             {
-                ["GameMode"] = mode.ToString()
-            });
+                SendWaitRoomSettingsChange(new JObject
+                {
+                    ["GameMode"] = mode.ToString()
+                });
+            }
+
             SetText(gameModeText, gameModeTmpText, mode.ToString());
         }
 
@@ -351,20 +360,34 @@ namespace OpenGS
 
         public void ChangeRoomTitle(string roomTitle)
         {
+            ApplyRoomTitle(roomTitle, true);
+        }
+
+        private void ApplyRoomTitle(string roomTitle, bool sendToServer)
+        {
             var room = ResolveWaitRoom();
             if (room != null)
             {
                 room.RoomName = roomTitle ?? "";
             }
 
-            SendWaitRoomSettingsChange(new JObject
+            if (sendToServer)
             {
-                ["RoomName"] = roomTitle ?? ""
-            });
+                SendWaitRoomSettingsChange(new JObject
+                {
+                    ["RoomName"] = roomTitle ?? ""
+                });
+            }
+
             SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
         }
 
         public void ChangeRoomCapacity(int capacity)
+        {
+            ApplyRoomCapacity(capacity, true);
+        }
+
+        private void ApplyRoomCapacity(int capacity, bool sendToServer)
         {
             var room = ResolveWaitRoom();
             if (room != null)
@@ -372,10 +395,14 @@ namespace OpenGS
                 room.Capacity = capacity;
             }
 
-            SendWaitRoomSettingsChange(new JObject
+            if (sendToServer)
             {
-                ["Capacity"] = capacity
-            });
+                SendWaitRoomSettingsChange(new JObject
+                {
+                    ["Capacity"] = capacity
+                });
+            }
+
             SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
         }
 
@@ -393,9 +420,9 @@ namespace OpenGS
                 uiManager = this;
             }
 
-            uiManager.ChangeRoomTitle(room.RoomName);
-            uiManager.ChangeRoomCapacity(room.Capacity);
-            uiManager.ChangeGameMode(room.GameMode);
+            ApplyRoomTitle(room.RoomName, false);
+            ApplyRoomCapacity(room.Capacity, false);
+            ApplyGameMode(room.GameMode, false);
         }
 
         private void AutoBindIfNeeded()
@@ -590,9 +617,9 @@ namespace OpenGS
             }
 
             roomOwner = IsLocalPlayerOwner(room);
-            ChangeRoomTitle(room.RoomName);
-            ChangeRoomCapacity(room.Capacity);
-            ChangeGameMode(room.GameMode);
+            ApplyRoomTitle(room.RoomName, false);
+            ApplyRoomCapacity(room.Capacity, false);
+            ApplyGameMode(room.GameMode, false);
             UpdateReadyButtonVisual();
             UpdateActionButtons();
             RenderPlayerSlots(room.PlayerList);
