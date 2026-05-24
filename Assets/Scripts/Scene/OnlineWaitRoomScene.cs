@@ -89,6 +89,11 @@ namespace OpenGS
 
         void Update()
         {
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+                RequestGameStart();
+            }
+
             if (Input.anyKey)
             {
                 timer.ReStartTimer();

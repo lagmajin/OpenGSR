@@ -120,19 +120,21 @@ namespace OpenGS.EditorTools
             }
 
             var totalRefs = scenes.Sum(s => s.Entries.Count) + prefabs.Sum(p => p.Entries.Count);
+            var totalBrokenRefs = scenes.Sum(s => s.BrokenEntries.Count) + prefabs.Sum(p => p.BrokenEntries.Count);
             var totalSprites = scenes
                 .Concat(prefabs)
                 .SelectMany(s => s.Entries.Select(e => e.SpritePath))
                 .Distinct()
                 .Count();
 
-            WriteMarkdown(scenes, prefabs, totalRefs, totalSprites);
-            WriteSnapshot(scenes, prefabs, totalRefs, totalSprites);
+            WriteMarkdown(scenes, prefabs, totalRefs, totalBrokenRefs, totalSprites);
+            WriteSnapshot(scenes, prefabs, totalRefs, totalBrokenRefs, totalSprites);
 
             _lastSummary =
                 $"Scenes: {scenes.Count}\n" +
                 $"Prefabs: {prefabs.Count}\n" +
                 $"Scene sprite refs: {totalRefs}\n" +
+                $"Broken sprite refs: {totalBrokenRefs}\n" +
                 $"Unique sprites: {totalSprites}\n" +
                 $"Markdown: {ReportPath}\n" +
                 $"Snapshot: {SnapshotPath}";
@@ -195,20 +197,49 @@ namespace OpenGS.EditorTools
             var goPath = GetHierarchyPath(root);
 
             var spriteRenderer = root.GetComponent<SpriteRenderer>();
-            if (spriteRenderer != null && spriteRenderer.sprite != null)
+            if (spriteRenderer != null)
             {
-                AddEntry(report, goPath, nameof(SpriteRenderer), "sprite", spriteRenderer.sprite);
+                CollectSpriteReference(spriteRenderer, goPath, nameof(SpriteRenderer), report);
             }
 
             var image = root.GetComponent<Image>();
-            if (image != null && image.sprite != null)
+            if (image != null)
             {
-                AddEntry(report, goPath, nameof(Image), "sprite", image.sprite);
+                CollectSpriteReference(image, goPath, nameof(Image), report);
             }
 
             for (var i = 0; i < root.childCount; i++)
             {
                 CollectGameObject(root.GetChild(i), report);
+            }
+        }
+
+        private static void CollectSpriteReference(Component component, string goPath, string componentType, AssetReport report)
+        {
+            var serializedObject = new SerializedObject(component);
+            var spriteProp = serializedObject.FindProperty("m_Sprite");
+            if (spriteProp == null || spriteProp.propertyType != SerializedPropertyType.ObjectReference)
+            {
+                return;
+            }
+
+            var sprite = spriteProp.objectReferenceValue as Sprite;
+            if (sprite != null)
+            {
+                AddEntry(report, goPath, componentType, "sprite", sprite);
+                return;
+            }
+
+            var instanceId = spriteProp.objectReferenceInstanceIDValue;
+            if (instanceId != 0)
+            {
+                report.BrokenEntries.Add(new BrokenSpriteEntry
+                {
+                    GameObjectPath = goPath,
+                    ComponentType = componentType,
+                    FieldName = "sprite",
+                    InstanceId = instanceId,
+                });
             }
         }
 
@@ -244,7 +275,7 @@ namespace OpenGS.EditorTools
             return string.Join("/", stack);
         }
 
-        private static void WriteMarkdown(IEnumerable<AssetReport> scenes, IEnumerable<AssetReport> prefabs, int totalRefs, int totalSprites)
+        private static void WriteMarkdown(IEnumerable<AssetReport> scenes, IEnumerable<AssetReport> prefabs, int totalRefs, int totalBrokenRefs, int totalSprites)
         {
             var sb = new StringBuilder();
             sb.AppendLine("# Sprite Scene And Prefab Usage Report");
@@ -255,11 +286,13 @@ namespace OpenGS.EditorTools
             sb.AppendLine($"- Scenes scanned: {scenes.Count()}");
             sb.AppendLine($"- Prefabs scanned: {prefabs.Count()}");
             sb.AppendLine($"- Sprite refs found: {totalRefs}");
+            sb.AppendLine($"- Broken sprite refs found: {totalBrokenRefs}");
             sb.AppendLine($"- Unique sprites: {totalSprites}");
             sb.AppendLine();
             sb.AppendLine("## How to use this");
             sb.AppendLine("- Search by scene or prefab name to find the object path that owned a sprite.");
             sb.AppendLine("- If a link breaks, restore the asset and reassign the sprite at the listed GameObject path.");
+            sb.AppendLine("- Broken references are listed separately with the GameObject path and component type.");
             sb.AppendLine("- This tracks SpriteRenderer and UI Image references in both scenes and prefab assets.");
             sb.AppendLine();
 
@@ -289,22 +322,34 @@ namespace OpenGS.EditorTools
             if (asset.Entries.Count == 0)
             {
                 sb.AppendLine("- Sprite refs: none found");
-                sb.AppendLine();
-                return;
             }
 
-            sb.AppendLine();
-            sb.AppendLine("| GameObject | Component | Field | Sprite | Asset Path | GUID |");
-            sb.AppendLine("| --- | --- | --- | --- | --- | --- |");
-            foreach (var entry in asset.Entries)
+            if (asset.Entries.Count > 0)
             {
-                sb.AppendLine($"| `{entry.GameObjectPath}` | `{entry.ComponentType}` | `{entry.FieldName}` | `{entry.SpriteName}` | `{entry.SpritePath}` | `{entry.Guid}` |");
+                sb.AppendLine();
+                sb.AppendLine("| GameObject | Component | Field | Sprite | Asset Path | GUID |");
+                sb.AppendLine("| --- | --- | --- | --- | --- | --- |");
+                foreach (var entry in asset.Entries)
+                {
+                    sb.AppendLine($"| `{entry.GameObjectPath}` | `{entry.ComponentType}` | `{entry.FieldName}` | `{entry.SpriteName}` | `{entry.SpritePath}` | `{entry.Guid}` |");
+                }
+            }
+
+            if (asset.BrokenEntries.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine("| GameObject | Component | Field | Missing Instance ID |");
+                sb.AppendLine("| --- | --- | --- | --- |");
+                foreach (var entry in asset.BrokenEntries)
+                {
+                    sb.AppendLine($"| `{entry.GameObjectPath}` | `{entry.ComponentType}` | `{entry.FieldName}` | `{entry.InstanceId}` |");
+                }
             }
 
             sb.AppendLine();
         }
 
-        private static void WriteSnapshot(IEnumerable<AssetReport> scenes, IEnumerable<AssetReport> prefabs, int totalRefs, int totalSprites)
+        private static void WriteSnapshot(IEnumerable<AssetReport> scenes, IEnumerable<AssetReport> prefabs, int totalRefs, int totalBrokenRefs, int totalSprites)
         {
             var sb = new StringBuilder();
             sb.AppendLine("{");
@@ -312,6 +357,7 @@ namespace OpenGS.EditorTools
             sb.AppendLine($"  \"scene_count\": {scenes.Count()},");
             sb.AppendLine($"  \"prefab_count\": {prefabs.Count()},");
             sb.AppendLine($"  \"sprite_ref_count\": {totalRefs},");
+            sb.AppendLine($"  \"broken_sprite_ref_count\": {totalBrokenRefs},");
             sb.AppendLine($"  \"unique_sprite_count\": {totalSprites},");
             sb.AppendLine("  \"scenes\": [");
             WriteSnapshotAssetArray(sb, scenes);
@@ -351,6 +397,19 @@ namespace OpenGS.EditorTools
                 }
 
                 sb.AppendLine("      ]");
+                sb.AppendLine("      ,\"broken_sprite_refs\": [");
+                for (var j = 0; j < asset.BrokenEntries.Count; j++)
+                {
+                    var entry = asset.BrokenEntries[j];
+                    sb.AppendLine("        {");
+                    sb.AppendLine($"          \"game_object_path\": \"{EscapeJson(entry.GameObjectPath)}\",");
+                    sb.AppendLine($"          \"component_type\": \"{EscapeJson(entry.ComponentType)}\",");
+                    sb.AppendLine($"          \"field_name\": \"{EscapeJson(entry.FieldName)}\",");
+                    sb.AppendLine($"          \"instance_id\": {entry.InstanceId}");
+                    sb.Append("        }");
+                    sb.AppendLine(j + 1 < asset.BrokenEntries.Count ? "," : string.Empty);
+                }
+                sb.AppendLine("      ]");
                 sb.Append("    }");
                 sb.AppendLine(i + 1 < assetList.Count ? "," : string.Empty);
             }
@@ -370,6 +429,7 @@ namespace OpenGS.EditorTools
             public string AssetPath;
             public string AssetKind;
             public List<SpriteEntry> Entries = new();
+            public List<BrokenSpriteEntry> BrokenEntries = new();
         }
 
         [Serializable]
@@ -381,6 +441,15 @@ namespace OpenGS.EditorTools
             public string SpriteName;
             public string SpritePath;
             public string Guid;
+        }
+
+        [Serializable]
+        private sealed class BrokenSpriteEntry
+        {
+            public string GameObjectPath;
+            public string ComponentType;
+            public string FieldName;
+            public int InstanceId;
         }
     }
 }

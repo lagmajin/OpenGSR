@@ -150,7 +150,7 @@ namespace OpenGS
 
         void Update()
         {
-            if (Input.GetKey(KeyCode.F10))
+            if (Input.GetKeyDown(KeyCode.F9) || Input.GetKeyDown(KeyCode.F10))
             {
                 GameStart();
             }

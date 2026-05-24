@@ -34,21 +34,40 @@ namespace OpenGSR.Editor.MCP
             _mainThreadContext = SynchronizationContext.Current;
             EditorApplication.update += ProcessMainThreadQueue;
             EditorApplication.quitting += StopServer;
-            StartServer();
+            try
+            {
+                StartServer();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[MCP] Server failed to start: {ex.Message}");
+            }
         }
 
         [MenuItem("OpenGSR/MCP/Start Server")]
         public static void StartServer()
         {
-            if (_serverThread?.IsAlive == true) return;
+            if (_serverThread?.IsAlive == true || _listener != null) return;
 
-            _cts = new CancellationTokenSource();
-            _listener = new TcpListener(IPAddress.Loopback, Port);
-            _listener.Start();
+            try
+            {
+                _cts = new CancellationTokenSource();
+                _listener = new TcpListener(IPAddress.Loopback, Port);
+                _listener.Start();
 
-            _serverThread = new Thread(RunServer) { IsBackground = true, Name = "MCP" };
-            _serverThread.Start();
-            Debug.Log($"[MCP] Server listening on port {Port}");
+                _serverThread = new Thread(RunServer) { IsBackground = true, Name = "MCP" };
+                _serverThread.Start();
+                Debug.Log($"[MCP] Server listening on port {Port}");
+            }
+            catch (SocketException ex)
+            {
+                Debug.LogWarning($"[MCP] Port {Port} is unavailable: {ex.Message}");
+                try { _listener?.Stop(); } catch { }
+                _listener = null;
+                try { _cts?.Cancel(); _cts?.Dispose(); } catch { }
+                _cts = null;
+                _serverThread = null;
+            }
         }
 
         [MenuItem("OpenGSR/MCP/Stop Server")]

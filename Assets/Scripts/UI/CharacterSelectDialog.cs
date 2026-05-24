@@ -131,12 +131,18 @@ namespace OpenGS
                     characterThumbnails[character] = thumbnail;
                 }
 
-                // 大きな画像
-                var largeImagePath = $"Characters/{character}_Large";
-                var largeImage = Resources.Load<Sprite>(largeImagePath);
-                if (largeImage != null)
+                // プレビュー画像は基本的にサムネイルを拡大表示する
+                // もしサムネイルが無い場合だけ従来の大画像を使う
+                Sprite previewImage = thumbnail;
+                if (previewImage == null)
                 {
-                    characterSprites[character] = largeImage;
+                    var largeImagePath = $"Characters/{character}_Large";
+                    previewImage = Resources.Load<Sprite>(largeImagePath);
+                }
+
+                if (previewImage != null)
+                {
+                    characterSprites[character] = previewImage;
                 }
             }
         }
