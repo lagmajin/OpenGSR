@@ -74,6 +74,7 @@ namespace OpenGS
 
         protected bool isDead = false;
         protected bool isJump = false;
+        protected bool isSitting = false;
         protected bool invisible = false;
         protected float jumpPos = 0.0f;
         protected float jumpInterval = 10.0f;
@@ -125,6 +126,9 @@ namespace OpenGS
         {
             ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
+            canJump = true;
+            canWarp = true;
+            isSitting = false;
 
             if (PlayerRegistry.Instance != null)
             {
@@ -136,6 +140,9 @@ namespace OpenGS
         {
             ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
+            canJump = true;
+            canWarp = true;
+            isSitting = false;
 
             if (PlayerRegistry.Instance != null)
             {
@@ -363,18 +370,29 @@ namespace OpenGS
 
         public void Jump()
         {
+            if (!CanJump() || rigidbody2D == null)
+            {
+                return;
+            }
+
+            isJump = true;
+            rigidbody2D.AddForce(Vector2.up * jumpCurve.Evaluate(1.0f) * 10f, ForceMode2D.Impulse);
         }
 
-        public bool Sitting() => false;
+        public bool Sitting() => isSitting;
 
         public virtual void Sit()
         {
+            isSitting = true;
+            weaponSlots?.GetCurrentGun()?.Sit();
         }
 
-        public bool IsStandUp() => false;
+        public bool IsStandUp() => !isSitting;
 
         public void StandUp()
         {
+            isSitting = false;
+            weaponSlots?.GetCurrentGun()?.StandUp();
         }
 
         public bool IsLieDown() => false;
@@ -401,7 +419,7 @@ namespace OpenGS
 
         public virtual void ReloadStart()
         {
-            Debug.Log("ReloadStart");
+            weaponSlots?.GetCurrentGun()?.ReloadStart();
         }
 
         public virtual void UseItem(int i = 0)
@@ -414,6 +432,7 @@ namespace OpenGS
 
         public virtual void OnDropWeapon()
         {
+            weaponSlots?.DropCurrentWeapon();
         }
 
         /// <summary>
@@ -429,10 +448,19 @@ namespace OpenGS
 
         public void Warp(float coolTime = 2.0f)
         {
+            if (!CanWarp())
+            {
+                return;
+            }
+
+            canWarp = false;
+            warpCounter = coolTime;
+            StartCoroutine(WarpCounter());
         }
 
         public void AddDamageAndForce2Helper(float damage, Vector2 point)
         {
+            AddDamageAndForce(damage, point, 1.0f);
         }
 
         // ─── コルーチン ──────────────────────────────────────────────
@@ -510,6 +538,9 @@ namespace OpenGS
                 yield return new WaitForSecondsRealtime(0.1f);
                 warpCounter -= interval;
             }
+
+            warpCounter = 0f;
+            canWarp = true;
         }
 
         protected IEnumerator LavaCounter()
