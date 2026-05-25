@@ -4,6 +4,8 @@ using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.TextCore;
+using UnityEngine.TextCore.LowLevel;
 using UnityEngine.UI;
 
 namespace OpenGS.EditorTools
@@ -14,11 +16,16 @@ namespace OpenGS.EditorTools
         private const string ThumbnailPrefabPath = "Assets/Prefabs/UI/CharacterThumbnailItem.prefab";
         private const string DialogMasterDataPath = "Assets/Resources/MasterData/UI/DialogMasterData.asset";
         private const string DialogMasterDataDesktopPath = "Assets/Resources/MasterData/UI/DialogMasterData-DESKTOP-U3LDHLH.asset";
+        private const string JapaneseFontPath = "Assets/TextMesh Pro/Fonts/NotoSansJP-VF.ttf";
+        private const string JapaneseFontAssetPath = "Assets/TextMesh Pro/Fonts/NotoSansJP-VF SDF.asset";
+        private const string OkButtonSpritePath = "Assets/Sprites/PlayerSelect/Common_Btn_OK.png";
+        private const string CancelButtonSpritePath = "Assets/Sprites/PlayerSelect/Common_Btn_Cancel.png";
 
         [MenuItem("OpenGSR/Tools/Rebuild Character Select Dialog Prefabs")]
         public static void Rebuild()
         {
             EnsureDirectory("Assets/Prefabs/UI");
+            EnsureJapaneseFontFallback();
 
             BuildThumbnailPrefab();
             BuildDialogPrefab();
@@ -79,6 +86,7 @@ namespace OpenGS.EditorTools
                 SetPrivateField(root.GetComponent<CharacterThumbnailItem>(), "characterNameText", nameText);
                 SetPrivateField(root.GetComponent<CharacterThumbnailItem>(), "selectButton", button);
 
+                ApplyJapaneseFont(root.transform);
                 PrefabUtility.SaveAsPrefabAsset(root, ThumbnailPrefabPath);
             }
             finally
@@ -116,10 +124,12 @@ namespace OpenGS.EditorTools
                     canvas.gameObject.AddComponent<GraphicRaycaster>();
                 }
 
-                var window = FindDirectChild(canvas, "Image");
+                var canvasTransform = canvas.transform;
+
+                var window = FindDirectChild(canvasTransform, "Image");
                 if (window == null)
                 {
-                    window = CreateChild(canvas, "Window", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+                    window = CreateChild(canvasTransform, "Window", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
                 }
                 else
                 {
@@ -139,8 +149,8 @@ namespace OpenGS.EditorTools
                 ConfigureRect(title.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(900f, 70f), new Vector2(0f, -36f));
                 title.fontStyle = FontStyles.Bold;
 
-                ReparentOrCreate(window.transform, canvas, "Ok");
-                ReparentOrCreate(window.transform, canvas, "Cancel");
+                ReparentOrCreate(window.transform, canvasTransform, "Ok");
+                ReparentOrCreate(window.transform, canvasTransform, "Cancel");
 
                 var listPanel = FindOrCreateImagePanel(window.transform, "ThumbnailPanel");
                 ConfigureRect(listPanel.rectTransform, new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(0f, 0.5f), new Vector2(330f, 690f), new Vector2(30f, 10f));
@@ -205,7 +215,7 @@ namespace OpenGS.EditorTools
                 ConfigureRect(previewHeader.rectTransform, new Vector2(0f, 1f), new Vector2(1f, 1f), new Vector2(0f, 1f), new Vector2(-24f, 36f), new Vector2(12f, -20f));
                 previewHeader.fontStyle = FontStyles.Bold;
 
-                ReparentOrCreate(previewPanel.transform, canvas, "SelectedCharacterPreview");
+                ReparentOrCreate(previewPanel.transform, canvasTransform, "SelectedCharacterPreview");
                 var previewImage = FindOrCreateImage(previewPanel.transform, "SelectedCharacterPreview");
                 ConfigureRect(previewImage.rectTransform, new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(620f, 450f), new Vector2(0f, -78f));
                 previewImage.preserveAspect = true;
@@ -251,6 +261,10 @@ namespace OpenGS.EditorTools
                 var cancelImage = cancelButton.GetComponent<Image>();
                 okImage.color = Color.white;
                 cancelImage.color = Color.white;
+                okImage.sprite = LoadSprite(OkButtonSpritePath);
+                cancelImage.sprite = LoadSprite(CancelButtonSpritePath);
+                okImage.type = Image.Type.Simple;
+                cancelImage.type = Image.Type.Simple;
 
                 var okLabel = EnsureLabel(okButton.transform, "Label", "決定");
                 var cancelLabel = EnsureLabel(cancelButton.transform, "Label", "キャンセル");
@@ -267,6 +281,7 @@ namespace OpenGS.EditorTools
                 SetPrivateField(root.GetComponent<OpenGS.CharacterSelectDialog>(), "cancelButton", cancelButton.GetComponent<Button>());
                 SetPrivateField(root.GetComponent<OpenGS.CharacterSelectDialog>(), "statusText", statusText);
 
+                ApplyJapaneseFont(root.transform);
                 PrefabUtility.SaveAsPrefabAsset(root, DialogPrefabPath);
             }
             finally
@@ -468,8 +483,19 @@ namespace OpenGS.EditorTools
             return AssetDatabase.GetBuiltinExtraResource<Sprite>(path);
         }
 
+        private static Sprite LoadSprite(string assetPath)
+        {
+            return AssetDatabase.LoadAssetAtPath<Sprite>(assetPath);
+        }
+
         private static TMP_FontAsset GetDefaultFontAsset()
         {
+            var japaneseFont = GetJapaneseFontAsset();
+            if (japaneseFont != null)
+            {
+                return japaneseFont;
+            }
+
             if (TMP_Settings.defaultFontAsset != null)
             {
                 return TMP_Settings.defaultFontAsset;
@@ -480,6 +506,62 @@ namespace OpenGS.EditorTools
                 .Select(path => AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(path))
                 .FirstOrDefault(font => font != null);
             return fallback;
+        }
+
+        private static TMP_FontAsset GetJapaneseFontAsset()
+        {
+            var existing = AssetDatabase.LoadAssetAtPath<TMP_FontAsset>(JapaneseFontAssetPath);
+            if (existing != null)
+            {
+                return existing;
+            }
+
+            return TMP_Settings.defaultFontAsset;
+        }
+
+        private static void EnsureJapaneseFontFallback()
+        {
+            var japaneseFont = GetJapaneseFontAsset();
+            if (japaneseFont == null)
+            {
+                return;
+            }
+
+            var settings = TMP_Settings.instance;
+            if (settings == null)
+            {
+                return;
+            }
+
+            var serializedSettings = new SerializedObject(settings);
+            var fallbackFonts = serializedSettings.FindProperty("m_fallbackFontAssets");
+            if (fallbackFonts == null)
+            {
+                return;
+            }
+
+            fallbackFonts.ClearArray();
+            fallbackFonts.InsertArrayElementAtIndex(0);
+            fallbackFonts.GetArrayElementAtIndex(0).objectReferenceValue = japaneseFont;
+            serializedSettings.ApplyModifiedPropertiesWithoutUndo();
+            EditorUtility.SetDirty(settings);
+            AssetDatabase.SaveAssets();
+        }
+
+        private static void ApplyJapaneseFont(Transform root)
+        {
+            var japaneseFont = GetJapaneseFontAsset();
+            if (japaneseFont == null)
+            {
+                return;
+            }
+
+            foreach (var text in root.GetComponentsInChildren<TMP_Text>(true))
+            {
+                text.font = japaneseFont;
+                text.fontSharedMaterial = japaneseFont.material;
+                EditorUtility.SetDirty(text);
+            }
         }
 
         private static void EnsureDirectory(string path)

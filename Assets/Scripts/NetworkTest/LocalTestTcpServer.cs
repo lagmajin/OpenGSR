@@ -85,6 +85,7 @@ namespace OpenGS
             public string PlayerName { get; set; }
             public bool IsReady { get; set; }
             public string CurrentRoomId { get; set; }
+            public string PlayerCharacter { get; set; } = EPlayerCharacter.Misty.ToString();
         }
         public async Task StartAsync(int port)
         {
@@ -638,7 +639,8 @@ namespace OpenGS
                 PlayerId = playerId,
                 PlayerName = playerName,
                 IsReady = false,
-                CurrentRoomId = null
+                CurrentRoomId = null,
+                PlayerCharacter = ResolveLocalPlayerCharacter()
             };
 
             // 入室通知を送信
@@ -653,7 +655,8 @@ namespace OpenGS
                 {
                     ["PlayerId"] = player.PlayerId,
                     ["PlayerName"] = player.PlayerName,
-                    ["IsReady"] = player.IsReady
+                    ["IsReady"] = player.IsReady,
+                    ["PlayerCharacter"] = player.PlayerCharacter
                 });
             }
             var listResp = RUDPMessageBuilder.CreateLobbyPlayerList(playersArray);
@@ -727,6 +730,7 @@ namespace OpenGS
             {
                 _lobbyPlayers[playerId].CurrentRoomId = roomId;
                 _lobbyPlayers[playerId].IsReady = false;
+                _lobbyPlayers[playerId].PlayerCharacter = ResolveLocalPlayerCharacter();
             }
             else
             {
@@ -735,7 +739,8 @@ namespace OpenGS
                     PlayerId = playerId,
                     PlayerName = playerName,
                     IsReady = false,
-                    CurrentRoomId = roomId
+                    CurrentRoomId = roomId,
+                    PlayerCharacter = ResolveLocalPlayerCharacter()
                 };
             }
 
@@ -788,7 +793,8 @@ namespace OpenGS
                 PlayerId = "host-001",
                 PlayerName = "HostDM",
                 IsReady = false,
-                CurrentRoomId = "room-0001"
+                CurrentRoomId = "room-0001",
+                PlayerCharacter = EPlayerCharacter.Misty.ToString()
             };
 
             _lobbyPlayers["host-002"] = new PlayerLobbyInfo
@@ -796,7 +802,8 @@ namespace OpenGS
                 PlayerId = "host-002",
                 PlayerName = "HostTDM",
                 IsReady = false,
-                CurrentRoomId = "room-0002"
+                CurrentRoomId = "room-0002",
+                PlayerCharacter = EPlayerCharacter.Ami.ToString()
             };
         }
 
@@ -918,6 +925,7 @@ namespace OpenGS
         {
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var settings = json["Settings"] as JObject;
+            var playerId = _currentPlayerId;
 
             if (!string.IsNullOrEmpty(roomId) && _rooms.ContainsKey(roomId))
             {
@@ -931,8 +939,18 @@ namespace OpenGS
                 if (settings?["TeamBalance"] != null)
                     _rooms[roomId].TeamBalance = bool.Parse(settings["TeamBalance"].ToString());
 
+                if (!string.IsNullOrWhiteSpace(playerId) && settings?["PlayerCharacter"] != null)
+                {
+                    var character = ParsePlayerCharacter(settings["PlayerCharacter"]!.ToString());
+                    if (_lobbyPlayers.TryGetValue(playerId, out var player))
+                    {
+                        player.PlayerCharacter = character.ToString();
+                    }
+                }
+
                 var resp = RUDPMessageBuilder.CreateWaitRoomSettingsChange(roomId, settings ?? new JObject());
                 SendJsonToClient(resp);
+                SendWaitRoomPlayerList(roomId);
 
                 PrettyLogger.Bold("LocalServer", $"Room settings changed: {roomId}");
             }
@@ -1085,6 +1103,7 @@ namespace OpenGS
                         ["PlayerId"] = player.PlayerId,
                         ["PlayerName"] = player.PlayerName,
                         ["IsReady"] = player.IsReady,
+                        ["PlayerCharacter"] = player.PlayerCharacter,
                         ["IsOwner"] = player.PlayerId == room.OwnerId
                     });
                 }
@@ -1120,6 +1139,22 @@ namespace OpenGS
                 SendJsonToClient(countdownResp);
                 PrettyLogger.Bold("LocalServer", $"All players ready in room {roomId}, starting countdown");
             }
+        }
+
+        private static string ResolveLocalPlayerCharacter()
+        {
+            return GamePlayerManager.Instance.SelectedPlayerCharacter().ToString();
+        }
+
+        private static EPlayerCharacter ParsePlayerCharacter(string characterName)
+        {
+            if (!string.IsNullOrWhiteSpace(characterName) &&
+                Enum.TryParse(characterName, true, out EPlayerCharacter parsedCharacter))
+            {
+                return parsedCharacter;
+            }
+
+            return GamePlayerManager.Instance.SelectedPlayerCharacter();
         }
 
         private void HandleFriendRequest(JObject json)

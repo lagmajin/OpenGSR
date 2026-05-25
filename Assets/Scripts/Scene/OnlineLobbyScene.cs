@@ -330,7 +330,10 @@ namespace OpenGS
                         var createdOwnerId = json["OwnerID"]?.ToString() ?? json["OwnerId"]?.ToString() ?? "local_player";
                         var createdTeamBalance = ParseBool(json["TeamBalance"]?.ToString());
                         var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, capacity, 1, createdGameMode, createdOwnerId, createdTeamBalance);
-                        waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName));
+                        waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName)
+                        {
+                            playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                        });
                         GotoOnlineWaitRoom();
                     },
                     errorMessage =>
@@ -356,7 +359,10 @@ namespace OpenGS
                         var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, selectedCapacity, playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
                         waitRoom.AddNewPlayer(new PlayerInfo(
                             id: AccountManager.Instance.CurrentProfile.GlobalUserId,
-                            name: AccountManager.Instance.CurrentProfile.DisplayName));
+                            name: AccountManager.Instance.CurrentProfile.DisplayName)
+                        {
+                            playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                        });
                         GotoOnlineWaitRoom();
                     },
                     errorMessage =>
@@ -389,7 +395,10 @@ namespace OpenGS
                     var createdOwnerId = json["OwnerID"]?.ToString() ?? json["OwnerId"]?.ToString() ?? "local_player";
                     var createdTeamBalance = ParseBool(json["TeamBalance"]?.ToString());
                     var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, capacity, 1, createdGameMode, createdOwnerId, createdTeamBalance);
-                    waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName));
+                    waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName)
+                    {
+                        playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                    });
                     GotoOnlineWaitRoom();
                 }
                 else
@@ -417,7 +426,10 @@ namespace OpenGS
                     var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, selectedCapacity, playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
                     waitRoom.AddNewPlayer(new PlayerInfo(
                         id: AccountManager.Instance.CurrentProfile.GlobalUserId,
-                        name: AccountManager.Instance.CurrentProfile.DisplayName));
+                        name: AccountManager.Instance.CurrentProfile.DisplayName)
+                    {
+                        playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                    });
                     GotoOnlineWaitRoom();
                 }
                 else
@@ -464,6 +476,7 @@ namespace OpenGS
             ICreateNewRoomDialog dialogScript = sourceDialog;
             if (dialogScript == null && createNewRoomDialog != null) dialogScript = createNewRoomDialog.GetComponent<ICreateNewRoomDialog>();
             if (dialogScript == null && mediateObject.createNewRoomDialog != null) dialogScript = mediateObject.createNewRoomDialog;
+            var dialogComponent = sourceDialog as Component;
 
             if (dialogScript == null)
             {
@@ -493,6 +506,10 @@ namespace OpenGS
                 password);
             Debug.Log($"OnlineLobbyScene: Sent {MessageType.CreateRoomRequest}: {json.ToString(Formatting.None)}");
 
+            if (dialogComponent != null)
+            {
+                dialogComponent.gameObject.SetActive(false);
+            }
             if (createNewRoomDialog != null) createNewRoomDialog.SetActive(false);
             if (mediateObject.createNewRoomDialog != null) mediateObject.createNewRoomDialog.gameObject.SetActive(false);
 
@@ -672,20 +689,38 @@ namespace OpenGS
                 return;
             }
 
-            var lines = string.IsNullOrWhiteSpace(message)
-                ? new[] { title }
-                : new[] { title, message };
-
-            var legacyText = InfoDialog.GetComponentInChildren<Text>(true);
-            if (legacyText != null)
+            var titleText = InfoDialog.transform.Find("TitleText");
+            if (titleText != null)
             {
-                legacyText.text = string.Join("\n", lines);
+                var legacyTitle = titleText.GetComponent<Text>();
+                if (legacyTitle != null)
+                {
+                    legacyTitle.text = title;
+                }
+
+                var tmpTitle = titleText.GetComponent<TMPro.TMP_Text>();
+                if (tmpTitle != null)
+                {
+                    tmpTitle.text = title;
+                }
             }
 
-            var tmpText = InfoDialog.GetComponentInChildren<TMPro.TMP_Text>(true);
-            if (tmpText != null)
+            var messageText = InfoDialog.transform.Find("MessageText");
+            if (messageText != null)
             {
-                tmpText.text = string.Join("\n", lines);
+                var legacyMessage = messageText.GetComponent<Text>();
+                if (legacyMessage != null)
+                {
+                    legacyMessage.text = string.Empty;
+                }
+
+                var tmpMessage = messageText.GetComponent<TMPro.TMP_Text>();
+                if (tmpMessage != null)
+                {
+                    tmpMessage.text = string.Empty;
+                }
+
+                messageText.gameObject.SetActive(false);
             }
 
             InfoDialog.SetActive(true);

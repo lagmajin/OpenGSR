@@ -20,6 +20,7 @@ namespace OpenGS
                 public string PlayerId { get; set; } = "";
                 public string PlayerName { get; set; } = "";
                 public bool IsReady { get; set; } = false;
+                public string PlayerCharacter { get; set; } = EPlayerCharacter.Misty.ToString();
             }
 
             public string RoomId { get; set; } = "";
@@ -191,7 +192,8 @@ namespace OpenGS
             {
                 PlayerId = ownerId,
                 PlayerName = ownerName,
-                IsReady = false
+                IsReady = false,
+                PlayerCharacter = ResolveLocalPlayerCharacter()
             });
             localRooms.Add(room);
 
@@ -242,13 +244,15 @@ namespace OpenGS
                 {
                     PlayerId = playerId,
                     PlayerName = string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName,
-                    IsReady = false
+                    IsReady = false,
+                    PlayerCharacter = ResolveLocalPlayerCharacter()
                 });
             }
             else
             {
                 existingPlayer.PlayerName = string.IsNullOrWhiteSpace(playerName) ? existingPlayer.PlayerName : playerName;
                 existingPlayer.IsReady = false;
+                existingPlayer.PlayerCharacter = ResolveLocalPlayerCharacter();
             }
 
             room.PlayerCount = room.Players.Count;
@@ -749,8 +753,8 @@ namespace OpenGS
                 TeamBalance = false,
                 PlayerCount = 2
             };
-            dmRoom.Players.Add(new RoomRecord.RoomPlayerRecord { PlayerId = "host-001", PlayerName = "HostDM", IsReady = false });
-            dmRoom.Players.Add(new RoomRecord.RoomPlayerRecord { PlayerId = "guest-001", PlayerName = "GuestDM", IsReady = false });
+            dmRoom.Players.Add(new RoomRecord.RoomPlayerRecord { PlayerId = "host-001", PlayerName = "HostDM", IsReady = false, PlayerCharacter = EPlayerCharacter.Misty.ToString() });
+            dmRoom.Players.Add(new RoomRecord.RoomPlayerRecord { PlayerId = "guest-001", PlayerName = "GuestDM", IsReady = false, PlayerCharacter = EPlayerCharacter.Ami.ToString() });
             localRooms.Add(dmRoom);
 
             var tdmRoom = new RoomRecord
@@ -769,7 +773,8 @@ namespace OpenGS
                 {
                     PlayerId = i == 0 ? "host-002" : $"guest-tdm-{i:D3}",
                     PlayerName = i == 0 ? "HostTDM" : $"Guest{i}",
-                    IsReady = false
+                    IsReady = false,
+                    PlayerCharacter = i == 0 ? EPlayerCharacter.Misty.ToString() : EPlayerCharacter.Ami.ToString()
                 });
             }
 
@@ -879,13 +884,15 @@ namespace OpenGS
                 {
                     PlayerId = playerId,
                     PlayerName = ResolveLocalPlayerName(),
-                    IsReady = ready
+                    IsReady = ready,
+                    PlayerCharacter = ResolveLocalPlayerCharacter()
                 };
                 room.Players.Add(player);
             }
             else
             {
                 player.IsReady = ready;
+                player.PlayerCharacter = ResolveLocalPlayerCharacter();
             }
 
             EmitToClient(new JObject
@@ -939,6 +946,12 @@ namespace OpenGS
                 room.TeamBalance = settings["TeamBalance"]!.ToObject<bool>();
             }
 
+            if (settings["PlayerCharacter"] != null)
+            {
+                var character = ParsePlayerCharacter(settings["PlayerCharacter"]!.ToString());
+                ApplyPlayerCharacter(room, ResolveLocalPlayerId(), character);
+            }
+
             room.PlayerCount = room.Players.Count;
             EmitToClient(new JObject
             {
@@ -946,6 +959,7 @@ namespace OpenGS
                 ["RoomID"] = roomId,
                 ["Settings"] = settings
             });
+            EmitToClient(BuildWaitRoomPlayerListMessage(room));
             return true;
         }
 
@@ -959,6 +973,7 @@ namespace OpenGS
                     ["PlayerId"] = player.PlayerId,
                     ["PlayerName"] = player.PlayerName,
                     ["IsReady"] = player.IsReady,
+                    ["PlayerCharacter"] = player.PlayerCharacter,
                     ["IsOwner"] = string.Equals(player.PlayerId, room.OwnerId, StringComparison.OrdinalIgnoreCase)
                 });
             }
@@ -986,6 +1001,38 @@ namespace OpenGS
         {
             var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
             return string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
+        }
+
+        private static string ResolveLocalPlayerCharacter()
+        {
+            return GamePlayerManager.Instance.SelectedPlayerCharacter().ToString();
+        }
+
+        private static EPlayerCharacter ParsePlayerCharacter(string characterName)
+        {
+            if (!string.IsNullOrWhiteSpace(characterName) &&
+                Enum.TryParse(characterName, true, out EPlayerCharacter parsedCharacter))
+            {
+                return parsedCharacter;
+            }
+
+            return GamePlayerManager.Instance.SelectedPlayerCharacter();
+        }
+
+        private static void ApplyPlayerCharacter(RoomRecord room, string playerId, EPlayerCharacter character)
+        {
+            if (room == null || string.IsNullOrWhiteSpace(playerId))
+            {
+                return;
+            }
+
+            var player = room.Players.Find(candidate => string.Equals(candidate.PlayerId, playerId, StringComparison.OrdinalIgnoreCase));
+            if (player == null)
+            {
+                return;
+            }
+
+            player.PlayerCharacter = character.ToString();
         }
     }
 }

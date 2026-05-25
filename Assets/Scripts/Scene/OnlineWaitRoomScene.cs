@@ -51,8 +51,10 @@ namespace OpenGS
         [SerializeField] private Transform waitRoomPlayerSlotsRoot;
         [SerializeField] private GameObject playerSlotTemplate;
         [SerializeField] private InviteDialog inviteDialog;
+        [SerializeField] private CharacterSelectDialog characterSelectDialog;
 
         private bool roomOwner = true;
+        private bool forceLocalPlayerOwnerInEditorDirect = false;
 
         [SerializeField] private WaitRoomPlayerSlot mySlot;
 
@@ -133,10 +135,12 @@ namespace OpenGS
 
         protected override void OnStartFromEditorDirectly()
         {
+            EnableLocalOwnerInEditor();
         }
 
         protected override void OnStartUnityEditor()
         {
+            EnableLocalOwnerInEditor();
         }
 
         protected override void OnQuitUnityEditor()
@@ -503,6 +507,8 @@ namespace OpenGS
             roomNameLegacyInputField ??= FindInactiveComponent<InputField>("RoomName");
             roomNameTmpInputField ??= FindInactiveComponent<TMP_InputField>("RoomName");
             inviteDialog ??= FindInactiveComponent<InviteDialog>("InviteDialog");
+            chara ??= FindInactiveComponent<Button>("CharacterSelectButton");
+            characterSelectDialog ??= FindInactiveComponent<CharacterSelectDialog>("CharacterSelectDialog");
 
             if (readyButtonGraphic == null && readyButton != null)
             {
@@ -602,6 +608,12 @@ namespace OpenGS
                 roomNameApplyButton.onClick.RemoveAllListeners();
                 roomNameApplyButton.onClick.AddListener(ApplyRoomNameFromInput);
             }
+
+            if (chara != null)
+            {
+                chara.onClick.RemoveAllListeners();
+                chara.onClick.AddListener(ShowCharacterSelectDialog);
+            }
         }
 
         private void BindNetworkStreams()
@@ -700,7 +712,7 @@ namespace OpenGS
 
             var player = BuildLocalPlaceholderPlayer();
             slot.gameObject.SetActive(true);
-            slot.Bind(player, 0, ResolveWaitRoom()?.OwnerId, ResolveLocalPlayerId());
+            slot.Bind(player, 0, ResolveRoomOwnerId(), ResolveLocalPlayerId());
         }
 
         private static PlayerInfo BuildLocalPlaceholderPlayer()
@@ -718,7 +730,8 @@ namespace OpenGS
             {
                 IsReady = false,
                 Team = OpenGSCore.ETeam.NoTeam,
-                IsBot = false
+                IsBot = false,
+                playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
             };
         }
 
@@ -849,7 +862,7 @@ namespace OpenGS
             var controller = slotObject.GetComponent<WaitRoomPlayerInfoController>();
             if (controller != null)
             {
-                controller.Bind(player, index, ResolveWaitRoom()?.OwnerId, ResolveLocalPlayerId());
+                controller.Bind(player, index, ResolveRoomOwnerId(), ResolveLocalPlayerId());
                 return;
             }
 
@@ -871,7 +884,7 @@ namespace OpenGS
                 tmpText.text = BuildPlayerLine(player);
             }
 
-            ToggleNamedChild(slotObject.transform, "Host", string.Equals(player.Id, ResolveWaitRoom()?.OwnerId, System.StringComparison.OrdinalIgnoreCase));
+            ToggleNamedChild(slotObject.transform, "Host", string.Equals(player.Id, ResolveRoomOwnerId(), System.StringComparison.OrdinalIgnoreCase));
             ToggleNamedChild(slotObject.transform, "Ready", player.IsReady);
         }
 
@@ -986,7 +999,30 @@ namespace OpenGS
                 return false;
             }
 
+            if (forceLocalPlayerOwnerInEditorDirect)
+            {
+                return true;
+            }
+
             return string.Equals(room.OwnerId, ResolveLocalPlayerId(), System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        private string ResolveRoomOwnerId()
+        {
+            var room = ResolveWaitRoom();
+            if (room == null)
+            {
+                return string.Empty;
+            }
+
+            return forceLocalPlayerOwnerInEditorDirect ? ResolveLocalPlayerId() : room.OwnerId;
+        }
+
+        private void EnableLocalOwnerInEditor()
+        {
+            forceLocalPlayerOwnerInEditorDirect = true;
+            roomOwner = true;
+            RefreshWaitRoomUi();
         }
 
         private string BuildRoomTitle()
@@ -1098,6 +1134,59 @@ namespace OpenGS
             var roomId = room != null ? room.RoomId : string.Empty;
             var roomName = room != null ? room.RoomName : BuildRoomTitle();
             inviteDialog.Show(roomId, roomName);
+        }
+
+        public void showCharacterSelectDialog()
+        {
+            ShowCharacterSelectDialog();
+        }
+
+        public void ShowCharacterSelectDialog()
+        {
+            AutoBindIfNeeded();
+
+            if (characterSelectDialog == null)
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] CharacterSelectDialog was not found.");
+                return;
+            }
+
+            characterSelectDialog.OnCharacterSelected -= HandleCharacterSelected;
+            characterSelectDialog.OnCharacterSelected += HandleCharacterSelected;
+            characterSelectDialog.Show(GamePlayerManager.Instance.SelectedPlayerCharacter());
+        }
+
+        private void HandleCharacterSelected(EPlayerCharacter character)
+        {
+            GamePlayerManager.Instance.SetPlayerCharacter(character);
+            SendWaitRoomSettingsChange(new JObject
+            {
+                ["PlayerCharacter"] = character.ToString()
+            });
+            ApplyLocalCharacterSelection(character);
+            RefreshWaitRoomUi();
+        }
+
+        private void ApplyLocalCharacterSelection(EPlayerCharacter character)
+        {
+            try
+            {
+                var waitRoom = DependencyInjectionConfig.Resolve<WaitRoomManager>()?.WaitRoom;
+                if (waitRoom == null || string.IsNullOrWhiteSpace(ResolveLocalPlayerId()))
+                {
+                    return;
+                }
+
+                var localPlayerId = ResolveLocalPlayerId();
+                var localPlayer = waitRoom.PlayerList?.Find(player => player != null && string.Equals(player.Id, localPlayerId, System.StringComparison.OrdinalIgnoreCase));
+                if (localPlayer != null)
+                {
+                    localPlayer.playerCharacter = character;
+                }
+            }
+            catch
+            {
+            }
         }
 
         private void ApplyRoomNameFromInput()
