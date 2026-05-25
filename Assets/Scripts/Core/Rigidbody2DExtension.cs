@@ -8,40 +8,58 @@ namespace OpenGS
         {
             foreach (var body in Object.FindObjectsOfType<Rigidbody2D>())
             {
-                body.freezeRotation = true;
+                if (body != null)
+                {
+                    body.freezeRotation = true;
+                }
+            }
+        }
+
+        public static void SetFreezeRotation(Rigidbody2D self, bool freeze)
+        {
+            if (self != null)
+            {
+                self.freezeRotation = freeze;
             }
         }
 
         public static void EnableRotation(Rigidbody2D self)
         {
-            if (self != null)
-            {
-                self.freezeRotation = false;
-            }
+            SetFreezeRotation(self, false);
         }
 
         public static void DisableRotation(Rigidbody2D self)
         {
+            SetFreezeRotation(self, true);
+        }
+
+        public static void SetGravityScale(Rigidbody2D self, float gravityScale)
+        {
             if (self != null)
             {
-                self.freezeRotation = true;
+                self.gravityScale = Mathf.Max(0f, gravityScale);
             }
         }
 
         public static void EnableGravity(Rigidbody2D self)
         {
-            if (self != null)
-            {
-                self.gravityScale = 1f;
-            }
+            SetGravityScale(self, 1f);
         }
 
         public static void DisableGravity(Rigidbody2D self)
         {
-            if (self != null)
+            SetGravityScale(self, 0f);
+        }
+
+        public static void ResetVelocity(Rigidbody2D self)
+        {
+            if (self == null)
             {
-                self.gravityScale = 0f;
+                return;
             }
+
+            self.velocity = Vector2.zero;
+            self.angularVelocity = 0f;
         }
     }
 }

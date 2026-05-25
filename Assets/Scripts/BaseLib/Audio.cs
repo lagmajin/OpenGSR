@@ -2,18 +2,45 @@ using UnityEngine;
 
 namespace OpenGS
 {
-    class Audio
+    public static class Audio
     {
         private const float Step = 0.1f;
 
-        static public void volumePlus()
+        public static float Volume => AudioListener.volume;
+
+        public static void VolumePlus()
         {
-            AudioListener.volume = Mathf.Clamp01(AudioListener.volume + Step);
+            SetVolume(AudioListener.volume + Step);
         }
 
-        static public void volumeMinus()
+        public static void volumePlus()
         {
-            AudioListener.volume = Mathf.Clamp01(AudioListener.volume - Step);
+            VolumePlus();
+        }
+
+        public static void VolumeMinus()
+        {
+            SetVolume(AudioListener.volume - Step);
+        }
+
+        public static void volumeMinus()
+        {
+            VolumeMinus();
+        }
+
+        public static void SetVolume(float volume)
+        {
+            AudioListener.volume = Mathf.Clamp01(volume);
+        }
+
+        public static void SetMuted(bool muted)
+        {
+            AudioListener.pause = muted;
+        }
+
+        public static void ToggleMute()
+        {
+            SetMuted(!AudioListener.pause);
         }
     }
 }
