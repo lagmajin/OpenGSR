@@ -39,37 +39,48 @@ namespace OpenGS
         [SerializeField] [Required] private GameObject particleSlot;
         private void Start()
         {
-
             if (!flagSlot)
             {
-
+                flagSlot = particleSlot;
             }
 
+            if (flagNavigator != null)
+            {
+                flagNavigator.SetActive(showFlagNavigator);
+            }
+            UpdateUIState();
 
         }
 
         void Reset()
         {
-
+            flagStandName = team.ToString() + "Stand";
         }
 
         [Button("ファンファーレテスト")]
         public void PlayFlagReturnSound()
         {
-
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.PlaySystemSound(ESystemSound.Fanfare);
+            }
 
         }
 
         public void FlagReady()
         {
-
+            hasFlag = false;
+            UpdateUIState();
         }
 
 
         [Button("ナビゲーター表示")]
         public void SetActiveFlagNavigator(bool active = true)
         {
-            flagNavigator.SetActive(active);
+            if (flagNavigator != null)
+            {
+                flagNavigator.SetActive(active);
+            }
 
 
         }
@@ -78,14 +89,20 @@ namespace OpenGS
 
         private void Update()
         {
-
+            if (flagNavigator != null)
+            {
+                flagNavigator.SetActive(showFlagNavigator);
+            }
         }
 
         public string FlagStandName()
         {
+            if (!string.IsNullOrEmpty(flagStandName) && flagStandName != "None")
+            {
+                return flagStandName;
+            }
 
-
-            return "BlueStand";
+            return team == ETeam.Red ? "RedStand" : "BlueStand";
         }
 
         public bool HasFlag()
