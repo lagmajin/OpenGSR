@@ -355,10 +355,12 @@ namespace OpenGS
 
         protected virtual void OnMatchNetworkConnected()
         {
+            Debug.Log($"[{GetType().Name}] Match network connected");
         }
 
         protected virtual void OnMatchNetworkDisconnected()
         {
+            Debug.Log($"[{GetType().Name}] Match network disconnected");
         }
 
         void OnEnable()
@@ -379,18 +381,24 @@ namespace OpenGS
 
         public void PlayDefaultBGM()
         {
-            //SimpleAudioManager.Instance.PlayBGM("Default");
-
+            PlayBGM(null);
         }
 
         public void PlayBGM(AudioClip bgm)
         {
-
+            if (bgm != null)
+            {
+                SimpleAudioManager.Instance.PlayBGM(bgm, 1.0f, true);
+            }
+            else
+            {
+                SimpleAudioManager.Instance.PlayBGM("Default");
+            }
         }
 
         public void StopBGM()
         {
-
+            SimpleAudioManager.Instance.StopBGM();
         }
 
 
@@ -413,37 +421,40 @@ namespace OpenGS
 
         public void AddNewFieldItemInTheScene()
         {
-
+            Debug.Log($"[{GetType().Name}] AddNewFieldItemInTheScene");
         }
 
         protected virtual void OnStart()
         {
-
+            isStarted = true;
+            endFlag = false;
         }
 
         protected virtual void OnEnd()
         {
-
+            endFlag = true;
         }
 
         protected virtual void OnSomeoneDead()
         {
-
+            Debug.Log($"[{GetType().Name}] Someone dead");
         }
 
         protected virtual void OnWin()
         {
-
+            Debug.Log($"[{GetType().Name}] Win");
+            endFlag = true;
         }
 
         protected virtual void OnLose()
         {
-
+            Debug.Log($"[{GetType().Name}] Lose");
+            endFlag = true;
         }
 
         protected virtual void OnSuddendeath()
         {
-
+            Debug.Log($"[{GetType().Name}] Sudden death");
         }
 
         protected virtual void OnOneSec()

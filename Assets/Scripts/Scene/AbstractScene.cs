@@ -75,6 +75,10 @@ namespace OpenGS
 
         protected virtual void Update()
         {
+            if (Input.anyKeyDown)
+            {
+                KeyPress();
+            }
         }
 
         [Button("スクリーンショット")]
@@ -149,7 +153,7 @@ namespace OpenGS
 
         public SynchronizationContext MainThread2()
         {
-            return null;
+            return currentThread;
         }
 
         public void SaveScreenShot()
@@ -161,10 +165,12 @@ namespace OpenGS
 
         protected virtual void EventProcess(string eventName)
         {
+            Debug.Log($"[{GetType().Name}] EventProcess: {eventName}");
         }
 
         public void SendEvent(string str)
         {
+            EventProcess(str);
         }
 
         protected CancellationToken SceneLifetimeToken =>
@@ -318,10 +324,19 @@ namespace OpenGS
 
         public void DisconnectFromServer()
         {
+            try
+            {
+                DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>()?.Disconnect();
+            }
+            catch
+            {
+            }
         }
 
         public void GoToSplashScreen()
         {
+            var splashScene = generalSceneMasterData != null ? generalSceneMasterData.SplashScene() : GeneralSceneMasterData.Instance().SplashScene();
+            GoToScene(splashScene);
         }
 
         public void GoToTitleScene()
@@ -361,18 +376,25 @@ namespace OpenGS
 
         private void OnApplicationFocus(bool focus)
         {
+            Debug.Log($"[{GetType().Name}] Application focus: {focus}");
         }
 
         private void OnApplicationPause(bool pause)
         {
+            Debug.Log($"[{GetType().Name}] Application pause: {pause}");
         }
 
         public void GoToOfflineWaitRoom()
         {
+            var offlineWaitRoom = generalSceneMasterData != null
+                ? generalSceneMasterData.OfflineWaitRoomScene()
+                : GeneralSceneMasterData.Instance().OfflineWaitRoomScene();
+            GoToScene(offlineWaitRoom);
         }
 
         public void KeyPress()
         {
+            ResetIdleTimer();
         }
 
         public virtual void GoToLobby()
