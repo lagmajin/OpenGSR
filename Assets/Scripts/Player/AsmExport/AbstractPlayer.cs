@@ -286,6 +286,7 @@ namespace OpenGS
 
         public void AddDamageAndForce2(float damage, Vector2 point)
         {
+            AddDamageAndForce(damage, new Vector3(point.x, point.y, 0f), 1.0f);
         }
 
         public void Heal(float heal = 0)
@@ -324,10 +325,13 @@ namespace OpenGS
 
         public virtual void Burst()
         {
+            OnBurst();
         }
 
         public void Berserk()
         {
+            IncreaseAttack(10f);
+            SpeedUp(10f);
         }
 
         public virtual void IncreaseAttack(float sec)
@@ -360,10 +364,12 @@ namespace OpenGS
 
         public virtual void PoisonBullet(float sec)
         {
+            Debug.Log($"[{GetType().Name}] PoisonBullet applied for {sec} sec");
         }
 
         public virtual void FireBullet(float sec)
         {
+            Debug.Log($"[{GetType().Name}] FireBullet applied for {sec} sec");
         }
 
         // ─── IMovable ────────────────────────────────────────────────
@@ -424,6 +430,7 @@ namespace OpenGS
 
         public virtual void UseItem(int i = 0)
         {
+            Debug.Log($"[{GetType().Name}] UseItem called with slot {i}");
         }
 
         public bool CanJump() => canJump;
