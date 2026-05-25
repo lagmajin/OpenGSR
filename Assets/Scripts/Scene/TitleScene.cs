@@ -23,6 +23,9 @@ namespace OpenGS
         private void Awake()
         {
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
+            SceneManager.activeSceneChanged += OnActiveSceneChanged;
+            SceneManager.sceneLoaded += OnSceneLoaded;
+            SceneManager.sceneUnloaded += OnSceneUnloaded;
         }
 
         void Start()
@@ -33,8 +36,7 @@ namespace OpenGS
             }
 
             var args = System.Environment.GetCommandLineArgs();
-
-            if ("ExportAssetFiles" == args[0])
+            if (args != null && args.Length > 0 && "ExportAssetFiles" == args[0])
             {
                 GoToExportAssetsScene();
             }
@@ -76,6 +78,12 @@ namespace OpenGS
         void OnApplicationQuit()
         {
             Debug.Log("[TitleScene] Application quitting");
+            UnsubscribeSceneEvents();
+        }
+
+        private void OnDestroy()
+        {
+            UnsubscribeSceneEvents();
         }
 
         void LoadSettingFile()
@@ -111,6 +119,13 @@ namespace OpenGS
             Debug.Log($"[TitleScene] Scene unloaded: {i_unloadedScene.name}");
         }
 
+        private void UnsubscribeSceneEvents()
+        {
+            SceneManager.activeSceneChanged -= OnActiveSceneChanged;
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            SceneManager.sceneUnloaded -= OnSceneUnloaded;
+        }
+
         void quit()
         {
 #if UNITY_EDITOR
@@ -129,20 +144,16 @@ namespace OpenGS
         public void ConnectOnlineLobby()
         {
             bgmFlag = true;
-
-            SceneManager.LoadScene(GeneralSceneMasterData.Instance().ConnectToServerScene());
-
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(GeneralSceneMasterData.Instance().ConnectToServerScene());
         }
 
         [Button("オフラインウェイトルーム")]
         public void GoToOfflineWaitRoom()
         {
             bgmFlag = true;
-
-            SceneManager.LoadScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
-
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
+            SceneManager.LoadScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
         }
 
         [Button("アセットエクスポートシーンへ移動")]
@@ -150,6 +161,7 @@ namespace OpenGS
         {
             bgmFlag = true;
             Debug.Log("[TitleScene] GoToExportAssetsScene");
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
             SceneManager.LoadScene("ExportAssetScene");
         }
 

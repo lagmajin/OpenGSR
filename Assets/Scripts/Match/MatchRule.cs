@@ -60,15 +60,25 @@ namespace OpenGS
 
         public virtual void Up()
         {
+            boosterPower = Mathf.Min(boosterPower + 0.1f, 3.0f);
+            attackPower = Mathf.Min(attackPower + 0.1f, 3.0f);
+            defPower = Mathf.Min(defPower + 0.1f, 3.0f);
+            lifePower = Mathf.Min(lifePower + 0.1f, 3.0f);
+            time = Mathf.Min(time + 10, 3600);
         }
 
         public virtual void Down()
         {
+            boosterPower = Mathf.Max(0.1f, boosterPower - 0.1f);
+            attackPower = Mathf.Max(0.1f, attackPower - 0.1f);
+            defPower = Mathf.Max(0.1f, defPower - 0.1f);
+            lifePower = Mathf.Max(0.1f, lifePower - 0.1f);
+            time = Mathf.Max(10, time - 10);
         }
 
         public virtual bool D(in MatchData d)
         {
-            return false;
+            return d != null && d.AlivePlayerCount <= 0;
         }
     }
 

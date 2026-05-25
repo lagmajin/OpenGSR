@@ -17,6 +17,9 @@ namespace OpenGS
         private readonly List<GameObject> targetList = new();
         [SerializeField]
         private bool autoScriptMachineEnable = true;
+        private float lastAttackTime = -10f;
+        [SerializeField]
+        private float attackCooldown = 0.5f;
 
         private new void Start()
         {
@@ -50,6 +53,11 @@ namespace OpenGS
                 case eAIBattleMode.Avoid:
                     Avoid();
                     break;
+            }
+
+            if (mode == eAIBattleMode.Attack && targetList.Count == 0)
+            {
+                mode = eAIBattleMode.Patrol;
             }
         }
 
@@ -100,6 +108,15 @@ namespace OpenGS
             if (targetList.Count > 0)
             {
                 Debug.Log($"[AIPlayerController] Attack target={targetList[0].name}");
+                if (Time.time >= lastAttackTime + attackCooldown)
+                {
+                    var gun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
+                    if (gun != null && gun.CanShot())
+                    {
+                        gun.Shot();
+                        lastAttackTime = Time.time;
+                    }
+                }
             }
         }
 
@@ -113,6 +130,10 @@ namespace OpenGS
         {
             Debug.Log("[AIPlayerController] Patrol");
             Analyze();
+            if (targetList.Count > 0)
+            {
+                mode = eAIBattleMode.Attack;
+            }
         }
 
         void Wait()
@@ -208,6 +229,20 @@ namespace OpenGS
             }
         }
 
+        void OnTriggerExit2D(Collider2D other)
+        {
+            if (other == null)
+            {
+                return;
+            }
+
+            var player = other.GetComponentInParent<AbstractPlayer>();
+            if (player != null)
+            {
+                RemoveToTargetList(player.gameObject);
+            }
+        }
+
         private eWeaponType SelectWeapon()
         {
             return eWeaponType.M60;
@@ -217,12 +252,15 @@ namespace OpenGS
         {
             base.OnSpawn();
             SetPlayerType(EPlayerType.AI);
+            mode = eAIBattleMode.Patrol;
+            lastAttackTime = -10f;
             SelectWeapon();
         }
 
         public override void OnReSpawn()
         {
             base.OnReSpawn();
+            mode = eAIBattleMode.Patrol;
             Analyze();
         }
     }

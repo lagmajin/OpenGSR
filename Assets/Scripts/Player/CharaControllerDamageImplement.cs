@@ -16,22 +16,35 @@ namespace OpenGS
         {
             Debug.Log("Damage:" + damage);
             base.AddDamage(source, damage, type);
+            onDamage = true;
+            StartBlink();
 
             if (type == eDamageType.Explosion)
             {
-
+                Debug.Log("[CharaController] Explosion damage received.");
             }
 
             if (type == eDamageType.Fire)
             {
-
-
+                Debug.Log("[CharaController] Fire damage received.");
             }
 
         }
         public override void AddSlipDamage(float v, string id)
         {
+            if (v <= 0f)
+            {
+                return;
+            }
 
+            if (slipDamage == null)
+            {
+                slipDamage = new Dictionary<float, string>();
+            }
+
+            slipDamage[Time.time] = id ?? string.Empty;
+            onDamage = true;
+            StartBlink();
         }
 
 

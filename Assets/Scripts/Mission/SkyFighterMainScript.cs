@@ -34,6 +34,7 @@ namespace OpenGS
 
             isStarted = true;
             endFlag = false;
+            needKillCount = Mathf.Max(3, diffucluty * 5);
             Debug.Log($"[SkyFighter] GameStart diff={diffucluty} needKill={needKillCount}");
             SpawnEnemy();
         }
@@ -43,6 +44,21 @@ namespace OpenGS
             if (endFlag)
             {
                 return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                MissionClear();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                MissionFail();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                ShowGaveUpDialog();
             }
         }
 
@@ -71,7 +87,11 @@ namespace OpenGS
 
         void SpawnEnemy()
         {
-            Debug.Log($"[SkyFighter] SpawnEnemy diff={diffucluty}");
+            Debug.Log($"[SkyFighter] SpawnEnemy diff={diffucluty} target={needKillCount}");
+            if (ui != null)
+            {
+                ui.SetActive(true);
+            }
         }
 
         void EndGame()

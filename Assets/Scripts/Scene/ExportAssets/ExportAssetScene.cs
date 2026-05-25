@@ -51,8 +51,17 @@ namespace OpenGS
         [Button("自動セット")]
         public void AutoSet()
         {
-            // noop for now - placeholder for editor helper logic
-            Debug.Log("AutoSet called (not implemented)");
+            if (timer == null)
+            {
+                timer = GetComponent<GameTimer>();
+            }
+
+            if (spritesRootGameObject == null)
+            {
+                spritesRootGameObject = GameObject.Find("SpritesRoot");
+            }
+
+            Debug.Log("[ExportAssetScene] AutoSet complete");
         }
 
         [Button("Export All Assets")]
@@ -75,7 +84,7 @@ namespace OpenGS
 
         void OpenSelectFileDialog()
         {
-            // kept for future implementation
+            Debug.Log("[ExportAssetScene] OpenSelectFileDialog is editor-only and currently routed through inspector buttons.");
         }
 
         private void WriteFile(Sprite sp)
@@ -143,7 +152,13 @@ namespace OpenGS
 
         private void WriteFile()
         {
-            // placeholder overload
+            if (spritesRootGameObject == null)
+            {
+                Debug.LogWarning("[ExportAssetScene] WriteFile() called without a sprites root.");
+                return;
+            }
+
+            ExportsStageSprite();
         }
 
         private List<Sprite> GetSprites(GameObject obj)
@@ -215,12 +230,35 @@ namespace OpenGS
 
         private void ExportsStageBgn()
         {
-            Debug.Log("Export BGN not implemented");
+            AudioClip[] allBgn = Resources.LoadAll<AudioClip>("Audio/BGN");
+            Debug.Log($"Loaded {allBgn.Length} BGN tracks.");
+            foreach (AudioClip bgn in allBgn)
+            {
+                var directory = Path.Combine(Application.dataPath, "ExportedBGN");
+                if (!Directory.Exists(directory))
+                {
+                    Directory.CreateDirectory(directory);
+                }
+
+                var filePath = Path.Combine(directory, bgn.name + ".wav");
+                SaveWav(filePath, bgn);
+                Debug.Log($"Saved BGN: {bgn.name} to {filePath}");
+            }
         }
 
         private void ExportPlayerSprite()
         {
-            Debug.Log("Exports player sprite");
+            if (spritesRootGameObject == null)
+            {
+                Debug.LogWarning("[ExportAssetScene] spritesRootGameObject not assigned");
+                return;
+            }
+
+            Debug.Log("Exporting player sprites from root: " + spritesRootGameObject.name);
+            foreach (var sp in GetSprites(spritesRootGameObject))
+            {
+                WriteFile(sp);
+            }
         }
 
 
@@ -361,7 +399,7 @@ namespace OpenGS
 
         private void path()
         {
-
+            Debug.Log(Path.Combine(Application.dataPath, exportDirectory));
         }
         public static void SaveWav(string filePath, AudioClip audioClip)
         {

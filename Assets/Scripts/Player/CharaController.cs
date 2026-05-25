@@ -52,6 +52,7 @@ namespace OpenGS
         private List<KeyCommand> dashCommand = new List<KeyCommand>();
         private readonly InstantItemSlots instantItemSlots = new InstantItemSlots();
         private MatchEventProvider matchEventProvider;
+        private PlayerGrenadeComponent grenadeComponent;
 
 
         private PlayerStatus status = GamePlayerManager.Instance.Status;
@@ -73,43 +74,48 @@ namespace OpenGS
             yield return new WaitForSeconds(3.0f);
 
             // 通常状態に戻す
-            // isDamage = false;
-            //sp.color = new Color(1f, 1f, 1f, 1f);
+            isBlink = false;
+            onDamage = false;
 
         }
 
         public override void OnSpawn()
         {
-           // var uiManager = 0;
             ResetInstantItems();
-
-
+            grenadeComponent = GetComponent<PlayerGrenadeComponent>();
+            canOpenGranade = true;
+            onDamage = false;
+            isBlink = false;
         }
 
         public override void OnReSpawn()
         {
             ResetInstantItems();
-
+            grenadeComponent = GetComponent<PlayerGrenadeComponent>();
+            canOpenGranade = true;
+            onDamage = false;
+            isBlink = false;
         }
 
         private void StartBlink()
         {
+            if (isBlink)
+            {
+                return;
+            }
 
+            isBlink = true;
+            onDamage = true;
+            StartCoroutine(OnBlink());
         }
 
         public new void Start()
         {
-
-
             animator = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             rigidbody2D = GetComponent<Rigidbody2D>();
-
-
-
-
-
-            //Invisible(30.0f);
+            grenadeComponent = GetComponent<PlayerGrenadeComponent>();
+            ResetInstantItems();
         }
 
         public void Update()
@@ -169,26 +175,49 @@ namespace OpenGS
 
         private void FixedUpdate()
         {
-
-
+            if (onDamage && !isBlink)
+            {
+                StartBlink();
+            }
         }
         private void LateUpdate()
         {
-
+            var gun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
+            if (gun != null)
+            {
+                gun.SetGunDirection(transform.localScale.x < 0f);
+            }
         }
         public void OpenGrenade()
         {
-
-
+            canOpenGranade = true;
+            Debug.Log("[CharaController] OpenGrenade");
         }
 
         [Button("グレネードテスト")]
         public void ThrowGrenade()
         {
+            if (!canOpenGranade)
+            {
+                Debug.Log("[CharaController] ThrowGrenade ignored because grenade is locked.");
+                return;
+            }
 
+            if (grenadeComponent != null)
+            {
+                grenadeComponent.ThrowGrenade(1.0f);
+                canOpenGranade = false;
+                return;
+            }
 
+            if (Status != null && Status.UseGrenade())
+            {
+                Debug.Log("[CharaController] Threw grenade using status fallback.");
+                canOpenGranade = false;
+                return;
+            }
 
-
+            Debug.LogWarning("[CharaController] No grenade component available.");
         }
         [Button("Shot")]
         void Shot()
@@ -486,29 +515,38 @@ namespace OpenGS
 
         private void ReloadCancel()
         {
-            weaponSlots?.GetCurrentGun()?.ReloadCancel();
+            var gun = weaponSlots?.GetCurrentGun();
+            if (gun == null)
+            {
+                Debug.LogWarning("[CharaController] ReloadCancel requested but no gun is equipped.");
+                return;
+            }
+
+            gun.ReloadCancel();
         }
 
         void OnTriggerEnter2D(Collider2D other)
         {
+            if (other == null)
+            {
+                return;
+            }
+
             Debug.Log("OnTriggerEnter2D: " + other.tag);
 
             if ("StageObject" == other.tag)
             {
-
+                StartBlink();
             }
 
             if ("GameOverArea" == other.tag)
             {
-
-
                 Burst();
             }
 
             if ("FieldWeapon" == other.tag)
             {
-
-
+                TakeNewWeapon();
             }
 
         }
