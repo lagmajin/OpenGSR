@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ namespace OpenGS
     {
         private bool threadEnd = false;
         private readonly List<OpenGSBaseClass> classess_ = new();
+        private readonly object classLock = new();
 
         EventManager()
         {
@@ -24,6 +26,19 @@ namespace OpenGS
 
         private void Update()
         {
+            lock (classLock)
+            {
+                classess_.RemoveAll(item => item == null);
+            }
+        }
+
+        private void OnDestroy()
+        {
+            threadEnd = true;
+            lock (classLock)
+            {
+                classess_.Clear();
+            }
         }
 
         void addEventListner(OpenGSBaseClass cl)
@@ -33,15 +48,21 @@ namespace OpenGS
                 return;
             }
 
-            if (!classess_.Contains(cl))
+            lock (classLock)
             {
-                classess_.Add(cl);
+                if (!classess_.Contains(cl))
+                {
+                    classess_.Add(cl);
+                }
             }
         }
 
         void removeAllListner()
         {
-            classess_.Clear();
+            lock (classLock)
+            {
+                classess_.Clear();
+            }
         }
 
         public void Register(OpenGSBaseClass cl)
@@ -57,7 +78,13 @@ namespace OpenGS
         public void sendEvent(AbstractGameEvent ev)
         {
             Debug.Log($"[EventManager] sendEvent: {ev?.EventName ?? "null"}");
-            foreach (var listener in classess_)
+            OpenGSBaseClass[] snapshot;
+            lock (classLock)
+            {
+                snapshot = classess_.ToArray();
+            }
+
+            foreach (var listener in snapshot)
             {
                 listener?.OnOriginalEvent(ev);
             }
@@ -77,6 +104,14 @@ namespace OpenGS
         public void postEvent()
         {
             Debug.Log("[EventManager] postEvent");
+        }
+
+        public int ListenerCount()
+        {
+            lock (classLock)
+            {
+                return classess_.Count;
+            }
         }
     }
 }
