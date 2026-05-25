@@ -15,7 +15,7 @@ namespace OpenGS
     {
 
 
-        private void Start()
+        private new void Start()
         {
             base.Start();
 

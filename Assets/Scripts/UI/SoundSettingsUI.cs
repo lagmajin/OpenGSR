@@ -26,6 +26,9 @@ namespace OpenGS
         [Header("SE設定")]
         [SerializeField] private Slider seVolumeSlider;
         [SerializeField] private TextMeshProUGUI seVolumeText;
+
+        [Header("環境音")]
+        [SerializeField] private Toggle reverbToggle;
         
         [Header("ボイス設定")]
         [SerializeField] private Slider voiceVolumeSlider;
@@ -112,6 +115,11 @@ namespace OpenGS
             if (seVolumeSlider != null)
             {
                 seVolumeSlider.onValueChanged.AddListener(OnSEVolumeChanged);
+            }
+
+            if (reverbToggle != null)
+            {
+                reverbToggle.onValueChanged.AddListener(OnReverbChanged);
             }
 
             // ボイス設定
@@ -202,6 +210,11 @@ namespace OpenGS
                 seVolumeText.text = $"{(int)(currentSettings.SEVolume * 100)}%";
             }
 
+            if (reverbToggle != null)
+            {
+                reverbToggle.isOn = currentSettings.Reverb;
+            }
+
             // ボイス設定
             if (voiceVolumeSlider != null)
             {
@@ -270,6 +283,11 @@ namespace OpenGS
             {
                 seVolumeText.text = $"{(int)(value * 100)}%";
             }
+        }
+
+        private void OnReverbChanged(bool isOn)
+        {
+            currentSettings.Reverb = isOn;
         }
 
         private void OnVoiceVolumeChanged(float value)

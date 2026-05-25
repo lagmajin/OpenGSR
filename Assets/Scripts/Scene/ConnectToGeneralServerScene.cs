@@ -86,12 +86,14 @@ namespace OpenGS
             SoundManager.Instance.EnsureBgm(EBgm.Title, 0f);
         }
 
-        void Update()
+        protected override void Update()
         {
+            base.Update();
         }
 
-        void OnDestroy()
+        protected override void OnDestroy()
         {
+            base.OnDestroy();
             //networkManager.DisconnectFromServer();
         }
 

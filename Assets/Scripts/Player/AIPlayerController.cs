@@ -21,9 +21,9 @@ namespace OpenGS
         [SerializeField]
         private float attackCooldown = 0.5f;
 
-        private new void Start()
+        private void Start()
         {
-            SetPlayerType(EPlayerType.AI);
+            SetPlayerType(EPlayerType.AIPlayer);
             if (autoScriptMachineEnable)
             {
                 EnableScriptMachine();
@@ -251,7 +251,7 @@ namespace OpenGS
         public override void OnSpawn()
         {
             base.OnSpawn();
-            SetPlayerType(EPlayerType.AI);
+            SetPlayerType(EPlayerType.AIPlayer);
             mode = eAIBattleMode.Patrol;
             lastAttackTime = -10f;
             SelectWeapon();

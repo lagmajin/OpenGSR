@@ -93,7 +93,7 @@ namespace OpenGS
         /// <summary>
         /// アイテムをJSONからパース
         /// </summary>
-        public static FieldItemNetworkManager.FieldItemData? ParseSpawnMessage(JObject json)
+        public static FieldItemNetworkManager.FieldItemData ParseSpawnMessage(JObject json)
         {
             try
             {
@@ -121,7 +121,7 @@ namespace OpenGS
         /// <summary>
         /// アイテム pickupをJSONからパース
         /// </summary>
-        public static (string itemId, string playerId)? ParsePickupMessage(JObject json)
+        public static (string itemId, string playerId) ParsePickupMessage(JObject json)
         {
             try
             {
@@ -132,7 +132,7 @@ namespace OpenGS
             }
             catch
             {
-                return null;
+                return default;
             }
         }
 
@@ -148,7 +148,7 @@ namespace OpenGS
         [SerializeField] private string _itemId = "";
         [SerializeField] private eFieldItemType _itemType = eFieldItemType.PowerUp;
 
-        private FieldItemNetworkManager? _manager;
+        private FieldItemNetworkManager _manager;
         private bool _isInitialized = false;
 
         public string ItemId => _itemId;

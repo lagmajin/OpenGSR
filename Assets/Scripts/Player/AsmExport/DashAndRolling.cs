@@ -29,12 +29,6 @@ namespace OpenGS
         private bool downPush = false;
 
         [SerializeField] private AbstractPlayer player;
-        [SerializeField] private float frame = 10.0f;
-
-        [ShowInInspector]private float dashDelay = 12.0f;
-
-        [ShowInInspector]private float dashDelayLeft = 0.0f;
-
         // Start is called before the first frame update
         void Start()
         {

@@ -6,6 +6,7 @@ using System.Timers;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine.SceneManagement;
 
 using OpenGSCore;
@@ -177,6 +178,25 @@ namespace OpenGS
         public bool IsOfflineMatch()
         {
             return !IsOnlineMatch();
+        }
+
+        protected bool HandleEscapeToBackScene(Action onBack = null, KeyCode key = KeyCode.Escape)
+        {
+            if (!Input.GetKeyDown(key))
+            {
+                return false;
+            }
+
+            if (onBack != null)
+            {
+                onBack.Invoke();
+            }
+            else
+            {
+                GoToTitle();
+            }
+
+            return true;
         }
 
         public List<GameObject> AllPlayers()
@@ -630,6 +650,28 @@ namespace OpenGS
 
             SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().ResultScene());
 
+        }
+
+        protected void RequestSceneTransition(string nextSceneName, string reason = "")
+        {
+            RequestSceneTransition(nextSceneName, null, reason);
+        }
+
+        protected void RequestSceneTransition(string nextSceneName, Action onApproved, string reason = "")
+        {
+            if (string.IsNullOrWhiteSpace(nextSceneName))
+            {
+                Debug.LogWarning($"[{GetType().Name}] RequestSceneTransition skipped because nextSceneName is empty. reason={reason}");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(reason))
+            {
+                Debug.Log($"[{GetType().Name}] RequestSceneTransition -> {nextSceneName} reason={reason}");
+            }
+
+            onApproved?.Invoke();
+            SceneManager.LoadSceneAsync(nextSceneName);
         }
 
         /// <summary>

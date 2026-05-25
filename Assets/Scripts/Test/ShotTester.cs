@@ -12,8 +12,6 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class ShotTester : MonoBehaviour
     {
-        private bool auto = true;
-
         [SerializeField][Required]private GameObject bullet;
 
 

@@ -133,8 +133,9 @@ namespace OpenGS
         public AudioClip gameStart;
         public AudioClip Click;
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName("OfflineWaitRoom");
 
             mainThread = SynchronizationContext.Current;
@@ -150,8 +151,9 @@ namespace OpenGS
             SceneManager.sceneLoaded += GameSceneLoaded;
         }
 
-        void Update()
+        protected override void Update()
         {
+            base.Update();
             if (Input.GetKey(KeyCode.F10))
             {
                 GameStart();

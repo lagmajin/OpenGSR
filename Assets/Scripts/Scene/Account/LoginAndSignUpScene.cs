@@ -18,8 +18,9 @@ namespace OpenGS
         private Button b;
         private Button c;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
         }
 

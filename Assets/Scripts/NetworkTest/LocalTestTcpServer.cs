@@ -20,7 +20,6 @@ namespace OpenGS
 
         private TcpListener _server;
         private bool _isRunning;
-        private bool _isConnected;
         private Task _serverTask;
 
         private string userId="";
@@ -579,8 +578,6 @@ namespace OpenGS
 
             var clientID = "test";
 
-            _isConnected = true;
-
             var obj = new AIXJsonObject();
 
             // Use the message type expected by the client-side parser
@@ -599,8 +596,6 @@ namespace OpenGS
 
         private void OnLogout()
         {
-            _isConnected = false;
-
             var obj = new AIXJsonObject();
 
             obj["MessageType"] = MessageType.LogoutSuccessful;

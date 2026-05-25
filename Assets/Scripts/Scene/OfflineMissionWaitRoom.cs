@@ -17,8 +17,9 @@ namespace OpenGS
         private int selectedMissionIndex = 1;
         private int selectedQuestIndex = 1;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             mainThread = SynchronizationContext.Current;
 
@@ -34,8 +35,9 @@ namespace OpenGS
             Debug.Log("[OfflineMissionWaitRoom] Started");
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 BackToMissionLobby();

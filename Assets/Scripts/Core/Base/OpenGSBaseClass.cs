@@ -5,7 +5,7 @@ namespace OpenGS
 {
     public class OpenGSBaseClass : MonoBehaviour
     {
-        private readonly string guid = Guid.NewGuid().ToString("N");
+        private readonly string guid = System.Guid.NewGuid().ToString("N");
 
         public string Guid => guid;
 

@@ -36,8 +36,9 @@ namespace OpenGS
         private bool localLoadingCompleted;
         private bool enterMapAllowed;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             Application.targetFrameRate = 30;
             AutoBindIfNeeded();
@@ -73,8 +74,9 @@ namespace OpenGS
             AutoBindIfNeeded();
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             count += Time.deltaTime;
             if (count >= timeout)
             {

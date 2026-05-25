@@ -58,7 +58,7 @@ namespace OpenGS
                 return;
             }
 
-            self.velocity = Vector2.zero;
+            self.linearVelocity = Vector2.zero;
             self.angularVelocity = 0f;
         }
     }

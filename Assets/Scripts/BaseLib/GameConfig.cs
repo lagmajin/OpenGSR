@@ -6,7 +6,6 @@ namespace OpenGS
     {
         private static GameConfig c1 = new GameConfig();
 
-        float masterVolume = 1.0f;
         float bgmVolume = 1.0f;
         float seVolume = 1.0f;
 

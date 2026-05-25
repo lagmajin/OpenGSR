@@ -27,12 +27,14 @@ namespace OpenGSR.Audio
 
         [SerializeField] private AudioConfig _audioConfig;
         [SerializeField] private float _defaultBgmFadeTime = 1.0f;
+        [SerializeField] private bool _reverbEnabled = false;
 
         [Range(0f, 1f)] public float MasterBGMVolume = 1f;
         [Range(0f, 1f)] public float MasterSEVolume = 1f;
 
         private AudioSource _bgmSource1;
         private AudioSource _bgmSource2;
+        private AudioReverbFilter _reverbFilter;
         private List<AudioSource> _seSources = new List<AudioSource>();
         private const int INITIAL_SE_SOURCES = 5;
 
@@ -64,6 +66,12 @@ namespace OpenGSR.Audio
             _bgmSource1.playOnAwake = false;
             _bgmSource2.playOnAwake = false;
             _currentBgmSource = _bgmSource1;
+            _reverbFilter = gameObject.GetComponent<AudioReverbFilter>();
+            if (_reverbFilter == null)
+            {
+                _reverbFilter = gameObject.AddComponent<AudioReverbFilter>();
+            }
+            ApplyReverbEnabled(_reverbEnabled);
 
             if (_audioConfig == null)
             {
@@ -201,5 +209,18 @@ namespace OpenGSR.Audio
         public void SetCurrentBGMName(string name) => _currentBgmName = name;
         public void SetBGMVolume(float volume) => MasterBGMVolume = Mathf.Clamp01(volume);
         public void SetSEVolume(float volume) => MasterSEVolume = Mathf.Clamp01(volume);
+        public void SetReverbEnabled(bool enabled)
+        {
+            _reverbEnabled = enabled;
+            ApplyReverbEnabled(enabled);
+        }
+
+        private void ApplyReverbEnabled(bool enabled)
+        {
+            if (_reverbFilter != null)
+            {
+                _reverbFilter.enabled = enabled;
+            }
+        }
     }
 }

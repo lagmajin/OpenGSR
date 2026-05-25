@@ -34,14 +34,14 @@ namespace OpenGS
 
             if (obj.TryGetComponent<Rigidbody2D>(out var body))
             {
-                body.velocity = new Vector2(body.velocity.x, 0f);
+                body.linearVelocity = new Vector2(body.linearVelocity.x, 0f);
                 body.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
                 return;
             }
 
             if (obj.TryGetComponent<IPlayer>(out var player) && obj.TryGetComponent<Rigidbody2D>(out var playerBody))
             {
-                playerBody.velocity = new Vector2(playerBody.velocity.x, 0f);
+                playerBody.linearVelocity = new Vector2(playerBody.linearVelocity.x, 0f);
                 playerBody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             }
         }

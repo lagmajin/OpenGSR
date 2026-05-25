@@ -15,8 +15,9 @@ namespace OpenGS
     {
         [SerializeField] private string defaultAccountName = "Player";
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
         }
 

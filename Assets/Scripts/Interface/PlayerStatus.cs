@@ -150,6 +150,17 @@ namespace OpenGS
             GrenadeCount--;
         }
 
+        public bool UseGrenade()
+        {
+            if (GrenadeCount <= 0)
+            {
+                return false;
+            }
+
+            ConsumeGrenade();
+            return true;
+        }
+
         public void RefillGrenade()
         {
             GrenadeCount = DefaultMaxGrenade;

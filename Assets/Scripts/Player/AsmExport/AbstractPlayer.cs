@@ -36,10 +36,7 @@ namespace OpenGS
 
         [SerializeField] public Animator animator;
 
-        [SerializeField] [BoxGroup("Status")] private float itemInterval = 0.1f;
-        [SerializeField] [BoxGroup("Status")] private float dashInterval = 0.1f;
         [SerializeField] [BoxGroup("Status")] private float interval = 0.1f;
-        [SerializeField] [BoxGroup("Status")] private float rollingInterval = 60.0f;
         [SerializeField] [BoxGroup("Status")] private float lavaDamageInterval = 1.2f;
         [SerializeField] [BoxGroup("Status")] private float lavaDamageCounter = 0.0f;
         [SerializeField] [BoxGroup("Status")] private float warpCounter = 0.0f;
@@ -54,11 +51,10 @@ namespace OpenGS
         [SerializeField] [BoxGroup("MasterData")] [Required] protected PlayerEffectMasterData PlayerEffectPrefabMasterData;
         [SerializeField] [BoxGroup("MasterData")] [Required] protected AllGrenadeListMasterData GrenadeMasterDataList;
 
-        [SerializeField] protected Rigidbody2D rigidbody2D;
+        [SerializeField] protected new Rigidbody2D rigidbody2D;
         [SerializeField] [Required] protected WeaponSlots weaponSlots;
 
         [SerializeField] public GameObject Hand;
-        [SerializeField] private bool noSound = false;
 
         [SerializeField] private EPlayerType playerType = EPlayerType.Unknown;
 
@@ -81,7 +77,6 @@ namespace OpenGS
         protected bool canEquip = false;
         protected int dashCount = 0;
 
-        private float _lastDamageTime = -10f;
         private float warpDelayCounter;
         private float increaseItemCounter;
         private bool hasTeam;

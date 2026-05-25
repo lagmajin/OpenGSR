@@ -295,8 +295,21 @@ namespace OpenGS
         {
             // マスターボリューム
             AudioListener.volume = settings.Sound.MasterVolume;
+            TryApplyReverb(settings.Sound.Reverb);
 
             Debug.Log($"[SettingsManager] サウンド設定を適用: MasterVolume={settings.Sound.MasterVolume}");
+        }
+
+        private void TryApplyReverb(bool enabled)
+        {
+            try
+            {
+                OpenGSR.Audio.SimpleAudioManager.Instance.SetReverbEnabled(enabled);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[SettingsManager] リバーブ適用をスキップ: {ex.Message}");
+            }
         }
     }
 
@@ -340,6 +353,7 @@ namespace OpenGS
         public float SEVolume = 1.0f;
         public float VoiceVolume = 1.0f;
         public bool MuteAll = false;
+        public bool Reverb = false;
     }
 
     /// <summary>

@@ -28,7 +28,6 @@ namespace OpenGS
         public float fallSpeed = 1f;
         public float peakHeight = 2f;
 
-        private bool isFalling = false;
         private Vector2 startPos;
 
         [SerializeField] private new Transform transform;
@@ -58,8 +57,6 @@ namespace OpenGS
                 transform.position += Vector3.up * riseSpeed * Time.deltaTime;
                 yield return null;
             }
-
-            isFalling = true;
 
             // 落下フェーズ
             while (true)

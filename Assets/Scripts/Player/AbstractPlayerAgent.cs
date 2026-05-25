@@ -15,7 +15,7 @@ namespace OpenGS
     {
         [SerializeField] Transform playerTransform;
         
-        private string? playerID;
+        private string playerID = string.Empty;
         private EPlayerType playerType;
 
         private void Start()
@@ -37,6 +37,10 @@ namespace OpenGS
         {
             playerType = type;
 
+        }
+
+        protected virtual void OnDropWeapon()
+        {
         }
 
 
