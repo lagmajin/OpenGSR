@@ -84,7 +84,21 @@ namespace OpenGS
 
         void OpenSelectFileDialog()
         {
-            Debug.Log("[ExportAssetScene] OpenSelectFileDialog is editor-only and currently routed through inspector buttons.");
+#if UNITY_EDITOR
+            var selectedFolder = EditorUtility.OpenFolderPanel(
+                "Select Export Folder",
+                Application.dataPath,
+                exportDirectory);
+            if (string.IsNullOrWhiteSpace(selectedFolder))
+            {
+                return;
+            }
+
+            exportDirectory = new DirectoryInfo(selectedFolder).Name;
+            Debug.Log($"[ExportAssetScene] exportDirectory set to '{exportDirectory}' from '{selectedFolder}'");
+#else
+            Debug.Log("[ExportAssetScene] OpenSelectFileDialog is editor-only.");
+#endif
         }
 
         private void WriteFile(Sprite sp)
@@ -276,8 +290,11 @@ namespace OpenGS
             var soundPath = Path.Combine(appDatapath, soundDirectory);
             Debug.Log("sound path: " + soundPath);
 
-            // For now only export bgm to avoid unintended heavy operations
+            ExportsStageSprite();
+            ExportPlayerSprite();
             ExportsStageBgm();
+            ExportsStageBgn();
+
             // Provide additional runtime extraction utilities for emergency recovery
             Debug.Log("Exporting runtime textures and audio for recovery...");
             ExportRuntimeTextures();

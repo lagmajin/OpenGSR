@@ -7,7 +7,14 @@ namespace OpenGS
     {
         private AbstractPlayer cachedPlayer;
 
+        public bool HasPlayer => cachedPlayer != null;
+
         public void Start()
+        {
+            EnsurePlayer();
+        }
+
+        protected virtual void OnEnable()
         {
             EnsurePlayer();
         }
@@ -15,6 +22,19 @@ namespace OpenGS
         public void Update()
         {
             EnsurePlayer();
+        }
+
+        public void RefreshLink()
+        {
+            cachedPlayer = null;
+            EnsurePlayer();
+        }
+
+        protected virtual void OnDestroy()
+        {
+            cachedPlayer = null;
+            SetPlayer(null);
+            SetPlayerId(string.Empty);
         }
 
         private void EnsurePlayer()
@@ -26,10 +46,7 @@ namespace OpenGS
 
             cachedPlayer = GetComponent<AbstractPlayer>();
             SetPlayer(cachedPlayer);
-            if (cachedPlayer != null)
-            {
-                SetPlayerId(cachedPlayer.UniqueID().ToString());
-            }
+            SetPlayerId(cachedPlayer != null ? cachedPlayer.UniqueID().ToString() : string.Empty);
         }
     }
 }

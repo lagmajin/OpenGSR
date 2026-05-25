@@ -12,11 +12,32 @@ namespace OpenGS
             }
         }
 
+        public static void SetRendererVisible(Renderer renderer, bool visible)
+        {
+            SetRendererEnabled(renderer, visible);
+        }
+
         public static void SetSpriteColor(SpriteRenderer renderer, Color color)
         {
             if (renderer != null)
             {
                 renderer.color = color;
+            }
+        }
+
+        public static void SetSpriteSortingOrder(SpriteRenderer renderer, int sortingOrder)
+        {
+            if (renderer != null)
+            {
+                renderer.sortingOrder = sortingOrder;
+            }
+        }
+
+        public static void SetSpriteSortingLayer(SpriteRenderer renderer, string sortingLayerName)
+        {
+            if (renderer != null && !string.IsNullOrEmpty(sortingLayerName))
+            {
+                renderer.sortingLayerName = sortingLayerName;
             }
         }
 
