@@ -1,35 +1,36 @@
-using System.Collections;
-using System.Collections.Generic;
 using OpenGSCore;
 using UnityEngine;
-
 
 namespace OpenGS
 {
     public class SceneInput : MonoBehaviour
     {
-        //public AbstractScene scene;
+        [SerializeField] private AbstractScene scene;
 
-        // Start is called before the first frame update
         void Start()
         {
-
+            if (scene == null)
+            {
+                scene = GetComponentInParent<AbstractScene>();
+            }
         }
 
-        // Update is called once per frame
         void Update()
         {
-
-
-
-
+            if (Input.anyKeyDown)
+            {
+                SendKeyToSceneScript();
+            }
         }
-
 
         private void SendKeyToSceneScript()
         {
+            if (scene == null)
+            {
+                scene = GetComponentInParent<AbstractScene>();
+            }
 
+            scene?.KeyPress();
         }
     }
-
 }

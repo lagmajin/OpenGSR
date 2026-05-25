@@ -9,7 +9,8 @@ namespace OpenGS
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
-           
+            Initialize.Init();
+            Debug.Log("[GameInitializer] BeforeSceneLoad init complete");
         }
     }
 }
