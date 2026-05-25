@@ -23,6 +23,8 @@ namespace OpenGS
 
         public bool pickupable = false;
 
+        private Collider2D pickupCollider;
+
         [SerializeField] [Required] public GameObject weaponPrefab;
 
         //public Sound
@@ -33,11 +35,27 @@ namespace OpenGS
 
         private void Start()
         {
-            //Destroy(this.gameObject, 30f)
+            pickupCollider = GetComponent<Collider2D>();
+            if (pickupCollider)
+            {
+                pickupCollider.enabled = false;
+            }
 
-            Invoke("EnablePickUp", 30f);
+            pickupable = false;
 
+            if (pickupableOnTime)
+            {
+                Invoke(nameof(EnablePickUp), Mathf.Max(0f, picupableDelay));
+            }
+            else
+            {
+                EnablePickUp();
+            }
 
+            if (time > 0f)
+            {
+                Invoke(nameof(DestroySelf), time);
+            }
         }
 
         private void Update()
@@ -49,18 +67,31 @@ namespace OpenGS
 
         public void EnablePickUp()
         {
-
+            pickupable = true;
+            if (pickupCollider)
+            {
+                pickupCollider.enabled = true;
+            }
         }
 
         public void DisablePickUp()
         {
+            pickupable = false;
+            if (pickupCollider)
+            {
+                pickupCollider.enabled = false;
+            }
+        }
 
+        private void DestroySelf()
+        {
+            CancelInvoke(nameof(EnablePickUp));
+            CancelInvoke(nameof(DestroySelf));
+            Destroy(gameObject);
         }
 
         private void EquipPlayer(IPlayer p)
         {
-
-
             if (!weaponPrefab)
             {
                 Debug.Log("Error weapon");
@@ -76,24 +107,16 @@ namespace OpenGS
             {
                 return;
             }
-
-
-
-
-            //Debug.Log("Error weapon");
-
-
-
             Destroy(gameObject);
-
-
-
         }
 
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            //Debug.LogError("aa");
+            if (!pickupable)
+            {
+                return;
+            }
 
             Debug.Log(collision.name);
 
@@ -103,34 +126,17 @@ namespace OpenGS
             {
                 if (parent.TryGetComponent<IMultipleTags>(out var tags))
                 {
-
-                    //Debug.LogError("weapon");
-
                     if (tags.HasPlayerTag())
                     {
-
-
-
                         if (parent.TryGetComponent<IPlayer>(out var player))
                         {
-
-                            //Debug.LogError("Weapon Pickedup");
-
                             EquipPlayer(player);
-
-
-
                         }
-
-
-
-
-                        Debug.Log("aaa");
                     }
 
-                    if (tags.HasMyPlayerTag())
+                    if (tags.HasMyPlayerTag() && parent.TryGetComponent<IPlayer>(out var myPlayer))
                     {
-
+                        EquipPlayer(myPlayer);
                     }
 
                 }
@@ -141,33 +147,17 @@ namespace OpenGS
             {
                 if (collision.gameObject.TryGetComponent<IMultipleTags>(out var tags))
                 {
-                    Debug.LogError("weapon");
-
                     if (tags.HasPlayerTag())
                     {
-
-
-
                         if (collision.gameObject.TryGetComponent<IPlayer>(out var player))
                         {
-
-                            Debug.LogError("Weapon Pickedup");
-
                             EquipPlayer(player);
-
-
-
                         }
-
-
-
-
-                        Debug.Log("aaa");
                     }
 
-                    if (tags.HasMyPlayerTag())
+                    if (tags.HasMyPlayerTag() && collision.gameObject.TryGetComponent<IPlayer>(out var myPlayer))
                     {
-
+                        EquipPlayer(myPlayer);
                     }
 
                 }

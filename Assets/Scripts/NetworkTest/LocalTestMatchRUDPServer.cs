@@ -30,7 +30,7 @@ namespace OpenGS
 
         public event Action<JObject> MessageProduced;
 
-        // テスト用：ダミープレイヤーの状態
+        // 送信テスト用プレイヤー状態
         private float testPlayerX = 0f;
         private float testPlayerY = 0f;
         private float testPlayerRotation = 0f;
@@ -82,7 +82,7 @@ namespace OpenGS
             PrettyLogger.Bold("Network", "LocalServer port:"+port.ToString());
 
             Task.Run(() => PollLoop());
-            Task.Run(() => TestDataBroadcastLoop()); // テストデータを定期送信
+            Task.Run(() => TestDataBroadcastLoop()); // 定期送信用のバックグラウンドループ
         }
 
         public void StopLoopback()
@@ -507,7 +507,7 @@ namespace OpenGS
         }
 
         /// <summary>
-        /// テスト用：定期的にダミーデータを送信
+        /// 定期的にサンプルデータを送信
         /// </summary>
         private void TestDataBroadcastLoop()
         {
@@ -552,7 +552,7 @@ namespace OpenGS
 
         private void AdvanceDummyPlayerState()
         {
-            // ランダムに動くダミープレイヤー
+            // 送信テスト用に少し動かす
             testPlayerX += (float)(random.NextDouble() - 0.5) * 2f;
             testPlayerY += (float)(random.NextDouble() - 0.5) * 2f;
             testPlayerRotation += (float)(random.NextDouble() - 0.5) * 45f;
