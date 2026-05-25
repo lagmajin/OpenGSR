@@ -1,11 +1,9 @@
-﻿
-
-using System.Collections.Generic;
-using UnityEngine;
-using Newtonsoft.Json.Linq;
-using System.Linq;
-using Sirenix.OdinInspector;
 using System;
+using System.Collections.Generic;
+using System.Linq;
+using Newtonsoft.Json.Linq;
+using Sirenix.OdinInspector;
+using UnityEngine;
 
 namespace OpenGS
 {
@@ -15,18 +13,26 @@ namespace OpenGS
         Player,
         Grenade,
         Waterfall,
-
     }
-
 
     [DisallowMultipleComponent]
     public class MultipleTags : MonoBehaviour, IMultipleTags
     {
-        public List<string> tags;
+        [SerializeField] public List<string> tags;
+
+        private void Awake()
+        {
+            tags ??= new List<string>();
+        }
+
+        private void Reset()
+        {
+            tags ??= new List<string>();
+        }
 
         public bool Contains(string str)
         {
-            return tags.Contains(str);
+            return tags != null && !string.IsNullOrWhiteSpace(str) && tags.Contains(str);
         }
 
         public bool Contains(eMajorTag tag)
@@ -34,134 +40,92 @@ namespace OpenGS
             return Contains(tag.ToString());
         }
 
-        public bool HasPlayerTag()
-        {
-            return Contains("Player");
-        }
-
-        public bool HasBotTag()
-        {
-            return Contains("Bot");
-        }
-
-        public bool HasBurstAreaTag()
-        {
-            return Contains("BurstArea");
-        }
-
-        public bool HasWaterFallTag()
-        {
-            return Contains("WaterFall");
-        }
-
-        public bool HasLavaTag()
-        {
-            return Contains("Lava");
-        }
-
-        public bool HasEnemyTag()
-        {
-            return Contains("Enemy");
-        }
-
-        public bool HasStageObjectTag()
-        {
-            return Contains("StageObject");
-        }
-
-        public bool HasPlayerAndEnemyTags()
-        {
-            return HasPlayerTag() && HasEnemyTag();
-        }
-
-        public bool HasGrenadeTag()
-        {
-            return Contains("Grenade");
-        }
-
-        public bool HasLightTag()
-        {
-            return Contains("Light");
-        }
-
-        public bool HasWallTag()
-        {
-            return Contains("Wall");
-        }
-
-        public bool HasFieldItemTag()
-        {
-            return Contains("FieldItem");
-        }
-
-        public bool HasFieldWeaponTag()
-        {
-
-            return Contains("FieldWeapon");
-        }
-
-        public bool HasEnemyAttackTag()
-        {
-
-            return Contains("EnemyAttack");
-        }
-
+        public bool HasPlayerTag() => Contains("Player");
+        public bool HasBotTag() => Contains("Bot");
+        public bool HasBurstAreaTag() => Contains("BurstArea");
+        public bool HasWaterFallTag() => Contains("WaterFall");
+        public bool HasLavaTag() => Contains("Lava");
+        public bool HasEnemyTag() => Contains("Enemy");
+        public bool HasStageObjectTag() => Contains("StageObject");
+        public bool HasPlayerAndEnemyTags() => HasPlayerTag() && HasEnemyTag();
+        public bool HasGrenadeTag() => Contains("Grenade");
+        public bool HasLightTag() => Contains("Light");
+        public bool HasWallTag() => Contains("Wall");
+        public bool HasFieldItemTag() => Contains("FieldItem");
+        public bool HasFieldWeaponTag() => Contains("FieldWeapon");
+        public bool HasEnemyAttackTag() => Contains("EnemyAttack");
 
         public void AddTag(string tag)
         {
+            if (string.IsNullOrWhiteSpace(tag))
+            {
+                return;
+            }
+
+            tags ??= new List<string>();
             if (!Contains(tag))
             {
                 tags.Add(tag);
-
-                tags.Distinct();
+                tags = tags.Distinct().ToList();
             }
 
-            Debug.Log("Add");
+            Debug.Log($"[MultipleTags] Added tag: {tag}");
         }
 
-        public void AddTag(eMajorTag tag)
-        {
-
-            AddTag(tag.ToString());
-        }
+        public void AddTag(eMajorTag tag) => AddTag(tag.ToString());
 
         public void RemoveFront()
         {
+            if (tags == null || tags.Count == 0)
+            {
+                return;
+            }
 
+            tags.RemoveAt(0);
         }
 
         public void RemoveEnd()
         {
+            if (tags == null || tags.Count == 0)
+            {
+                return;
+            }
 
+            tags.RemoveAt(tags.Count - 1);
         }
 
         public void RemoveTag(string str)
         {
-            //tag.Remove(str);
+            if (tags == null || string.IsNullOrWhiteSpace(str))
+            {
+                return;
+            }
+
+            tags.RemoveAll(tag => string.Equals(tag, str, StringComparison.OrdinalIgnoreCase));
         }
+
         [Button("全てのタグをクリア")]
         public void RemoveAll()
         {
-            tags.Clear();
+            tags?.Clear();
         }
 
         public List<string> AllTagsToString()
         {
-            List<string> result = tags;
-
-
-
-            return result;
+            return tags != null ? new List<string>(tags) : new List<string>();
         }
 
         public JObject ToJson()
         {
             var result = new JObject();
+            if (tags == null)
+            {
+                return result;
+            }
 
             foreach (var item in tags.Select((value, index) => new { value, index }))
             {
-
-                result["tag" + item.index.ToString()] = item.value.ToString();
+                result[$"tag{item.index}"] = item.value;
             }
 
             return result;
@@ -169,32 +133,21 @@ namespace OpenGS
 
         public void PrintUnityDebugLog()
         {
-
+            Debug.Log($"[MultipleTags] {name}: {(tags == null ? "" : string.Join(",", tags))}");
         }
 
         public override bool Equals(object obj)
         {
-            return obj is MultipleTags tags &&
-                   base.Equals(obj) &&
-                   tag == tags.tag;
+            return obj is MultipleTags other && ReferenceEquals(this, other);
         }
 
-        public bool HasMyPlayerTag()
-        {
-            return Contains("MyPlayer");
-        }
+        public bool HasMyPlayerTag() => Contains("MyPlayer");
 
         [Button("プラットフォームタグを付加")]
-        public void AddPlatformTag()
-        {
-            AddTag("Platform");
-        }
+        public void AddPlatformTag() => AddTag("Platform");
 
         [Button("プレイヤータグ")]
-        public void AddPlayerTag()
-        {
-            AddTag("Player");
-        }
+        public void AddPlayerTag() => AddTag("Player");
 
         public override int GetHashCode()
         {
@@ -210,15 +163,19 @@ namespace OpenGS
 
         public static bool operator ==(MultipleTags t1, MultipleTags t2)
         {
+            if (ReferenceEquals(t1, t2))
+            {
+                return true;
+            }
+
+            if (t1 is null || t2 is null)
+            {
+                return false;
+            }
 
             return t1.tags == t2.tags;
         }
 
-        public static bool operator !=(MultipleTags t1, MultipleTags t2)
-        {
-
-            return !(t1 == t2);
-        }
-
+        public static bool operator !=(MultipleTags t1, MultipleTags t2) => !(t1 == t2);
     }
 }

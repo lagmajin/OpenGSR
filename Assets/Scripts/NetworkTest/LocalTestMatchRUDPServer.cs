@@ -69,6 +69,7 @@ namespace OpenGS
         public void StartServer(int port)
         {
             ResetMatchState();
+            ResetDummyPlayerState();
             listener = new EventBasedNetListener();
             server = new NetManager(listener);
             server.Start(port);
@@ -101,6 +102,13 @@ namespace OpenGS
             _teamKills.Clear();
             _teamKills["Red"] = 0;
             _teamKills["Blue"] = 0;
+        }
+
+        private void ResetDummyPlayerState()
+        {
+            testPlayerX = 0f;
+            testPlayerY = 0f;
+            testPlayerRotation = 0f;
         }
 
 
@@ -515,28 +523,14 @@ namespace OpenGS
                         // 60フレームごと（約1秒）にプレイヤー位置を送信
                         if (frameCount % 60 == 0)
                         {
-                            // ランダムに動くダミープレイヤー
-                            testPlayerX += (float)(random.NextDouble() - 0.5) * 2f;
-                            testPlayerY += (float)(random.NextDouble() - 0.5) * 2f;
-                            testPlayerRotation += (float)(random.NextDouble() - 0.5) * 45f;
-
-                            var posMsg = RUDPMessageBuilder.CreatePlayerPositionUpdate(
-                                "TestPlayer", 
-                                new Vector2(testPlayerX, testPlayerY), 
-                                testPlayerRotation
-                            );
-                            SendJson(posMsg);
+                            AdvanceDummyPlayerState();
+                            SendJson(BuildDummyPlayerPositionUpdate());
                         }
 
                         // 120フレームごと（約2秒）にゲーム状態を送信
                         if (frameCount % 120 == 0)
                         {
-                            var scores = new JObject();
-                            scores["TeamA"] = random.Next(0, 10);
-                            scores["TeamB"] = random.Next(0, 10);
-
-                            var stateMsg = RUDPMessageBuilder.CreateGameStateSync(300 - frameCount / 60, scores);
-                            SendJson(stateMsg);
+                            SendJson(BuildDummyGameStateSync(frameCount));
                         }
                     }
                 }
@@ -553,7 +547,35 @@ namespace OpenGS
             PrettyLogger.Bold("Network", "サーバー終了");
 
             running = false;
-            server.Stop();
+            server?.Stop();
+        }
+
+        private void AdvanceDummyPlayerState()
+        {
+            // ランダムに動くダミープレイヤー
+            testPlayerX += (float)(random.NextDouble() - 0.5) * 2f;
+            testPlayerY += (float)(random.NextDouble() - 0.5) * 2f;
+            testPlayerRotation += (float)(random.NextDouble() - 0.5) * 45f;
+        }
+
+        private JObject BuildDummyPlayerPositionUpdate()
+        {
+            return RUDPMessageBuilder.CreatePlayerPositionUpdate(
+                "TestPlayer",
+                new Vector2(testPlayerX, testPlayerY),
+                testPlayerRotation
+            );
+        }
+
+        private JObject BuildDummyGameStateSync(int frameCount)
+        {
+            var scores = new JObject
+            {
+                ["TeamA"] = random.Next(0, 10),
+                ["TeamB"] = random.Next(0, 10)
+            };
+
+            return RUDPMessageBuilder.CreateGameStateSync(300 - frameCount / 60, scores);
         }
 
 

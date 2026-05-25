@@ -1,66 +1,166 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
-
-
-
-//#pragma warning disable 
 
 namespace OpenGS
 {
     public class MissionMainScript : AbstractMatchMainScript
     {
         public GameObject respawnPoints;
-
         public MissionReSpawnPoints points;
-
         public MissionAndQuestMediateObject mediateObject;
-
-
         public float time = 0.0f;
+
         private new void Start()
         {
-
-            SpawnPlayer();
+            base.Start();
+            GameStart();
         }
 
         private void Update()
         {
+            if (endFlag)
+            {
+                return;
+            }
 
+            time += Time.deltaTime;
+
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                MissionClear();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                MissionFail();
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                RespawnPlayer();
+            }
         }
 
-        void SpawnPlayer()
+        private void GameStart()
         {
-            var prefabPlayer = Resources.Load("Prefabs/Player/Misty") as GameObject;
+            if (isStarted)
+            {
+                return;
+            }
 
-
-            //mediateObject.
-
-
-
+            isStarted = true;
+            endFlag = false;
+            time = 0f;
+            SpawnPlayer();
+            Debug.Log("[MissionMainScript] GameStart");
         }
 
-        void RespawnPlayer()
+        private void SpawnPlayer()
         {
+            var spawnPosition = ResolveSpawnPosition();
+            if (player != null)
+            {
+                Destroy(player);
+                player = null;
+            }
 
+            player = CreateMyPlayer(spawnPosition, ETeam.NoTeam);
+            Debug.Log($"[MissionMainScript] SpawnPlayer at {spawnPosition}");
         }
 
-        void MissionFail()
+        private Vector3 ResolveSpawnPosition()
         {
+            if (respawnPoints != null)
+            {
+                if (respawnPoints.transform.childCount > 0)
+                {
+                    return respawnPoints.transform.GetChild(0).position;
+                }
 
+                return respawnPoints.transform.position;
+            }
+
+            if (points != null)
+            {
+                return points.transform.position;
+            }
+
+            return Vector3.zero;
         }
 
-        void MissionClear()
+        private void RespawnPlayer()
         {
+            if (endFlag)
+            {
+                return;
+            }
 
+            SpawnPlayer();
+        }
+
+        private void MissionFail()
+        {
+            if (endFlag)
+            {
+                return;
+            }
+
+            endFlag = true;
+            Debug.Log("[MissionMainScript] MissionFail");
+            GoToMissionResult();
+        }
+
+        private void MissionClear()
+        {
+            if (endFlag)
+            {
+                return;
+            }
+
+            endFlag = true;
+            Debug.Log("[MissionMainScript] MissionClear");
+            GoToMissionResult();
+        }
+
+        private void GoToMissionResult()
+        {
+            var nextScene = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
+                ? mediateObject.GeneralSceneMasterData().MissionResultScene()
+                : GeneralSceneMasterData.Instance().MissionResultScene();
+
+            RequestSceneTransition(nextScene, "MissionMainToResult");
         }
 
         public override void PostEvent(AbstractGameEvent e)
         {
+            if (e == null)
+            {
+                return;
+            }
 
+            if (e is GameStartEvent)
+            {
+                GameStart();
+                return;
+            }
 
+            if (e is GameEndEvent)
+            {
+                MissionClear();
+                return;
+            }
 
+            if (e is PlayerDeadEvent deadEvent)
+            {
+                var myPlayerId = player != null ? player.GetComponent<AbstractPlayer>()?.UniqueID().ToString() : null;
+                if (!string.IsNullOrWhiteSpace(myPlayerId) && deadEvent.PlayerID() == myPlayerId)
+                {
+                    MissionFail();
+                }
+                return;
+            }
+
+            Debug.Log($"[MissionMainScript] PostEvent: {e.EventName}");
         }
-
-
     }
 }
