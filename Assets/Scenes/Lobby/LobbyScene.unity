@@ -1997,7 +1997,7 @@ MonoBehaviour:
     SerializationNodes: []
   systemSoundMasterData: {fileID: 11400000, guid: df5928a7b808aec4f86edb027bb0fd1b,
     type: 2}
-  soundMasterData: {fileID: 0}
+  soundMasterData: {fileID: 11400000, guid: 6fd089da29a58924f89ce13d7ee5bbba, type: 2}
   bgmMasterData: {fileID: 0}
   generalSceneMasterData: {fileID: 11400000, guid: 6889c6af97c6c8340b0cbdf8f0f9b650,
     type: 2}
