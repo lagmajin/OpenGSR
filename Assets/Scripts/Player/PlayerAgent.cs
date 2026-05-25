@@ -140,7 +140,13 @@ namespace OpenGS
         }
         void SetMatchManager(MatchManager matchManager)
         {
+            if (matchManager == null)
+            {
+                Debug.LogWarning("[PlayerAgent] SetMatchManager called with null");
+                return;
+            }
 
+            Debug.Log("[PlayerAgent] MatchManager assigned");
         }
 
         void StartInvincibility(float duration)
@@ -544,12 +550,19 @@ namespace OpenGS
 
         private void OnSpawn()
         {
-
+            ResetPowerupState();
+            isDashing = false;
+            dashDir = Vector2.zero;
+            isJumping = false;
+            jumpTimer = 0f;
+            invincible = false;
+            SetSpriteAlpha(1f);
         }
 
         private void DropWeapon()
         {
-
+            weaponSlots?.DropCurrentWeapon();
+            OnDropWeapon();
         }
 
         [Button("死亡")]
@@ -657,6 +670,9 @@ namespace OpenGS
 
         public void Berserk()
         {
+            IncreaseAttack(10.0f);
+            SpeedUp(10.0f);
+            Debug.Log("[PlayerAgent] Berserk activated");
         }
 
         public void AddDamage(Vector2 source, float damage, eDamageType type)
