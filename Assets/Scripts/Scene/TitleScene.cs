@@ -75,6 +75,7 @@ namespace OpenGS
 
         void OnApplicationQuit()
         {
+            Debug.Log("[TitleScene] Application quitting");
         }
 
         void LoadSettingFile()
@@ -97,14 +98,17 @@ namespace OpenGS
 
         private void OnActiveSceneChanged(Scene i_preChangedScene, Scene i_postChangedScene)
         {
+            Debug.Log($"[TitleScene] Active scene changed: {i_preChangedScene.name} -> {i_postChangedScene.name}");
         }
 
         private void OnSceneLoaded(Scene i_loadedScene, LoadSceneMode i_mode)
         {
+            Debug.Log($"[TitleScene] Scene loaded: {i_loadedScene.name}");
         }
 
         private void OnSceneUnloaded(Scene i_unloadedScene)
         {
+            Debug.Log($"[TitleScene] Scene unloaded: {i_unloadedScene.name}");
         }
 
         void quit()
@@ -155,6 +159,11 @@ namespace OpenGS
             if (playerNameField == null)
             {
                 playerNameField = FindFirstObjectByType<InputField>();
+            }
+
+            if (playerNameField != null && string.IsNullOrWhiteSpace(playerNameField.text))
+            {
+                playerNameField.text = testName;
             }
         }
     }

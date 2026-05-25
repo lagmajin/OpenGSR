@@ -20,10 +20,13 @@ namespace OpenGS
 
         private new void Start()
         {
+            SetPlayerType(EPlayerType.AI);
             if (autoScriptMachineEnable)
             {
                 EnableScriptMachine();
             }
+
+            Analyze();
         }
 
         private void EnableScriptMachine()
@@ -54,6 +57,12 @@ namespace OpenGS
         {
             if (target != null)
             {
+                var gun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
+                if (gun != null)
+                {
+                    gun.SetGunDirection(target.transform.position.x >= transform.position.x);
+                }
+
                 transform.localScale = new Vector3(
                     target.transform.position.x >= transform.position.x ? 1f : -1f,
                     transform.localScale.y,
@@ -87,21 +96,32 @@ namespace OpenGS
         {
             GetTargets();
             GetTargetPos();
+
+            if (targetList.Count > 0)
+            {
+                Debug.Log($"[AIPlayerController] Attack target={targetList[0].name}");
+            }
         }
 
         void Avoid()
         {
             Debug.Log("[AIPlayerController] Avoid");
+            mode = eAIBattleMode.Wait;
         }
 
         void Patrol()
         {
             Debug.Log("[AIPlayerController] Patrol");
+            Analyze();
         }
 
         void Wait()
         {
             Debug.Log("[AIPlayerController] Wait");
+            if (targetList.Count > 0)
+            {
+                mode = eAIBattleMode.Attack;
+            }
         }
 
         public void Analyze()
@@ -175,6 +195,17 @@ namespace OpenGS
 
         void OnTriggerEnter2D(Collider2D other)
         {
+            if (other == null)
+            {
+                return;
+            }
+
+            var player = other.GetComponentInParent<AbstractPlayer>();
+            if (player != null && player.gameObject != gameObject)
+            {
+                AddToTargetList(player.gameObject);
+                mode = eAIBattleMode.Attack;
+            }
         }
 
         private eWeaponType SelectWeapon()
@@ -184,11 +215,15 @@ namespace OpenGS
 
         public override void OnSpawn()
         {
+            base.OnSpawn();
+            SetPlayerType(EPlayerType.AI);
             SelectWeapon();
         }
 
         public override void OnReSpawn()
         {
+            base.OnReSpawn();
+            Analyze();
         }
     }
 }
