@@ -1,89 +1,164 @@
-﻿#pragma warning disable 0108
+#pragma warning disable 0108
 
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
-
-
 
 namespace OpenGS
 {
-    //[RequireComponent(MultipleTags)]
-    public class MetalBreakerMainScript : AbstractMatchMainScript
+    public class MetalBreakerMainScript : AbstractMatchMainScript, IMetalBreakerMainScript
     {
-        [SerializeField]
-        public GameObject respawnPoints;
-
-        [SerializeField]
-        public GameObject PlayerPrefabStorage;
-
-        [SerializeField]
-        public float time = 0.0f;
+        [SerializeField] public GameObject respawnPoints;
+        [SerializeField] public GameObject PlayerPrefabStorage;
+        [SerializeField] public float time = 0.0f;
 
         private void Start()
         {
-
-
-            Invoke("SpawnPlayer", 3.0f);
-
+            base.Start();
+            GameStart();
         }
 
         private void Update()
         {
+            if (endFlag)
+            {
+                return;
+            }
 
+            time += Time.deltaTime;
 
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                OnGameFinished();
+            }
 
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                OnPlayerDead();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F3))
+            {
+                GaveUp();
+            }
         }
 
-        void SpwanPlayer()
+        private void GameStart()
         {
+            if (isStarted)
+            {
+                return;
+            }
 
+            isStarted = true;
+            endFlag = false;
+            time = 0f;
+            SpawnPlayer();
+            SpawnEnemy();
         }
 
-        void RespawnPlayer()
+        private void SpawnPlayer()
         {
+            var prefab = PlayerPrefabStorage != null
+                ? PlayerPrefabStorage
+                : Resources.Load<GameObject>("Prefabs/Player/Misty");
 
+            if (prefab == null)
+            {
+                Debug.LogWarning("[MetalBreakerMainScript] Player prefab not found.");
+                return;
+            }
+
+            var spawnPosition = respawnPoints != null ? respawnPoints.transform.position : Vector3.zero;
+            player = Instantiate(prefab, spawnPosition, Quaternion.identity);
+            Debug.Log($"[MetalBreakerMainScript] SpawnPlayer at {spawnPosition}");
         }
 
-        void GaveUp()
+        private void RespawnPlayer()
         {
+            if (endFlag)
+            {
+                return;
+            }
 
+            if (player != null)
+            {
+                Destroy(player);
+                player = null;
+            }
 
+            SpawnPlayer();
         }
 
-        void SpawnEnemy()
+        private void GaveUp()
         {
+            if (endFlag)
+            {
+                return;
+            }
 
+            endFlag = true;
+            BackToLobby();
         }
 
-        void EndGame()
+        private void SpawnEnemy()
         {
-
+            Debug.Log("[MetalBreakerMainScript] SpawnEnemy");
         }
 
+        private void EndGame()
+        {
+            if (endFlag)
+            {
+                return;
+            }
+
+            endFlag = true;
+            var nextScene = "MetalBreakerResultScene";
+            SceneManager.LoadSceneAsync(nextScene);
+        }
 
         public void OnPlayerDead()
         {
-
+            RespawnPlayer();
         }
+
         public void OnGameFinished()
         {
-
-        }
-        void BackToLobby()
-        {
-
+            EndGame();
         }
 
-        override public void PostEvent(AbstractGameEvent e)
+        private void BackToLobby()
         {
-            if (e.GetType() == typeof(PlayerDeadEvent))
+            var nextScene = GeneralSceneMasterData.Instance().LobbyScene();
+            SceneManager.LoadSceneAsync(nextScene);
+        }
+
+        public override void PostEvent(AbstractGameEvent e)
+        {
+            if (e == null)
             {
-
+                return;
             }
 
+            if (e is GameStartEvent)
+            {
+                GameStart();
+                return;
+            }
 
+            if (e is GameEndEvent)
+            {
+                EndGame();
+                return;
+            }
 
+            if (e is PlayerDeadEvent)
+            {
+                OnPlayerDead();
+                return;
+            }
+
+            Debug.Log($"[MetalBreakerMainScript] PostEvent: {e.EventName}");
         }
     }
 }

@@ -8,6 +8,7 @@ namespace OpenGS
     /// </summary>
     public interface IMetalBreakerMainScript : IEventSystemHandler
     {
-        // TODO: MetalBreaker 固有のメソッドを追加する
+        void OnPlayerDead();
+        void OnGameFinished();
     }
 }

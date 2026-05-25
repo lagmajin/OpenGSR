@@ -1,18 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class NewBehaviourScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    [SerializeField] private bool activateOnStart = true;
+    [SerializeField] private float destroyAfterSeconds = 0f;
+
+    private void Start()
     {
-        
+        if (!activateOnStart)
+        {
+            gameObject.SetActive(false);
+        }
+
+        if (destroyAfterSeconds > 0f)
+        {
+            Destroy(gameObject, destroyAfterSeconds);
+        }
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+    }
+
+    public void SetActiveState(bool active)
+    {
+        gameObject.SetActive(active);
     }
 }
