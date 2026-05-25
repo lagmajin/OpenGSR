@@ -1,16 +1,12 @@
-﻿using OpenGSCore;
+using OpenGSCore;
 using System.Collections.Generic;
 using UnityEngine;
-//using Unity.VisualScripting;
-
-
 
 #pragma warning disable 0414
 
 namespace OpenGS
 {
-
-    public class AIPlayerController : AbstractPlayer,IDamageable,IPlayer
+    public class AIPlayerController : AbstractPlayer, IDamageable, IPlayer
     {
         [SerializeField]
         private eAIStrength strength_ = eAIStrength.Normal;
@@ -18,12 +14,10 @@ namespace OpenGS
         private eAIPlayerType playerType_ = eAIPlayerType.Attcker;
 
         private eAIBattleMode mode = eAIBattleMode.Patrol;
-
-        private List<GameObject> targetList;
-        //[SerializeField]
-        //private ScriptMachine machine;
+        private readonly List<GameObject> targetList = new();
         [SerializeField]
         private bool autoScriptMachineEnable = true;
+
         private new void Start()
         {
             if (autoScriptMachineEnable)
@@ -34,100 +28,108 @@ namespace OpenGS
 
         private void EnableScriptMachine()
         {
-            //machine.enabled = true;
-
-            Debug.Log("Test");
+            Debug.Log("[AIPlayerController] Script machine enabled");
         }
 
         private void Update()
         {
-            if (mode == eAIBattleMode.Patrol)
+            switch (mode)
             {
-                Patrol();
+                case eAIBattleMode.Patrol:
+                    Patrol();
+                    break;
+                case eAIBattleMode.Wait:
+                    Wait();
+                    break;
+                case eAIBattleMode.Attack:
+                    Attack();
+                    break;
+                case eAIBattleMode.Avoid:
+                    Avoid();
+                    break;
             }
-
-            if (mode == eAIBattleMode.Wait)
-            {
-                Wait();
-            }
-
-            if (mode == eAIBattleMode.Attack)
-            {
-                Attack();
-            }
-
-            if (mode == eAIBattleMode.Avoid)
-            {
-                Avoid();
-            }
-
-
         }
 
         private void AimTarget(GameObject target)
         {
-
+            if (target != null)
+            {
+                transform.localScale = new Vector3(
+                    target.transform.position.x >= transform.position.x ? 1f : -1f,
+                    transform.localScale.y,
+                    transform.localScale.z);
+            }
         }
 
         private void GetTargets()
         {
-
+            targetList.Clear();
+            foreach (var player in FindObjectsOfType<AbstractPlayer>())
+            {
+                if (player != null && player.gameObject != gameObject)
+                {
+                    targetList.Add(player.gameObject);
+                }
+            }
         }
 
         private void GetTargetPos()
         {
+            if (targetList.Count == 0)
+            {
+                return;
+            }
 
+            AimTarget(targetList[0]);
         }
 
         void Attack()
         {
-
+            GetTargets();
+            GetTargetPos();
         }
 
         void Avoid()
         {
-
+            Debug.Log("[AIPlayerController] Avoid");
         }
 
         void Patrol()
         {
-
+            Debug.Log("[AIPlayerController] Patrol");
         }
-
 
         void Wait()
         {
-
+            Debug.Log("[AIPlayerController] Wait");
         }
 
         public void Analyze()
         {
-
+            GetTargets();
         }
 
         public void SetAIStrength(eAIStrength strength = eAIStrength.Normal)
         {
-            Debug.Log("AI TypeChanged");
-
             strength_ = strength;
-
         }
 
         public void SetAIPlayerType(eAIPlayerType type = eAIPlayerType.Attcker)
         {
-
-
-
+            playerType_ = type;
         }
 
         public void AddToTargetList(GameObject player)
         {
-            Debug.Log("TargetName:" + player.gameObject.name);
+            if (player == null)
+            {
+                return;
+            }
 
-            targetList.Add(player);
-
-
-
+            if (!targetList.Contains(player))
+            {
+                targetList.Add(player);
+            }
         }
 
         public void RemoveToTargetList(GameObject player)
@@ -137,7 +139,8 @@ namespace OpenGS
 
         public override void AddDamage(Vector2 source, float damage, eDamageType type)
         {
-            //throw new System.NotImplementedException();
+            Debug.Log($"[AIPlayerController] Damage {damage}");
+            base.AddDamage(source, damage, type);
         }
 
         public override void IncreaseAttack(float sec)
@@ -162,14 +165,13 @@ namespace OpenGS
 
         public eAIBattleMode AIBattleMode()
         {
-            return eAIBattleMode.Attack;
+            return mode;
         }
 
         public void SetAIMode(eAIBattleMode mode)
         {
-
+            this.mode = mode;
         }
-
 
         void OnTriggerEnter2D(Collider2D other)
         {
@@ -177,29 +179,16 @@ namespace OpenGS
 
         private eWeaponType SelectWeapon()
         {
-            eWeaponType type;
-
-            type = eWeaponType.M60;
-
-            return type;
+            return eWeaponType.M60;
         }
 
         public override void OnSpawn()
         {
-            var type = SelectWeapon();
-
-            //EquipWeapon(type);
-
+            SelectWeapon();
         }
 
         public override void OnReSpawn()
         {
-
-
         }
     }
-
-
-
-
 }

@@ -103,11 +103,10 @@ namespace OpenGS
 
         private void SetupGame()
         {
-            //var database=matchRoomManager.OnlineMatchRoom.database;
-
-            //database.player
-
-
+            if (matchRoomManager != null && matchRoomManager.WaitRoom != null)
+            {
+                Debug.Log($"[DM] SetupGame room={matchRoomManager.WaitRoom.RoomName} players={matchRoomManager.WaitRoom.PlayerCount}");
+            }
         }
 
         void GameStart()
@@ -121,14 +120,13 @@ namespace OpenGS
 
         void SetUpUI()
         {
-            // UI管理システムの初期化など（必要に応じて）
-            // Instantiate(uiCanvasMasterData.PlayerStatusUI);
+            Debug.Log("[DM] SetUpUI");
         }
 
         void SuddenDeathStart()
         {
             var canvasIf = uiManager.GetComponent(typeof(IBattleSceneUIManager)) as IBattleSceneUIManager;
-
+            Debug.Log("[DM] SuddenDeathStart");
 
         }
 

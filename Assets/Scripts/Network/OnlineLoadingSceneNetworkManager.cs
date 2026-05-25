@@ -79,6 +79,8 @@ namespace OpenGS
             var json = new JObject
             {
                 ["MessageType"] = MessageType.LoadingMessage,
+                ["PlayerID"] = ResolveLocalPlayerId(),
+                ["AccountName"] = ResolveLocalPlayerName(),
                 ["Message"] = message ?? string.Empty
             };
             SendToServer(json);
@@ -175,6 +177,11 @@ namespace OpenGS
                 if (udpPort.HasValue)
                 {
                     OnlineManager.Instance.MatchServerInfo.UdpPort = udpPort.Value;
+                }
+
+                if (onlineLoadingScene is OnlineLoadingScene concreteScene)
+                {
+                    concreteScene.OnMatchServerConnected();
                 }
 
                 return;
@@ -304,6 +311,11 @@ namespace OpenGS
         {
             var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
             return string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
+        }
+
+        public void ParseServerMessage(JObject json)
+        {
+            HandleServerMessage(json);
         }
     }
 }

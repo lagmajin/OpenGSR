@@ -173,6 +173,7 @@ namespace OpenGS
 
         public void OnMatchServerConnected()
         {
+            TryConnectToMatchServer();
         }
 
         public void OnLoadingFailed()
@@ -182,6 +183,7 @@ namespace OpenGS
 
         void GoToBattleScene()
         {
+            TryEnterMap();
         }
 
         void BackToWaitRoom()
@@ -193,10 +195,12 @@ namespace OpenGS
 
         void SendChat(string message)
         {
+            networkManager?.SendLoadingMessage(message);
         }
 
         public void ParseServerMessage()
         {
+            Debug.Log("[OnlineLoadingScene] ParseServerMessage invoked.");
         }
 
         [Button("ローディング")]

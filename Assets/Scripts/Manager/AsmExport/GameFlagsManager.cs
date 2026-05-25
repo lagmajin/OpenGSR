@@ -13,7 +13,8 @@ namespace OpenGS
         
         private GameFlagsManager()
         {
-            //TODO: initialization
+            beforeSceneName = string.Empty;
+            beforeStage = string.Empty;
         }
 
         public string BeforeSceneName { get => beforeSceneName; set => beforeSceneName = value; }

@@ -444,10 +444,17 @@ namespace OpenGS
 
         public void ParseNetworkMatchMessageFromServer(JObject json)
         {
+            if (json == null)
+            {
+                return;
+            }
+
+            ParseMessageFromServer(json);
         }
 
         public void TestFunc()
         {
+            Debug.Log("[OnlineLobbyScene] TestFunc");
         }
 
         // ─── ロビー内アクション ───────────────────────────────────────

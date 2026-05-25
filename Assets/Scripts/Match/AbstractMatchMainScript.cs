@@ -181,7 +181,10 @@ namespace OpenGS
 
         public List<GameObject> AllPlayers()
         {
-            return null;
+            return GameObject.FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None)
+                .Select(player => player != null ? player.gameObject : null)
+                .Where(gameObject => gameObject != null)
+                .ToList();
         }
 
         public abstract void PostEvent(AbstractGameEvent e);

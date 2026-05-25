@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using DG.Tweening;
+using Newtonsoft.Json.Linq;
 using OpenGSCore;
 using Sirenix.OdinInspector;
 using TMPro;
@@ -48,6 +49,7 @@ namespace OpenGS
         private readonly List<GameObject> activePlayerSlotObjects = new List<GameObject>();
         private SynchronizationContext mainThread;
         private Coroutine startCountdownCoroutine;
+        private bool suppressRoomSettingPush;
 
         public override SynchronizationContext MainThread()
         {
@@ -140,10 +142,25 @@ namespace OpenGS
 
         void OnBackRoomFromBattle()
         {
+            CancelCountdown();
+            RefreshWaitRoomUi();
         }
 
         public void ChangeGameMode()
         {
+            var room = ResolveWaitRoom();
+            if (room == null)
+            {
+                return;
+            }
+
+            var modes = GameMode.AllGameMode();
+            var currentIndex = modes.FindIndex(mode => mode == room.GameMode);
+            var nextMode = currentIndex < 0
+                ? modes[0]
+                : modes[(currentIndex + 1) % modes.Count];
+
+            ChangeGameMode(nextMode);
         }
 
         public void ChangeGameMode(EGameMode mode)
@@ -155,6 +172,10 @@ namespace OpenGS
             }
 
             SetText(gameModeText, gameModeTmpText, mode.ToString());
+            if (!suppressRoomSettingPush)
+            {
+                PushWaitRoomSettingsToServer();
+            }
         }
 
         public void ChangeMap(EMap map)
@@ -168,6 +189,11 @@ namespace OpenGS
             if (room != null)
             {
                 room.TeamBalance = balance;
+            }
+
+            if (!suppressRoomSettingPush)
+            {
+                PushWaitRoomSettingsToServer();
             }
         }
 
@@ -220,10 +246,24 @@ namespace OpenGS
 
         public void Plus()
         {
+            var room = ResolveWaitRoom();
+            if (room == null)
+            {
+                return;
+            }
+
+            ChangeRoomCapacity(Mathf.Min(room.Capacity + 1, 20));
         }
 
         public void Minus()
         {
+            var room = ResolveWaitRoom();
+            if (room == null)
+            {
+                return;
+            }
+
+            ChangeRoomCapacity(Mathf.Max(room.Capacity - 1, 1));
         }
 
         [Button("チャット送信テスト")]
@@ -311,6 +351,10 @@ namespace OpenGS
             }
 
             SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
+            if (!suppressRoomSettingPush)
+            {
+                PushWaitRoomSettingsToServer();
+            }
         }
 
         public void ChangeRoomCapacity(int capacity)
@@ -318,10 +362,14 @@ namespace OpenGS
             var room = ResolveWaitRoom();
             if (room != null)
             {
-                room.Capacity = capacity;
+                room.Capacity = Mathf.Max(1, capacity);
             }
 
             SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
+            if (!suppressRoomSettingPush)
+            {
+                PushWaitRoomSettingsToServer();
+            }
         }
 
         private void LoadRoomSetting()
@@ -332,15 +380,23 @@ namespace OpenGS
                 return;
             }
 
-            var uiManager = mediateObject != null ? mediateObject.WaitRoomUiManager() : this;
-            if (uiManager == null)
+            suppressRoomSettingPush = true;
+            try
             {
-                uiManager = this;
-            }
+                var uiManager = mediateObject != null ? mediateObject.WaitRoomUiManager() : this;
+                if (uiManager == null)
+                {
+                    uiManager = this;
+                }
 
-            uiManager.ChangeRoomTitle(room.RoomName);
-            uiManager.ChangeRoomCapacity(room.Capacity);
-            uiManager.ChangeGameMode(room.GameMode);
+                uiManager.ChangeRoomTitle(room.RoomName);
+                uiManager.ChangeRoomCapacity(room.Capacity);
+                uiManager.ChangeGameMode(room.GameMode);
+            }
+            finally
+            {
+                suppressRoomSettingPush = false;
+            }
         }
 
         private void AutoBindIfNeeded()
@@ -485,9 +541,17 @@ namespace OpenGS
             }
 
             roomOwner = IsLocalPlayerOwner(room);
-            ChangeRoomTitle(room.RoomName);
-            ChangeRoomCapacity(room.Capacity);
-            ChangeGameMode(room.GameMode);
+            suppressRoomSettingPush = true;
+            try
+            {
+                ChangeRoomTitle(room.RoomName);
+                ChangeRoomCapacity(room.Capacity);
+                ChangeGameMode(room.GameMode);
+            }
+            finally
+            {
+                suppressRoomSettingPush = false;
+            }
             UpdateReadyButtonVisual();
             UpdateActionButtons();
             RenderPlayerSlots(room.PlayerList);
@@ -625,6 +689,30 @@ namespace OpenGS
         private ClientWaitRoom ResolveWaitRoom()
         {
             return DependencyInjectionConfig.Resolve<WaitRoomManager>()?.WaitRoom;
+        }
+
+        private void PushWaitRoomSettingsToServer()
+        {
+            if (networkManager == null)
+            {
+                return;
+            }
+
+            var room = ResolveWaitRoom();
+            if (room == null)
+            {
+                return;
+            }
+
+            var settings = new JObject
+            {
+                ["RoomName"] = room.RoomName ?? string.Empty,
+                ["Capacity"] = room.Capacity,
+                ["GameMode"] = room.GameMode.ToString(),
+                ["TeamBalance"] = room.TeamBalance
+            };
+
+            networkManager.SendWaitRoomSettingsChange(settings);
         }
 
         private bool IsLocalPlayerOwner(ClientWaitRoom room)

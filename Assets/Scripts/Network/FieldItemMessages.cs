@@ -192,9 +192,19 @@ namespace OpenGS
         {
             if (!_isInitialized) return;
 
-            // TODO: ネットワークマネージャーにメッセージを送信
             var message = FieldItemMessages.CreatePickupMessage(_itemId, playerId);
-            // NetworkManager.SendUdpMessage(message);
+
+            try
+            {
+                var networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+                networkManager?.SendMessage(message);
+            }
+            catch
+            {
+                // Keep the local item state usable even if the network layer is unavailable.
+            }
+
+            _manager?.PickupItem(_itemId, playerId);
         }
     }
 }

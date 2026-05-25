@@ -79,10 +79,20 @@ namespace OpenGS
 
         void LoadSettingFile()
         {
+            if (playerNameField != null && string.IsNullOrWhiteSpace(playerNameField.text))
+            {
+                playerNameField.text = testName;
+            }
         }
 
         public void ChangeName(string str)
         {
+            testName = string.IsNullOrWhiteSpace(str) ? testName : str.Trim();
+
+            if (playerNameField != null)
+            {
+                playerNameField.text = testName;
+            }
         }
 
         private void OnActiveSceneChanged(Scene i_preChangedScene, Scene i_postChangedScene)
@@ -109,6 +119,7 @@ namespace OpenGS
         [Button("エラーメッセージ表示テスト")]
         public void ShowErrorMessage()
         {
+            Debug.LogWarning("[TitleScene] Error message test");
         }
 
         public void ConnectOnlineLobby()
@@ -133,11 +144,18 @@ namespace OpenGS
         [Button("アセットエクスポートシーンへ移動")]
         public void GoToExportAssetsScene()
         {
+            bgmFlag = true;
+            Debug.Log("[TitleScene] GoToExportAssetsScene");
+            SceneManager.LoadScene("ExportAssetScene");
         }
 
         [Button("自動セット")]
         public void AutoSet()
         {
+            if (playerNameField == null)
+            {
+                playerNameField = FindFirstObjectByType<InputField>();
+            }
         }
     }
 }

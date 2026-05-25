@@ -1,18 +1,13 @@
-﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using UnityEngine;
 
 namespace OpenGS
 {
-    class EventManager:SingletonMonoBehaviour<EventManager>
+    class EventManager : SingletonMonoBehaviour<EventManager>
     {
-        bool threadEnd = false;
-
-        List<OpenGSBaseClass> classess_;
-
+        private bool threadEnd = false;
+        private readonly List<OpenGSBaseClass> classess_ = new();
 
         EventManager()
         {
@@ -21,38 +16,42 @@ namespace OpenGS
 
         private void threadFunc(object state)
         {
-            while(true)
+            while (!threadEnd)
             {
-               Task.Delay(3000);
-
+                Thread.Sleep(3000);
             }
-
         }
 
         private void Update()
         {
-            
         }
 
         void addEventListner(OpenGSBaseClass cl)
         {
+            if (cl == null)
+            {
+                return;
+            }
 
+            if (!classess_.Contains(cl))
+            {
+                classess_.Add(cl);
+            }
         }
 
         void removeAllListner()
         {
-
+            classess_.Clear();
         }
 
         public void sendEvent()
         {
-
+            Debug.Log("[EventManager] sendEvent");
         }
 
         public void postEvent()
         {
-
+            Debug.Log("[EventManager] postEvent");
         }
-
     }
 }

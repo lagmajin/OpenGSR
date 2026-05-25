@@ -1,4 +1,3 @@
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace OpenGS
@@ -8,10 +7,12 @@ namespace OpenGS
     {
         public void DisableUI()
         {
+            gameObject.SetActive(false);
         }
 
         public void EnableUI()
         {
+            gameObject.SetActive(true);
         }
     }
 }

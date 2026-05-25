@@ -64,6 +64,7 @@ namespace OpenGS
 
         public void CreateDebugRoom()
         {
+            Debug.Log("[CTF] CreateDebugRoom");
         }
 
         void GameSetup()
@@ -91,6 +92,10 @@ namespace OpenGS
 
         private void SetUpUI()
         {
+            if (CTFScoreUIManager.Instance != null)
+            {
+                CTFScoreUIManager.Instance.UpdateScore(0, 0);
+            }
         }
 
         private void CreateNewMyPlayer()
@@ -119,14 +124,23 @@ namespace OpenGS
 
         private void CreateOtherPlayers()
         {
+            Debug.Log("[CTF] CreateOtherPlayers");
         }
 
         void OnEnable()
         {
+            if (Instance == null)
+            {
+                Instance = this;
+            }
         }
 
         void OnDisable()
         {
+            if (Instance == this)
+            {
+                Instance = null;
+            }
         }
 
         void OnDestroy()
@@ -138,6 +152,17 @@ namespace OpenGS
         // Update is called once per frame
         void Update()
         {
+            if (GameManager != null && GameManager.IsOnlineGameMode && networkManager == null)
+            {
+                try
+                {
+                    networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+                }
+                catch
+                {
+                    networkManager = null;
+                }
+            }
         }
 
         void FlagCaptured(in TeamEventPlayerInfo capturedPlayerInfo)
@@ -173,10 +198,12 @@ namespace OpenGS
 
         void RecoveryRedFlag()
         {
+            redTeamFlagStand?.SetFlag();
         }
 
         void RecoveryBlueFlag()
         {
+            blueTeamFlagStand?.SetFlag();
         }
 
         void GoToResultScene()
@@ -334,7 +361,19 @@ namespace OpenGS
 
         public List<IFlagStand> AllFlagStands()
         {
-            return null;
+            var result = new List<IFlagStand>();
+
+            if (redTeamFlagStand != null)
+            {
+                result.Add(redTeamFlagStand);
+            }
+
+            if (blueTeamFlagStand != null)
+            {
+                result.Add(blueTeamFlagStand);
+            }
+
+            return result;
         }
 
         [Button("フラッグキャプチャーテスト")]

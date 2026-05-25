@@ -135,9 +135,20 @@ namespace OpenGS
             }, "ResultToWaitRoom");
         }
 
-        public void TestFunc() { }
-        public void OnConnected() { }
-        public void OnDisconnected() { }
+        public void TestFunc()
+        {
+            Debug.Log("[OnlineResultScene] TestFunc");
+        }
+
+        public void OnConnected()
+        {
+            Debug.Log("[OnlineResultScene] Connected");
+        }
+
+        public void OnDisconnected()
+        {
+            Debug.Log("[OnlineResultScene] Disconnected");
+        }
 
         private static string ReadString(JObject json, params string[] keys)
         {
