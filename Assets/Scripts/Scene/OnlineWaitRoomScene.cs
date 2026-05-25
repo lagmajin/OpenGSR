@@ -19,7 +19,7 @@ namespace OpenGS
 {
     public partial class OnlineWaitRoomScene : AbstractNonBattleScene, IOnlineWaitRoom, IWaitRoom, IWaitRoomUiManager
     {
-        private GeneralServerNetworkManager generalNetworkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+        private GeneralServerNetworkManager generalNetworkManager;
         public Button chara;
         public Button map;
 
@@ -31,37 +31,48 @@ namespace OpenGS
         [SerializeField] [Required] private WaitRoomMediateObject mediateObject;
         [SerializeField] private GameObject weaponLimitDialog;
         [SerializeField] private Button weaponLimitButton;
+        [SerializeField] private Button gameModeButton;
+        [SerializeField] private Button inviteButton;
+        [SerializeField] private Button roomNameApplyButton;
         [SerializeField] private Button readyButton;
         [SerializeField] private Button startButton;
         [SerializeField] private Button exitButton;
+        [SerializeField] private Button plusButton;
+        [SerializeField] private Button minusButton;
         [SerializeField] private Graphic readyButtonGraphic;
         [SerializeField] private Text roomTitleText;
         [SerializeField] private TMP_Text roomTitleTmpText;
+        [SerializeField] private InputField roomNameLegacyInputField;
+        [SerializeField] private TMP_InputField roomNameTmpInputField;
         [SerializeField] private Text gameModeText;
         [SerializeField] private TMP_Text gameModeTmpText;
+        [SerializeField] private Text teamBalanceText;
+        [SerializeField] private TMP_Text teamBalanceTmpText;
         [SerializeField] private Transform waitRoomPlayerSlotsRoot;
         [SerializeField] private GameObject playerSlotTemplate;
+        [SerializeField] private InviteDialog inviteDialog;
+        [SerializeField] private CharacterSelectDialog characterSelectDialog;
 
         private bool roomOwner = true;
+        private bool forceLocalPlayerOwnerInEditorDirect = false;
 
         [SerializeField] private WaitRoomPlayerSlot mySlot;
 
         private readonly List<GameObject> activePlayerSlotObjects = new List<GameObject>();
         private SynchronizationContext mainThread;
         private Coroutine startCountdownCoroutine;
-        private bool suppressRoomSettingPush;
 
         public override SynchronizationContext MainThread()
         {
             return mainThread;
         }
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
 
             mainThread = SynchronizationContext.Current;
+            generalNetworkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
             AutoBindIfNeeded();
             SetupListeners();
         }
@@ -73,13 +84,18 @@ namespace OpenGS
             timer.timeupEvent.AddListener(TimeUp);
 
             LoadRoomSetting();
+            InitializePlayerInfoUi();
             BindNetworkStreams();
             RefreshWaitRoomUi();
         }
 
-        protected override void Update()
+        void Update()
         {
-            base.Update();
+            if (Input.GetKeyDown(KeyCode.F9))
+            {
+                RequestGameStart();
+            }
+
             if (Input.anyKey)
             {
                 timer.ReStartTimer();
@@ -119,23 +135,16 @@ namespace OpenGS
 
         protected override void OnStartFromEditorDirectly()
         {
-            DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
-            PlayWaitRoomBgm();
+            EnableLocalOwnerInEditor();
         }
 
         protected override void OnStartUnityEditor()
         {
-            AutoBindIfNeeded();
-            SetupListeners();
+            EnableLocalOwnerInEditor();
         }
 
         protected override void OnQuitUnityEditor()
         {
-            CancelCountdown();
-            if (networkManager != null)
-            {
-                networkManager.SendWaitRoomLeave(ResolveLocalPlayerId());
-            }
         }
 
         private void Reset()
@@ -153,28 +162,36 @@ namespace OpenGS
 
         void OnBackRoomFromBattle()
         {
-            CancelCountdown();
-            RefreshWaitRoomUi();
         }
 
         public void ChangeGameMode()
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             var room = ResolveWaitRoom();
             if (room == null)
             {
                 return;
             }
 
-            var modes = GameMode.AllGameMode();
-            var currentIndex = modes.FindIndex(mode => mode == room.GameMode);
-            var nextMode = currentIndex < 0
-                ? modes[0]
-                : modes[(currentIndex + 1) % modes.Count];
-
-            ChangeGameMode(nextMode);
+            var nextMode = ResolveNextGameMode(room.GameMode);
+            ApplyGameMode(nextMode, true);
         }
 
         public void ChangeGameMode(EGameMode mode)
+        {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
+            ApplyGameMode(mode, true);
+        }
+
+        private void ApplyGameMode(EGameMode mode, bool sendToServer)
         {
             var room = ResolveWaitRoom();
             if (room != null)
@@ -182,30 +199,46 @@ namespace OpenGS
                 room.GameMode = mode;
             }
 
-            SetText(gameModeText, gameModeTmpText, mode.ToString());
-            if (!suppressRoomSettingPush)
+            if (sendToServer)
             {
-                PushWaitRoomSettingsToServer();
+                SendWaitRoomSettingsChange(new JObject
+                {
+                    ["GameMode"] = mode.ToString()
+                });
             }
+
+            SetText(gameModeText, gameModeTmpText, mode.ToString());
         }
 
         public void ChangeMap(EMap map)
         {
-            Debug.Log("Map " + map);
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
+            ApplyMap(map, true);
         }
 
         public void ChangeTeamBalance(bool balance)
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             var room = ResolveWaitRoom();
             if (room != null)
             {
                 room.TeamBalance = balance;
             }
 
-            if (!suppressRoomSettingPush)
+            SendWaitRoomSettingsChange(new JObject
             {
-                PushWaitRoomSettingsToServer();
-            }
+                ["TeamBalance"] = balance
+            });
+
+            SetTeamBalanceText();
         }
 
         public bool IsRoomOwner()
@@ -233,18 +266,13 @@ namespace OpenGS
 
         void Ready(bool ready)
         {
-            if (networkManager == null)
-            {
-                return;
-            }
-
             if (ready)
             {
-                networkManager.SendReady();
+                SendReadyRequest();
             }
             else
             {
-                networkManager.SendUnready();
+                SendUnReadyRequest();
             }
         }
 
@@ -257,24 +285,34 @@ namespace OpenGS
 
         public void Plus()
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             var room = ResolveWaitRoom();
             if (room == null)
             {
                 return;
             }
 
-            ChangeRoomCapacity(Mathf.Min(room.Capacity + 1, 20));
+            ChangeRoomCapacity(Mathf.Min(room.Capacity + 1, 16));
         }
 
         public void Minus()
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
             var room = ResolveWaitRoom();
             if (room == null)
             {
                 return;
             }
 
-            ChangeRoomCapacity(Mathf.Max(room.Capacity - 1, 1));
+            ChangeRoomCapacity(Mathf.Max(room.PlayerCount, room.Capacity - 1));
         }
 
         [Button("チャット送信テスト")]
@@ -355,32 +393,74 @@ namespace OpenGS
 
         public void ChangeRoomTitle(string roomTitle)
         {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
+            ApplyRoomTitle(roomTitle, true);
+        }
+
+        private void ApplyRoomTitle(string roomTitle, bool sendToServer)
+        {
             var room = ResolveWaitRoom();
             if (room != null)
             {
                 room.RoomName = roomTitle ?? "";
             }
 
-            SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
-            if (!suppressRoomSettingPush)
+            if (sendToServer)
             {
-                PushWaitRoomSettingsToServer();
+                SendWaitRoomSettingsChange(new JObject
+                {
+                    ["RoomName"] = roomTitle ?? ""
+                });
             }
+
+            SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
         }
 
         public void ChangeRoomCapacity(int capacity)
         {
+            ApplyRoomCapacity(capacity, true);
+        }
+
+        private void ApplyRoomCapacity(int capacity, bool sendToServer)
+        {
             var room = ResolveWaitRoom();
             if (room != null)
             {
-                room.Capacity = Mathf.Max(1, capacity);
+                room.Capacity = capacity;
+            }
+
+            if (sendToServer)
+            {
+                SendWaitRoomSettingsChange(new JObject
+                {
+                    ["Capacity"] = capacity
+                });
             }
 
             SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
-            if (!suppressRoomSettingPush)
+        }
+
+        private void ApplyMap(EMap map, bool sendToServer)
+        {
+            var room = ResolveWaitRoom();
+            if (room != null)
             {
-                PushWaitRoomSettingsToServer();
+                room.Map = map;
             }
+
+            if (sendToServer)
+            {
+                SendWaitRoomSettingsChange(new JObject
+                {
+                    ["Map"] = map.ToString()
+                });
+            }
+
+            SetText(roomTitleText, roomTitleTmpText, BuildRoomTitle());
         }
 
         private void LoadRoomSetting()
@@ -391,23 +471,16 @@ namespace OpenGS
                 return;
             }
 
-            suppressRoomSettingPush = true;
-            try
+            var uiManager = mediateObject != null ? mediateObject.WaitRoomUiManager() : this;
+            if (uiManager == null)
             {
-                var uiManager = mediateObject != null ? mediateObject.WaitRoomUiManager() : this;
-                if (uiManager == null)
-                {
-                    uiManager = this;
-                }
+                uiManager = this;
+            }
 
-                uiManager.ChangeRoomTitle(room.RoomName);
-                uiManager.ChangeRoomCapacity(room.Capacity);
-                uiManager.ChangeGameMode(room.GameMode);
-            }
-            finally
-            {
-                suppressRoomSettingPush = false;
-            }
+            ApplyRoomTitle(room.RoomName, false);
+            ApplyRoomCapacity(room.Capacity, false);
+            ApplyMap(room.Map, false);
+            ApplyGameMode(room.GameMode, false);
         }
 
         private void AutoBindIfNeeded()
@@ -425,6 +498,17 @@ namespace OpenGS
             readyButton ??= FindInactiveComponent<Button>("ReadyButton");
             startButton ??= FindInactiveComponent<Button>("StartButton");
             exitButton ??= FindInactiveComponent<Button>("ExitButton");
+            map ??= FindInactiveComponent<Button>("MapSelectButton");
+            plusButton ??= FindInactiveComponent<Button>("Plus");
+            minusButton ??= FindInactiveComponent<Button>("Minus");
+            gameModeButton ??= FindInactiveComponent<Button>("GameModeButton");
+            inviteButton ??= FindInactiveComponent<Button>("InviteButton");
+            roomNameApplyButton ??= FindInactiveComponent<Button>("RoomNameApply");
+            roomNameLegacyInputField ??= FindInactiveComponent<InputField>("RoomName");
+            roomNameTmpInputField ??= FindInactiveComponent<TMP_InputField>("RoomName");
+            inviteDialog ??= FindInactiveComponent<InviteDialog>("InviteDialog");
+            chara ??= FindInactiveComponent<Button>("CharacterSelectButton");
+            characterSelectDialog ??= FindInactiveComponent<CharacterSelectDialog>("CharacterSelectDialog");
 
             if (readyButtonGraphic == null && readyButton != null)
             {
@@ -435,11 +519,24 @@ namespace OpenGS
             roomTitleTmpText ??= FindInactiveComponent<TMP_Text>("RoomTitle");
             gameModeText ??= FindInactiveComponent<Text>("GameModeText");
             gameModeTmpText ??= FindInactiveComponent<TMP_Text>("GameModeText");
+            teamBalanceText ??= FindInactiveComponent<Text>("TeamBalanceText");
+            teamBalanceTmpText ??= FindInactiveComponent<TMP_Text>("TeamBalanceText");
 
             if (waitRoomPlayerSlotsRoot == null)
             {
-                var rootObject = FindInactiveGameObject("WaitroomPlayerSlots");
-                waitRoomPlayerSlotsRoot = rootObject != null ? rootObject.transform : null;
+                if (mySlot != null && mySlot.transform != null && mySlot.transform.parent != null)
+                {
+                    waitRoomPlayerSlotsRoot = mySlot.transform.parent;
+                }
+                else if (playerSlotTemplate != null && playerSlotTemplate.transform != null && playerSlotTemplate.transform.parent != null)
+                {
+                    waitRoomPlayerSlotsRoot = playerSlotTemplate.transform.parent;
+                }
+                else
+                {
+                    var rootObject = FindInactiveGameObject("WaitroomPlayerSlots");
+                    waitRoomPlayerSlotsRoot = rootObject != null ? rootObject.transform : null;
+                }
             }
 
             if (playerSlotTemplate == null && waitRoomPlayerSlotsRoot != null)
@@ -480,6 +577,42 @@ namespace OpenGS
             {
                 exitButton.onClick.RemoveAllListeners();
                 exitButton.onClick.AddListener(ExitWaitRoom);
+            }
+
+            if (plusButton != null)
+            {
+                plusButton.onClick.RemoveAllListeners();
+                plusButton.onClick.AddListener(Plus);
+            }
+
+            if (minusButton != null)
+            {
+                minusButton.onClick.RemoveAllListeners();
+                minusButton.onClick.AddListener(Minus);
+            }
+
+            if (gameModeButton != null)
+            {
+                gameModeButton.onClick.RemoveAllListeners();
+                gameModeButton.onClick.AddListener(ChangeGameMode);
+            }
+
+            if (inviteButton != null)
+            {
+                inviteButton.onClick.RemoveAllListeners();
+                inviteButton.onClick.AddListener(ShowInviteDialog);
+            }
+
+            if (roomNameApplyButton != null)
+            {
+                roomNameApplyButton.onClick.RemoveAllListeners();
+                roomNameApplyButton.onClick.AddListener(ApplyRoomNameFromInput);
+            }
+
+            if (chara != null)
+            {
+                chara.onClick.RemoveAllListeners();
+                chara.onClick.AddListener(ShowCharacterSelectDialog);
             }
         }
 
@@ -548,24 +681,58 @@ namespace OpenGS
             {
                 SetText(roomTitleText, roomTitleTmpText, "Wait Room");
                 SetText(gameModeText, gameModeTmpText, "");
+                SetText(teamBalanceText, teamBalanceTmpText, "");
+                InitializePlayerInfoUi();
                 return;
             }
 
             roomOwner = IsLocalPlayerOwner(room);
-            suppressRoomSettingPush = true;
-            try
-            {
-                ChangeRoomTitle(room.RoomName);
-                ChangeRoomCapacity(room.Capacity);
-                ChangeGameMode(room.GameMode);
-            }
-            finally
-            {
-                suppressRoomSettingPush = false;
-            }
+            ApplyRoomTitle(room.RoomName, false);
+            ApplyRoomCapacity(room.Capacity, false);
+            ApplyMap(room.Map, false);
+            ApplyGameMode(room.GameMode, false);
+            SetTeamBalanceText();
             UpdateReadyButtonVisual();
             UpdateActionButtons();
             RenderPlayerSlots(room.PlayerList);
+        }
+
+        private void InitializePlayerInfoUi()
+        {
+            var slot = mySlot != null
+                ? mySlot
+                : playerSlotTemplate != null
+                    ? playerSlotTemplate.GetComponent<WaitRoomPlayerInfoController>()
+                    : null;
+
+            if (slot == null)
+            {
+                return;
+            }
+
+            var player = BuildLocalPlaceholderPlayer();
+            slot.gameObject.SetActive(true);
+            slot.Bind(player, 0, ResolveRoomOwnerId(), ResolveLocalPlayerId());
+        }
+
+        private static PlayerInfo BuildLocalPlaceholderPlayer()
+        {
+            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                playerName = "Player";
+            }
+
+            return new PlayerInfo(
+                id: ResolveLocalPlayerId(),
+                name: playerName,
+                currentIp: AccountManager.Instance.CurrentProfile.GlobalMyIP)
+            {
+                IsReady = false,
+                Team = OpenGSCore.ETeam.NoTeam,
+                IsBot = false,
+                playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+            };
         }
 
         private void UpdateReadyButtonVisual()
@@ -587,21 +754,82 @@ namespace OpenGS
                 startButton.gameObject.SetActive(roomOwner);
                 startButton.interactable = roomOwner;
             }
+
+            if (plusButton != null)
+            {
+                plusButton.interactable = roomOwner;
+            }
+
+            if (minusButton != null)
+            {
+                minusButton.interactable = roomOwner;
+            }
+
+            if (gameModeButton != null)
+            {
+                gameModeButton.interactable = roomOwner;
+            }
+
+            if (map != null)
+            {
+                map.interactable = roomOwner;
+            }
+
+            if (roomNameApplyButton != null)
+            {
+                roomNameApplyButton.interactable = roomOwner;
+            }
+
+            if (roomNameLegacyInputField != null)
+            {
+                roomNameLegacyInputField.interactable = roomOwner;
+            }
+
+            if (roomNameTmpInputField != null)
+            {
+                roomNameTmpInputField.interactable = roomOwner;
+            }
         }
 
         private void RenderPlayerSlots(List<PlayerInfo> players)
         {
-            if (waitRoomPlayerSlotsRoot == null || playerSlotTemplate == null)
+            players ??= new List<PlayerInfo>();
+
+            var firstSlotObject = mySlot != null ? mySlot.gameObject : playerSlotTemplate;
+            var templateObject = playerSlotTemplate != null ? playerSlotTemplate : firstSlotObject;
+            var slotsRoot = waitRoomPlayerSlotsRoot;
+
+            if (slotsRoot == null && firstSlotObject != null)
+            {
+                slotsRoot = firstSlotObject.transform != null && firstSlotObject.transform.parent != null
+                    ? firstSlotObject.transform.parent
+                    : firstSlotObject.transform;
+            }
+
+            if (slotsRoot == null || firstSlotObject == null || templateObject == null)
             {
                 return;
             }
 
-            playerSlotTemplate.SetActive(players.Count > 0);
+            if (players.Count == 0)
+            {
+                ConfigurePlayerSlot(firstSlotObject, BuildLocalPlaceholderPlayer(), 0);
+                firstSlotObject.SetActive(true);
+                for (var i = 0; i < activePlayerSlotObjects.Count; i++)
+                {
+                    activePlayerSlotObjects[i].SetActive(false);
+                }
+                return;
+            }
 
-            var extraSlotCount = Mathf.Max(0, players.Count - 1);
+            firstSlotObject.SetActive(true);
+
+            var primaryPlayerIndex = ResolvePrimaryPlayerIndex(players);
+            var orderedPlayers = OrderPlayersForDisplay(players, primaryPlayerIndex);
+            var extraSlotCount = Mathf.Max(0, orderedPlayers.Count - 1);
             while (activePlayerSlotObjects.Count < extraSlotCount)
             {
-                var clone = Instantiate(playerSlotTemplate, waitRoomPlayerSlotsRoot);
+                var clone = Instantiate(templateObject, slotsRoot);
                 clone.name = $"PlayerSlot_{activePlayerSlotObjects.Count + 1}";
                 clone.SetActive(true);
                 activePlayerSlotObjects.Add(clone);
@@ -614,13 +842,13 @@ namespace OpenGS
                 slotObject.SetActive(shouldShow);
                 if (shouldShow)
                 {
-                    ConfigurePlayerSlot(slotObject, players[i + 1], i + 1);
+                    ConfigurePlayerSlot(slotObject, orderedPlayers[i + 1], i + 1);
                 }
             }
 
-            if (players.Count > 0)
+            if (orderedPlayers.Count > 0)
             {
-                ConfigurePlayerSlot(playerSlotTemplate, players[0], 0);
+                ConfigurePlayerSlot(firstSlotObject, orderedPlayers[0], 0);
             }
         }
 
@@ -628,6 +856,13 @@ namespace OpenGS
         {
             if (slotObject == null || player == null)
             {
+                return;
+            }
+
+            var controller = slotObject.GetComponent<WaitRoomPlayerInfoController>();
+            if (controller != null)
+            {
+                controller.Bind(player, index, ResolveRoomOwnerId(), ResolveLocalPlayerId());
                 return;
             }
 
@@ -649,8 +884,63 @@ namespace OpenGS
                 tmpText.text = BuildPlayerLine(player);
             }
 
-            ToggleNamedChild(slotObject.transform, "Host", string.Equals(player.Id, ResolveWaitRoom()?.OwnerId, System.StringComparison.OrdinalIgnoreCase));
+            ToggleNamedChild(slotObject.transform, "Host", string.Equals(player.Id, ResolveRoomOwnerId(), System.StringComparison.OrdinalIgnoreCase));
             ToggleNamedChild(slotObject.transform, "Ready", player.IsReady);
+        }
+
+        private int ResolvePrimaryPlayerIndex(List<PlayerInfo> players)
+        {
+            if (players == null || players.Count == 0)
+            {
+                return -1;
+            }
+
+            var localPlayerId = ResolveLocalPlayerId();
+            for (var i = 0; i < players.Count; i++)
+            {
+                var player = players[i];
+                if (player == null)
+                {
+                    continue;
+                }
+
+                if (string.Equals(player.Id, localPlayerId, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+
+            return 0;
+        }
+
+        private static List<PlayerInfo> OrderPlayersForDisplay(List<PlayerInfo> players, int primaryPlayerIndex)
+        {
+            var orderedPlayers = new List<PlayerInfo>(players.Count);
+
+            if (players == null || players.Count == 0)
+            {
+                return orderedPlayers;
+            }
+
+            if (primaryPlayerIndex >= 0 && primaryPlayerIndex < players.Count && players[primaryPlayerIndex] != null)
+            {
+                orderedPlayers.Add(players[primaryPlayerIndex]);
+            }
+
+            for (var i = 0; i < players.Count; i++)
+            {
+                if (i == primaryPlayerIndex)
+                {
+                    continue;
+                }
+
+                if (players[i] != null)
+                {
+                    orderedPlayers.Add(players[i]);
+                }
+            }
+
+            return orderedPlayers;
         }
 
         private void ToggleReadyState()
@@ -670,7 +960,7 @@ namespace OpenGS
                 return;
             }
 
-            networkManager.SendGameStart();
+            SendGameStartRequest();
         }
 
         private void StartCountdown(int seconds)
@@ -702,30 +992,6 @@ namespace OpenGS
             return DependencyInjectionConfig.Resolve<WaitRoomManager>()?.WaitRoom;
         }
 
-        private void PushWaitRoomSettingsToServer()
-        {
-            if (networkManager == null)
-            {
-                return;
-            }
-
-            var room = ResolveWaitRoom();
-            if (room == null)
-            {
-                return;
-            }
-
-            var settings = new JObject
-            {
-                ["RoomName"] = room.RoomName ?? string.Empty,
-                ["Capacity"] = room.Capacity,
-                ["GameMode"] = room.GameMode.ToString(),
-                ["TeamBalance"] = room.TeamBalance
-            };
-
-            networkManager.SendWaitRoomSettingsChange(settings);
-        }
-
         private bool IsLocalPlayerOwner(ClientWaitRoom room)
         {
             if (room == null)
@@ -733,7 +999,30 @@ namespace OpenGS
                 return false;
             }
 
+            if (forceLocalPlayerOwnerInEditorDirect)
+            {
+                return true;
+            }
+
             return string.Equals(room.OwnerId, ResolveLocalPlayerId(), System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        private string ResolveRoomOwnerId()
+        {
+            var room = ResolveWaitRoom();
+            if (room == null)
+            {
+                return string.Empty;
+            }
+
+            return forceLocalPlayerOwnerInEditorDirect ? ResolveLocalPlayerId() : room.OwnerId;
+        }
+
+        private void EnableLocalOwnerInEditor()
+        {
+            forceLocalPlayerOwnerInEditorDirect = true;
+            roomOwner = true;
+            RefreshWaitRoomUi();
         }
 
         private string BuildRoomTitle()
@@ -744,7 +1033,8 @@ namespace OpenGS
                 return "Wait Room";
             }
 
-            return $"{room.RoomName}  {room.PlayerCount}/{room.Capacity}";
+            var mapLabel = room.Map != EMap.Unknown ? $"  [{room.Map}]" : string.Empty;
+            return $"{room.RoomName}  {room.PlayerCount}/{room.Capacity}{mapLabel}";
         }
 
         private static void SetText(Text legacyText, TMP_Text tmpText, string value)
@@ -758,6 +1048,13 @@ namespace OpenGS
             {
                 tmpText.text = value;
             }
+        }
+
+        private void SetTeamBalanceText()
+        {
+            var room = ResolveWaitRoom();
+            var value = room != null && room.TeamBalance ? "Team Balance: ON" : "Team Balance: OFF";
+            SetText(teamBalanceText, teamBalanceTmpText, value);
         }
 
         private static void ToggleNamedChild(Transform root, string childName, bool active)
@@ -783,16 +1080,9 @@ namespace OpenGS
 
         private static GameObject FindInactiveGameObject(string objectName)
         {
-            return TryFindInactiveGameObject(objectName, out var gameObject) ? gameObject : null;
-        }
-
-        private static bool TryFindInactiveGameObject(string objectName, out GameObject gameObject)
-        {
-            gameObject = null;
-
             if (string.IsNullOrWhiteSpace(objectName))
             {
-                return false;
+                return null;
             }
 
             foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
@@ -812,35 +1102,151 @@ namespace OpenGS
                     continue;
                 }
 
-                gameObject = candidate;
-                return true;
+                return candidate;
             }
 
-            return false;
+            return null;
         }
 
         private static T FindInactiveComponent<T>(string objectName) where T : Component
         {
-            return TryFindInactiveComponent(objectName, out T component) ? component : null;
-        }
-
-        private static bool TryFindInactiveComponent<T>(string objectName, out T component) where T : Component
-        {
-            component = null;
-
-            if (!TryFindInactiveGameObject(objectName, out var gameObject) || gameObject == null)
-            {
-                return false;
-            }
-
-            component = gameObject.GetComponent<T>();
-            return component != null;
+            var gameObject = FindInactiveGameObject(objectName);
+            return gameObject != null ? gameObject.GetComponent<T>() : null;
         }
 
         private static string ResolveLocalPlayerId()
         {
             var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
             return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
+        }
+
+        private void ShowInviteDialog()
+        {
+            AutoBindIfNeeded();
+
+            if (inviteDialog == null)
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] InviteDialog was not found.");
+                return;
+            }
+
+            var room = ResolveWaitRoom();
+            var roomId = room != null ? room.RoomId : string.Empty;
+            var roomName = room != null ? room.RoomName : BuildRoomTitle();
+            inviteDialog.Show(roomId, roomName);
+        }
+
+        public void showCharacterSelectDialog()
+        {
+            ShowCharacterSelectDialog();
+        }
+
+        public void ShowCharacterSelectDialog()
+        {
+            AutoBindIfNeeded();
+
+            if (characterSelectDialog == null)
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] CharacterSelectDialog was not found.");
+                return;
+            }
+
+            characterSelectDialog.OnCharacterSelected -= HandleCharacterSelected;
+            characterSelectDialog.OnCharacterSelected += HandleCharacterSelected;
+            characterSelectDialog.Show(GamePlayerManager.Instance.SelectedPlayerCharacter());
+        }
+
+        private void HandleCharacterSelected(EPlayerCharacter character)
+        {
+            GamePlayerManager.Instance.SetPlayerCharacter(character);
+            SendWaitRoomSettingsChange(new JObject
+            {
+                ["PlayerCharacter"] = character.ToString()
+            });
+            ApplyLocalCharacterSelection(character);
+            RefreshWaitRoomUi();
+        }
+
+        private void ApplyLocalCharacterSelection(EPlayerCharacter character)
+        {
+            try
+            {
+                var waitRoom = DependencyInjectionConfig.Resolve<WaitRoomManager>()?.WaitRoom;
+                if (waitRoom == null || string.IsNullOrWhiteSpace(ResolveLocalPlayerId()))
+                {
+                    return;
+                }
+
+                var localPlayerId = ResolveLocalPlayerId();
+                var localPlayer = waitRoom.PlayerList?.Find(player => player != null && string.Equals(player.Id, localPlayerId, System.StringComparison.OrdinalIgnoreCase));
+                if (localPlayer != null)
+                {
+                    localPlayer.playerCharacter = character;
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void ApplyRoomNameFromInput()
+        {
+            if (!IsRoomOwner())
+            {
+                return;
+            }
+
+            var roomName = roomNameTmpInputField != null ? roomNameTmpInputField.text : null;
+            if (string.IsNullOrWhiteSpace(roomName) && roomNameLegacyInputField != null)
+            {
+                roomName = roomNameLegacyInputField.text;
+            }
+
+            if (string.IsNullOrWhiteSpace(roomName) && inputField != null)
+            {
+                roomName = inputField.text;
+            }
+
+            if (string.IsNullOrWhiteSpace(roomName) && text != null)
+            {
+                roomName = text.text;
+            }
+
+            if (string.IsNullOrWhiteSpace(roomName))
+            {
+                return;
+            }
+
+            ChangeRoomTitle(roomName.Trim());
+        }
+
+        private static EGameMode ResolveNextGameMode(EGameMode current)
+        {
+            switch (current)
+            {
+                case EGameMode.DeathMatch:
+                    return EGameMode.TeamDeathMatch;
+                case EGameMode.TeamDeathMatch:
+                    return EGameMode.CaptureTheFlag;
+                case EGameMode.CaptureTheFlag:
+                    return EGameMode.Survival;
+                case EGameMode.Survival:
+                    return EGameMode.TeamSurvival;
+                case EGameMode.TeamSurvival:
+                    return EGameMode.DeathMatch;
+                default:
+                    return EGameMode.DeathMatch;
+            }
+        }
+
+        private void SendWaitRoomSettingsChange(JObject settings)
+        {
+            if (networkManager == null || settings == null)
+            {
+                return;
+            }
+
+            networkManager.SendWaitRoomSettingsChange(settings);
         }
     }
 }

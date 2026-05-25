@@ -37,6 +37,9 @@ namespace OpenGS
         [Header("エラー表示")]
         [SerializeField] private TextMeshProUGUI errorText;
 
+        [Header("接続先")]
+        [SerializeField] private OnlineLobbyScene lobbyScene;
+
         // ─── 内部状態 ───────────────────────────────────────────────
 
         private string roomName = "Room";
@@ -50,6 +53,11 @@ namespace OpenGS
 
         private void Awake()
         {
+            if (lobbyScene == null)
+            {
+                lobbyScene = FindFirstObjectByType<OnlineLobbyScene>();
+            }
+
             InitializeUI();
             SetupListeners();
         }
@@ -220,13 +228,29 @@ namespace OpenGS
         {
             if (ValidateInput())
             {
-                ShowDialog();
+                SubmitToLobby();
             }
         }
 
         private void OnCancelButtonClicked()
         {
             gameObject.SetActive(false);
+        }
+
+        private void SubmitToLobby()
+        {
+            if (lobbyScene == null)
+            {
+                lobbyScene = FindFirstObjectByType<OnlineLobbyScene>();
+            }
+
+            if (lobbyScene == null)
+            {
+                ShowError("ロビーが見つかりません");
+                return;
+            }
+
+            lobbyScene.OnCreateNewRoom(this);
         }
 
         /// <summary>

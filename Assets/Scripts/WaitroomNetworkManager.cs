@@ -487,6 +487,7 @@ namespace OpenGS
                             id: playerJson["PlayerId"]?.ToString() ?? playerJson["PlayerID"]?.ToString() ?? "",
                             name: playerJson["PlayerName"]?.ToString() ?? "Player");
                         info.IsReady = playerJson["IsReady"]?.ToObject<bool>() ?? false;
+                        info.playerCharacter = ParsePlayerCharacter(playerJson["PlayerCharacter"]?.ToString());
                         waitRoomManager.WaitRoom.AddNewPlayer(info);
 
                         if (string.Equals(info.Id, ResolveLocalPlayerId(), StringComparison.OrdinalIgnoreCase))
@@ -554,6 +555,22 @@ namespace OpenGS
                 if (Enum.TryParse(settings["GameMode"]?.ToString(), out EGameMode gameMode))
                 {
                     waitRoomManager.WaitRoom.GameMode = gameMode;
+                }
+
+                if (Enum.TryParse(settings["Map"]?.ToString(), out EMap map))
+                {
+                    waitRoomManager.WaitRoom.Map = map;
+                }
+
+                if (settings["PlayerCharacter"] != null)
+                {
+                    var character = ParsePlayerCharacter(settings["PlayerCharacter"]?.ToString());
+                    var localPlayer = waitRoomManager.WaitRoom.PlayerList.Find(player =>
+                        player != null && string.Equals(player.Id, ResolveLocalPlayerId(), StringComparison.OrdinalIgnoreCase));
+                    if (localPlayer != null)
+                    {
+                        localPlayer.playerCharacter = character;
+                    }
                 }
 
                 if (settings["Capacity"] != null)
@@ -798,6 +815,17 @@ namespace OpenGS
         {
             var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
             return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
+        }
+
+        private static EPlayerCharacter ParsePlayerCharacter(string characterName)
+        {
+            if (!string.IsNullOrWhiteSpace(characterName) &&
+                Enum.TryParse(characterName, true, out EPlayerCharacter parsedCharacter))
+            {
+                return parsedCharacter;
+            }
+
+            return GamePlayerManager.Instance.SelectedPlayerCharacter();
         }
 
         private void ClearCurrentRoomState()
