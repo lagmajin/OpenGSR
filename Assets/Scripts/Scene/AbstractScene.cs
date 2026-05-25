@@ -515,6 +515,40 @@ namespace OpenGS
         [Button("自動セット")]
         public void AutoSet()
         {
+            if (timer == null)
+            {
+                timer = GetComponent<GameTimer>();
+            }
+
+            if (sceneController == null)
+            {
+                sceneController = GetComponent<AbstractSceneController>();
+            }
+
+            if (sceneMediateObject == null)
+            {
+                sceneMediateObject = GetComponent<AbstractMediateObject>();
+            }
+
+            if (generalSceneMasterData == null)
+            {
+                generalSceneMasterData = FindFirstObjectByType<GeneralSceneMasterData>();
+            }
+
+            if (bgmMasterData == null)
+            {
+                bgmMasterData = FindFirstObjectByType<BGMMasterData>();
+            }
+
+            if (soundMasterData == null)
+            {
+                soundMasterData = FindFirstObjectByType<SoundMasterData>();
+            }
+
+            if (systemSoundMasterData == null)
+            {
+                systemSoundMasterData = FindFirstObjectByType<SystemSoundMasterData>();
+            }
         }
 #endif
     }

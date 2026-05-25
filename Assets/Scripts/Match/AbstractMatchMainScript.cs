@@ -365,12 +365,12 @@ namespace OpenGS
 
         void OnEnable()
         {
-
+            SubscribeEvent();
         }
 
         void OnDisable()
         {
-
+            UnSubscribeEvent();
         }
 
 
@@ -597,7 +597,30 @@ namespace OpenGS
         [Button("自動セット")]
         public void AutoSet()
         {
+            if (timer == null)
+            {
+                timer = GetComponent<MatchTimer>();
+            }
 
+            if (mainCamera == null)
+            {
+                mainCamera = Camera.main;
+            }
+
+            if (battleSceneMediateObject == null)
+            {
+                battleSceneMediateObject = FindFirstObjectByType<AbstractBattleSceneMediateObject>();
+            }
+
+            if (prefabMasterData == null)
+            {
+                prefabMasterData = FindFirstObjectByType<PlayerPrefabMasterData>();
+            }
+
+            if (uiCanvasMasterData == null)
+            {
+                uiCanvasMasterData = FindFirstObjectByType<CanvasMasterData>();
+            }
         }
 
 
