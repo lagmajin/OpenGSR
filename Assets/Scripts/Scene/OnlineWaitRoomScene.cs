@@ -117,14 +117,23 @@ namespace OpenGS
 
         protected override void OnStartFromEditorDirectly()
         {
+            DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
+            PlayWaitRoomBgm();
         }
 
         protected override void OnStartUnityEditor()
         {
+            AutoBindIfNeeded();
+            SetupListeners();
         }
 
         protected override void OnQuitUnityEditor()
         {
+            CancelCountdown();
+            if (networkManager != null)
+            {
+                networkManager.SendWaitRoomLeave(ResolveLocalPlayerId());
+            }
         }
 
         private void Reset()
@@ -772,9 +781,16 @@ namespace OpenGS
 
         private static GameObject FindInactiveGameObject(string objectName)
         {
+            return TryFindInactiveGameObject(objectName, out var gameObject) ? gameObject : null;
+        }
+
+        private static bool TryFindInactiveGameObject(string objectName, out GameObject gameObject)
+        {
+            gameObject = null;
+
             if (string.IsNullOrWhiteSpace(objectName))
             {
-                return null;
+                return false;
             }
 
             foreach (var candidate in Resources.FindObjectsOfTypeAll<GameObject>())
@@ -794,16 +810,29 @@ namespace OpenGS
                     continue;
                 }
 
-                return candidate;
+                gameObject = candidate;
+                return true;
             }
 
-            return null;
+            return false;
         }
 
         private static T FindInactiveComponent<T>(string objectName) where T : Component
         {
-            var gameObject = FindInactiveGameObject(objectName);
-            return gameObject != null ? gameObject.GetComponent<T>() : null;
+            return TryFindInactiveComponent(objectName, out T component) ? component : null;
+        }
+
+        private static bool TryFindInactiveComponent<T>(string objectName, out T component) where T : Component
+        {
+            component = null;
+
+            if (!TryFindInactiveGameObject(objectName, out var gameObject) || gameObject == null)
+            {
+                return false;
+            }
+
+            component = gameObject.GetComponent<T>();
+            return component != null;
         }
 
         private static string ResolveLocalPlayerId()
