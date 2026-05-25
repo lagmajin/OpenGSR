@@ -7,23 +7,38 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class FireEffect : MonoBehaviour, IFireGrenadeEffect
     {
+        [SerializeField] private float lifetime = 4.0f;
+        [SerializeField] private float rotationSpeed = 90f;
+        private bool triggered;
+
         private void Start()
         {
-            Destroy(gameObject, 4.0f);
+            Destroy(gameObject, lifetime);
         }
 
         private void Update()
         {
+            transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision == null || collision.gameObject == null)
+            TriggerImpact(collision != null ? collision.gameObject : null);
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            TriggerImpact(collision != null ? collision.gameObject : null);
+        }
+
+        private void TriggerImpact(GameObject other)
+        {
+            if (triggered || other == null)
             {
                 return;
             }
 
-            var tags = collision.gameObject.GetComponent<MultipleTags>();
+            var tags = other.GetComponent<MultipleTags>();
             if (tags == null)
             {
                 return;
@@ -31,14 +46,7 @@ namespace OpenGS
 
             if (tags.HasPlayerTag() || tags.HasStageObjectTag())
             {
-                Destroy(gameObject, 0.1f);
-            }
-        }
-
-        private void OnTriggerEnter2D(Collider2D collision)
-        {
-            if (collision != null && collision.gameObject != null && collision.gameObject.CompareTag("StageObject"))
-            {
+                triggered = true;
                 Destroy(gameObject, 0.1f);
             }
         }

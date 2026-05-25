@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 
@@ -19,22 +19,44 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class PlayerNameCanvas : MonoBehaviour
     {
-        // Start is called before the first frame update
+        [SerializeField] private List<Transform> targets = new();
+        [SerializeField] private bool autoRefresh = true;
+
+        public int TargetCount => targets.Count;
+
         void Start()
         {
-
+            RefreshTargets();
         }
 
-        // Update is called once per frame
         void Update()
         {
+            if (!autoRefresh)
+            {
+                return;
+            }
 
+            targets.RemoveAll(target => target == null);
         }
 
 
         public void AddTarget()
         {
+            RefreshTargets();
+        }
 
+        public void RefreshTargets()
+        {
+            targets.Clear();
+            foreach (var player in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
+            {
+                if (player != null)
+                {
+                    targets.Add(player.transform);
+                }
+            }
+
+            Debug.Log($"[PlayerNameCanvas] TargetCount={targets.Count}");
         }
     }
 

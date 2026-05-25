@@ -12,6 +12,15 @@ namespace OpenGS
 
         private void Update()
         {
+            if (HandleEscapeToBackScene())
+            {
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.R))
+            {
+                GoToResult();
+            }
         }
 
         public override void PostEvent(AbstractGameEvent e)

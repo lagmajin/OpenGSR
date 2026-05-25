@@ -17,6 +17,15 @@ namespace OpenGS
 
         private void Update()
         {
+            if (HandleEscapeToBackScene())
+            {
+                return;
+            }
+
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                GameEnd();
+            }
         }
 
         private void CreateMyPlayer()

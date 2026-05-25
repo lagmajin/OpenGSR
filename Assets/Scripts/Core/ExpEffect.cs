@@ -11,6 +11,9 @@ namespace OpenGS
         public float time = 1.0f;
 
         [SerializeField] private Rigidbody2D body;
+        [SerializeField] private float damage = 120f;
+        [SerializeField] private float force = 1.0f;
+        private bool detonated;
 
         private void Start()
         {
@@ -23,27 +26,36 @@ namespace OpenGS
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision != null && collision.gameObject != null && collision.gameObject.TryGetComponent<IDamageable>(out var damageable))
-            {
-                damageable.AddDamageAndForce(120, new Vector3(0, 0, 0), 1.0f);
-            }
+            Detonate(collision != null ? collision.gameObject : null);
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision == null || collision.gameObject == null)
+            Detonate(collision != null ? collision.gameObject : null);
+        }
+
+        private void Detonate(GameObject target)
+        {
+            if (detonated || target == null)
             {
                 return;
             }
 
-            if (collision.gameObject.TryGetComponent<MultipleTags>(out var tags))
+            if (target.TryGetComponent<IDamageable>(out var damageable))
             {
-                if (tags.HasPlayerTag())
+                damageable.AddDamageAndForce(damage, Vector3.zero, force);
+                detonated = true;
+                Destroy(gameObject, 0.1f);
+                return;
+            }
+
+            if (target.TryGetComponent<MultipleTags>(out var tags) && tags.HasPlayerTag())
+            {
+                if (target.TryGetComponent<IDamageable>(out var playerDamageable))
                 {
-                    if (collision.gameObject.TryGetComponent<IDamageable>(out var damageable))
-                    {
-                        damageable.AddDamageAndForce(120, new Vector3(0, 0, 0), 1.0f);
-                    }
+                    playerDamageable.AddDamageAndForce(damage, Vector3.zero, force);
+                    detonated = true;
+                    Destroy(gameObject, 0.1f);
                 }
             }
         }
