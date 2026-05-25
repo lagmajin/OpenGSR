@@ -99,18 +99,27 @@ namespace OpenGS
 
         void AppointRoomOwner()
         {
+            var manager = MatchRoomManager();
+            if (manager != null && !manager.IsValidOfflineWaitRoom())
+            {
+                manager.CreateNewOfflineWaitRoom("OfflineRoom");
+            }
         }
 
         void GoToBattleScene()
         {
+            LoadingStart();
         }
 
         void BackToWaitRoom()
         {
+            var waitRoomScene = GeneralSceneMasterData.Instance().OfflineWaitRoomScene();
+            RequestSceneTransition(waitRoomScene, "OfflineLoadingBackToWaitRoom");
         }
 
         void BackToTitleScene()
         {
+            GoToTitleScene();
         }
 
         private static string ResolveOfflineBattleSceneName(EGameMode mode, EMap map)

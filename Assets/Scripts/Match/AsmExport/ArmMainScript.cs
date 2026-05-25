@@ -6,6 +6,12 @@ namespace OpenGS
     {
         public override void PostEvent(AbstractGameEvent e)
         {
+            if (e == null)
+            {
+                return;
+            }
+
+            Debug.Log($"[ArmMainScript] PostEvent: {e.EventName}");
         }
     }
 }

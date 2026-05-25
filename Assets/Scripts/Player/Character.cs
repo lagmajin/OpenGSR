@@ -77,11 +77,41 @@ namespace OpenGS
             return rad * Mathf.Rad2Deg;
         }
 
-        public void setInvincible(int msec, bool canAttack = false) { }
+        public void setInvincible(int msec, bool canAttack = false)
+        {
+            this.canAttack = canAttack;
+            if (_spriteRenderer == null)
+            {
+                _spriteRenderer = GetComponent<SpriteRenderer>();
+            }
+
+            if (_spriteRenderer == null)
+            {
+                return;
+            }
+
+            StopAllCoroutines();
+            StartCoroutine(InvincibleRoutine(msec));
+        }
 
         IEnumerator Blink()
         {
-            while (true) { yield return null; }
+            while (isInvincible)
+            {
+                ChangeTransparency(0.35f);
+                yield return new WaitForSeconds(blinkInterval);
+                ChangeTransparency(1.0f);
+                yield return new WaitForSeconds(blinkInterval);
+            }
+        }
+
+        private IEnumerator InvincibleRoutine(int msec)
+        {
+            isInvincible = true;
+            StartCoroutine(Blink());
+            yield return new WaitForSeconds(Mathf.Max(0f, msec / 1000f));
+            isInvincible = false;
+            ChangeTransparency(1.0f);
         }
 
         void ChangeTransparency(float alpha)
@@ -214,8 +244,33 @@ namespace OpenGS
             }
         }
 
-        private void takeWeapon() { }
-        private void swapWeapon() { }
+        private void takeWeapon()
+        {
+            if (weapon1 != null)
+            {
+                weapon1.SetActive(true);
+            }
+
+            if (weapon2 != null)
+            {
+                weapon2.SetActive(false);
+            }
+        }
+
+        private void swapWeapon()
+        {
+            var firstActive = weapon1 != null && weapon1.activeSelf;
+
+            if (weapon1 != null)
+            {
+                weapon1.SetActive(!firstActive);
+            }
+
+            if (weapon2 != null)
+            {
+                weapon2.SetActive(firstActive);
+            }
+        }
         private void dropWeapon()
         {
             var prefab = Resources.Load("Prefabs/MX1014");
