@@ -469,7 +469,7 @@ namespace OpenGS
 
         void OnDisconnectNetowrk()
         {
-
+            Debug.Log($"[{GetType().Name}] Network disconnected");
         }
 
         protected virtual void OnNetworkDataRecved(JObject obj)
@@ -664,7 +664,10 @@ namespace OpenGS
 
         }
 
-        public virtual void OnMyPlayerDead() { }
+        public virtual void OnMyPlayerDead()
+        {
+            Debug.Log($"[{GetType().Name}] My player dead");
+        }
 
         /*
         public MatchRoom MatchRoom()
