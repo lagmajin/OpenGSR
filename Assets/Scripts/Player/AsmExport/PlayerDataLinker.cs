@@ -26,6 +26,10 @@ namespace OpenGS
 
             cachedPlayer = GetComponent<AbstractPlayer>();
             SetPlayer(cachedPlayer);
+            if (cachedPlayer != null)
+            {
+                SetPlayerId(cachedPlayer.UniqueID().ToString());
+            }
         }
     }
 }

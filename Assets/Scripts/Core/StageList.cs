@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,17 +24,24 @@ namespace OpenGS
 
         public void dm()
         {
-            Debug.Log("[StageList] dm");
+            FilterScenes("DM", "DeathMatch");
         }
 
         public void tdm()
         {
-            Debug.Log("[StageList] tdm");
+            FilterScenes("TDM", "TeamDeathMatch");
         }
 
         public void ctf()
         {
-            Debug.Log("[StageList] ctf");
+            FilterScenes("CTF", "CaptureTheFlag");
+        }
+
+        private void FilterScenes(params string[] keywords)
+        {
+            stages();
+            scenes = scenes.Where(scene => keywords.Any(keyword => scene.IndexOf(keyword, System.StringComparison.OrdinalIgnoreCase) >= 0)).ToList();
+            Debug.Log($"[StageList] filtered => {string.Join(",", scenes)}");
         }
     }
 }

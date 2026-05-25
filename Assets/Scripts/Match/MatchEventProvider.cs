@@ -24,6 +24,19 @@ namespace OpenGS
 
         public void UseGrenade()
         {
+            var player = mainScript != null ? mainScript.player?.GetComponent<AbstractPlayer>() : null;
+            var resolvedPlayerId = ResolvePlayerId(player);
+            if (string.IsNullOrWhiteSpace(resolvedPlayerId))
+            {
+                return;
+            }
+
+            var position = player != null ? (Vector2)player.transform.position : Vector2.zero;
+            var direction = player != null && player.transform.localScale.x < 0f
+                ? Vector2.left
+                : Vector2.right;
+            var message = RUDPMessageBuilder.CreateGrenadeThrow(resolvedPlayerId, position, direction, "Normal");
+            SendToServer(message);
         }
 
         public void UseInstantItem(EInstantItemType type)

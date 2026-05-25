@@ -19,16 +19,23 @@ namespace OpenGS
 
         private void Update()
         {
-
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-
+            if (collision != null && collision.gameObject != null && collision.gameObject.TryGetComponent<IDamageable>(out var damageable))
+            {
+                damageable.AddDamageAndForce(120, new Vector3(0, 0, 0), 1.0f);
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            if (collision == null || collision.gameObject == null)
+            {
+                return;
+            }
+
             if (collision.gameObject.TryGetComponent<MultipleTags>(out var tags))
             {
                 if (tags.HasPlayerTag())
@@ -38,10 +45,7 @@ namespace OpenGS
                         damageable.AddDamageAndForce(120, new Vector3(0, 0, 0), 1.0f);
                     }
                 }
-
             }
-
-
         }
 
     }

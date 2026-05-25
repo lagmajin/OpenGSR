@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -23,17 +24,24 @@ namespace Assets.Scripts.Resource
 
         public void dm()
         {
-            Debug.Log("[Resource.StageList] dm");
+            FilterScenes("DM", "DeathMatch");
         }
 
         public void tdm()
         {
-            Debug.Log("[Resource.StageList] tdm");
+            FilterScenes("TDM", "TeamDeathMatch");
         }
 
         public void ctf()
         {
-            Debug.Log("[Resource.StageList] ctf");
+            FilterScenes("CTF", "CaptureTheFlag");
+        }
+
+        private void FilterScenes(params string[] keywords)
+        {
+            stages();
+            scenes = scenes.Where(scene => keywords.Any(keyword => scene.IndexOf(keyword, System.StringComparison.OrdinalIgnoreCase) >= 0)).ToList();
+            Debug.Log($"[Resource.StageList] filtered => {string.Join(",", scenes)}");
         }
     }
 }

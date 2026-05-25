@@ -1,24 +1,17 @@
-﻿using System;
-
+using System;
 using UnityEngine;
 
 namespace OpenGS
 {
-    public class OpenGSBaseClass:MonoBehaviour
+    public class OpenGSBaseClass : MonoBehaviour
     {
-        string guid = Guid.NewGuid().ToString("N");
+        private readonly string guid = Guid.NewGuid().ToString("N");
 
-
-
-
-
+        public string Guid => guid;
 
         public void OnOriginalEvent(AbstractGameEvent ev)
         {
-            
+            Debug.Log($"[OpenGSBaseClass] Event received: {ev?.EventName ?? "null"}");
         }
     }
-
-
-
 }

@@ -31,5 +31,13 @@ namespace OpenGS
 
             subscribers.Remove(script);
         }
+
+        public void Publish(AbstractGameEvent ev)
+        {
+            foreach (var subscriber in subscribers)
+            {
+                subscriber?.PostEvent(ev);
+            }
+        }
     }
 }

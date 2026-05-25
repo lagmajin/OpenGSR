@@ -9,33 +9,38 @@ namespace OpenGS
     {
         private void Start()
         {
-
+            Destroy(gameObject, 4.0f);
         }
 
         private void Update()
         {
-
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            var tags = collision.gameObject.GetComponent<IMultipleTags>();
-
-            if (tags.HasPlayerTag())
+            if (collision == null || collision.gameObject == null)
             {
-
+                return;
             }
 
-            if (tags.HasStageObjectTag())
+            var tags = collision.gameObject.GetComponent<MultipleTags>();
+            if (tags == null)
             {
-
+                return;
             }
 
+            if (tags.HasPlayerTag() || tags.HasStageObjectTag())
+            {
+                Destroy(gameObject, 0.1f);
+            }
         }
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-
+            if (collision != null && collision.gameObject != null && collision.gameObject.CompareTag("StageObject"))
+            {
+                Destroy(gameObject, 0.1f);
+            }
         }
 
 

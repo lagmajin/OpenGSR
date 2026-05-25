@@ -8,27 +8,26 @@ namespace OpenGS
     {
         private void OnApplicationQuit()
         {
-
-
-
-
-
+            if (networkManager != null)
+            {
+                networkManager.SendWaitRoomLeave(ResolveLocalPlayerId());
+            }
         }
 
         public void OnNewGameStarted()
         {
-            
+            LoadGameScene();
         }
 
         public void OnOtherPlayerEntered()
         {
-
+            RefreshWaitRoomUi();
         }
 
         public void ExitRoomRequested()
         {
             Debug.Log("ExitRoomRequested");
-
+            ExitWaitRoom();
         }
 
         [Button("ゲーム開始テスト")]
@@ -45,6 +44,8 @@ namespace OpenGS
         public void ReadyRequested()
         {
             Debug.Log("ReadyRequest");
+            Ready(true);
+            RefreshWaitRoomUi();
         }
 
 

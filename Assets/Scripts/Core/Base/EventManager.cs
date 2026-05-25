@@ -44,9 +44,34 @@ namespace OpenGS
             classess_.Clear();
         }
 
+        public void Register(OpenGSBaseClass cl)
+        {
+            addEventListner(cl);
+        }
+
+        public void Clear()
+        {
+            removeAllListner();
+        }
+
+        public void sendEvent(AbstractGameEvent ev)
+        {
+            Debug.Log($"[EventManager] sendEvent: {ev?.EventName ?? "null"}");
+            foreach (var listener in classess_)
+            {
+                listener?.OnOriginalEvent(ev);
+            }
+        }
+
         public void sendEvent()
         {
             Debug.Log("[EventManager] sendEvent");
+        }
+
+        public void postEvent(AbstractGameEvent ev)
+        {
+            Debug.Log($"[EventManager] postEvent: {ev?.EventName ?? "null"}");
+            sendEvent(ev);
         }
 
         public void postEvent()
