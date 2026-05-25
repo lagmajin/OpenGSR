@@ -23,6 +23,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Setting/GameSettingScene.unity
     guid: 542fb38a093f52e4590610c446b6ffa7
+  - enabled: 1
+    path: Assets/Scenes/Waitroom/OnlineWaitRoom.unity
+    guid: 6e121dc2d3d62c74eae8db1c5a3ef554
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 089e42c240b1c874c96e43f372af0425,
       type: 3}
