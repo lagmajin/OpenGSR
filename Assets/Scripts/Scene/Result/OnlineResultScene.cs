@@ -44,12 +44,14 @@ namespace OpenGS
             }
         }
 
-        private void OnDestroy()
+        protected override void OnDestroy()
         {
             if (networkManager != null)
             {
                 networkManager.UnSubscribe(this);
             }
+
+            base.OnDestroy();
         }
 
         public void ParseMessageFromGeneralServer(JObject json)
@@ -71,12 +73,14 @@ namespace OpenGS
         {
             if (json == null)
             {
+                Debug.LogWarning("[OnlineResultScene] Match result json is null.");
                 return;
             }
 
             var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
             if (messageType != MessageType.MatchResult && messageType != MessageType.MatchEndNotification)
             {
+                Debug.LogWarning($"[OnlineResultScene] Unsupported message type: {messageType}");
                 return;
             }
 
@@ -100,6 +104,11 @@ namespace OpenGS
             }
 
             var playersArray = FindPlayersArray(json);
+            if (playersArray == null)
+            {
+                Debug.LogWarning("[OnlineResultScene] Players array was not found in match result json.");
+            }
+
             var parsedData = new System.Collections.Generic.List<PlayerMatchResultData>();
 
             foreach (var pToken in playersArray ?? new JArray())
@@ -202,6 +211,7 @@ namespace OpenGS
         {
             if (json == null)
             {
+                Debug.LogWarning("[OnlineResultScene] FindPlayersArray received null json.");
                 return null;
             }
 
@@ -223,6 +233,7 @@ namespace OpenGS
                 return roomInfo["Players"] as JArray;
             }
 
+            Debug.LogWarning("[OnlineResultScene] Could not resolve players array from json.");
             return null;
         }
     }

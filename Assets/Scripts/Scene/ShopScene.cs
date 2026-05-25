@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Sirenix.OdinInspector;
 using System.Threading;
+using Cysharp.Threading.Tasks;
 
 namespace OpenGS
 {
@@ -16,8 +17,9 @@ namespace OpenGS
 
         public GeneralSceneMasterData generalScene;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(SceneManager.GetActiveScene().name);
         }
 
@@ -26,8 +28,9 @@ namespace OpenGS
             Debug.Log("EnterShopScene");
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 // ここでタイトルの戻り先を判定
@@ -40,10 +43,10 @@ namespace OpenGS
             if (shopUIManager == null) return;
 
             var temp = str.ToLower();
-            if (temp == "player") shopUIManager.SwitchCategory(EShopCategory.Character);
-            else if (temp == "booster") shopUIManager.SwitchCategory(EShopCategory.Booster);
-            else if (temp == "instantitem") shopUIManager.SwitchCategory(EShopCategory.InstantItem);
-            else if (temp == "weapon") shopUIManager.SwitchCategory(EShopCategory.Weapon);
+            if (temp == "player") shopUIManager.SwitchCategory(EShopCategory.Character).Forget();
+            else if (temp == "booster") shopUIManager.SwitchCategory(EShopCategory.Booster).Forget();
+            else if (temp == "instantitem") shopUIManager.SwitchCategory(EShopCategory.InstantItem).Forget();
+            else if (temp == "weapon") shopUIManager.SwitchCategory(EShopCategory.Weapon).Forget();
         }
 
         [Button("ロビー移動テスト")]

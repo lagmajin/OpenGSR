@@ -81,7 +81,7 @@ namespace OpenGS
         private void GetTargets()
         {
             targetList.Clear();
-            foreach (var player in FindObjectsOfType<AbstractPlayer>())
+            foreach (var player in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
             {
                 if (player != null && player.gameObject != gameObject)
                 {

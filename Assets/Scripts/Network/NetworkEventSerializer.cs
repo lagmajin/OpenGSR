@@ -18,7 +18,13 @@ namespace OpenGS
         {
             if (gameEvent == null)
             {
-                return null;
+                Debug.LogWarning("[NetworkEventSerializer] Serialize called with null event.");
+                return new JObject
+                {
+                    ["MessageType"] = "GameEvent",
+                    ["EventName"] = string.Empty,
+                    ["Timestamp"] = DateTime.UtcNow.ToString("o")
+                };
             }
 
             var eventType = gameEvent.GetType();

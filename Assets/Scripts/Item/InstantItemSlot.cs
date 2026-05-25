@@ -171,10 +171,17 @@ namespace OpenGS
         {
             if (i < 0 || i >= items.Count)
             {
+                UnityEngine.Debug.LogWarning($"[InstantItemSlots] Slot index out of range: {i}");
                 return null;
             }
 
-            return items[i];
+            var item = items[i];
+            if (item == null)
+            {
+                UnityEngine.Debug.LogWarning($"[InstantItemSlots] No item in slot: {i}");
+            }
+
+            return item;
         }
 
         private static AbstractInstantItem CreateItem(EInstantItemType type)

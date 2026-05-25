@@ -34,9 +34,9 @@ namespace OpenGS
         public float firstTimeDelay = 27;
         public float generateInterval = 20;
 
-        private float countdownInterval = 0.5f;
-
         private float countdown = 0.0f;
+        private Coroutine generateCoroutine;
+        private bool isGenerating = false;
 
         protected eFieldItemType? beforeGeneratedItem=null;
 
@@ -46,23 +46,22 @@ namespace OpenGS
         {
             countdown = firstTimeDelay;
 
-            
             while (true)
             {
-                //yield return new WaitForSecondsRealtime(0.5f);
-                //countdown -= 1.0f;
-                //if (countdown <= 0&& gameObject.HasChild())
+                if (!isGenerating)
                 {
-
-
-                   // GenerateItem();
+                    yield break;
                 }
 
-            
+                yield return new WaitForSecondsRealtime(1.0f);
+                countdown -= 1.0f;
+                if (countdown <= 0.0f)
+                {
+                    GenerateItem();
+                    countdown = generateInterval;
+                }
 
             }
-
-            
         }
 
         void Start()
@@ -73,7 +72,7 @@ namespace OpenGS
 
             if(startImmidietry)
             {
-
+                StartWorking();
             }
 
         }
@@ -85,26 +84,40 @@ namespace OpenGS
 
         public void StartWorking()
         {
+            if (isGenerating)
+            {
+                return;
+            }
+
+            isGenerating = true;
             if (startImmidietry)
             {
-                StartCoroutine(OneSecCallback());
+                generateCoroutine = StartCoroutine(OneSecCallback());
             }
         }
 
         public virtual void GenerateItem()
         {
-
+            countdown = generateInterval;
             TurnOffGenerate();
         }
 
         public void TurnOnGenerate()
         {
-
+            if (!isGenerating)
+            {
+                StartWorking();
+            }
         }
 
         public void TurnOffGenerate()
         {
-
+            isGenerating = false;
+            if (generateCoroutine != null)
+            {
+                StopCoroutine(generateCoroutine);
+                generateCoroutine = null;
+            }
         }
 
         public eFieldItemType? BeforeGeneratedItem()

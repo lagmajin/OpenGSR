@@ -25,8 +25,6 @@ namespace OpenGS
        
 
 
-        bool alternativeOrRandom=true;
-
         public GameObject FlameThrowerPrefab;
         public GameObject RocketLauncherPrefab;
 
@@ -42,9 +40,14 @@ namespace OpenGS
                 nextItem = eFieldItemType.RocketLauncher;
             }
 
-            if (generateType == eWeaponItemGenerateType.Random || generateType == null)
+            if (generateType == eWeaponItemGenerateType.Random)
             {
                 nextItem = eFieldItemType.FlameThrower;
+            }
+
+            if (startImmidietry)
+            {
+                StartWorking();
             }
         }
         [Button("生成テスト")]

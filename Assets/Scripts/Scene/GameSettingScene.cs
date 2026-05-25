@@ -11,8 +11,9 @@ namespace OpenGS
         [SerializeField] [Required] public GameSettingSceneMediateObject mediateObject;
         private SynchronizationContext mainThread;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             mainThread = SynchronizationContext.Current;
         }
@@ -21,8 +22,9 @@ namespace OpenGS
         {
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             if (Input.GetKeyDown(KeyCode.F12))
             {
                 ApplyGameSetting();

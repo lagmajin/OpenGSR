@@ -68,6 +68,8 @@ namespace OpenGS
         private KeyData grenade=new();
         //private KeyData right;
 
+        public bool TestMode => testMode;
+
         private void Start()
         {
 
@@ -86,6 +88,17 @@ namespace OpenGS
                     Debug.Log("Expire");
                 }
 
+            }
+
+            if (grenade.frame > 0)
+            {
+                grenade.frame--;
+
+                if (grenade.frame == 0)
+                {
+                    grenade.key = EKey.None;
+                    Debug.Log("Grenade Expire");
+                }
             }
 
             var current = Keyboard.current;
@@ -163,11 +176,44 @@ namespace OpenGS
 
             }
 
-            if (Input.GetKeyDown(KeyCode.F1))
+            if (testMode && Input.GetKeyDown(KeyCode.F1))
             {
-
+                ToggleTestMode();
+                ResetInputBuffer();
             }
 
+            if (testMode && Input.GetKeyDown(KeyCode.G))
+            {
+                grenade.key = EKey.Space;
+                grenade.frame = 20;
+                Debug.Log("Grenade");
+            }
+
+        }
+
+        public void ToggleTestMode()
+        {
+            testMode = !testMode;
+            Debug.Log($"PlayerInput testMode={testMode}");
+        }
+
+        public void SetTestMode(bool enabled)
+        {
+            testMode = enabled;
+        }
+
+        public void ResetInputBuffer()
+        {
+            dash.Clear();
+            grenade.Clear();
+            leftFlag = false;
+            rightFlag = false;
+            downFlag = false;
+        }
+
+        public bool HasQueuedGrenade()
+        {
+            return grenade.key != EKey.None;
         }
 
     }

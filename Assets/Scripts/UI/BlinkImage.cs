@@ -14,13 +14,14 @@ namespace OpenGS
 
         [SerializeField] private Image img;
         private float time = 0;
-        [SerializeField]
-        [Range(0.1f, 10.0f)] float duration = 1.0f;
         [Range(0.1f, 10.0f)] public float speed;
         // Start is called before the first frame update
         void Start()
         {
-
+            if (img == null)
+            {
+                img = GetComponent<Image>();
+            }
         }
 
         void Reset()
@@ -31,13 +32,29 @@ namespace OpenGS
         // Update is called once per frame
         void Update()
         {
+            if (img == null)
+            {
+                return;
+            }
+
             Color color = img.color;
             time += Time.deltaTime * speed;
-            // Mathf.Sin()‚Í-1`1‚ğ•Ô‚·
-            // color‚Í0`1‚Åw’è‚·‚é
+            // Mathf.Sin()ï¿½ï¿½-1ï¿½`1ï¿½ï¿½Ô‚ï¿½
+            // colorï¿½ï¿½0ï¿½`1ï¿½Åwï¿½è‚·ï¿½ï¿½
             color.a = Mathf.Sin(time) * 0.5f + 0.5f;
             img.color = color;
 
+        }
+
+        public void ResetBlink()
+        {
+            time = 0f;
+            if (img != null)
+            {
+                var color = img.color;
+                color.a = 1f;
+                img.color = color;
+            }
         }
     }
 

@@ -307,7 +307,42 @@ namespace OpenGS
 
         public AbstractMatchMainScript? CurrentGameMainScript()
         {
+            if (dmMatchMainScript != null && dmMatchMainScript.activeSelf)
+            {
+                return dmMatchMainScript.GetComponent<DMMatchMainScript>();
+            }
 
+            if (tdmMatchMainScript != null && tdmMatchMainScript.activeSelf)
+            {
+                return tdmMatchMainScript.GetComponent<TDMMatchMainScript>();
+            }
+
+            if (suvMatchMainScript != null && suvMatchMainScript.activeSelf)
+            {
+                return suvMatchMainScript.GetComponent<AbstractMatchMainScript>();
+            }
+
+            if (tsuvMatchMainScript != null && tsuvMatchMainScript.activeSelf)
+            {
+                return tsuvMatchMainScript.GetComponent<AbstractMatchMainScript>();
+            }
+
+            if (ctfMatchMainScript != null && ctfMatchMainScript.activeSelf)
+            {
+                return ctfMatchMainScript.GetComponent<AbstractMatchMainScript>();
+            }
+
+            if (armMatchMainScript != null && armMatchMainScript.activeSelf)
+            {
+                return armMatchMainScript.GetComponent<AbstractMatchMainScript>();
+            }
+
+            if (godModeMainScript != null && godModeMainScript.activeSelf)
+            {
+                return godModeMainScript.GetComponent<AbstractMatchMainScript>();
+            }
+
+            Debug.LogWarning("[GameModeCollection] CurrentGameMainScript() could not find an active match main script.");
             return null;
         }
 

@@ -10,8 +10,6 @@ namespace OpenGS
     {
         [Header("Gunner Specific")]
         [SerializeField] private float stopDistance = 7f; // 立ち止まる距離
-        [SerializeField] private float shootAngleThreshold = 5f; // 射撃を開始する角度誤差
-
         protected override void OnUpdate()
         {
             if (target == null)
@@ -47,7 +45,7 @@ namespace OpenGS
                 Vector2 dirToTarget = (target.position - transform.position).normalized;
                 float angle = Vector2.Angle(transform.right, dirToTarget); // 注意：武器の向きに合わせる必要あり
 
-                aiInput.FirePressed = true;
+                aiInput.FirePressed = angle <= 15f;
             }
             else
             {

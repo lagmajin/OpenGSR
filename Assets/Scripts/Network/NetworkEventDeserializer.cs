@@ -22,10 +22,18 @@ namespace OpenGS
         /// </summary>
         public static AbstractGameEvent Deserialize(JObject json)
         {
-            if (json == null) return null;
+            if (json == null)
+            {
+                Debug.LogWarning("[NetworkEventDeserializer] Deserialize called with null JSON.");
+                return null;
+            }
 
             var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
-            if (string.IsNullOrEmpty(messageType)) return null;
+            if (string.IsNullOrEmpty(messageType))
+            {
+                Debug.LogWarning($"[NetworkEventDeserializer] Missing MessageType in JSON: {json}");
+                return null;
+            }
 
             return messageType switch
             {

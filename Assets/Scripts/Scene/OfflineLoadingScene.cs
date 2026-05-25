@@ -34,16 +34,18 @@ namespace OpenGS
             }
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
         }
 
         public void DebugScene()
         {
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
         }
 

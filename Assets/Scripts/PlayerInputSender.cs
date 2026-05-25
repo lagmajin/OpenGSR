@@ -14,7 +14,7 @@ namespace OpenGS
 
         private void Awake()
         {
-            _networkManager = FindObjectOfType<ClientNetworkManager>();
+            _networkManager = FindFirstObjectByType<ClientNetworkManager>();
             if (_networkManager == null)
             {
                 Debug.LogError("[PlayerInputSender] ClientNetworkManager not found in scene!");

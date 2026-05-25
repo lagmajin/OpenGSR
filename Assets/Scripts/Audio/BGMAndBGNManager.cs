@@ -44,9 +44,6 @@ namespace OpenGS
 
 
 
-        [SerializeField]
-        [BoxGroup("Setting")]
-        private bool playBGMOnlyIfNotPlaying = false; // 追加
         [SerializeField] [Required] private SystemSoundMasterData masterdata;
         //[SerializeField][Required]private Map
 
@@ -97,7 +94,10 @@ namespace OpenGS
 
         public void StopBGMAll()
         {
-
+            if (SoundManager.Instance.IsBgmPlaying())
+            {
+                SoundManager.Instance.StopBgm();
+            }
         }
 
         public void PlayBGN()

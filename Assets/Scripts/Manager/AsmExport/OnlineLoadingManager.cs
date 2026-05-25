@@ -49,6 +49,18 @@ namespace OpenGS
 
         public Gauge GetGauge(in string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+
+            if (!gaugeList.TryGetValue(id, out _))
+            {
+                UnityEngine.Debug.LogWarning($"[OnlineLoadingManager] Loading gauge not found for id: {id}");
+                return null;
+            }
+
+            UnityEngine.Debug.LogWarning($"[OnlineLoadingManager] UI Gauge is not bound for id: {id}");
             return null;
         }
 
@@ -56,10 +68,17 @@ namespace OpenGS
         {
             if (string.IsNullOrWhiteSpace(id))
             {
+                UnityEngine.Debug.LogWarning("[OnlineLoadingManager] id is empty.");
                 return null;
             }
 
-            return gaugeList.TryGetValue(id, out var gauge) ? gauge : null;
+            if (gaugeList.TryGetValue(id, out var gauge))
+            {
+                return gauge;
+            }
+
+            UnityEngine.Debug.LogWarning($"[OnlineLoadingManager] LoadingGauge not found for id: {id}");
+            return null;
         }
 
         public IReadOnlyDictionary<string, LoadingGauge> GetAllGauges()

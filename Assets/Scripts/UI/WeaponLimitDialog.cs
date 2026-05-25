@@ -249,6 +249,7 @@ namespace OpenGS
         {
             if (string.IsNullOrWhiteSpace(objectName))
             {
+                Debug.LogWarning("[WeaponLimitDialog] Button name is empty.");
                 return null;
             }
 
@@ -261,6 +262,7 @@ namespace OpenGS
                 }
             }
 
+            Debug.LogWarning($"[WeaponLimitDialog] Button not found: {objectName}");
             return null;
         }
 
@@ -268,6 +270,7 @@ namespace OpenGS
         {
             if (string.IsNullOrWhiteSpace(objectName))
             {
+                Debug.LogWarning("[WeaponLimitDialog] Toggle name is empty.");
                 return null;
             }
 
@@ -280,6 +283,7 @@ namespace OpenGS
                 }
             }
 
+            Debug.LogWarning($"[WeaponLimitDialog] Toggle not found: {objectName}");
             return null;
         }
     }

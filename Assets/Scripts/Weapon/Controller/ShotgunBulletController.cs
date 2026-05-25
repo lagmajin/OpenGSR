@@ -38,10 +38,6 @@ namespace OpenGS
 
         private void FixedUpdate()
         {
-            var velocity = body.linearVelocity;
-            var rotation = transform.rotation;
-            var rotationVolume = 1;
-
             if (count <= 180.0f)
             {
                 gameObject.transform.Rotate(0, 0, -1.1f);

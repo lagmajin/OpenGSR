@@ -49,8 +49,6 @@ namespace OpenGS
         }
         IEnumerator AnimateFloat()
         {
-            float t = 0f;
-
             // 上昇フェーズ
             while (transform.position.y < startPos.y + peakHeight)
             {

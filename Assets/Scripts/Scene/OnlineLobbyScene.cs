@@ -52,8 +52,9 @@ namespace OpenGS
 
         // ─── Unity ライフサイクル ────────────────────────────────────
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             mainThread = SynchronizationContext.Current;
             networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
             matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
@@ -103,9 +104,10 @@ namespace OpenGS
             SoundManager.Instance.EnsureBgm(EBgm.Title, 0f);
         }
 
-        void OnDestroy()
+        protected override void OnDestroy()
         {
             networkManager.UnSubscribe(this);
+            base.OnDestroy();
         }
 
         private void OnApplicationQuit()
@@ -113,8 +115,9 @@ namespace OpenGS
             networkManager.Disconnect();
         }
 
-        void Update()
+        protected override void Update()
         {
+            base.Update();
             if (lobbySceneController != null)
             {
                 lobbySceneController.TickInput(
@@ -446,6 +449,7 @@ namespace OpenGS
         {
             if (json == null)
             {
+                Debug.LogWarning("[OnlineLobbyScene] ParseNetworkMatchMessageFromServer received null json.");
                 return;
             }
 
@@ -723,6 +727,7 @@ namespace OpenGS
             var filtered = FilterRooms(currentRoomList, currentRoomFilter);
             if (filtered.Count == 0)
             {
+                Debug.LogWarning("[OnlineLobbyScene] No rooms matched the current filter.");
                 return null;
             }
 
@@ -746,6 +751,7 @@ namespace OpenGS
             var filtered = FilterRooms(currentRoomList, currentRoomFilter);
             if (filtered.Count == 0)
             {
+                Debug.LogWarning("[OnlineLobbyScene] No rooms available for selection.");
                 return null;
             }
 
@@ -765,6 +771,7 @@ namespace OpenGS
         {
             if (rooms == null || rooms.Count == 0 || string.IsNullOrWhiteSpace(roomId))
             {
+                Debug.LogWarning("[OnlineLobbyScene] FindRoomById received invalid arguments.");
                 return null;
             }
 
@@ -777,6 +784,7 @@ namespace OpenGS
                 }
             }
 
+            Debug.LogWarning($"[OnlineLobbyScene] Room not found: {roomId}");
             return null;
         }
 

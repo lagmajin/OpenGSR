@@ -43,11 +43,21 @@ namespace OpenGS
         // Method to get player status
         public PlayerStatus GetPlayerStatus(string playerId)
         {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                Debug.LogWarning("[MatchData] GetPlayerStatus called with empty playerId.");
+                return null;
+            }
+
             if (AllPlayers.TryGetValue(playerId, out var status))
             {
                 return status;
             }
-            return null;
+
+            var newStatus = new PlayerStatus();
+            AllPlayers[playerId] = newStatus;
+            Debug.LogWarning($"[MatchData] PlayerStatus was missing and has been created: {playerId}");
+            return newStatus;
         }
 
         // Method to remove player
@@ -99,14 +109,22 @@ namespace OpenGS
                     return GetPlayerStatus(_myPlayerId);
                 }
             }
+
+            Debug.LogWarning("[MatchData] My player status could not be resolved.");
             return null;
         }
 
         // Method to update kill score (called from network)
         public void UpdateKillScore(string playerId, int kills, int deaths, int score, ETeam team = ETeam.NoTeam)
         {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                Debug.LogWarning("[MatchData] UpdateKillScore called with empty playerId.");
+                return;
+            }
+
             // 既存のプレイヤーステータスを取得または新規作成
-            var status = GetPlayerStatus(playerId) ?? new PlayerStatus();
+            var status = GetPlayerStatus(playerId);
             
             // kills/deaths/score を設定（PlayerStatusにこれらのプロパティが必要）
             // ※ PlayerStatus に Kills, Deaths, Score プロパティがある場合のみ
@@ -138,6 +156,12 @@ namespace OpenGS
         // Method to update death count (called from network)
         public void UpdateDeathCount(string playerId, ETeam team = ETeam.NoTeam)
         {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                Debug.LogWarning("[MatchData] UpdateDeathCount called with empty playerId.");
+                return;
+            }
+
             AllDeath += 1;
             
             Debug.Log($"[MatchData] Death Update - Player: {playerId}, Team: {team}");

@@ -4,7 +4,7 @@ namespace OpenGS
 {
     class CTFAIPlayer : AIPlayerController
     {
-        bool HasEnemyFlag()
+        public new bool HasEnemyFlag()
         {
             return false;
         }

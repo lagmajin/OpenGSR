@@ -89,7 +89,6 @@ namespace OpenGS
 
         private void CreateOtherPlayers()
         {
-            var prefab = 0;
         }
 
         private void Update()
@@ -118,6 +117,7 @@ namespace OpenGS
                 scoreUIManager?.AddBlueKill();
             }
 
+            OnPlayerKilled?.Invoke(victimTeam);
             // イベント発火
             OnTeamKill?.Invoke(killerTeam, victimTeam);
 

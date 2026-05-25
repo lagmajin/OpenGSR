@@ -27,10 +27,48 @@ namespace OpenGS
         [CanBeNull]
         public Sprite Thumbnail()
         {
+            if (thumbnail != null && thumbnail.Count > 0)
+            {
+                foreach (var pair in thumbnail)
+                {
+                    if (pair.Value != null)
+                    {
+                        return pair.Value;
+                    }
+                }
+            }
 
+            if (normalGrenade != null)
+            {
+                return normalGrenade;
+            }
 
+            if (powerGrenade != null)
+            {
+                return powerGrenade;
+            }
 
+            if (fireGrenade != null)
+            {
+                return fireGrenade;
+            }
 
+            if (mineGrenade != null)
+            {
+                return mineGrenade;
+            }
+
+            if (magneticGrenade != null)
+            {
+                return magneticGrenade;
+            }
+
+            if (clusterGrenade != null)
+            {
+                return clusterGrenade;
+            }
+
+            Debug.LogWarning("[InstantItemThumbnailMasterData] No thumbnail sprite is assigned.");
             return null;
         }
 
@@ -62,6 +100,7 @@ namespace OpenGS
                 return clusterGrenade;
             }
 
+            Debug.LogWarning($"[InstantItemThumbnailMasterData] Unknown grenade type: {type}");
             return null;
         }
 

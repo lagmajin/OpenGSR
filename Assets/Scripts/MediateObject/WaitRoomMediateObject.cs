@@ -37,6 +37,7 @@ namespace OpenGS
                 }
             }
 
+            Debug.LogWarning("[WaitRoomMediateObject] IWaitRoomUiManager was not found.");
             return null;
         }
     }

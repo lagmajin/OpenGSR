@@ -59,7 +59,7 @@ namespace OpenGS
             Id = id;
             RoomName = "New Match Room";
             // ClientNetworkManagerのインスタンスを検索（Awake/Start時が望ましい）
-            _networkManager = GameObject.FindObjectOfType<ClientNetworkManager>();
+            _networkManager = GameObject.FindFirstObjectByType<ClientNetworkManager>();
             if (_networkManager == null)
             {
                 Debug.LogError("[MatchRoom] ClientNetworkManager not found in scene!");
@@ -194,6 +194,7 @@ namespace OpenGS
         public PlayerData MyPlayer()
         {
             // クライアントのローカルプレイヤー情報を返すロジック
+            Debug.LogWarning("[MatchRoom] MyPlayer was requested but no local player data is available.");
             return null;
         }
     }

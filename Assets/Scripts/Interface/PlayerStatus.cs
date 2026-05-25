@@ -140,30 +140,62 @@ namespace OpenGS
             KillCount++;
         }
 
+        public void AddDeath()
+        {
+            DeathCount++;
+        }
+
         public void ResetKills()
         {
             KillCount = 0;
         }
 
-        public void ConsumeGrenade()
+        public void ResetDeaths()
         {
-            GrenadeCount--;
+            DeathCount = 0;
         }
 
-        public bool UseGrenade()
+        public void ResetCombatStats()
         {
-            if (GrenadeCount <= 0)
+            ResetKills();
+            ResetDeaths();
+        }
+
+        public void ConsumeGrenade()
+        {
+            ConsumeGrenade(1);
+        }
+
+        public bool ConsumeGrenade(int amount)
+        {
+            if (amount <= 0 || GrenadeCount <= 0)
             {
                 return false;
             }
 
-            ConsumeGrenade();
+            GrenadeCount = Mathf.Max(0, GrenadeCount - amount);
+            return true;
+        }
+
+        public bool UseGrenade()
+        {
+            if (!ConsumeGrenade(1))
+            {
+                return false;
+            }
+
             return true;
         }
 
         public void RefillGrenade()
         {
             GrenadeCount = DefaultMaxGrenade;
+        }
+
+        public void FullCombatRecovery()
+        {
+            ResetCombatStats();
+            RefillGrenade();
         }
     }
 }

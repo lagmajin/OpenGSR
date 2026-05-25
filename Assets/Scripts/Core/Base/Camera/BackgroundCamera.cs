@@ -134,7 +134,11 @@ namespace OpenGS
         /// </summary>
         public GameObject AttachBackground(GameObject background)
         {
-            if (background == null) return null;
+            if (background == null)
+            {
+                Debug.LogWarning("[BackgroundCamera] AttachBackground called with null background.");
+                return null;
+            }
             background.transform.SetParent(transform, false);
             return background;
         }

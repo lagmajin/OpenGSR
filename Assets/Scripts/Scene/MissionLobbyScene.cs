@@ -12,8 +12,9 @@ namespace OpenGS
         [SerializeField] private QuestAndMissionSceneStorage missionSceneStorage;
         private SynchronizationContext mainThread;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             mainThread = SynchronizationContext.Current;
 
@@ -34,8 +35,9 @@ namespace OpenGS
             Debug.Log("[MissionLobbyScene] Started");
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
         }
 
         private void FilterRoom()

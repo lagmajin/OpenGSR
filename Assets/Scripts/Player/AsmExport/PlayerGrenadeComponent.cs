@@ -68,7 +68,6 @@ namespace OpenGS
         [Button("オートセット")]
         private void AutoSet()
         {
-            var searchSentence = "t:" + nameof(AllGrenadeListMasterData);
             // エディタ設定用
         }
 
@@ -83,14 +82,11 @@ namespace OpenGS
             var pAgent = GetComponent<AbstractPlayer>();
             if (pAgent != null)
             {
-                if (pAgent.Status.GrenadeCount <= 0)
+                if (!pAgent.Status.UseGrenade())
                 {
                     Debug.Log("グレネードの残弾がありません。");
                     return;
                 }
-                
-                // グレネードを消費
-                pAgent.Status.ConsumeGrenade();
             }
 
             if (grenadeListMasterData == null || grenadeListMasterData.dataList == null || grenadeListMasterData.dataList.Count == 0)

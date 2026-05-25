@@ -6,7 +6,7 @@ namespace OpenGS
     {
         public static void FreezeRotation()
         {
-            foreach (var body in Object.FindObjectsOfType<Rigidbody2D>())
+            foreach (var body in Object.FindObjectsByType<Rigidbody2D>(FindObjectsSortMode.None))
             {
                 if (body != null)
                 {

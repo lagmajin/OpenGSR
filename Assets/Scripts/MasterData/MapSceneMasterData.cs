@@ -14,6 +14,7 @@ namespace OpenGS
 
             if (cachedMaps == null)
             {
+                Debug.LogWarning($"[MapSceneMasterData] Map cache is empty for {map}.");
                 return null;
             }
 
@@ -25,6 +26,7 @@ namespace OpenGS
                 }
             }
 
+            Debug.LogWarning($"[MapSceneMasterData] Map not found: {map}");
             return null;
         }
 

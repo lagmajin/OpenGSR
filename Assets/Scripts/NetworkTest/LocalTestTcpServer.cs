@@ -56,7 +56,19 @@ namespace OpenGS
 
         private void SendWelcomeMessage()
         {
+            if (!_isRunning || _connectedClient == null)
+            {
+                return;
+            }
 
+            var welcome = new JObject
+            {
+                ["MessageType"] = "Welcome",
+                ["PlayerID"] = userId,
+                ["ServerID"] = id
+            };
+
+            SendJsonToClient(welcome);
         }
 
         /// <summary>
@@ -84,9 +96,9 @@ namespace OpenGS
             public bool IsReady { get; set; }
             public string CurrentRoomId { get; set; }
         }
-        public async Task StartAsync(int port)
+        public Task StartAsync(int port)
         {
-            if (_isRunning) return;
+            if (_isRunning) return Task.CompletedTask;
             Debug.Log($"LocalTestTcpServer: StartAsync called with port={port}");
 
             try
@@ -108,16 +120,23 @@ namespace OpenGS
             _serverTask = Task.Run(AcceptClientsAsync); // 自律的に動く
 
 
-            //var obj = new AIXJsonObject();
-
-            //obj["MessageType"] = "LoginResponse";
-
-            //Debug.Log(obj.ToString());
+            return Task.CompletedTask;
         }
 
         public void SetID()
         {
+            SetID(id);
+        }
 
+        public void SetID(string newId)
+        {
+            if (string.IsNullOrWhiteSpace(newId))
+            {
+                return;
+            }
+
+            id = newId;
+            userId = newId;
         }
 
         private async Task AcceptClientsAsync()
@@ -133,6 +152,7 @@ namespace OpenGS
                     _connectedClient = client;
 
                     OnClientConnected?.Invoke(client);
+                    SendWelcomeMessage();
                     // Send a ConnectServerSuccessful message immediately so clients that expect this
                     // server-generated event (e.g. to set RSA key) receive it before login flow.
                     try
@@ -574,10 +594,6 @@ namespace OpenGS
         }
         private void OnLogin()
         {
-            var endpoint = _connectedClient.Client.RemoteEndPoint;
-
-            var clientID = "test";
-
             var obj = new AIXJsonObject();
 
             // Use the message type expected by the client-side parser

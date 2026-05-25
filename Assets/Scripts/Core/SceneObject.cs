@@ -36,7 +36,10 @@ namespace OpenGS
         protected SceneAsset GetSceneObject(string sceneObjectName)
         {
             if (string.IsNullOrEmpty(sceneObjectName))
+            {
+                Debug.LogWarning("[SceneObject] Scene name is empty.");
                 return null;
+            }
 
             for (int i = 0; i < EditorBuildSettings.scenes.Length; i++)
             {

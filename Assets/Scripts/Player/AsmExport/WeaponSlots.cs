@@ -39,6 +39,11 @@ namespace OpenGS
         /// </summary>
         public void EquipSpecialWeapon(GameObject weaponPrefab, int ammo)
         {
+            if (weaponPrefab == null)
+            {
+                return;
+            }
+
             if (currentEquipType == EPlayerEquipWeapon.SpecialWeapon)
             {
                 RemoveWeaponFromSlot(specialWeaponSlot);
@@ -77,14 +82,28 @@ namespace OpenGS
             if (currentEquipType == EPlayerEquipWeapon.SpecialWeapon) return false;
 
             GameObject targetSlot = (currentEquipType == EPlayerEquipWeapon.MainWeapon) ? mainWeaponSlot : secondaryWeaponSlot;
+            if (targetSlot == null)
+            {
+                return false;
+            }
+
             return targetSlot.transform.childCount == 0;
         }
 
         public void EquipWeapon(GameObject weaponPrefab)
         {
+            if (weaponPrefab == null)
+            {
+                return;
+            }
+
             if (currentEquipType == EPlayerEquipWeapon.SpecialWeapon) return;
 
             GameObject targetSlot = (currentEquipType == EPlayerEquipWeapon.MainWeapon) ? mainWeaponSlot : secondaryWeaponSlot;
+            if (targetSlot == null)
+            {
+                return;
+            }
             
             // 既存の武器があれば削除
             RemoveWeaponFromSlot(targetSlot);
@@ -103,6 +122,7 @@ namespace OpenGS
             {
                 Destroy(currentWeaponObject);
                 currentWeaponObject = null;
+                RefreshWeaponVisibility();
             }
         }
 
@@ -151,8 +171,19 @@ namespace OpenGS
 
         public AbstractGunController GetCurrentGun()
         {
-            if (currentWeaponObject == null) return null;
-            return currentWeaponObject.GetComponent<AbstractGunController>();
+            if (currentWeaponObject == null)
+            {
+                Debug.LogWarning($"[WeaponSlots] Current weapon object is null. equipType={currentEquipType}");
+                return null;
+            }
+
+            var gun = currentWeaponObject.GetComponent<AbstractGunController>();
+            if (gun == null)
+            {
+                Debug.LogWarning($"[WeaponSlots] Current weapon object has no AbstractGunController. weapon={currentWeaponObject.name}");
+            }
+
+            return gun;
         }
     }
 }

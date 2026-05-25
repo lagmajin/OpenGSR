@@ -323,11 +323,7 @@ namespace OpenGS
 
             //var pm=room.playerma
 
-            var playerCharacter = EPlayerCharacter.Ami;
-
             var playerInfo = new OpenGSCore.PlayerInfo();
-
-            //playerInfo.playerCharacter = playerCharacter;
 
             //room.PlayerManager.AddPlayer()
 

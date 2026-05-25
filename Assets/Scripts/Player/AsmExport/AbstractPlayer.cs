@@ -79,6 +79,7 @@ namespace OpenGS
 
         private float warpDelayCounter;
         private float increaseItemCounter;
+        private Coroutine reSpawnCoroutine;
         private bool hasTeam;
         private ETeam myTeam;
         private bool canWarp;
@@ -121,6 +122,7 @@ namespace OpenGS
         {
             ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
+            Status?.FullCombatRecovery();
             canJump = true;
             canWarp = true;
             isSitting = false;
@@ -135,6 +137,7 @@ namespace OpenGS
         {
             ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
+            Status?.FullCombatRecovery();
             canJump = true;
             canWarp = true;
             isSitting = false;
@@ -147,6 +150,12 @@ namespace OpenGS
 
         public virtual void ReserveReSpawn(float delay)
         {
+            if (reSpawnCoroutine != null)
+            {
+                StopCoroutine(reSpawnCoroutine);
+            }
+
+            reSpawnCoroutine = StartCoroutine(ReserveReSpawnRoutine(Mathf.Max(0f, delay)));
         }
 
         // ─── IPlayer: 状態クエリ ─────────────────────────────────────
@@ -155,7 +164,11 @@ namespace OpenGS
 
         public bool IsDead() => isDead;
 
-        public bool IsRolling() => false;
+        public bool IsRolling()
+        {
+            var dashAndRolling = GetComponent<DashAndRolling>();
+            return dashAndRolling != null && dashAndRolling.IsRollPressed;
+        }
 
         public Guid UniqueID() => uniqueId;
 
@@ -203,11 +216,17 @@ namespace OpenGS
 
         public void EquipWeapon(GameObject weaponPrefab)
         {
+            if (weaponPrefab == null)
+            {
+                return;
+            }
+
+            weaponSlots?.EquipWeapon(weaponPrefab);
         }
 
         public void DropCurrentWeapon()
         {
-            Debug.Log("DropCurrentWeapon");
+            weaponSlots?.DropCurrentWeapon();
         }
 
         public void SwapWeapon()
@@ -266,6 +285,7 @@ namespace OpenGS
             if (Status.Hp <= 0)
             {
                 isDead = true;
+                Status.AddDeath();
                 // DeathCount increment is handled by PlayerRegistry.ApplyDamage
                 OnDead();
             }
@@ -302,6 +322,12 @@ namespace OpenGS
 
         public virtual void AddSlipDamage(float v, string id)
         {
+            if (v <= 0f)
+            {
+                return;
+            }
+
+            AddDamage(Vector2.zero, v, eDamageType.Lava);
         }
 
         // ─── IPowerupable ────────────────────────────────────────────
@@ -416,7 +442,11 @@ namespace OpenGS
 
         // ─── その他の動作 ────────────────────────────────────────────
 
-        public bool ReloadingNow() => false;
+        public bool ReloadingNow()
+        {
+            var gun = weaponSlots?.GetCurrentGun();
+            return gun != null && gun.CanReload() && !gun.CanShot();
+        }
 
         public virtual void ReloadStart()
         {
@@ -425,6 +455,15 @@ namespace OpenGS
 
         public virtual void UseItem(int i = 0)
         {
+            if (i == 0 && Status != null)
+            {
+                if (Status.UseGrenade())
+                {
+                    Debug.Log($"[{GetType().Name}] Grenade used via base UseItem");
+                    return;
+                }
+            }
+
             Debug.Log($"[{GetType().Name}] UseItem called with slot {i}");
         }
 
@@ -531,6 +570,13 @@ namespace OpenGS
         protected IEnumerator ReSpawnCounter(float time = 5.0f)
         {
             yield return new WaitForSecondsRealtime(time);
+        }
+
+        private IEnumerator ReserveReSpawnRoutine(float delay)
+        {
+            yield return new WaitForSecondsRealtime(delay);
+            reSpawnCoroutine = null;
+            OnReSpawn();
         }
 
         protected IEnumerator WarpCounter()

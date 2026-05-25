@@ -49,6 +49,12 @@ namespace OpenGS
 
         public static ShopItemData GetDefaultItemById(string id)
         {
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                Debug.LogWarning("[ShopCatalogFactory] GetDefaultItemById received empty id.");
+                return null;
+            }
+
             if (itemCache.TryGetValue(id ?? string.Empty, out var cached))
             {
                 return cached;
@@ -65,6 +71,7 @@ namespace OpenGS
                 }
             }
 
+            Debug.LogWarning($"[ShopCatalogFactory] Default shop item not found: {id}");
             return null;
         }
 

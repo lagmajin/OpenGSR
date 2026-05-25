@@ -6,17 +6,19 @@ using System.Collections.Generic;
 
 namespace OpenGS
 {
-    public class PlayerAllData
+public class PlayerAllData
     {
         OpenGSCore.PlayerInfo playerInfo;
         PlayerStatus status;
 
-        private List<PlayerAllData> players = new List<PlayerAllData>();
         public PlayerAllData(OpenGSCore.PlayerInfo playerInfo, PlayerStatus status)
         {
             this.playerInfo = playerInfo;
             this.status = status;
         }
+
+        public OpenGSCore.PlayerInfo PlayerInfo => playerInfo;
+        public PlayerStatus Status => status;
     }
 
 
@@ -24,6 +26,7 @@ namespace OpenGS
     //#プレイヤークラス
     public class PlayerMatchManager 
     {
+        private readonly List<PlayerAllData> players = new List<PlayerAllData>();
         
       
         public PlayerMatchManager()
@@ -33,24 +36,40 @@ namespace OpenGS
 
         public void AddPlayer(OpenGSCore.PlayerInfo info, PlayerStatus status)
         {
-            //PlayerAllData newPlayer = new PlayerAllData(info, status);
-            //players.Add(newPlayer);
+            if (info == null || status == null)
+            {
+                Debug.LogWarning("[PlayerMatchManager] AddPlayer received null info or status.");
+                return;
+            }
+
+            players.Add(new PlayerAllData(info, status));
         }
 
         public void RemovePlayer()
         {
+            if (players.Count > 0)
+            {
+                players.RemoveAt(players.Count - 1);
+                return;
+            }
 
+            Debug.LogWarning("[PlayerMatchManager] RemovePlayer called but no players are registered.");
         }
 
         public PlayerAllData MyPlayer()
         {
+            if (players.Count == 0)
+            {
+                Debug.LogWarning("[PlayerMatchManager] MyPlayer requested but no players are registered.");
+                return null;
+            }
 
-            return null;
+            return players[players.Count - 1];
         }
 
         public void RemoveAll()
         {
-            //database.RemoveAll();
+            players.Clear();
         }
 
         

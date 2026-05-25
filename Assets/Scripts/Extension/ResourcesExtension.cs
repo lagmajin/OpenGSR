@@ -20,6 +20,14 @@ namespace OpenGS
                 if (result != null)
                     return result;
             }
+
+            var directResult = Resources.Load(resourceName, systemTypeInstance);
+            if (directResult != null)
+            {
+                return directResult;
+            }
+
+            Debug.LogWarning($"[ResourcesExtension] Resource not found: {resourceName} ({systemTypeInstance?.Name})");
             return null;
         }
     }

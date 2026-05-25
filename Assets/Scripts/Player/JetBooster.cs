@@ -12,9 +12,6 @@ namespace OpenGS
         [SerializeField] private float boostAccel = 10f;
         [SerializeField] private float maxBoostSpeed = 5f;
         [SerializeField] private float groundedRecoveryDelay = 0.5f; // 0
-        [SerializeField] private float gravity = 10f;         // 通常重力
-        [SerializeField] private float gravityDuringBoost = 3f; // ブースト中の
-
         [Header("Visual Settings")]
         [SerializeField] private Color boostColor = Color.cyan;
         [SerializeField] private SpriteRenderer boosterRenderer;

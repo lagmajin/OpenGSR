@@ -36,8 +36,9 @@ namespace OpenGS
             if (drawImage != null) drawImage.gameObject.SetActive(false);
         }
 
-        protected virtual void Update()
+        protected override void Update()
         {
+            base.Update();
             if (!isResultSet) return;
 
             // クリックやエンターキーで次の画面へ

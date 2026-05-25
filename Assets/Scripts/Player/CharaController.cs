@@ -109,7 +109,7 @@ namespace OpenGS
             StartCoroutine(OnBlink());
         }
 
-        public new void Start()
+        public void Start()
         {
             animator = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
@@ -267,7 +267,7 @@ namespace OpenGS
         }
 
         [Button("しゃがみテスト")]
-        public void Sit()
+        public override void Sit()
         {
             Debug.Log("Sit");
 
@@ -278,7 +278,7 @@ namespace OpenGS
 
         }
         [Button("ローリングテスト")]
-        public new void Rolling()
+        public void Rolling()
         {
             Debug.Log("[CharaController] Rolling");
             if (animator != null)
@@ -287,7 +287,7 @@ namespace OpenGS
             }
         }
 
-        public void StandUp()
+        public new void StandUp()
         {
             if (animator)
             {

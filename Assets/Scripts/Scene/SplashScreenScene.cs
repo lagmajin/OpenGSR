@@ -27,8 +27,9 @@ namespace OpenGS
             return mainThread ?? SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             mainThread = SynchronizationContext.Current;
         }

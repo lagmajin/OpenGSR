@@ -180,6 +180,7 @@ namespace OpenGS
         {
             if (routine == null)
             {
+                Debug.LogWarning($"{GetType().Name}: StartManagedCoroutine received null routine.");
                 return null;
             }
 

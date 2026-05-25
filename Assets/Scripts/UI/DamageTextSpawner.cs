@@ -56,7 +56,23 @@ namespace OpenGS
         /// </summary>
         private void HandlePlayerDamageEvent(PlayerDamageEvent evt)
         {
-            if (evt == null || damagePrefab == null || targetCamera == null) return;
+            if (evt == null)
+            {
+                Debug.LogWarning("[DamageTextSpawner] PlayerDamageEvent is null.");
+                return;
+            }
+
+            if (damagePrefab == null)
+            {
+                Debug.LogWarning("[DamageTextSpawner] damagePrefab is not assigned.");
+                return;
+            }
+
+            if (targetCamera == null)
+            {
+                Debug.LogWarning("[DamageTextSpawner] targetCamera is not assigned.");
+                return;
+            }
 
             var player = ResolvePlayer(evt.TargetID());
             if (player == null) return;
@@ -81,6 +97,7 @@ namespace OpenGS
         {
             if (string.IsNullOrWhiteSpace(playerId))
             {
+                Debug.LogWarning("[DamageTextSpawner] playerId is empty.");
                 return null;
             }
 
@@ -91,11 +108,13 @@ namespace OpenGS
 
             if (PlayerRegistry.Instance == null)
             {
+                Debug.LogWarning("[DamageTextSpawner] PlayerRegistry.Instance is null.");
                 return null;
             }
 
             if (!Guid.TryParse(playerId, out var guid))
             {
+                Debug.LogWarning($"[DamageTextSpawner] Invalid playerId format: {playerId}");
                 return null;
             }
 
@@ -105,11 +124,18 @@ namespace OpenGS
                 return player;
             }
 
+            Debug.LogWarning($"[DamageTextSpawner] Player not found for playerId: {playerId}");
             return null;
         }
 
         private void SpawnDamageText(AbstractPlayer player, int damage, bool isCritical)
         {
+            if (player == null)
+            {
+                Debug.LogWarning("[DamageTextSpawner] player is null.");
+                return;
+            }
+
             // プレイヤーのワールド座標をスクリーン座標に変換
             Vector3 worldPos = player.transform.position + new Vector3(0, 0.3f, 0); // 少し頭上
             Vector3 screenPos = targetCamera.WorldToScreenPoint(worldPos);

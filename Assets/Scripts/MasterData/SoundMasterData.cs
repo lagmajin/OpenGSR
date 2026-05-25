@@ -180,25 +180,127 @@ namespace OpenGS
 
         public bool ValidateAllMappings(bool logWarnings = true)
         {
-            // Implementation...
-            return true;
+            RebuildMaps();
+
+            var warnings = new List<string>();
+
+            foreach (ESystemSound sound in Enum.GetValues(typeof(ESystemSound)))
+            {
+                if (!TryGetSystemSound(sound, out var clip) || clip == null)
+                {
+                    warnings.Add($"System sound missing: {sound}");
+                }
+            }
+
+            foreach (EMatchSound sound in Enum.GetValues(typeof(EMatchSound)))
+            {
+                if (!TryGetMatchSound(sound, out var clip) || clip == null)
+                {
+                    warnings.Add($"Match sound missing: {sound}");
+                }
+            }
+
+            foreach (ESoundEffect sound in Enum.GetValues(typeof(ESoundEffect)))
+            {
+                if (!TryGetEffectSound(sound, out var clip) || clip == null)
+                {
+                    warnings.Add($"Effect sound missing: {sound}");
+                }
+            }
+
+            foreach (EWeaponType weaponType in Enum.GetValues(typeof(EWeaponType)))
+            {
+                if (!TryGetWeaponShotSound(weaponType, out var shot) || shot == null)
+                {
+                    warnings.Add($"Weapon shot sound missing: {weaponType}");
+                }
+
+                if (!TryGetWeaponReloadSound(weaponType, out var reload) || reload == null)
+                {
+                    warnings.Add($"Weapon reload sound missing: {weaponType}");
+                }
+
+                if (!TryGetWeaponHitSound(weaponType, out var hit) || hit == null)
+                {
+                    warnings.Add($"Weapon hit sound missing: {weaponType}");
+                }
+            }
+
+            foreach (EGrenadeType grenadeType in Enum.GetValues(typeof(EGrenadeType)))
+            {
+                if (!TryGetGrenadeThrowSound(grenadeType, out var clip) || clip == null)
+                {
+                    warnings.Add($"Grenade throw sound missing: {grenadeType}");
+                }
+            }
+
+            if (logWarnings)
+            {
+                foreach (var warning in warnings)
+                {
+                    Debug.LogWarning($"[SoundMasterData] {warning}");
+                }
+            }
+
+            return warnings.Count == 0;
         }
 
         public bool ValidateCombatMappings(out string report)
         {
-            report = "";
-            return true;
+            RebuildMaps();
+
+            var sb = new StringBuilder();
+            var valid = true;
+
+            foreach (EMatchSound sound in Enum.GetValues(typeof(EMatchSound)))
+            {
+                if (!TryGetMatchSound(sound, out var clip) || clip == null)
+                {
+                    valid = false;
+                    sb.AppendLine($"Missing match sound: {sound}");
+                }
+            }
+
+            foreach (EWeaponType weaponType in Enum.GetValues(typeof(EWeaponType)))
+            {
+                if (!TryGetWeaponShotSound(weaponType, out var shot) || shot == null)
+                {
+                    valid = false;
+                    sb.AppendLine($"Missing weapon shot sound: {weaponType}");
+                }
+
+                if (!TryGetWeaponReloadSound(weaponType, out var reload) || reload == null)
+                {
+                    valid = false;
+                    sb.AppendLine($"Missing weapon reload sound: {weaponType}");
+                }
+            }
+
+            report = sb.ToString();
+            if (!valid)
+            {
+                Debug.LogWarning($"[SoundMasterData] Combat mapping validation failed.\n{report}");
+            }
+
+            return valid;
         }
 
         private static AudioClip LoadFirst(string[] candidates)
         {
-            if (candidates == null) return null;
+            if (candidates == null)
+            {
+                Debug.LogWarning("[SoundMasterData] LoadFirst received null candidates.");
+                return null;
+            }
+
             foreach (var path in candidates)
             {
                 if (string.IsNullOrWhiteSpace(path)) continue;
                 var clip = Resources.Load<AudioClip>(path);
                 if (clip != null) return clip;
             }
+
+            Debug.LogWarning($"[SoundMasterData] No AudioClip found from {candidates.Length} candidates.");
             return null;
         }
 

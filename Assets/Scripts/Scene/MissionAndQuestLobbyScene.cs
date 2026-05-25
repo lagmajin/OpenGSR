@@ -10,8 +10,9 @@ namespace OpenGS
         [SerializeField] private MissionAndQuestMediateObject mediateObject;
         private SynchronizationContext mainThread;
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             mainThread = SynchronizationContext.Current;
         }
@@ -30,8 +31,9 @@ namespace OpenGS
         {
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
         }
 
         [Button("バトルサーバへ移動")]

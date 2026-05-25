@@ -18,7 +18,7 @@ namespace OpenGS
 
         }
 
-        void Exp()
+        public override void Exp()
         {
             var fire = Instantiate(fireEffect, gameObject.transform);
 

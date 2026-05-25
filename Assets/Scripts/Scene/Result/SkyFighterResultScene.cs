@@ -16,8 +16,9 @@ namespace OpenGS
 
         public GameObject skyFighterCanvas;
         private SynchronizationContext mainThread;
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             mainThread = SynchronizationContext.Current;
 
@@ -27,8 +28,9 @@ namespace OpenGS
 
         }
 
-        private void Update()
+        protected override void Update()
         {
+            base.Update();
             if (Input.anyKeyDown)
             {
                 BacktoWaitRoom();

@@ -277,12 +277,16 @@ namespace OpenGS
                     box.size = ReadVector2(json["size"], box.size);
                     box.edgeRadius = json["edgeRadius"]?.Value<float>() ?? box.edgeRadius;
                     box.usedByEffector = json["usedByEffector"]?.Value<bool>() ?? box.usedByEffector;
+#pragma warning disable 0618
                     box.usedByComposite = json["usedByComposite"]?.Value<bool>() ?? box.usedByComposite;
+#pragma warning restore 0618
                     break;
                 case CircleCollider2D circle:
                     circle.radius = json["radius"]?.Value<float>() ?? circle.radius;
                     circle.usedByEffector = json["usedByEffector"]?.Value<bool>() ?? circle.usedByEffector;
+#pragma warning disable 0618
                     circle.usedByComposite = json["usedByComposite"]?.Value<bool>() ?? circle.usedByComposite;
+#pragma warning restore 0618
                     break;
                 case CapsuleCollider2D capsule:
                     capsule.size = ReadVector2(json["size"], capsule.size);
@@ -291,7 +295,9 @@ namespace OpenGS
                         capsule.direction = direction;
                     }
                     capsule.usedByEffector = json["usedByEffector"]?.Value<bool>() ?? capsule.usedByEffector;
+#pragma warning disable 0618
                     capsule.usedByComposite = json["usedByComposite"]?.Value<bool>() ?? capsule.usedByComposite;
+#pragma warning restore 0618
                     break;
                 case EdgeCollider2D edge:
                     edge.edgeRadius = json["edgeRadius"]?.Value<float>() ?? edge.edgeRadius;
@@ -390,6 +396,7 @@ namespace OpenGS
         {
             if (assetRef == null)
             {
+                Debug.LogWarning("[MapJsonImporter] LoadAssetReference received null assetRef.");
                 return null;
             }
 
@@ -413,6 +420,7 @@ namespace OpenGS
                 }
             }
 
+            Debug.LogWarning("[MapJsonImporter] Asset reference could not be resolved.");
             return null;
         }
 

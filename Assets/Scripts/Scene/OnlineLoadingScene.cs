@@ -348,6 +348,7 @@ namespace OpenGS
                 return mapSelectMasterData.Map(map);
             }
 
+            Debug.LogWarning($"[OnlineLoadingScene] Map info could not be resolved for {map}.");
             return null;
         }
     }

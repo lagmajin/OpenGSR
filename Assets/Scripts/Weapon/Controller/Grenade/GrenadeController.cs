@@ -35,7 +35,7 @@ namespace OpenGS
 
 
         [Button("テスト")]
-        public void Exp()
+        public override void Exp()
         {
             Debug.Log("Exp2");
             var explosion = Instantiate(expEffect);

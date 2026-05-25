@@ -35,6 +35,12 @@ namespace OpenGS
 
         public static Scene GetBelongsScene(this GameObject target)
         {
+            if (target == null)
+            {
+                Debug.LogWarning("[GameObjectExtension] GetBelongsScene called with null target.");
+                return default(Scene);
+            }
+
             for (int i = 0; i < SceneManager.sceneCount; i++)
             {
                 var scene = SceneManager.GetSceneAt(i);
@@ -63,6 +69,11 @@ namespace OpenGS
 
         public static string GetHierarchyPath(this GameObject self)
         {
+            if (self == null)
+            {
+                return string.Empty;
+            }
+
             string path = "";
             Transform current = self.transform;
             while (current != null)
@@ -87,6 +98,8 @@ namespace OpenGS
                     return component;
                 }
             }
+
+            Debug.LogWarning($"[GameObjectExtension] Interface object not found: {typeof(T).Name}");
             return null;
         }
     }

@@ -25,6 +25,8 @@ namespace OpenGS
 
         private readonly List<SandboxDummyEnemy> spawnedDummies = new List<SandboxDummyEnemy>();
 
+        public int SpawnedDummyCount => spawnedDummies.Count;
+
         private void Awake()
         {
             if (weaponSlots == null)
@@ -46,8 +48,7 @@ namespace OpenGS
 
         private void ProcessWeaponAssist()
         {
-            AbstractGunController gun = GetCurrentGun();
-            if (gun == null)
+            if (!TryGetCurrentGun(out AbstractGunController gun))
             {
                 return;
             }
@@ -89,7 +90,7 @@ namespace OpenGS
             spawnedDummies.Add(dummy);
         }
 
-        private void ClearSpawnedDummies()
+        public void ClearSpawnedDummies()
         {
             for (int i = 0; i < spawnedDummies.Count; i++)
             {
@@ -102,14 +103,32 @@ namespace OpenGS
             spawnedDummies.Clear();
         }
 
-        private AbstractGunController GetCurrentGun()
+        public void ForceReloadCurrentWeapon()
         {
+            if (TryGetCurrentGun(out AbstractGunController gun))
+            {
+                gun.ReloadComplete();
+            }
+        }
+
+        private bool TryGetCurrentGun(out AbstractGunController gun)
+        {
+            gun = null;
+
             if (weaponSlots == null || weaponSlots.currentWeapon == null)
             {
-                return null;
+                Debug.LogWarning("[WeaponSandboxTestHelper] Current weapon is not available.");
+                return false;
             }
 
-            return weaponSlots.currentWeapon.GetComponentInChildren<AbstractGunController>();
+            gun = weaponSlots.currentWeapon.GetComponentInChildren<AbstractGunController>();
+            if (gun == null)
+            {
+                Debug.LogWarning("[WeaponSandboxTestHelper] Current weapon does not contain an AbstractGunController.");
+                return false;
+            }
+
+            return true;
         }
 
         private Vector3 GetAimDirection()

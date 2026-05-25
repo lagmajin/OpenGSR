@@ -167,7 +167,7 @@ namespace OpenGS
                 EPlayerSound.DeathMale2 => LoadFirst("Sound/Player/sfx_pl_deathM02"),
                 EPlayerSound.DeathMale3 => LoadFirst("Sound/Player/sfx_pl_deathM03"),
                 EPlayerSound.DeathMale4 => LoadFirst("Sound/Player/sfx_pl_deathM04"),
-                _ => null
+                _ => NoPlayerSoundClip(sound)
             };
 
             _playerSoundClipCache[key] = loaded;
@@ -182,6 +182,14 @@ namespace OpenGS
                 var clip = Resources.Load<AudioClip>(path);
                 if (clip != null) return clip;
             }
+
+            Debug.LogWarning($"[SoundService] AudioClip not found from {candidates.Length} candidates.");
+            return null;
+        }
+
+        private static AudioClip NoPlayerSoundClip(EPlayerSound sound)
+        {
+            Debug.LogWarning($"[SoundService] No player sound mapping for {sound}.");
             return null;
         }
     }

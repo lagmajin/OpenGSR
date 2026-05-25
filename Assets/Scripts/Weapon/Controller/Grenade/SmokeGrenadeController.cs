@@ -20,7 +20,7 @@ namespace OpenGS
 
         }
 
-        private void Exp()
+        public override void Exp()
         {
             Instantiate(expEffect);
 
