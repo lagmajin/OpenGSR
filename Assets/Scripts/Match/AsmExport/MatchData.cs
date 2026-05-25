@@ -122,6 +122,13 @@ namespace OpenGS
                     BlueTeamKill += 1;
                     break;
             }
+
+            if (kills > MaxPlayerKillCount)
+            {
+                MaxPlayerKillCount = kills;
+            }
+
+            AllPlayers[playerId] = status;
             
             AllKill += 1;
             

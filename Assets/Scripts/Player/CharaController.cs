@@ -251,7 +251,11 @@ namespace OpenGS
         [Button("ローリングテスト")]
         public new void Rolling()
         {
-
+            Debug.Log("[CharaController] Rolling");
+            if (animator != null)
+            {
+                animator.SetTrigger("Roll");
+            }
         }
 
         public void StandUp()
@@ -270,7 +274,14 @@ namespace OpenGS
 
         void Scope()
         {
+            var gun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
+            if (gun != null && gun.canZooming)
+            {
+                Debug.Log($"[CharaController] Scope on: {gun.Name}");
+                return;
+            }
 
+            Debug.Log("[CharaController] Scope");
         }
         [Button("死亡テスト")]
         void Die()
@@ -281,7 +292,7 @@ namespace OpenGS
             }
 
 
-            weaponSlots.DropCurrentWeapon();
+            DropWeapon();
 
 
             //Instantiate(DeathAnimationPrefab, this.transform.position, Quaternion.identity);
@@ -343,11 +354,7 @@ namespace OpenGS
 
         GameObject CurrentWeapon()
         {
-            //var weaponSlot1 = weaponSlots.gameObject.transform.Find("WeaponSlot1");
-            //var weaponSlot2 = weaponSlots.gameObject.transform.Find("WeaponSlot2");
-
-
-            return null;
+            return weaponSlots != null ? weaponSlots.currentWeapon : null;
 
         }
 
@@ -421,40 +428,65 @@ namespace OpenGS
 
         public void FlipWeapon()
         {
+            if (weaponSlots == null)
+            {
+                Debug.LogWarning("[CharaController] weaponSlots is null.");
+                return;
+            }
 
-
+            weaponSlots.FlipWeapon();
         }
         void TakeNewWeapon()
         {
-
-
+            TakeWeapon();
         }
 
         void TakeWeapon()
         {
+            if (weaponSlots == null)
+            {
+                Debug.LogWarning("[CharaController] weaponSlots is null.");
+                return;
+            }
 
-
-
-
+            var weapon = CurrentWeapon();
+            if (weapon != null)
+            {
+                Debug.Log($"[CharaController] TakeWeapon: {weapon.name}");
+            }
+            else
+            {
+                Debug.Log("[CharaController] TakeWeapon requested but no weapon is equipped.");
+            }
         }
 
         protected void DropWeapon()
         {
-
-
-
-
+            weaponSlots?.DropCurrentWeapon();
+            OnDropWeapon();
         }
 
         public override void ReloadStart()
         {
+            var gun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
+            if (gun == null)
+            {
+                Debug.LogWarning("[CharaController] ReloadStart requested but no gun is equipped.");
+                return;
+            }
 
+            if (!gun.CanReload())
+            {
+                Debug.Log("[CharaController] ReloadStart ignored because ammo is full.");
+                return;
+            }
 
+            gun.ReloadStart();
         }
 
         private void ReloadCancel()
         {
-
+            weaponSlots?.GetCurrentGun()?.ReloadCancel();
         }
 
         void OnTriggerEnter2D(Collider2D other)
