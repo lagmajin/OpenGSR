@@ -834,14 +834,18 @@ namespace OpenGS
 
         protected override void OnStartUnityEditor()
         {
+            EnsureTitleBgm();
         }
 
         protected override void OnQuitUnityEditor()
         {
+            networkManager?.Disconnect();
         }
 
         protected override void OnStartFromEditorDirectly()
         {
+            PrettyLogger.Log("System", "Online lobby started from editor.");
+            canInput = true;
         }
     }
 }

@@ -242,16 +242,20 @@ namespace OpenGS
 
         protected override void OnStartUnityEditor()
         {
+            AutoBindIfNeeded();
+            EnsureLoadingBgm();
         }
 
         protected override void OnQuitUnityEditor()
         {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         protected override void OnStartFromEditorDirectly()
         {
             PrettyLogger.Log("System", "Test");
             IsOnlineMode = true;
+            AutoBindIfNeeded();
         }
 
         public void OnEnterMapAllowed()

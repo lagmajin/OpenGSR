@@ -16,6 +16,8 @@ namespace OpenGS
     {
         void OnApplicationQuit()
         {
+            SceneManager.sceneLoaded -= GameSceneLoaded;
+            CancelInvoke();
         }
     }
 
@@ -536,14 +538,20 @@ namespace OpenGS
 
         protected override void OnStartUnityEditor()
         {
+            InitializeOfflineState();
+            PlayWaitRoomBgm();
         }
 
         protected override void OnQuitUnityEditor()
         {
+            SceneManager.sceneLoaded -= GameSceneLoaded;
+            CancelInvoke();
         }
 
         protected override void OnStartFromEditorDirectly()
         {
+            PrettyLogger.Log("System", "Offline wait room started from editor.");
+            InitializeOfflineState();
         }
 
         private void PlayWaitRoomBgm()
