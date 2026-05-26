@@ -9,10 +9,20 @@ namespace OpenGS
 
     public class GameLightAndShadowSetting
     {
+        bool isOn = false;
+
+        bool onDropShadow = false;
+
     }
 
     public class GamePostProcessingSetting
     {
+        bool isOn = false;
+
+        bool isOnMotionBluer = false;
+
+        bool isOnLOD = false;
+
     }
 
     public class GameGraphicsSetting
@@ -26,6 +36,12 @@ namespace OpenGS
 
     public class GameSoundSetting
     {
+        float masterVolume = 1.0f;
+        float bgmVolume = 1.0f;
+        float seVolume = 1.0f;
+
+        bool isOnReverb = false;
+
         public void EnableReverb()
         {
 
