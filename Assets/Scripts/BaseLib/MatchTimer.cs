@@ -27,6 +27,7 @@ namespace OpenGS
         private bool isStart = false;
 
         // サーバー同期用
+        private float lastServerTime = 0f;
         private int serverRemainingTime = 0;
         private float lastSyncTime = 0f;
         private bool receivedServerTime = false;
