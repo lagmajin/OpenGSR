@@ -407,7 +407,7 @@ namespace OpenGS.EditorTools
             label.fontSize = 22;
             label.color = Color.white;
             label.alignment = TextAlignmentOptions.Center;
-            label.enableWordWrapping = false;
+            label.textWrappingMode = TextWrappingModes.NoWrap;
             ConfigureRect(label.rectTransform, new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(0.5f, 0.5f), Vector2.zero, Vector2.zero);
             return label;
         }
@@ -421,7 +421,7 @@ namespace OpenGS.EditorTools
             tmp.fontSize = fontSize;
             tmp.alignment = alignment;
             tmp.color = color;
-            tmp.enableWordWrapping = true;
+            tmp.textWrappingMode = TextWrappingModes.Normal;
             tmp.raycastTarget = false;
             return tmp;
         }

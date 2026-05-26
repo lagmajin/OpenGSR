@@ -3,7 +3,6 @@ using System;
 using Newtonsoft.Json.Linq;
 using UniRx;
 using UnityEngine;
-using OpenGS;
 using OpenGSCore;
 
 namespace OpenGS
@@ -82,28 +81,19 @@ namespace OpenGS
 
         public void ConnectToGeneralServerSync(string ip, int port, string id, string pass)
         {
-            Debug.Log($"[GeneralServerNetworkManager] ConnectToGeneralServerSync {ip}:{port}");
         }
 
         public void TryConnectToServer(string ip, int port)
         {
-            Debug.Log($"[GeneralServerNetworkManager] TryConnectToServer {ip}:{port}");
         }
 
         public void Disconnect()
         {
             Online = false;
-            Debug.Log("[GeneralServerNetworkManager] Disconnect");
-        }
-
-        public void SendMessage(in JObject json)
-        {
-            Debug.Log($"[GeneralServerNetworkManager] SendMessage: {json?["MessageType"]}");
         }
 
         public void SendMessage(JObject json)
         {
-            Debug.Log($"[GeneralServerNetworkManager] SendMessage: {json?["MessageType"]}");
             if (json != null)
             {
                 NormalizeMessageType(json);
@@ -127,11 +117,6 @@ namespace OpenGS
         public void SendUpdateRoomRequest()
         {
             SendUpdateRoomRequestCore(new List<OpenGSCore.EGameMode>());
-        }
-
-        public void SendUpdateRoomRequest(in System.Collections.Generic.List<OpenGSCore.EGameMode> modeList)
-        {
-            SendUpdateRoomRequestCore(modeList);
         }
 
         public void SendUpdateRoomRequest(System.Collections.Generic.List<OpenGSCore.EGameMode> modes)
@@ -175,7 +160,6 @@ namespace OpenGS
         {
             var roomId = $"room-{localRoomSequence++:D4}";
             var ownerId = ResolveLocalPlayerId();
-            var ownerName = ResolveLocalPlayerName();
             currentRoomId = roomId;
             loadingCompletedPlayers.Clear();
             var room = new RoomRecord
@@ -185,16 +169,10 @@ namespace OpenGS
                 OwnerId = ownerId,
                 Capacity = capacity,
                 GameMode = string.IsNullOrWhiteSpace(gameMode) ? "TeamDeathMatch" : gameMode,
-                TeamBalance = teamBalance,
-                PlayerCount = 1
+                TeamBalance = teamBalance
             };
-            room.Players.Add(new RoomRecord.RoomPlayerRecord
-            {
-                PlayerId = ownerId,
-                PlayerName = ownerName,
-                IsReady = false,
-                PlayerCharacter = ResolveLocalPlayerCharacter()
-            });
+            room.Players.Add(CreateLocalRoomPlayerRecord(ownerId, ResolveLocalPlayerName(), false));
+            room.PlayerCount = room.Players.Count;
             localRooms.Add(room);
 
             EmitToClient(new JObject
@@ -240,19 +218,11 @@ namespace OpenGS
             var existingPlayer = room.Players.Find(player => string.Equals(player.PlayerId, playerId, StringComparison.OrdinalIgnoreCase));
             if (existingPlayer == null)
             {
-                room.Players.Add(new RoomRecord.RoomPlayerRecord
-                {
-                    PlayerId = playerId,
-                    PlayerName = string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName,
-                    IsReady = false,
-                    PlayerCharacter = ResolveLocalPlayerCharacter()
-                });
+                room.Players.Add(CreateLocalRoomPlayerRecord(playerId, playerName, false));
             }
             else
             {
-                existingPlayer.PlayerName = string.IsNullOrWhiteSpace(playerName) ? existingPlayer.PlayerName : playerName;
-                existingPlayer.IsReady = false;
-                existingPlayer.PlayerCharacter = ResolveLocalPlayerCharacter();
+                ApplyLocalRoomPlayerState(existingPlayer, playerName, false);
             }
 
             room.PlayerCount = room.Players.Count;
@@ -880,17 +850,12 @@ namespace OpenGS
             var player = room.Players.Find(candidate => string.Equals(candidate.PlayerId, playerId, StringComparison.OrdinalIgnoreCase));
             if (player == null)
             {
-                player = new RoomRecord.RoomPlayerRecord
-                {
-                    PlayerId = playerId,
-                    PlayerName = ResolveLocalPlayerName(),
-                    IsReady = ready
-                };
+                player = CreateLocalRoomPlayerRecord(playerId, ResolveLocalPlayerName(), ready);
                 room.Players.Add(player);
             }
             else
             {
-                player.IsReady = ready;
+                ApplyLocalRoomPlayerState(player, null, ready);
             }
 
             EmitToClient(new JObject
@@ -1006,6 +971,27 @@ namespace OpenGS
             return GamePlayerManager.Instance.SelectedPlayerCharacter().ToString();
         }
 
+        private static RoomRecord.RoomPlayerRecord CreateLocalRoomPlayerRecord(string playerId, string playerName, bool isReady)
+        {
+            var player = new RoomRecord.RoomPlayerRecord
+            {
+                PlayerId = playerId
+            };
+            ApplyLocalRoomPlayerState(player, playerName, isReady);
+            return player;
+        }
+
+        private static void ApplyLocalRoomPlayerState(RoomRecord.RoomPlayerRecord player, string playerName, bool isReady)
+        {
+            if (!string.IsNullOrWhiteSpace(playerName))
+            {
+                player.PlayerName = playerName;
+            }
+
+            player.IsReady = isReady;
+            player.PlayerCharacter = ResolveLocalPlayerCharacter();
+        }
+
         private static EPlayerCharacter ParsePlayerCharacter(string characterName)
         {
             if (!string.IsNullOrWhiteSpace(characterName) &&
@@ -1019,7 +1005,7 @@ namespace OpenGS
 
         private static void ApplyPlayerCharacter(RoomRecord room, string playerId, EPlayerCharacter character)
         {
-            if (room == null || string.IsNullOrWhiteSpace(playerId))
+            if (string.IsNullOrWhiteSpace(playerId))
             {
                 return;
             }

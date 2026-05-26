@@ -67,8 +67,9 @@ namespace OpenGS
             return mainThread;
         }
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
 
             mainThread = SynchronizationContext.Current;
@@ -89,8 +90,9 @@ namespace OpenGS
             RefreshWaitRoomUi();
         }
 
-        void Update()
+        protected override void Update()
         {
+            base.Update();
             if (Input.GetKeyDown(KeyCode.F9))
             {
                 RequestGameStart();
