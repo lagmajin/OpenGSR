@@ -44,6 +44,7 @@
 - `Assets/Editor/SpriteReferenceRepairWindow.cs`
 - `Logs/Editor.log`
 - `docs/codex/main-branch-development.md`
+- `docs/codex/workstream-organization.md`
 
 ## Notes
 
@@ -54,3 +55,4 @@
 - Sprite repair menu: `OpenGSR/Tools/Sprite Reference Repair`
 - Sprite auto-slice menu: `OpenGSR/Tools/Sprite Sheet Auto Slice`
 - Direct main-branch development notes: `docs/codex/main-branch-development.md`
+- Workstream organization notes: `docs/codex/workstream-organization.md`
