@@ -64,7 +64,7 @@ namespace OpenGS
             return null;
         }
 
-        public LoadingGauge GetLoadingGauge(in string id)
+        public LoadingGauge? GetLoadingGauge(in string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {

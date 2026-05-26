@@ -51,7 +51,7 @@ namespace OpenGS
         /// <summary>
         /// シングルトン
         /// </summary>
-        public static FieldItemNetworkManager Instance { get; private set; }
+        public static FieldItemNetworkManager? Instance { get; private set; }
 
         /// <summary>
         /// フィールドアイテムの辞書
@@ -61,17 +61,17 @@ namespace OpenGS
         /// <summary>
         /// アイテム取得イベント
         /// </summary>
-        public event Action<string, string, eFieldItemType> OnItemPickedUp; // (itemId, playerId, itemType)
+        public event Action<string, string, eFieldItemType>? OnItemPickedUp; // (itemId, playerId, itemType)
 
         /// <summary>
         /// アイテムスポーンイベント
         /// </summary>
-        public event Action<string, eFieldItemType, Vector3> OnItemSpawned; // (itemId, itemType, position)
+        public event Action<string, eFieldItemType, Vector3>? OnItemSpawned; // (itemId, itemType, position)
 
         /// <summary>
         /// アイテム消滅イベント
         /// </summary>
-        public event Action<string> OnItemDespawned; // (itemId)
+        public event Action<string>? OnItemDespawned; // (itemId)
 
         private void Awake()
         {
@@ -160,7 +160,7 @@ namespace OpenGS
         /// <summary>
         /// アイテムデータを取得
         /// </summary>
-        public FieldItemData GetItemData(string itemId)
+        public FieldItemData? GetItemData(string itemId)
         {
             return _fieldItems.TryGetValue(itemId, out var data) ? data : null;
         }
