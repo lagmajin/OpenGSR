@@ -43,6 +43,7 @@
 - `Assets/Editor/SpriteSceneUsageReport.cs`
 - `Assets/Editor/SpriteReferenceRepairWindow.cs`
 - `Logs/Editor.log`
+- `docs/codex/main-branch-development.md`
 
 ## Notes
 
@@ -52,3 +53,4 @@
 - Sprite audit menu: `OpenGSR/Tools/Sprite Scene Usage Report`
 - Sprite repair menu: `OpenGSR/Tools/Sprite Reference Repair`
 - Sprite auto-slice menu: `OpenGSR/Tools/Sprite Sheet Auto Slice`
+- Direct main-branch development notes: `docs/codex/main-branch-development.md`
