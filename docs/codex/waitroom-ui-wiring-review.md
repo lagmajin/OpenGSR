@@ -80,3 +80,20 @@ These may be useful later as tooling, but they should be treated as a separate t
 3. If a file has both good and bad changes, split it and port only the good part.
 4. Treat the editor tools as a separate branch/topic.
 
+## Current Status
+
+- Safe helper surfaces are mostly exhausted.
+- Remaining branch drift is concentrated in risky runtime, scene, build settings, or network-test files.
+- The last low-risk additions that were still worth taking were:
+  - `Assets/Editor/SpriteSceneUsageReport.cs`
+  - `Assets/Editor/SpriteReferenceRepairWindow.cs`
+  - `Assets/Editor/SpriteSheetAutoSliceWindow.cs`
+  - `Assets/Editor/CharacterSelectDialogPrefabBuilder.cs`
+  - `Assets/Editor/MCP/MCPServer.cs`
+  - `Assets/TextMesh Pro/Fonts/NotoSansJP-VF.ttf`
+  - `Assets/TextMesh Pro/Fonts/NotoSansJP-VF SDF.asset`
+  - `Assets/TextMesh Pro/Resources/TMP Settings.asset`
+  - `Assets/Scripts/UI/Shop/ShopCatalogFactory.cs`
+  - `Assets/Scripts/Networking/ClientNetworkManager.cs`
+  - `Assets/Scripts/Editor/AssemblyCompileTimeWindow.cs`
+
