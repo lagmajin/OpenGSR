@@ -4,6 +4,7 @@ using TMPro;
 using OpenGSCore;
 using System;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace OpenGS
 {
@@ -48,6 +49,8 @@ namespace OpenGS
         private EGameMode selectedGameMode = EGameMode.TeamDeathMatch;
         private bool teamBalance = true;
         private bool isPasswordEnabled = false;
+        private TextMeshProUGUI fallbackTitleText;
+        private TextMeshProUGUI fallbackSummaryText;
 
         // ─── Unity ライフサイクル ────────────────────────────────────
 
@@ -58,7 +61,9 @@ namespace OpenGS
                 lobbyScene = FindFirstObjectByType<OnlineLobbyScene>();
             }
 
+            AutoBindFallbackControls();
             InitializeUI();
+            EnsureFallbackConfirmationUi();
             SetupListeners();
         }
 
@@ -170,6 +175,164 @@ namespace OpenGS
             {
                 cancelButton.onClick.AddListener(OnCancelButtonClicked);
             }
+        }
+
+        private void AutoBindFallbackControls()
+        {
+            roomNameInput ??= GetComponentsInChildren<TMP_InputField>(true).FirstOrDefault();
+            passwordInput ??= GetComponentsInChildren<TMP_InputField>(true).Skip(roomNameInput != null ? 1 : 0).FirstOrDefault();
+            passwordPanel ??= passwordInput != null ? passwordInput.transform.parent?.gameObject : null;
+
+            var toggles = GetComponentsInChildren<Toggle>(true).ToList();
+            if (passwordToggle == null && toggles.Count > 0)
+            {
+                passwordToggle = toggles[0];
+            }
+            if (teamBalanceToggle == null && toggles.Count > 1)
+            {
+                teamBalanceToggle = toggles[1];
+            }
+
+            errorText ??= GetComponentsInChildren<TextMeshProUGUI>(true)
+                .FirstOrDefault(text => text.name.IndexOf("error", StringComparison.OrdinalIgnoreCase) >= 0);
+
+            if (createButton == null)
+            {
+                createButton = FindChildComponent<Button>("CreateButton");
+            }
+
+            createButton ??= GetComponentsInChildren<Button>(true)
+                .FirstOrDefault(button => button.name.IndexOf("ok", StringComparison.OrdinalIgnoreCase) >= 0
+                    || button.name.IndexOf("create", StringComparison.OrdinalIgnoreCase) >= 0);
+
+            if (cancelButton == null)
+            {
+                cancelButton = FindChildComponent<Button>("CancelButton");
+            }
+
+            cancelButton ??= GetComponentsInChildren<Button>(true)
+                .FirstOrDefault(button => button != createButton && (
+                    button.name.IndexOf("cancel", StringComparison.OrdinalIgnoreCase) >= 0
+                    || button.name.IndexOf("close", StringComparison.OrdinalIgnoreCase) >= 0));
+
+            if (lobbyScene == null)
+            {
+                lobbyScene = FindFirstObjectByType<OnlineLobbyScene>();
+            }
+        }
+
+        private void EnsureFallbackConfirmationUi()
+        {
+            if (!NeedsFallbackConfirmationUi())
+            {
+                return;
+            }
+
+            var rect = transform as RectTransform;
+            if (rect == null)
+            {
+                return;
+            }
+
+            fallbackTitleText ??= CreateFallbackText("Title", new Vector2(0f, 120f), new Vector2(420f, 42f), 30f, FontStyles.Bold);
+            fallbackSummaryText ??= CreateFallbackText("Summary", new Vector2(0f, 18f), new Vector2(420f, 120f), 22f, FontStyles.Normal);
+
+            fallbackTitleText.text = "Create Room";
+            fallbackSummaryText.text = BuildFallbackSummary();
+
+            ApplyButtonLabel(createButton, "Create");
+            ApplyButtonLabel(cancelButton, "Cancel");
+        }
+
+        private bool NeedsFallbackConfirmationUi()
+        {
+            return roomNameInput == null
+                && maxPlayerDropdown == null
+                && passwordToggle == null
+                && passwordInput == null
+                && gameModeDropdown == null
+                && teamBalanceToggle == null
+                && createButton != null
+                && cancelButton != null;
+        }
+
+        private TextMeshProUGUI CreateFallbackText(string name, Vector2 anchoredPosition, Vector2 size, float fontSize, FontStyles fontStyle)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.transform.SetParent(transform, false);
+
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.anchoredPosition = anchoredPosition;
+            rect.sizeDelta = size;
+
+            var text = go.AddComponent<TextMeshProUGUI>();
+            text.fontSize = fontSize;
+            text.fontStyle = fontStyle;
+            text.alignment = TextAlignmentOptions.Center;
+            text.color = new Color32(32, 48, 74, 255);
+            text.raycastTarget = false;
+
+            return text;
+        }
+
+        private void ApplyButtonLabel(Button button, string label)
+        {
+            if (button == null)
+            {
+                return;
+            }
+
+            var existing = button.GetComponentsInChildren<TextMeshProUGUI>(true)
+                .FirstOrDefault(text => text.gameObject.name == "FallbackLabel");
+            if (existing == null)
+            {
+                var go = new GameObject("FallbackLabel", typeof(RectTransform));
+                go.transform.SetParent(button.transform, false);
+
+                var rect = go.GetComponent<RectTransform>();
+                rect.anchorMin = Vector2.zero;
+                rect.anchorMax = Vector2.one;
+                rect.offsetMin = Vector2.zero;
+                rect.offsetMax = Vector2.zero;
+
+                existing = go.AddComponent<TextMeshProUGUI>();
+                existing.fontSize = 18f;
+                existing.fontStyle = FontStyles.Bold;
+                existing.alignment = TextAlignmentOptions.Center;
+                existing.color = Color.white;
+                existing.raycastTarget = false;
+            }
+
+            existing.text = label;
+        }
+
+        private string BuildFallbackSummary()
+        {
+            var summary = new List<string>
+            {
+                $"Mode: {GetGameModeDisplayName(selectedGameMode)}",
+                $"Players: {maxPlayer}",
+                $"Password: {(isPasswordEnabled && !string.IsNullOrEmpty(password) ? "Enabled" : "None")}",
+                $"Team Balance: {(teamBalance ? "On" : "Off")}"
+            };
+
+            return string.Join("\n", summary);
+        }
+
+        private T FindChildComponent<T>(string childName) where T : Component
+        {
+            foreach (var component in GetComponentsInChildren<T>(true))
+            {
+                if (component != null && component.name == childName)
+                {
+                    return component;
+                }
+            }
+
+            return null;
         }
 
         // ─── イベントハンドラ ─────────────────────────────────────────
@@ -390,6 +553,11 @@ namespace OpenGS
             if (gameModeDropdown != null) gameModeDropdown.value = 1; // TeamDeathMatch
             if (teamBalanceToggle != null) teamBalanceToggle.isOn = true;
             if (passwordPanel != null) passwordPanel.SetActive(false);
+
+            if (fallbackSummaryText != null)
+            {
+                fallbackSummaryText.text = BuildFallbackSummary();
+            }
 
             ClearError();
         }

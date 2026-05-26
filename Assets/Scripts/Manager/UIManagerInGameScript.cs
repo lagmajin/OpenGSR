@@ -62,10 +62,13 @@ namespace OpenGS
         [Button("")]
         public void ShowCreateRoomDialog()
         {
+            if (mediateObject == null)
+            {
+                Debug.LogWarning("UIManagerInGameScript.ShowCreateRoomDialog: mediateObject is null");
+                return;
+            }
 
-            Debug.Log("Test");
-
-            mediateObject.createNewRoomDialog.ShowDialog();
+            mediateObject.ShowCreateNewRoomDialog();
         }
 
 

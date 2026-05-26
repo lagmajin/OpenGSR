@@ -56,9 +56,7 @@ namespace OpenGS
         {
             base.Awake();
             mainThread = SynchronizationContext.Current;
-            networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
-            matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
-            waitRoomManager = DependencyInjectionConfig.Resolve<WaitRoomManager>();
+            EnsureNetworkDependencies();
             if (lobbySceneController == null)
             {
                 lobbySceneController = GetComponent<OnlineLobbySceneController>();
@@ -75,17 +73,18 @@ namespace OpenGS
             SceneManager.sceneLoaded += OnGameSceneLoaded;
             EnsureTitleBgm();
 
-            try
+            var net = EnsureNetworkManager();
+            if (net != null)
             {
-                networkManager.DataReceivedStream
+                net.DataReceivedStream
                     .ObserveOnMainThread()
                     .Subscribe(ParseMessageFromServer)
                     .AddTo(this.gameObject);
                 Debug.Log("OnlineLobbyScene: Subscribed to GeneralServerNetworkManager.DataReceivedStream");
             }
-            catch (Exception ex)
+            else
             {
-                Debug.LogWarning($"OnlineLobbyScene: Failed to subscribe to DataReceivedStream: {ex.Message}");
+                Debug.LogWarning("OnlineLobbyScene: GeneralServerNetworkManager is not available at Start.");
             }
 
             StartCoroutine(PeriodicUpdateCoroutine());
@@ -106,13 +105,13 @@ namespace OpenGS
 
         protected override void OnDestroy()
         {
-            networkManager.UnSubscribe(this);
+            networkManager?.UnSubscribe(this);
             base.OnDestroy();
         }
 
         private void OnApplicationQuit()
         {
-            networkManager.Disconnect();
+            networkManager?.Disconnect();
         }
 
         protected override void Update()
@@ -127,7 +126,7 @@ namespace OpenGS
                     () =>
                     {
                         Debug.Log("F5 pressed: Sending UpdateRoomRequest");
-                        networkManager.SendUpdateRoomRequest();
+                        EnsureNetworkManager()?.SendUpdateRoomRequest();
                     },
                     DisconnectAndBackToTitle,
                     GoToShop);
@@ -144,7 +143,7 @@ namespace OpenGS
             if (Input.GetKeyDown(KeyCode.F5))
             {
                 Debug.Log("F5 pressed: Sending UpdateRoomRequest");
-                networkManager.SendUpdateRoomRequest();
+                EnsureNetworkManager()?.SendUpdateRoomRequest();
             }
 
             if (Input.GetKeyDown(KeyCode.F6) || Input.GetKey(KeyCode.Escape))
@@ -184,15 +183,15 @@ namespace OpenGS
         [Button("ルーム作成ダイアログ表示テスト")]
         public void ShowCreateNewRoomDialog()
         {
-            if (createNewRoomDialog != null)
+            if (mediateObject != null)
             {
-                createNewRoomDialog.SetActive(true);
+                mediateObject.ShowCreateNewRoomDialog();
                 return;
             }
 
-            if (mediateObject != null && mediateObject.createNewRoomDialog != null)
+            if (createNewRoomDialog != null)
             {
-                mediateObject.createNewRoomDialog.gameObject.SetActive(true);
+                createNewRoomDialog.SetActive(true);
             }
         }
 
@@ -202,14 +201,21 @@ namespace OpenGS
         [Button("部屋作成テスト (旧)")]
         public void CreateNewWaitRoom()
         {
-            if (createNewRoomDialog == null)
+            var net = EnsureNetworkManager();
+            if (net == null)
+            {
+                Debug.LogWarning("OnlineLobbyScene.CreateNewWaitRoom: networkManager is not available");
+                return;
+            }
+
+            var dialogScript = ResolveCreateNewRoomDialog();
+            if (dialogScript == null)
             {
                 Debug.LogWarning("OnlineLobbyScene.CreateNewWaitRoom: createNewRoomDialog is null");
                 return;
             }
 
-            var dialogScript = createNewRoomDialog.GetComponent<ICreateNewRoomDialog>();
-            createNewRoomDialog.SetActive(false);
+            HideCreateNewRoomDialogUi();
 
             string roomName = dialogScript != null ? dialogScript.RoomName() : "One Shot One Kill!";
             var maxPlayer = dialogScript != null ? dialogScript.MaxPlayer() : 8;
@@ -217,7 +223,7 @@ namespace OpenGS
             var gameMode = dialogScript != null ? dialogScript.GameMode().ToString() : EGameMode.TeamDeathMatch.ToString();
             var teamBalance = dialogScript != null && dialogScript.TeamBalance();
 
-            networkManager.SendCreateNewWaitRoomRequest(roomName, maxPlayer, gameMode, teamBalance, password);
+            net.SendCreateNewWaitRoomRequest(roomName, maxPlayer, gameMode, teamBalance, password);
         }
 
         /// <summary>
@@ -225,6 +231,13 @@ namespace OpenGS
         /// </summary>
         public void SendEnterRoomRequest()
         {
+            var net = EnsureNetworkManager();
+            if (net == null)
+            {
+                Debug.LogWarning("OnlineLobbyScene.SendEnterRoomRequest: networkManager is not available");
+                return;
+            }
+
             var room = FindSelectedOrFirstFilteredRoom();
             if (room == null)
             {
@@ -252,12 +265,19 @@ namespace OpenGS
                 playerName = "Player";
             }
 
-            networkManager.SendEnterWaitRoomRequest(roomId, playerId, playerName);
+            net.SendEnterWaitRoomRequest(roomId, playerId, playerName);
         }
 
         public void SendEnterRoomRequest(string roomId, string playerId, string playerName, string password = "")
         {
-            networkManager.SendEnterWaitRoomRequest(roomId, playerId, playerName, password);
+            var net = EnsureNetworkManager();
+            if (net == null)
+            {
+                Debug.LogWarning("OnlineLobbyScene.SendEnterRoomRequest(string): networkManager is not available");
+                return;
+            }
+
+            net.SendEnterWaitRoomRequest(roomId, playerId, playerName, password);
         }
 
         // ─── ルーム絞り込み (UI ボタンから呼ばれる) ──────────────────
@@ -278,7 +298,7 @@ namespace OpenGS
         public void DisconnectAndBackToTitle()
         {
             ResetLobbyState(true);
-            networkManager.Disconnect();
+            EnsureNetworkManager()?.Disconnect();
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
             var sceneName = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
                 ? mediateObject.GeneralSceneMasterData().TitleScene()
@@ -518,9 +538,14 @@ namespace OpenGS
         {
             Debug.Log("OnCreateNewRoom");
 
-            ICreateNewRoomDialog dialogScript = sourceDialog;
-            if (dialogScript == null && createNewRoomDialog != null) dialogScript = createNewRoomDialog.GetComponent<ICreateNewRoomDialog>();
-            if (dialogScript == null && mediateObject.createNewRoomDialog != null) dialogScript = mediateObject.createNewRoomDialog;
+            var net = EnsureNetworkManager();
+            if (net == null)
+            {
+                Debug.LogWarning("OnlineLobbyScene.OnCreateNewRoom: networkManager is null");
+                return;
+            }
+
+            ICreateNewRoomDialog dialogScript = sourceDialog ?? ResolveCreateNewRoomDialog();
             var dialogComponent = sourceDialog as Component;
 
             if (dialogScript == null)
@@ -543,7 +568,7 @@ namespace OpenGS
                 ["Password"] = password ?? ""
             };
 
-            networkManager.SendCreateNewWaitRoomRequest(
+            net.SendCreateNewWaitRoomRequest(
                 dialogScript.RoomName(),
                 maxPlayer,
                 gameMode.ToString(),
@@ -555,8 +580,7 @@ namespace OpenGS
             {
                 dialogComponent.gameObject.SetActive(false);
             }
-            if (createNewRoomDialog != null) createNewRoomDialog.SetActive(false);
-            if (mediateObject.createNewRoomDialog != null) mediateObject.createNewRoomDialog.gameObject.SetActive(false);
+            HideCreateNewRoomDialogUi();
 
             // 以前のロジックの名残で必要なら処理を挟む
             switch (gameMode)
@@ -599,7 +623,7 @@ namespace OpenGS
         private void ShowDefaultRooms()
         {
             Debug.Log("ShowDefaultRooms");
-            networkManager.SendUpdateRoomRequest();
+            EnsureNetworkManager()?.SendUpdateRoomRequest();
         }
 
         private IEnumerator PeriodicUpdateCoroutine()
@@ -607,8 +631,108 @@ namespace OpenGS
             while (true)
             {
                 yield return new WaitForSeconds(1f);
-                networkManager.SendUpdateRoomRequest();
+                EnsureNetworkManager()?.SendUpdateRoomRequest();
             }
+        }
+
+        private void EnsureNetworkDependencies()
+        {
+            EnsureNetworkManager();
+
+            if (matchRoomManager == null)
+            {
+                try
+                {
+                    matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"OnlineLobbyScene: Failed to resolve MatchRoomManager: {ex.Message}");
+                }
+            }
+
+            if (waitRoomManager == null)
+            {
+                try
+                {
+                    waitRoomManager = DependencyInjectionConfig.Resolve<WaitRoomManager>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"OnlineLobbyScene: Failed to resolve WaitRoomManager: {ex.Message}");
+                }
+            }
+        }
+
+        private GeneralServerNetworkManager EnsureNetworkManager()
+        {
+            if (networkManager != null)
+            {
+                return networkManager;
+            }
+
+            try
+            {
+                networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"OnlineLobbyScene: Failed to resolve GeneralServerNetworkManager: {ex.Message}");
+            }
+
+            return networkManager;
+        }
+
+        private ICreateNewRoomDialog ResolveCreateNewRoomDialog()
+        {
+            if (mediateObject != null)
+            {
+                var runtimeDialog = mediateObject.CurrentCreateNewRoomDialog;
+                if (runtimeDialog != null)
+                {
+                    return runtimeDialog;
+                }
+            }
+
+            if (createNewRoomDialog != null)
+            {
+                return createNewRoomDialog.GetComponent<ICreateNewRoomDialog>();
+            }
+
+            return null;
+        }
+
+        private void HideCreateNewRoomDialogUi()
+        {
+            if (mediateObject != null)
+            {
+                mediateObject.HideCreateNewRoomDialog();
+            }
+
+            if (createNewRoomDialog != null)
+            {
+                createNewRoomDialog.SetActive(false);
+            }
+        }
+
+        private Transform GetCreateNewRoomDialogParent()
+        {
+            if (createNewRoomDialog != null && createNewRoomDialog.transform.parent != null)
+            {
+                return createNewRoomDialog.transform.parent;
+            }
+
+            if (InfoDialog != null && InfoDialog.transform.parent != null)
+            {
+                return InfoDialog.transform.parent;
+            }
+
+            if (roomPanel != null && roomPanel.transform.parent != null)
+            {
+                return roomPanel.transform.parent;
+            }
+
+            return null;
         }
 
         private void OnGameSceneLoaded(Scene next, LoadSceneMode mode)
