@@ -20,6 +20,9 @@ TextureImporter:
   - first:
       213: 7471231449828014173
     second: GUI_Txt_StartGame_5
+  - first:
+      213: 7760651542150750709
+    second: GUI_Txt_StartGame
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,139 +116,7 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: GUI_Txt_StartGame_0
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 69
-        width: 111
-        height: 79
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 40f4e7bb1a6095ea0800000000000000
-      internalID: -5883664146477723900
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GUI_Txt_StartGame_1
-      rect:
-        serializedVersion: 2
-        x: 105
-        y: 69
-        width: 88
-        height: 69
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 866acb19efcc92a00800000000000000
-      internalID: 732341808163235432
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GUI_Txt_StartGame_2
-      rect:
-        serializedVersion: 2
-        x: 187
-        y: 69
-        width: 171
-        height: 69
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: f8e6f5b688c674830800000000000000
-      internalID: 4055329322643189391
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GUI_Txt_StartGame_3
-      rect:
-        serializedVersion: 2
-        x: 376
-        y: 0
-        width: 49
-        height: 79
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 43d5106a839f4c9d0800000000000000
-      internalID: -2754803050345308876
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GUI_Txt_StartGame_4
-      rect:
-        serializedVersion: 2
-        x: 202
-        y: 0
-        width: 90
-        height: 68
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 486f4eb8b8df6d050800000000000000
-      internalID: 5825121943839635076
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: GUI_Txt_StartGame_5
-      rect:
-        serializedVersion: 2
-        x: 286
-        y: 0
-        width: 93
-        height: 68
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: d58b9b95b652fa760800000000000000
-      internalID: 7471231449828014173
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     customData: 
     physicsShape: []
@@ -260,6 +131,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
+      GUI_Txt_StartGame: 7760651542150750709
       GUI_Txt_StartGame_0: -5883664146477723900
       GUI_Txt_StartGame_1: 732341808163235432
       GUI_Txt_StartGame_2: 4055329322643189391
