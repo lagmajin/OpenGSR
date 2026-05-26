@@ -46,10 +46,8 @@ public class AssemblyCompileTimeWindow : EditorWindow {
   //開いた時などに実行される
   private void OnEnable() {
     //各アセンブリのコンパイル開始、終了時のイベントにメソッド登録
-#pragma warning disable 0618
     CompilationPipeline.assemblyCompilationStarted  += OnAssemblyCompilationStarted;
     CompilationPipeline.assemblyCompilationFinished += OnAssemblyCompilationFinished;
-#pragma warning restore 0618
 
     //設定情報のロード
     _settingData = JsonUtility.FromJson<AssemblyCompileTimeWindowSettingData>(EditorUserSettings.GetConfigValue(SETTING_DATA_SAVE_KEY));
@@ -61,10 +59,8 @@ public class AssemblyCompileTimeWindow : EditorWindow {
   //閉じた時などに実行される                                                   
   private void OnDisable() {
     //各アセンブリのコンパイル開始、終了時のイベントからメソッド削除
-#pragma warning disable 0618
     CompilationPipeline.assemblyCompilationStarted  -= OnAssemblyCompilationStarted;
     CompilationPipeline.assemblyCompilationFinished -= OnAssemblyCompilationFinished;
-#pragma warning restore 0618
 
     //設定情報の保存
     EditorUserSettings.SetConfigValue(SETTING_DATA_SAVE_KEY, JsonUtility.ToJson(_settingData));
