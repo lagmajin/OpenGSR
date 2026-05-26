@@ -1,0 +1,115 @@
+﻿# Sprite Sheet Auto Slice Report
+
+- Mode: Apply
+- Alpha threshold: 1
+- Padding: 2
+- Min component area: 16
+
+| Texture | Slices | Changed | Readable toggled | Notes |
+| --- | ---: | --- | --- | --- |
+| `Assets/Sprites/Battle/BlueFlag.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/efx_FlagBlue.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/efx_FlagRed.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_B_FlagDropBy.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_B_FlagSuccessBy.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_B_FlagTakeBy.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_B_YouKilled.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_R_FlagDropBy.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_R_FlagReturn.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_R_FlagReturnBy.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_R_FlagSuccessBy.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_R_FlagTakeBy.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_R_KilledBy.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GMsg_R_YouKilled.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_bumb4.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_Combo.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_ComboNum.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_EBullet06.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_Flag.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_GCluster.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_GFire.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_GMagnetic.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_GMine.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_GPower.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_Grenade.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_HitNum1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/gob_HitNum2.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_GaugeBoost.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_GaugeDelay.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_GaugeHP.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_GaugeRespawn.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_GaugeRespawnBG.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_GrenadeSlotX.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_ItemSlotX.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_MainBG.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_Score_Top.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_StateInfo.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_TeamMark.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_TimeBG_CTF.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_TimeBG_DM_T.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_Txt_ExtraGame.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_Txt_GameLose.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_Txt_GameWin.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_Txt_StageClear.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_Txt_StartGame.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/GUI_WeaponGrenade.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/Msg_FlagLeft.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/Msg_KillLeft.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/Msg_Number.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/RedFlag.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Battle/WeaponSel_BG.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/002-green-biggrass1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/002-green-biggrass2.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/002-green-biggrass3.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/002-green-biggrass4.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/002-green-flag 1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/002-green-flag.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/002-windgrass01.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/002-windgrass02.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_01.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_02.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_03.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_04.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_05.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_06.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_07.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_08.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_09.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_10.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_11.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_12.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_13.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_14.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_15.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_16.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg001_17.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002_01_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002_02_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002_03_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002_04_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002_05_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s01.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s02.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s03.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s04.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s05.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s06.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s07.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s08.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg002-green-s09.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg003_01_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg003_02_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg004_01_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/bg004_02_1.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/grass_01.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/grass_02.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/grass_03.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/grass_04.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/grass_05.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/stone_01.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/stone_02.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/stone_03.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/stone_04.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/stone_05.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/tree_01.png` | 0 | no | no | Already Multiple, skipped. |
+| `Assets/Sprites/Stages/GreenHill2/tree_02.png` | 0 | no | no | Already Multiple, skipped. |
