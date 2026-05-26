@@ -3,7 +3,6 @@ using OpenGSCore;
 using Sirenix.OdinInspector;
 using DG.Tweening;
 using Zenject;
-using System.Collections;
 
 namespace OpenGS
 {
@@ -143,21 +142,15 @@ namespace OpenGS
                 Instantiate(shotEffectPrefab, muzzle.position, muzzle.rotation);
         }
 
-        protected float GetDamageMultiplier()
+        protected float GetEffectiveDamage(AbstractPlayer player)
         {
             var powerupable = GetComponentInParent<IPowerupable>();
             if (powerupable != null)
             {
-                return powerupable.IsIncreaseAttackNow() ? 2f : 1f;
+                return damage * (powerupable.IsIncreaseAttackNow() ? 2f : 1f);
             }
 
-            var player = GetComponentInParent<AbstractPlayer>();
-            return player != null ? player.AttackMultiplier() : 1f;
-        }
-
-        protected float GetEffectiveDamage()
-        {
-            return damage * GetDamageMultiplier();
+            return damage * (player != null ? player.AttackMultiplier() : 1f);
         }
 
         protected virtual void CreateBullet(EBulletType type = EBulletType.Normal) { }
@@ -214,17 +207,21 @@ namespace OpenGS
 
         protected void PublishAmmoUpdate()
         {
-            var pid = GetPlayerID();
+            var pid = GetPlayerID(GetOwnerPlayer());
             if (!string.IsNullOrEmpty(pid))
             {
                 GameEventBroker.Publish(new AmmoUpdateEvent(pid, Name, remains, MagazineMaxCount()));
             }
         }
 
-        protected string GetPlayerID()
+        protected string GetPlayerID(AbstractPlayer player)
         {
-            var player = GetComponentInParent<AbstractPlayer>();
             return player != null ? player.UniqueID().ToString() : "";
+        }
+
+        protected AbstractPlayer GetOwnerPlayer()
+        {
+            return GetComponentInParent<AbstractPlayer>();
         }
 
         protected Vector2 GetShotDirection()

@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace OpenGS
@@ -11,7 +10,6 @@ namespace OpenGS
         public float damage = 0;
         [SerializeField]
         public float expTime = 3.0f;
-        Coroutine c;
         [SerializeField]
         public GameObject expEffect;
         [SerializeField]
@@ -19,36 +17,15 @@ namespace OpenGS
 
         public MultipleTags myTags;
 
-        [SerializeField] private AudioSource audioSource;
-
-        protected void SetVariables()
-        {
-            body = gameObject.GetComponent<Rigidbody2D>();
-            myTags = gameObject.GetComponent<MultipleTags>();
-        }
-
         private void Start()
         {
-            c = StartCoroutine(Functions.WaitAfterAction(Exp, expTime));
-        }
-
-        public void Reset()
-        {
-        }
-
-        void Update()
-        {
-            var time = Time.deltaTime;
+            StartCoroutine(Functions.WaitAfterAction(Exp, expTime));
         }
 
         public virtual void Exp()
         {
-            var obj = Instantiate(expEffect, gameObject.transform);
+            Instantiate(expEffect, gameObject.transform);
             Destroy(this.gameObject);
-        }
-
-        public virtual void OnExplosion()
-        {
         }
 
         public void StopMoving()
@@ -66,9 +43,9 @@ namespace OpenGS
             body.bodyType = RigidbodyType2D.Kinematic;
         }
 
-        IEnumerator BombTimer()
+        protected AbstractPlayer GetOwnerPlayer()
         {
-            yield return new WaitForSeconds(expTime);
+            return GetComponentInParent<AbstractPlayer>();
         }
     }
 }

@@ -20,6 +20,10 @@ namespace OpenGS
             // 基準となるエイム方向
             Vector2 baseDir = GetShotDirection();
             float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
+            var owner = GetOwnerPlayer();
+            var ownerTeam = owner != null ? owner.Team() : ETeam.NoTeam;
+            var playerId = GetPlayerID(owner);
+            var effectiveDamage = GetEffectiveDamage(owner);
 
             for (int i = 0; i < pelletCount; i++)
             {
@@ -34,28 +38,25 @@ namespace OpenGS
                 if (bullet != null)
                 {
                     // 各弾の速度とダメージを微調整してバラけさせる
-                    var owner = GetComponentInParent<AbstractPlayer>();
                     bullet.Init(
                         shotDir,
                         bulletSpeed * Random.Range(0.95f, 1.05f),
-                        GetEffectiveDamage(),
-                        GetPlayerID(),
+                        effectiveDamage,
+                        playerId,
                         Name,
-                        owner != null ? owner.Team() : ETeam.NoTeam
+                        ownerTeam
                     );
                 }
 
                 var shotgunBullet = pellet.GetComponent<ShotgunBulletController>();
                 if (shotgunBullet != null)
                 {
-                    var owner = GetComponentInParent<AbstractPlayer>();
                     shotgunBullet.Init(
                         shotDir,
-                        bulletSpeed * Random.Range(0.95f, 1.05f),
-                        GetEffectiveDamage(),
-                        GetPlayerID(),
+                        effectiveDamage,
+                        playerId,
                         Name,
-                        owner != null ? owner.Team() : ETeam.NoTeam
+                        ownerTeam
                     );
                 }
             }

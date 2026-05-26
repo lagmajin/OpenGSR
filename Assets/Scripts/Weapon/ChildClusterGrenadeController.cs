@@ -1,6 +1,5 @@
 ﻿
 using UnityEngine;
-using OpenGSCore;
 
 namespace OpenGS
 {
@@ -14,22 +13,10 @@ namespace OpenGS
        [SerializeField] private string weaponName = "ChildClusterGrenade";
        [SerializeField] private Rigidbody2D childBody;
        [SerializeField] private float launchSpeed = 8.0f;
-       private Vector2 launchDirection = Vector2.right;
 
-
-        private void Start()
+        public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerId, string weapon)
         {
-
-        }
-
-        void Update()
-        {
-
-        }
-
-        public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerId, string weapon, ETeam team)
-        {
-            launchDirection = direction.sqrMagnitude > 0f ? direction.normalized : Vector2.right;
+            var launchDirection = direction.sqrMagnitude > 0f ? direction.normalized : Vector2.right;
             launchSpeed = initSpeed;
             defaultDamage = initDamage;
             ownerPlayerId = ownerId ?? string.Empty;
@@ -57,61 +44,13 @@ namespace OpenGS
             }
 
             exploded = true;
-            var obj = Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
-            var owner = GetComponentInParent<AbstractPlayer>();
+            Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
+            var owner = GetOwnerPlayer();
             var resolvedOwnerId = !string.IsNullOrWhiteSpace(ownerPlayerId)
                 ? ownerPlayerId
                 : owner != null ? owner.UniqueID().ToString() : string.Empty;
             var resolvedTeam = owner != null ? owner.Team() : ETeam.NoTeam;
-            const float radius = 2.5f;
-            const float minDamageMultiplier = 0.35f;
-            const float baseDamage = 100f;
-            var hits = Physics2D.OverlapCircleAll(transform.position, radius);
-            var processed = new System.Collections.Generic.HashSet<string>();
-            foreach (var hit in hits)
-            {
-                if (hit == null)
-                {
-                    continue;
-                }
-
-                var player = hit.GetComponentInParent<AbstractPlayer>();
-                if (player == null)
-                {
-                    continue;
-                }
-
-                var playerId = player.UniqueID().ToString();
-                if (!processed.Add(playerId))
-                {
-                    continue;
-                }
-
-                if (!string.IsNullOrWhiteSpace(resolvedOwnerId) && playerId == resolvedOwnerId)
-                {
-                    continue;
-                }
-
-                if (resolvedTeam != ETeam.NoTeam && player.Team() != ETeam.NoTeam && player.Team() == resolvedTeam)
-                {
-                    continue;
-                }
-
-                float distance = Vector2.Distance(transform.position, player.transform.position);
-                float normalized = Mathf.Clamp01(distance / radius);
-                float multiplier = Mathf.Lerp(1f, minDamageMultiplier, normalized);
-                float finalDamage = Mathf.Max(1f, baseDamage * multiplier * (defaultDamage / 100f));
-
-                PlayerRegistry.Instance?.ApplyDamage(
-                    player.UniqueID(),
-                    player.transform.position - transform.position,
-                    finalDamage,
-                    eDamageType.Explosion,
-                    resolvedOwnerId,
-                    weaponName,
-                    false
-                );
-            }
+            GrenadeExplosionDamageUtility.ApplyCircularDamage((Vector2)transform.position, resolvedOwnerId, weaponName, resolvedTeam, defaultDamage / 100f);
 
             Destroy(this.gameObject, 0.1f);
 

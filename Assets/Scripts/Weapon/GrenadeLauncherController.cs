@@ -22,19 +22,22 @@ namespace OpenGS
 
             GameObject grenadeObj = Instantiate(bulletPrefab, muzzle.position, Quaternion.Euler(0, 0, angle));
             
+            var owner = GetOwnerPlayer();
+            var ownerTeam = owner != null ? owner.Team() : ETeam.NoTeam;
+            var playerId = GetPlayerID(owner);
+            var effectiveDamage = GetEffectiveDamage(owner);
+
             var bullet = grenadeObj.GetComponent<BulletController>();
             if (bullet != null)
             {
-                var owner = GetComponentInParent<AbstractPlayer>();
-                bullet.Init(shotDir, bulletSpeed, GetEffectiveDamage(), GetPlayerID(), Name, owner != null ? owner.Team() : ETeam.NoTeam);
+                bullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam);
                 bullet.EnableGravity(); // 重力を有効化
             }
 
             var grenadeBullet = grenadeObj.GetComponent<GrenadeLauncherBulletController>();
             if (grenadeBullet != null)
             {
-                var owner = GetComponentInParent<AbstractPlayer>();
-                grenadeBullet.Init(shotDir, bulletSpeed, GetEffectiveDamage(), GetPlayerID(), Name, owner != null ? owner.Team() : ETeam.NoTeam);
+                grenadeBullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam);
             }
 
             // Rigidbody2D があれば初速を与える（物理ベースの場合）

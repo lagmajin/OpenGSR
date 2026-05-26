@@ -12,7 +12,6 @@ namespace OpenGS
     {
         public static void ApplyCircularDamage(
             Vector2 origin,
-            Object _,
             string ownerPlayerId,
             string weaponName,
             ETeam team,

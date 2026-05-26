@@ -1,94 +1,34 @@
-﻿
-using System.Collections;
-using Sirenix.OdinInspector;
 using UnityEngine;
-
 
 namespace OpenGS
 {
-    
     public class GrenadeController : AbstractGrenadeController
     {
-
-
-
         private void Start()
         {
-            //StartCoroutine(ExpCor(expTime));
-
-            SetVariables();
+            body = gameObject.GetComponent<Rigidbody2D>();
+            myTags = gameObject.GetComponent<MultipleTags>();
         }
 
-
-
-
-        private void Update()
-        {
-
-        }
-
-
-        private void OnValidate()
-        {
-
-        }
-
-
-        [Button("テスト")]
         public override void Exp()
         {
-            Debug.Log("Exp2");
-            var explosion = Instantiate(expEffect);
-            explosion.transform.position = gameObject.transform.position;
-
-            var soundManagerInstance = SoundManager.Instance;
-
-            soundManagerInstance.PlayGameSound(EMatchSound.GameStartVoice);
-
-
+            Instantiate(expEffect).transform.position = gameObject.transform.position;
+            SoundManager.Instance.PlayGameSound(EMatchSound.GameStartVoice);
             Destroy(gameObject);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var targetTags = collision.gameObject.GetComponent<MultipleTags>();
-
-            Debug.Log(targetTags.ToJson().ToString());
-            Debug.Log(myTags.ToJson().ToString());
-
-            if ("StageObject" == collision.gameObject.tag)
+            if (targetTags == null)
             {
-                Debug.Log("collision");
+                return;
             }
 
-            if (targetTags.HasPlayerTag())
+            if (targetTags.HasPlayerTag() && myTags.HasEnemyAttackTag())
             {
-                if (myTags.HasEnemyAttackTag())
-                {
-
-
-                    Exp();
-
-                    if (collision.gameObject.TryGetComponent<IDamageable>(out var t))
-                    {
-                        Debug.LogError("Test");
-
-                    }
-                }
-
-
+                Exp();
             }
-
-
-            //if(tags.HasPlayerTag())
-
-
-
         }
-
     }
-
-
-
-
 }

@@ -1,53 +1,26 @@
-using Sirenix.OdinInspector;
 using UnityEngine;
 using OpenGSCore;
 
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    public class ShotgunBulletController : MonoBehaviour, IBulletController
+    public class ShotgunBulletController : MonoBehaviour
     {
-        public Rigidbody2D body;
-
-        public float speed = 10.0f;
         [SerializeField] private int damage = 20;
         [SerializeField] private string ownerPlayerId = "";
         [SerializeField] private string weaponName = "Shotgun";
 
         public ETeam Team { get; set; } = ETeam.NoTeam;
 
-        private Vector2 rotation;
-        private float count = 0;
+        private float count;
 
         //[SerializeField][Required]public AudioClip hitSound;
 
-        [SerializeField]
-        [Required]
-        public GameObject collisionEffectPrefab;
-
-        void Start()
-        {
-            var vec = new Vector2(10, 10);
-            var rotation = transform.rotation;
-        }
-
-        private void Update()
-        {
-            //gameObject.transform.Rotate(0, 0, 1.1f*Time.deltaTime);
-        }
-
         private void FixedUpdate()
         {
-            var velocity = body.linearVelocity;
-            var rotation = transform.rotation;
-            var rotationVolume = 1;
-            _ = velocity;
-            _ = rotation;
-            _ = rotationVolume;
-
             if (count <= 180.0f)
             {
-                gameObject.transform.Rotate(0, 0, -1.1f);
+                transform.Rotate(0, 0, -1.1f);
             }
 
             count += 1.1f;
@@ -55,16 +28,19 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var player = collision.gameObject.GetComponentInParent<AbstractPlayer>();
+            var player = collision.GetComponentInParent<AbstractPlayer>();
             if (player != null)
             {
-                if (!string.IsNullOrWhiteSpace(ownerPlayerId) && player.UniqueID().ToString() == ownerPlayerId)
+                var playerId = player.UniqueID().ToString();
+                var playerTeam = player.Team();
+
+                if (!string.IsNullOrWhiteSpace(ownerPlayerId) && playerId == ownerPlayerId)
                 {
                     Destroy(gameObject);
                     return;
                 }
 
-                if (Team != ETeam.NoTeam && player.Team() != ETeam.NoTeam && player.Team() == Team)
+                if (Team != ETeam.NoTeam && playerTeam != ETeam.NoTeam && playerTeam == Team)
                 {
                     Destroy(gameObject);
                     return;
@@ -84,19 +60,8 @@ namespace OpenGS
             Destroy(gameObject);
         }
 
-        public void EnableGravity()
+        public void Init(Vector2 direction, float initDamage, string ownerId, string weapon, ETeam team)
         {
-        }
-
-        public void Speed(float f)
-        {
-            speed = f;
-            body.AddForce(transform.right * speed, ForceMode2D.Impulse);
-        }
-
-        public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerId, string weapon, ETeam team)
-        {
-            speed = initSpeed;
             damage = Mathf.RoundToInt(initDamage);
             ownerPlayerId = ownerId ?? string.Empty;
             weaponName = string.IsNullOrWhiteSpace(weapon) ? "Shotgun" : weapon;

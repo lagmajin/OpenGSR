@@ -9,7 +9,6 @@ namespace OpenGS
     [RequireComponent(typeof(MultipleTags))]
     class ClusterGrenadeController: AbstractGrenadeController
     {
-        Coroutine c;
         private bool exploded;
 
         public GameObject childGrenadePrefab;
@@ -24,15 +23,6 @@ namespace OpenGS
             return " Grenade.";
         }
 
-        private void Start()
-        {
-           //c= StartCoroutine(Functions.WaitAfterAction(Explosion, expTime));
-        }
-
-        void Update()
-        {
-
-        }
         private void Explosion()
         {
             if (exploded)
@@ -41,68 +31,20 @@ namespace OpenGS
             }
 
             exploded = true;
-            var obj=Instantiate(expEffect,gameObject.transform.position,Quaternion.identity);
-            var owner = GetComponentInParent<AbstractPlayer>();
+            Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
+            var owner = GetOwnerPlayer();
             var resolvedOwnerId = !string.IsNullOrWhiteSpace(ownerPlayerId)
                 ? ownerPlayerId
                 : owner != null ? owner.UniqueID().ToString() : string.Empty;
             var resolvedTeam = owner != null ? owner.Team() : ETeam.NoTeam;
-            const float radius = 2.5f;
-            const float minDamageMultiplier = 0.35f;
-            const float baseDamage = 100f;
-            var hits = Physics2D.OverlapCircleAll(transform.position, radius);
-            var processed = new System.Collections.Generic.HashSet<string>();
-            foreach (var hit in hits)
-            {
-                if (hit == null)
-                {
-                    continue;
-                }
+            GrenadeExplosionDamageUtility.ApplyCircularDamage((Vector2)transform.position, resolvedOwnerId, weaponName, resolvedTeam);
 
-                var player = hit.GetComponentInParent<AbstractPlayer>();
-                if (player == null)
-                {
-                    continue;
-                }
-
-                var playerId = player.UniqueID().ToString();
-                if (!processed.Add(playerId))
-                {
-                    continue;
-                }
-
-                if (!string.IsNullOrWhiteSpace(resolvedOwnerId) && playerId == resolvedOwnerId)
-                {
-                    continue;
-                }
-
-                if (resolvedTeam != ETeam.NoTeam && player.Team() != ETeam.NoTeam && player.Team() == resolvedTeam)
-                {
-                    continue;
-                }
-
-                float distance = Vector2.Distance(transform.position, player.transform.position);
-                float normalized = Mathf.Clamp01(distance / radius);
-                float multiplier = Mathf.Lerp(1f, minDamageMultiplier, normalized);
-                float finalDamage = Mathf.Max(1f, baseDamage * multiplier);
-
-                PlayerRegistry.Instance?.ApplyDamage(
-                    player.UniqueID(),
-                    player.transform.position - transform.position,
-                    finalDamage,
-                    eDamageType.Explosion,
-                    resolvedOwnerId,
-                    weaponName,
-                    false
-                );
-            }
-
-            SpawnChildGrenades(resolvedOwnerId, resolvedTeam);
+            SpawnChildGrenades(resolvedOwnerId);
 
             Destroy(this.gameObject,0.1f);
         }
 
-        private void SpawnChildGrenades(string resolvedOwnerId, ETeam resolvedTeam)
+        private void SpawnChildGrenades(string resolvedOwnerId)
         {
             if (childGrenadePrefab == null || childGrenadeCount <= 0)
             {
@@ -124,7 +66,7 @@ namespace OpenGS
                 var childController = child.GetComponent<ChildClusterGrenadeController>();
                 if (childController != null)
                 {
-                    childController.Init(direction, childLaunchSpeed, damagePerChild, resolvedOwnerId, weaponName, resolvedTeam);
+                    childController.Init(direction, childLaunchSpeed, damagePerChild, resolvedOwnerId, weaponName);
                 }
 
                 var childRigidbody = child.GetComponent<Rigidbody2D>();

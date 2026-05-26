@@ -34,11 +34,15 @@ namespace OpenGS
 
             GameObject bulletObj = Instantiate(bulletPrefab, muzzle.position, Quaternion.Euler(0, 0, finalAngle));
             
+            var owner = GetOwnerPlayer();
+            var ownerTeam = owner != null ? owner.Team() : ETeam.NoTeam;
+            var playerId = GetPlayerID(owner);
+            var effectiveDamage = GetEffectiveDamage(owner);
+
             var bullet = bulletObj.GetComponent<BulletController>();
             if (bullet != null)
             {
-                var owner = GetComponentInParent<AbstractPlayer>();
-                bullet.Init(shotDir, bulletSpeed, GetEffectiveDamage(), GetPlayerID(), Name, owner != null ? owner.Team() : ETeam.NoTeam);
+                bullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam);
             }
         }
     }
