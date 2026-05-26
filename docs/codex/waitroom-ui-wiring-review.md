@@ -9,8 +9,9 @@ Rescue only the useful parts from `codex/waitroom-ui-wiring` into `main` without
 ## Current status
 
 - `main` already has the rescued waitroom UI assets and sprite renames committed.
+- `main` also has the package lock / TMP settings alignment that was still safe to take.
 - The branch is still much broader than waitroom UI.
-- Rough scope comparison: `main...codex/waitroom-ui-wiring` is `30 / 9` commits, with about `254 files changed`.
+- Rough scope comparison: `main...codex/waitroom-ui-wiring` is still broad and now concentrated in runtime / scene / user-settings drift.
 
 ## Safe / useful rescue candidates
 
@@ -96,4 +97,10 @@ These may be useful later as tooling, but they should be treated as a separate t
   - `Assets/Scripts/UI/Shop/ShopCatalogFactory.cs`
   - `Assets/Scripts/Networking/ClientNetworkManager.cs`
   - `Assets/Scripts/Editor/AssemblyCompileTimeWindow.cs`
+  - `Packages/packages-lock.json`
 
+- Current remaining non-user dirty files are mostly:
+  - `Assets/Scenes/Lobby/LobbyScene.unity`
+  - `OpenGSR.slnx`
+  - `UserSettings/*`
+  - `Logs/`
