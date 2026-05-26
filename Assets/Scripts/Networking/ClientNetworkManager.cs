@@ -20,6 +20,7 @@ namespace OpenGS
         [Header("Server Settings")]
         [SerializeField] private string serverIp = "127.0.0.1";
         [SerializeField] private int tcpPort = 60000; // Lobby TCP
+        [SerializeField] private int matchTcpPort = 60001; // Match TCP (MatchServerV2)
         [SerializeField] private int udpPort = 63000; // Match UDP (MatchServerV2)
         
         [Header("Client State")]
