@@ -12,6 +12,7 @@ namespace OpenGS
         [SerializeField] private float boostAccel = 10f;
         [SerializeField] private float maxBoostSpeed = 5f;
         [SerializeField] private float groundedRecoveryDelay = 0.5f; // 0
+        [SerializeField] private float gravityDuringBoost = 3f; // ブースト中の減衰
         [Header("Visual Settings")]
         [SerializeField] private Color boostColor = Color.cyan;
         [SerializeField] private SpriteRenderer boosterRenderer;
@@ -129,9 +130,7 @@ namespace OpenGS
         {
             currentFuel -= dt;
             currentBoostSpeed = Mathf.Min(currentBoostSpeed + boostAccel * dt, maxBoostSpeed);
-            player.verticalSpeed += currentBoostSpeed * dt;
-            // Optionally:
-            // player.verticalSpeed -= gravityDuringBoost * dt;
+            player.verticalSpeed += (currentBoostSpeed - gravityDuringBoost) * dt;
         }
 
         void ResetBoost()

@@ -28,6 +28,7 @@ namespace OpenGS
         public float fallSpeed = 1f;
         public float peakHeight = 2f;
 
+        private bool isFalling = false;
         private Vector2 startPos;
 
         [SerializeField] private new Transform transform;
@@ -49,15 +50,17 @@ namespace OpenGS
         }
         IEnumerator AnimateFloat()
         {
+            isFalling = false;
             // 上昇フェーズ
-            while (transform.position.y < startPos.y + peakHeight)
+            while (!isFalling && transform.position.y < startPos.y + peakHeight)
             {
                 transform.position += Vector3.up * riseSpeed * Time.deltaTime;
                 yield return null;
             }
 
+            isFalling = true;
             // 落下フェーズ
-            while (true)
+            while (isFalling)
             {
                 transform.position += Vector3.down * fallSpeed * Time.deltaTime;
                 yield return null;

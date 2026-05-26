@@ -12,6 +12,8 @@ namespace OpenGS
     {
         //[Required][SerializeField]private 
 
+        [SerializeField, Range(0, 100f)] private float damage = 100.0f;
+
         [Required]public PlayerEffectMasterData effectPrefabMasterData;
         public void SetDamage()
         {
@@ -41,6 +43,7 @@ namespace OpenGS
 
                             Debug.Log("Lava"+collision.name);
 
+                            damagable.AddSlipDamage(damage, nameof(Lava));
                             damagable.TakeLavaDamage();
 
 
