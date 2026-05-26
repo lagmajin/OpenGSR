@@ -16,7 +16,7 @@ namespace OpenGS
 
         public void OnNewGameStarted()
         {
-            LoadGameScene();
+            GameStarted();
         }
 
         public void OnOtherPlayerEntered()
@@ -33,19 +33,12 @@ namespace OpenGS
         [Button("ゲーム開始テスト")]
         public void GameStartRequested()
         {
-            Debug.Log("GameStartRequested From Server...");
-
-
-            LoadGameScene();
-
-
+            RequestGameStart();
         }
 
         public void ReadyRequested()
         {
-            Debug.Log("ReadyRequest");
-            Ready(true);
-            RefreshWaitRoomUi();
+            ToggleReadyState();
         }
 
 
