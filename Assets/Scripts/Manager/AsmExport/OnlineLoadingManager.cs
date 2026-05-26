@@ -1,3 +1,4 @@
+﻿#nullable enable
 using System.Collections.Generic;
 using OpenGSCore;
 
@@ -47,7 +48,7 @@ namespace OpenGS
             gaugeList[id].Gauge = gauge;
         }
 
-        public Gauge GetGauge(in string id)
+        public Gauge? GetGauge(in string id)
         {
             if (string.IsNullOrWhiteSpace(id))
             {

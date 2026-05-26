@@ -1,3 +1,4 @@
+﻿#nullable enable
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -31,7 +32,7 @@ namespace OpenGS
             public eFieldItemType ItemType;
             public Vector3 Position;
             public ItemState State;
-            public string PickedUpByPlayerId;
+            public string PickedUpByPlayerId = string.Empty;
             public float SpawnTime;
             public float RespawnTime;
             public bool IsActive;
