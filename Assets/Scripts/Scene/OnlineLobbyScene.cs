@@ -480,6 +480,40 @@ namespace OpenGS
             OnCreateNewRoom(null);
         }
 
+        public void OnQuickStart()
+        {
+            Debug.Log("OnQuickStart");
+
+            if (networkManager == null)
+            {
+                Debug.LogWarning("OnlineLobbyScene.OnQuickStart: networkManager is null");
+                return;
+            }
+
+            var quickStartRoom = FindBestQuickStartRoom();
+            if (quickStartRoom == null)
+            {
+                Debug.LogWarning("OnlineLobbyScene.OnQuickStart: no joinable rooms found");
+                ShowInfoDialog("クイック参加", "参加できる部屋がありませんでした");
+                return;
+            }
+
+            var roomId = quickStartRoom["RoomID"]?.ToString() ?? quickStartRoom["RoomId"]?.ToString() ?? "";
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                Debug.LogWarning("OnlineLobbyScene.OnQuickStart: room id is empty");
+                return;
+            }
+
+            var roomName = quickStartRoom["RoomName"]?.ToString() ?? "Room";
+            var playerCount = GetRoomPlayerCount(quickStartRoom);
+            var capacity = quickStartRoom["Capacity"]?.ToObject<int>() ?? 0;
+            Debug.Log($"OnlineLobbyScene.OnQuickStart: joining {roomName} ({playerCount}/{capacity})");
+
+            currentSelectedRoomId = roomId;
+            SendEnterRoomRequest(roomId, GetCurrentPlayerId(), GetCurrentPlayerName());
+        }
+
         public void OnCreateNewRoom(ICreateNewRoomDialog sourceDialog)
         {
             Debug.Log("OnCreateNewRoom");
@@ -814,6 +848,110 @@ namespace OpenGS
 
             var room = rooms[0];
             return room?["RoomID"]?.ToString() ?? room?["RoomId"]?.ToString() ?? "";
+        }
+
+        private JObject FindBestQuickStartRoom()
+        {
+            var filtered = FilterRooms(currentRoomList, currentRoomFilter);
+            var room = FindBestJoinableRoom(filtered);
+            if (room != null)
+            {
+                return room;
+            }
+
+            if (!string.Equals(currentRoomFilter, "All", StringComparison.OrdinalIgnoreCase))
+            {
+                room = FindBestJoinableRoom(currentRoomList);
+            }
+
+            return room;
+        }
+
+        private static JObject FindBestJoinableRoom(JArray rooms)
+        {
+            if (rooms == null || rooms.Count == 0)
+            {
+                return null;
+            }
+
+            JObject bestRoom = null;
+            var bestFill = -1f;
+            var bestPlayerCount = -1;
+            var bestCapacity = int.MaxValue;
+
+            foreach (var token in rooms)
+            {
+                if (token is not JObject room)
+                {
+                    continue;
+                }
+
+                var roomId = room["RoomID"]?.ToString() ?? room["RoomId"]?.ToString() ?? "";
+                if (string.IsNullOrWhiteSpace(roomId))
+                {
+                    continue;
+                }
+
+                var capacity = room["Capacity"]?.ToObject<int>() ?? 0;
+                var playerCount = GetRoomPlayerCount(room);
+                if (capacity <= 0 || playerCount >= capacity)
+                {
+                    continue;
+                }
+
+                var fillRatio = capacity > 0 ? (float)playerCount / capacity : 0f;
+                if (fillRatio > bestFill ||
+                    (Mathf.Approximately(fillRatio, bestFill) && playerCount > bestPlayerCount) ||
+                    (Mathf.Approximately(fillRatio, bestFill) && playerCount == bestPlayerCount && capacity < bestCapacity))
+                {
+                    bestFill = fillRatio;
+                    bestPlayerCount = playerCount;
+                    bestCapacity = capacity;
+                    bestRoom = room;
+                }
+            }
+
+            return bestRoom;
+        }
+
+        private static int GetRoomPlayerCount(JObject room)
+        {
+            if (room == null)
+            {
+                return 0;
+            }
+
+            var playerCountToken = room["PlayerCount"];
+            if (playerCountToken != null && int.TryParse(playerCountToken.ToString(), out var playerCount))
+            {
+                return playerCount;
+            }
+
+            var playersToken = room["Players"];
+            if (playersToken is JArray playersArray)
+            {
+                return playersArray.Count;
+            }
+
+            if (playersToken != null && int.TryParse(playersToken.ToString(), out playerCount))
+            {
+                return playerCount;
+            }
+
+            return 0;
+        }
+
+        private string GetCurrentPlayerName()
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            return string.IsNullOrWhiteSpace(profile?.DisplayName) ? "Player" : profile.DisplayName;
+        }
+
+        private string GetCurrentPlayerId()
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            var playerId = profile?.GlobalUserId;
+            return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
         }
 
         private static EGameMode ParseGameMode(string value)

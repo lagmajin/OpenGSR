@@ -21,8 +21,6 @@ namespace OpenGS.Network
         /// <summary>プレイヤーIDごとの補間バッファ</summary>
         private readonly Dictionary<string, InterpolateBuffer> m_Buffers = new Dictionary<string, InterpolateBuffer>();
 
-        /// <summary>補間パラメータ</summary>
-        private readonly float m_InterpolationSmoothing = 0.2f;
         private readonly int m_MaxBufferSize = 20;
 
         /// <summary>

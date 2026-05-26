@@ -49,6 +49,12 @@ namespace OpenGSR.Editor.MCP
         {
             if (_serverThread?.IsAlive == true || _listener != null) return;
 
+            if (IsPortAlreadyServing(Port))
+            {
+                Debug.Log($"[MCP] Server already running on port {Port}");
+                return;
+            }
+
             try
             {
                 _cts = new CancellationTokenSource();
@@ -67,6 +73,20 @@ namespace OpenGSR.Editor.MCP
                 try { _cts?.Cancel(); _cts?.Dispose(); } catch { }
                 _cts = null;
                 _serverThread = null;
+            }
+        }
+
+        private static bool IsPortAlreadyServing(int port)
+        {
+            try
+            {
+                using var client = new TcpClient();
+                var connectTask = client.ConnectAsync(IPAddress.Loopback, port);
+                return connectTask.Wait(150) && client.Connected;
+            }
+            catch
+            {
+                return false;
             }
         }
 
@@ -526,7 +546,7 @@ namespace OpenGSR.Editor.MCP
 
             if (instanceId.HasValue && instanceId.Value != 0)
             {
-                var obj = EditorUtility.InstanceIDToObject(instanceId.Value) as GameObject;
+                var obj = EditorUtility.EntityIdToObject(instanceId.Value) as GameObject;
                 if (obj != null) return obj;
             }
 
@@ -1044,7 +1064,7 @@ namespace OpenGSR.Editor.MCP
                         if (value is JObject sceneObj && sceneObj["instance_id"] != null)
                         {
                             var instanceId = sceneObj["instance_id"]!.Value<int>();
-                            var sceneObjectRef = EditorUtility.InstanceIDToObject(instanceId);
+                            var sceneObjectRef = EditorUtility.EntityIdToObject(instanceId);
                             if (sceneObjectRef != null)
                             {
                                 prop.objectReferenceValue = sceneObjectRef;
@@ -2500,7 +2520,7 @@ public class {className} : MonoBehaviour
             var instanceId = jparams["instance_id"]?.Value<int>();
 
             if (instanceId.HasValue && instanceId.Value != 0)
-                go = EditorUtility.InstanceIDToObject(instanceId.Value) as GameObject;
+                go = EditorUtility.EntityIdToObject(instanceId.Value) as GameObject;
             else if (!string.IsNullOrEmpty(path))
                 go = GameObject.Find(path);
             else
@@ -2656,11 +2676,6 @@ public class {className} : MonoBehaviour
         {
             var count = jparams["count"]?.Value<int>() ?? 20;
             var mode = jparams["mode"]?.ToString()?.ToLower() ?? "all";
-
-            var flags = LogType.Log | LogType.Warning | LogType.Error | LogType.Exception | LogType.Assert;
-            if (mode == "error") flags = LogType.Error | LogType.Exception | LogType.Assert;
-            else if (mode == "warning") flags = LogType.Warning;
-            else if (mode == "message") flags = LogType.Log;
 
             var entries = new JArray();
 

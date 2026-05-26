@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using UnityEditor;
+using UnityEditor.U2D.Sprites;
 using UnityEngine;
 
 namespace OpenGS.EditorTools
@@ -208,10 +209,7 @@ namespace OpenGS.EditorTools
 
                 importer.textureType = TextureImporterType.Sprite;
                 importer.spriteImportMode = SpriteImportMode.Multiple;
-                importer.spritesheet = build.Slices.Select(slice => slice.Meta).ToArray();
-                importer.alphaIsTransparency = true;
-                importer.isReadable = _keepReadableDuringProcess ? true : originalReadable;
-                importer.SaveAndReimport();
+                ApplySpriteRects(importer, BuildSpriteRects(build.Slices, path), originalReadable);
 
                 row.Changed = true;
                 applied = true;
@@ -337,6 +335,60 @@ namespace OpenGS.EditorTools
             }
 
             return slices;
+        }
+
+        private static SpriteRect[] BuildSpriteRects(List<SliceResult> slices, string path)
+        {
+            var stem = Path.GetFileNameWithoutExtension(path);
+            var rects = new SpriteRect[slices.Count];
+
+            for (var i = 0; i < slices.Count; i++)
+            {
+                var meta = slices[i].Meta;
+                rects[i] = new SpriteRect
+                {
+                    name = string.IsNullOrWhiteSpace(meta.name) ? $"{stem}_{i + 1:00}" : meta.name,
+                    rect = meta.rect,
+                    alignment = (SpriteAlignment)meta.alignment,
+                    pivot = meta.pivot,
+                    border = meta.border,
+                    spriteID = GUID.Generate()
+                };
+            }
+
+            return rects;
+        }
+
+        private void ApplySpriteRects(TextureImporter importer, SpriteRect[] spriteRects, bool originalReadable)
+        {
+            if (importer == null)
+            {
+                return;
+            }
+
+            var factory = new SpriteDataProviderFactories();
+            factory.Init();
+
+            var dataProvider = factory.GetSpriteEditorDataProviderFromObject(importer);
+            if (dataProvider == null)
+            {
+                throw new InvalidOperationException("Failed to get SpriteEditorDataProvider from TextureImporter.");
+            }
+
+            dataProvider.InitSpriteEditorDataProvider();
+            dataProvider.SetSpriteRects(spriteRects);
+
+            var spriteNameFileIdDataProvider = dataProvider.GetDataProvider<ISpriteNameFileIdDataProvider>();
+            if (spriteNameFileIdDataProvider != null)
+            {
+                var nameFileIdPairs = spriteRects.Select(s => new SpriteNameFileIdPair(s.name, s.spriteID)).ToArray();
+                spriteNameFileIdDataProvider.SetNameFileIdPairs(nameFileIdPairs);
+            }
+
+            dataProvider.Apply();
+            importer.alphaIsTransparency = true;
+            importer.isReadable = _keepReadableDuringProcess ? true : originalReadable;
+            importer.SaveAndReimport();
         }
 
         private List<RectInt> BuildGridRegions(Texture2D texture, int width, int height, int columns, int rows)
