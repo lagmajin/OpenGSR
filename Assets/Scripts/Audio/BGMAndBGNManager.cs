@@ -44,6 +44,10 @@ namespace OpenGS
 
 
 
+        [SerializeField]
+        [BoxGroup("Setting")]
+        private bool playBGMOnlyIfNotPlaying = false;
+
         [SerializeField] [Required] private SystemSoundMasterData masterdata;
         //[SerializeField][Required]private Map
 
@@ -70,6 +74,11 @@ namespace OpenGS
         {
             if (bgm)
             {
+                if (playBGMOnlyIfNotPlaying && SoundManager.Instance.IsBgmPlaying())
+                {
+                    return;
+                }
+
                 if (overridePlayingBGM)
                 {
                     SoundManager.Instance.PlayBgm(bgm, bgmVolume, loopBgm);
