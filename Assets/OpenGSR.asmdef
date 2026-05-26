@@ -11,7 +11,8 @@
         "Unity.InputSystem",
         "UniTask",
         "Unity.Cinemachine",
-        "Zenject"
+        "Zenject",
+        "Unity.2D.Sprite.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
