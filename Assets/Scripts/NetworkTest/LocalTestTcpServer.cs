@@ -81,6 +81,7 @@ namespace OpenGS
             public string OwnerId { get; set; }
             public int Capacity { get; set; } = 8;
             public string GameMode { get; set; } = "DeathMatch";
+            public string Map { get; set; } = "";
             public bool TeamBalance { get; set; } = true;
             public string Password { get; set; } = "";
             public List<string> Players { get; set; } = new();
@@ -95,6 +96,7 @@ namespace OpenGS
             public string PlayerName { get; set; }
             public bool IsReady { get; set; }
             public string CurrentRoomId { get; set; }
+            public string PlayerCharacter { get; set; } = EPlayerCharacter.Misty.ToString();
         }
         public Task StartAsync(int port)
         {
@@ -720,6 +722,7 @@ namespace OpenGS
                     RoomId = roomId,
                     RoomName = $"Room {roomId}",
                     OwnerId = playerId,
+                    Map = EMap.DryDays.ToString(),
                     Players = new List<string> { playerId }
                 };
             }
@@ -737,6 +740,7 @@ namespace OpenGS
             {
                 _lobbyPlayers[playerId].CurrentRoomId = roomId;
                 _lobbyPlayers[playerId].IsReady = false;
+                _lobbyPlayers[playerId].PlayerCharacter = ResolveLocalPlayerCharacter();
             }
             else
             {
@@ -745,7 +749,8 @@ namespace OpenGS
                     PlayerId = playerId,
                     PlayerName = playerName,
                     IsReady = false,
-                    CurrentRoomId = roomId
+                    CurrentRoomId = roomId,
+                    PlayerCharacter = ResolveLocalPlayerCharacter()
                 };
             }
 
@@ -754,6 +759,7 @@ namespace OpenGS
             resp["RoomName"] = _rooms[roomId].RoomName;
             resp["Capacity"] = _rooms[roomId].Capacity;
             resp["GameMode"] = _rooms[roomId].GameMode;
+            resp["Map"] = _rooms[roomId].Map;
             resp["OwnerID"] = _rooms[roomId].OwnerId;
             resp["PlayerCount"] = _rooms[roomId].Players.Count;
             SendJsonToClient(resp);
@@ -779,6 +785,7 @@ namespace OpenGS
                 Capacity = 8,
                 GameMode = "DeathMatch",
                 TeamBalance = true,
+                Map = EMap.DryDays.ToString(),
                 Players = new List<string> { "host-001" }
             };
 
@@ -790,6 +797,7 @@ namespace OpenGS
                 Capacity = 12,
                 GameMode = "TeamDeathMatch",
                 TeamBalance = true,
+                Map = EMap.GreenHillSide1.ToString(),
                 Players = new List<string> { "host-002" }
             };
 
@@ -798,7 +806,8 @@ namespace OpenGS
                 PlayerId = "host-001",
                 PlayerName = "HostDM",
                 IsReady = false,
-                CurrentRoomId = "room-0001"
+                CurrentRoomId = "room-0001",
+                PlayerCharacter = EPlayerCharacter.Misty.ToString()
             };
 
             _lobbyPlayers["host-002"] = new PlayerLobbyInfo
@@ -806,7 +815,8 @@ namespace OpenGS
                 PlayerId = "host-002",
                 PlayerName = "HostTDM",
                 IsReady = false,
-                CurrentRoomId = "room-0002"
+                CurrentRoomId = "room-0002",
+                PlayerCharacter = EPlayerCharacter.Ami.ToString()
             };
         }
 
@@ -822,12 +832,29 @@ namespace OpenGS
                     ["OwnerID"] = room.OwnerId,
                     ["Capacity"] = room.Capacity,
                     ["GameMode"] = room.GameMode,
+                    ["Map"] = room.Map,
                     ["TeamBalance"] = room.TeamBalance,
                     ["PlayerCount"] = room.Players.Count,
                 });
             }
 
             return rooms;
+        }
+
+        private static string ResolveLocalPlayerCharacter()
+        {
+            return GamePlayerManager.Instance.SelectedPlayerCharacter().ToString();
+        }
+
+        private static EPlayerCharacter ParsePlayerCharacter(string characterName)
+        {
+            if (!string.IsNullOrWhiteSpace(characterName) &&
+                Enum.TryParse(characterName, true, out EPlayerCharacter parsedCharacter))
+            {
+                return parsedCharacter;
+            }
+
+            return GamePlayerManager.Instance.SelectedPlayerCharacter();
         }
 
         private void HandleWaitRoomLeave(JObject json)
@@ -934,13 +961,24 @@ namespace OpenGS
                 // 設定を更新
                 if (settings?["GameMode"] != null)
                     _rooms[roomId].GameMode = settings["GameMode"].ToString();
+                if (settings?["Map"] != null && Enum.TryParse(settings["Map"].ToString(), out EMap map))
+                    _rooms[roomId].Map = map.ToString();
                 if (settings?["Capacity"] != null)
                     _rooms[roomId].Capacity = int.Parse(settings["Capacity"].ToString());
                 if (settings?["TeamBalance"] != null)
                     _rooms[roomId].TeamBalance = bool.Parse(settings["TeamBalance"].ToString());
+                if (settings?["PlayerCharacter"] != null)
+                {
+                    var character = ParsePlayerCharacter(settings["PlayerCharacter"].ToString());
+                    if (_lobbyPlayers.TryGetValue(_currentPlayerId, out var player))
+                    {
+                        player.PlayerCharacter = character.ToString();
+                    }
+                }
 
                 var resp = RUDPMessageBuilder.CreateWaitRoomSettingsChange(roomId, settings ?? new JObject());
                 SendJsonToClient(resp);
+                SendWaitRoomPlayerList(roomId);
 
                 PrettyLogger.Bold("LocalServer", $"Room settings changed: {roomId}");
             }
@@ -1093,6 +1131,7 @@ namespace OpenGS
                         ["PlayerId"] = player.PlayerId,
                         ["PlayerName"] = player.PlayerName,
                         ["IsReady"] = player.IsReady,
+                        ["PlayerCharacter"] = player.PlayerCharacter,
                         ["IsOwner"] = player.PlayerId == room.OwnerId
                     });
                 }
