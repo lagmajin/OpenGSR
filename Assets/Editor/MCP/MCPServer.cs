@@ -34,21 +34,40 @@ namespace OpenGSR.Editor.MCP
             _mainThreadContext = SynchronizationContext.Current;
             EditorApplication.update += ProcessMainThreadQueue;
             EditorApplication.quitting += StopServer;
-            StartServer();
+            try
+            {
+                StartServer();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[MCP] Server failed to start: {ex.Message}");
+            }
         }
 
         [MenuItem("OpenGSR/MCP/Start Server")]
         public static void StartServer()
         {
-            if (_serverThread?.IsAlive == true) return;
+            if (_serverThread?.IsAlive == true || _listener != null) return;
 
-            _cts = new CancellationTokenSource();
-            _listener = new TcpListener(IPAddress.Loopback, Port);
-            _listener.Start();
+            try
+            {
+                _cts = new CancellationTokenSource();
+                _listener = new TcpListener(IPAddress.Loopback, Port);
+                _listener.Start();
 
-            _serverThread = new Thread(RunServer) { IsBackground = true, Name = "MCP" };
-            _serverThread.Start();
-            Debug.Log($"[MCP] Server listening on port {Port}");
+                _serverThread = new Thread(RunServer) { IsBackground = true, Name = "MCP" };
+                _serverThread.Start();
+                Debug.Log($"[MCP] Server listening on port {Port}");
+            }
+            catch (SocketException ex)
+            {
+                Debug.LogWarning($"[MCP] Port {Port} is unavailable: {ex.Message}");
+                try { _listener?.Stop(); } catch { }
+                _listener = null;
+                try { _cts?.Cancel(); _cts?.Dispose(); } catch { }
+                _cts = null;
+                _serverThread = null;
+            }
         }
 
         [MenuItem("OpenGSR/MCP/Stop Server")]
@@ -507,9 +526,7 @@ namespace OpenGSR.Editor.MCP
 
             if (instanceId.HasValue && instanceId.Value != 0)
             {
-#pragma warning disable 0618
                 var obj = EditorUtility.InstanceIDToObject(instanceId.Value) as GameObject;
-#pragma warning restore 0618
                 if (obj != null) return obj;
             }
 
@@ -1027,9 +1044,7 @@ namespace OpenGSR.Editor.MCP
                         if (value is JObject sceneObj && sceneObj["instance_id"] != null)
                         {
                             var instanceId = sceneObj["instance_id"]!.Value<int>();
-#pragma warning disable 0618
                             var sceneObjectRef = EditorUtility.InstanceIDToObject(instanceId);
-#pragma warning restore 0618
                             if (sceneObjectRef != null)
                             {
                                 prop.objectReferenceValue = sceneObjectRef;
@@ -2485,9 +2500,7 @@ public class {className} : MonoBehaviour
             var instanceId = jparams["instance_id"]?.Value<int>();
 
             if (instanceId.HasValue && instanceId.Value != 0)
-#pragma warning disable 0618
                 go = EditorUtility.InstanceIDToObject(instanceId.Value) as GameObject;
-#pragma warning restore 0618
             else if (!string.IsNullOrEmpty(path))
                 go = GameObject.Find(path);
             else
@@ -2643,6 +2656,11 @@ public class {className} : MonoBehaviour
         {
             var count = jparams["count"]?.Value<int>() ?? 20;
             var mode = jparams["mode"]?.ToString()?.ToLower() ?? "all";
+
+            var flags = LogType.Log | LogType.Warning | LogType.Error | LogType.Exception | LogType.Assert;
+            if (mode == "error") flags = LogType.Error | LogType.Exception | LogType.Assert;
+            else if (mode == "warning") flags = LogType.Warning;
+            else if (mode == "message") flags = LogType.Log;
 
             var entries = new JArray();
 
