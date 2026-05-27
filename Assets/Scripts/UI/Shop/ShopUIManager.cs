@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using Zenject;
 using Cysharp.Threading.Tasks;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -217,6 +219,11 @@ namespace OpenGS
                 
                 UpdateButtonState();
             }
+
+            if (item != null && item.category == EShopCategory.Character && shopService.IsPurchased(item.id))
+            {
+                ApplyCharacterSelection(item).Forget();
+            }
         }
 
         private void UpdateButtonState()
@@ -232,6 +239,11 @@ namespace OpenGS
             {
                 actionButtonText.text = "BUY";
                 actionButton.interactable = shopService.GetCredits() >= selectedItem.price;
+            }
+            else if (selectedItem.category == EShopCategory.Character)
+            {
+                actionButtonText.text = equipped ? "SELECTED" : "SELECT";
+                actionButton.interactable = !equipped;
             }
             else if (selectedItem.category == EShopCategory.InstantItem)
             {
@@ -273,7 +285,16 @@ namespace OpenGS
                 if (success)
                 {
                     Debug.Log($"Purchased: {selectedItem.itemName}");
+                    if (selectedItem.category == EShopCategory.Character)
+                    {
+                        await ApplyCharacterSelection(selectedItem);
+                        return;
+                    }
                 }
+            }
+            else if (selectedItem.category == EShopCategory.Character)
+            {
+                await ApplyCharacterSelection(selectedItem);
             }
             else
             {
@@ -288,6 +309,29 @@ namespace OpenGS
                 }
             }
 
+            UpdateUI();
+        }
+
+        private async UniTask ApplyCharacterSelection(ShopItemData item)
+        {
+            if (item == null || item.category != EShopCategory.Character)
+            {
+                return;
+            }
+
+            if (!Enum.TryParse(item.id, true, out EPlayerCharacter character))
+            {
+                Debug.LogWarning($"[ShopUIManager] Failed to parse character id: {item.id}");
+                return;
+            }
+
+            var success = await shopService.EquipItemAsync(item.id, item.category, 0);
+            if (!success)
+            {
+                return;
+            }
+
+            GamePlayerManager.Instance.SetPlayerCharacter(character);
             UpdateUI();
         }
 

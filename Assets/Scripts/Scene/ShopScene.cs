@@ -21,11 +21,40 @@ namespace OpenGS
         {
             base.Awake();
             DebugFlagManager.SetFirstSceneName(SceneManager.GetActiveScene().name);
+            if (shopUIManager == null)
+            {
+                shopUIManager = FindFirstObjectByType<ShopUIManager>();
+            }
+            if (shopUIManager == null)
+            {
+                var shopCanvas = GameObject.Find("ShopCanvas");
+                if (shopCanvas != null)
+                {
+                    shopUIManager = shopCanvas.GetComponent<ShopUIManager>();
+                    if (shopUIManager == null)
+                    {
+                        shopUIManager = shopCanvas.AddComponent<ShopUIManager>();
+                    }
+                }
+            }
         }
 
         private void Start()
         {
+            EnsureTitleBgm();
             Debug.Log("EnterShopScene");
+        }
+
+        private void EnsureTitleBgm()
+        {
+            if (SoundManager.Instance.IsBgmPlaying(EBgm.Title))
+            {
+                Debug.Log("[ShopScene] Title BGM is already playing.");
+                return;
+            }
+
+            Debug.Log("[ShopScene] Switching to Title BGM.");
+            SoundManager.Instance.EnsureBgm(EBgm.Title, 0f);
         }
 
         protected override void Update()
@@ -50,10 +79,13 @@ namespace OpenGS
         }
 
         [Button("ロビー移動テスト")]
-        private void BackToLobby()
+        public void BackToLobby()
         {
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            GoToLobby();
+            var lobbyScene = generalSceneMasterData != null
+                ? generalSceneMasterData.LobbyScene()
+                : GeneralSceneMasterData.Instance().LobbyScene();
+            SceneManager.LoadSceneAsync(lobbyScene);
         }
 
         [Button("ウェイトルーム移動テスト")]
@@ -98,6 +130,11 @@ namespace OpenGS
         public override SynchronizationContext MainThread()
         {
             return SynchronizationContext.Current;
+        }
+
+        protected override void OnStartUnityEditor()
+        {
+            EnsureTitleBgm();
         }
     }
 
