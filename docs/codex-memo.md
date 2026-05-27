@@ -45,6 +45,7 @@
 - `Logs/Editor.log`
 - `docs/codex/main-branch-development.md`
 - `docs/codex/workstream-organization.md`
+- `docs/codex/playeragent-kinematic-movement.md`
 
 ## Notes
 
@@ -56,3 +57,5 @@
 - Sprite auto-slice menu: `OpenGSR/Tools/Sprite Sheet Auto Slice`
 - Direct main-branch development notes: `docs/codex/main-branch-development.md`
 - Workstream organization notes: `docs/codex/workstream-organization.md`
+- PlayerAgent scripted movement notes: `docs/codex/playeragent-kinematic-movement.md`
+- PlayerAgent now derives jump velocity from `jumpHeight` and uses coyote time / jump buffer for scripted movement

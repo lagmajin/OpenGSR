@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System;
 using OpenGSCore;
 using UnityEngine.Audio;
+using UnityEngine.Serialization;
 
 
 namespace OpenGS
@@ -14,32 +15,28 @@ namespace OpenGS
     public class PlayerAgent : AbstractPlayerAgent, IDamagableObject, IPowerupable, IDamageable
     {
         [SerializeField] private BoxCollider2D standingCollider;
-        [SerializeField] private BoxCollider2D sitingCollider;
+        [FormerlySerializedAs("sitingCollider")]
+        [SerializeField] private BoxCollider2D sittingCollider;
 
         [SerializeField]private GameObject head;
         [SerializeField]private HeadController headController;
         [SerializeField] private GameObject weaponArm;
-        [SerializeField] private EPlayerCharacter character;
         [SerializeField] private AbstractGunController primaryGunController;
-        [SerializeField]private AbstractGunController secondaryGunController;
         [SerializeField]private WeaponArmController armController;
         [SerializeField] private WeaponSlots weaponSlots;
 
         public float movementSpeed;
         public float jumpHeight;
-        public Transform groundCheckRayPoint;
 
         public LayerMask groundLayer;
 
         public float horizontalSpeed, verticalSpeed;
         public bool isGrounded, isWallAhead;
-        Vector2 movement;
         float extraSpeed;
         Vector2 rightScale, leftScale;
         float dashingSpeed = 0;
         float dashTimer = 0.15f;
         bool isDashing;
-        float fallMultiplier = 0.5f;
 
 
 
@@ -69,11 +66,24 @@ namespace OpenGS
         private SpriteRenderer[] spriteRendereres;
 
         [SerializeField] private new Rigidbody2D rigidbody2D;
+        [SerializeField] private float gravity = 28f;
+        [SerializeField] private float groundProbeDistance = 0.12f;
+        [SerializeField] private float groundSnapDistance = 0.18f;
+        [SerializeField] private float wallProbeDistance = 0.08f;
+        [SerializeField] private float maxGroundAngle = 70f;
+        [SerializeField] private float groundAcceleration = 45f;
+        [SerializeField] private float airAcceleration = 25f;
+        [SerializeField] private float groundFriction = 35f;
+        [SerializeField] private float collisionSkinWidth = 0.02f;
+        [SerializeField] private float maxFallSpeed = 12f;
 
-        [SerializeField] float jumpDuration = 0.3f; // 上昇にかける時間
-        [SerializeField] float jumpPeakSpeed = 6f;
-        bool isJumping = false;
-        float jumpTimer = 0f;
+        private float currentHorizontalVelocity;
+        private Vector2 scriptedPosition;
+        [SerializeField] private float coyoteTime = 0.12f;
+        [SerializeField] private float jumpBufferTime = 0.12f;
+        private float coyoteTimeLeft;
+        private float jumpBufferLeft;
+        private float jumpVelocity;
 
         private const float BuffedMultiplier = 2f;
         private const float InvisibleAlpha = 0.3f;
@@ -93,14 +103,28 @@ namespace OpenGS
 
         void Start()
         {
-
+            AutoBindColliders();
             rigidbody2D = GetComponent<Rigidbody2D>();
+            if (rigidbody2D != null)
+            {
+                rigidbody2D.bodyType = RigidbodyType2D.Kinematic;
+                rigidbody2D.gravityScale = 0f;
+                rigidbody2D.freezeRotation = true;
+                rigidbody2D.useFullKinematicContacts = true;
+                rigidbody2D.interpolation = RigidbodyInterpolation2D.Interpolate;
+                rigidbody2D.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+            }
 
             PhysicsMaterial2D material = new PhysicsMaterial2D();
             material.bounciness = 0; // 反発なし
             material.friction = 0.4f; // 適度な摩擦
 
-            rigidbody2D.sharedMaterial = material;
+            if (rigidbody2D != null)
+            {
+                rigidbody2D.sharedMaterial = material;
+            }
+            scriptedPosition = rigidbody2D != null ? rigidbody2D.position : (Vector2)transform.position;
+            RecalculateJumpVelocity();
 
 
 
@@ -121,7 +145,7 @@ namespace OpenGS
             if (weaponArm != null)
             {
                 var armRenderer=weaponArm.GetComponent<SpriteRenderer>();
-                if(weaponArm!=null) list.Add (armRenderer);
+                if (armRenderer != null) list.Add(armRenderer);
             }
 
             spriteRendereres = list.ToArray();
@@ -186,15 +210,10 @@ namespace OpenGS
 
         void Update()
         {
-            CheckGround();
-            CheckJumping();
-
             GetInput();
+            CheckJumping();
             CheckFlip();
-            CheckHorizontalCollision();
-            CheckWallClimb();
             CheckDashing();
-            ApplyDashing();
 
             if (!isDashing && isGrounded) // 地上限定
             {
@@ -224,14 +243,10 @@ namespace OpenGS
 
             if (isDashing)
             {
-                transform.Translate(dashDir * dashSpeed * Time.deltaTime);
                 dashTimer -= Time.deltaTime;
                 if (dashTimer <= 0f)
                     isDashing = false;
             }
-
-            if (verticalSpeed < -12f) verticalSpeed = -12f;
-            if (verticalSpeed > 10f) verticalSpeed = 10f;
 
             // 射撃入力の処理
             HandleFireInput();
@@ -260,7 +275,14 @@ namespace OpenGS
 
         public void FixedUpdate()
         {
+            CheckGround();
+            coyoteTimeLeft = Mathf.Max(0f, coyoteTimeLeft - Time.fixedDeltaTime);
+            jumpBufferLeft = Mathf.Max(0f, jumpBufferLeft - Time.fixedDeltaTime);
+            ApplyDashing();
             ApplyMovement();
+            ResolvePenetration();
+            SnapToGround();
+            CheckGround();
         }
         void StartDash(Vector2 direction)
         {
@@ -276,14 +298,13 @@ namespace OpenGS
                 extraSpeed = 1;
 
             horizontalSpeed = Input.GetAxis("Horizontal") * extraSpeed;
-
-
-
         }
 
         public void Sit()
         {
             animator.SetBool("IsSit", true);
+            if (standingCollider != null) standingCollider.enabled = false;
+            if (sittingCollider != null) sittingCollider.enabled = true;
             
             headController?.Sit();
 
@@ -295,170 +316,104 @@ namespace OpenGS
         private void StandUp()
         {
             animator.SetBool("IsSit", false);
+            if (standingCollider != null) standingCollider.enabled = true;
+            if (sittingCollider != null) sittingCollider.enabled = false;
 
             headController?.StandUp();
             primaryGunController?.StandUp();
             armController?.StandUp();
         }
+        private void AutoBindColliders()
+        {
+            var boxColliders = GetComponents<BoxCollider2D>();
+            if (standingCollider == null && boxColliders.Length > 0)
+            {
+                standingCollider = boxColliders[0];
+            }
+
+            if (sittingCollider == null && boxColliders.Length > 1)
+            {
+                sittingCollider = boxColliders[1];
+            }
+
+            if (standingCollider != null)
+            {
+                standingCollider.enabled = true;
+            }
+
+            var capsuleCollider = GetComponent<CapsuleCollider2D>();
+            if (capsuleCollider != null)
+            {
+                capsuleCollider.enabled = false;
+            }
+        }
+        private void OnValidate()
+        {
+            RecalculateJumpVelocity();
+        }
         void OnDrawGizmosSelected()
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireCube(groundCheckRayPoint.position, new Vector3(0.3f, 0.03f, 0f));
+            var collider = GetMovementCollider();
+            if (collider != null)
+            {
+                var bounds = collider.bounds;
+                Gizmos.DrawWireCube(new Vector3(bounds.center.x, bounds.min.y + 0.02f, bounds.center.z), new Vector3(bounds.size.x, 0.04f, 0f));
+            }
         }
         void CheckGround()
         {
-            float maxDistance = 0.3f;
-            Vector2 size = new Vector2(0.4f, 0.04f); // 幅を広げて小さな隙間を跨ぐ
-            Vector2[] offsets = {
-            new Vector2(-0.15f, 0f), // 左
-            Vector2.zero,            // 中央
-            new Vector2(0.15f, 0f)   // 右
-            };
-
             bool wasGrounded = isGrounded;
-            isGrounded = false;
-            RaycastHit2D closestHit = default;
-            float closestDist = float.MaxValue;
-
-            foreach (var offset in offsets)
-            {
-                Vector2 origin = (Vector2)groundCheckRayPoint.position + offset;
-                RaycastHit2D hit = Physics2D.BoxCast(origin, size, 0f, Vector2.down, maxDistance, groundLayer);
-                Debug.DrawRay(origin, Vector2.down * (hit.collider ? hit.distance : maxDistance), hit.collider ? Color.green : Color.red, 0.1f);
-
-                if (hit.collider && hit.distance < closestDist)
-                {
-                    closestHit = hit;
-                    closestDist = hit.distance;
-                }
-            }
-
-            if (closestHit.collider)
-            {
-                currentGroundNormal = closestHit.normal; // 法線を保存
-                float slopeAngle = Vector2.Angle(closestHit.normal, Vector2.up);
-
-                if (slopeAngle < 85f)  // 坂道の角度がゆるい場合は接地
-                {
-                    isGrounded = true;
-                    headController?.OnGround();
-
-                    // めり込み・浮き補正（Snapping）
-                    float desiredDistance = 0.05f; // 床から理想的な距離
-                    float snapTolerance = 0.2f;    // この距離までなら吸着する（ジャンプ中は吸着しないように注意）
-                    float distanceDiff = desiredDistance - closestDist; // 正: めり込み, 負: 浮き
-                    
-                    // ジャンプ中(上向きの速度がある場合)は下に吸着させない
-                    bool isJumpingUp = verticalSpeed > 0.1f;
-
-                    if (distanceDiff > 0.001f || (distanceDiff < -0.001f && closestDist < snapTolerance && !isJumpingUp))
-                    {
-                        // 浮いている、またはめり込んでいる場合は垂直方向に補正して斜面に沿わせる
-                        transform.Translate(Vector2.up * distanceDiff);
-                    }
-
-                    // 坂道で着地した際に必要な処理
-                    if (!wasGrounded)
-                    {
-                        jetBooster?.OnLanding();
-                        animator?.SetBool("IsJump", false);
-                    }
-
-                    verticalSpeed = 0f;
-                    fallMultiplier = 1f;
-                }
-            }
-            else
-            {
-                currentGroundNormal = Vector2.up; // 空中ではデフォルトの法線
-            }
-
-            // 地面に接していない場合は、落下速度を設定
-            if (!isGrounded)
-            {
-                float targetFallSpeed = -10f * fallMultiplier;
-                verticalSpeed = Mathf.MoveTowards(verticalSpeed, targetFallSpeed, Time.deltaTime * 30f);
-            }
-        }
-        /*
-        void OnCollisionEnter2D(Collision2D collision)
-        {
-            if (collision.gameObject.CompareTag("Ground"))
-            {
-                isGrounded = true;
-                animator.SetBool("IsJump", false);
-            }
-        }
-
-        */
-        void CheckJumping()
-        {
-            if ((isGrounded || fallMultiplier < 1) && Input.GetKeyDown(KeyCode.W))
+            if (!TryGetGroundHit(GetCurrentPosition(), groundProbeDistance, out var hit))
             {
                 isGrounded = false;
-                isJumping = true;
-                jumpTimer = 0f;
-
-                headController.Jump();
-                animator.SetBool("IsJump", true); 
-                
-
+                currentGroundNormal = Vector2.up;
+                return;
             }
 
-            if (isJumping)
+            float slopeAngle = Vector2.Angle(hit.normal, Vector2.up);
+            if (slopeAngle <= maxGroundAngle && verticalSpeed <= 0.5f)
             {
-                jumpTimer += Time.deltaTime;
-                float t = jumpTimer / jumpDuration;
-                verticalSpeed = Mathf.Lerp(jumpPeakSpeed, 0f, t); // 上昇がだんだん遅くなる
+                isGrounded = true;
+                currentGroundNormal = hit.normal;
 
-                if (t >= 1f)
+                if (!wasGrounded)
                 {
-                    isJumping = false;
+                    headController?.OnGround();
+                    jetBooster?.OnLanding();
+                    animator?.SetBool("IsJump", false);
                 }
+
+                if (verticalSpeed < 0f)
+                {
+                    verticalSpeed = 0f;
+                }
+                coyoteTimeLeft = coyoteTime;
+                return;
+            }
+
+            isGrounded = false;
+            currentGroundNormal = Vector2.up;
+        }
+        void CheckJumping()
+        {
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                jumpBufferLeft = jumpBufferTime;
             }
         }
 
         void CheckHorizontalCollision()
         {
-            // 横方向の壁チェックを有効化してめり込みを防止
-            float checkDistance = 0.25f;
-            Vector2 direction = Vector2.right * Mathf.Sign(transform.localScale.x);
-            Vector2 origin = (Vector2)transform.position;
-            Vector2 size = new Vector2(0.2f, 0.5f);
-            
-            RaycastHit2D hit = Physics2D.BoxCast(origin, size, 0f, direction, checkDistance, groundLayer);
-            
-            if (hit.collider)
+            float facing = Mathf.Sign(transform.localScale.x);
+            if (Mathf.Approximately(facing, 0f))
             {
-                isWallAhead = true;
-                // 壁にめり込んでいる場合は押し戻す
-                float penetration = checkDistance - hit.distance;
-                if (penetration > 0.01f)
-                {
-                    transform.Translate(-direction * penetration);
-                }
-            }
-            else
-            {
-                isWallAhead = false;
-            }
-        }
-
-        void CheckWallClimb()
-        {
-            /*
-            RaycastHit2D _hit = Physics2D.Raycast(horizontalCheckRayPoint.position, Vector2.right * Mathf.Sign(transform.localScale.x), 0.5f, groundLayer);
-            if (!isGrounded && verticalSpeed > 0 && _hit.collider && fallMultiplier >= 1)
-            {
-                verticalSpeed = 0;
-                fallMultiplier = 0.01f;
-            }
-            else if (!_hit.collider)
-            {
-                fallMultiplier = 1;
+                facing = 1f;
             }
 
-            */
+            Vector2 direction = Vector2.right * facing;
+            isWallAhead = TryGetHit(GetCurrentPosition(), direction, wallProbeDistance, out var hit)
+                && !IsWalkable(hit.normal);
         }
 
         void CheckFlip()
@@ -509,43 +464,242 @@ namespace OpenGS
         }
         void ApplyMovement()
         {
-            if (isWallAhead)
-                horizontalSpeed = 0;
+            float dt = Time.fixedDeltaTime;
 
-            float totalHorizontalSpeed = horizontalSpeed + dashingSpeed;
-            Vector2 moveDir = Vector2.right;
+            CheckHorizontalCollision();
 
-            if (isGrounded)
+            float horizontalInput = isWallAhead ? 0f : horizontalSpeed;
+            float targetHorizontalVelocity = (horizontalInput + dashingSpeed) * movementSpeed;
+            float accel = Mathf.Abs(horizontalInput) > 0.01f || Mathf.Abs(dashingSpeed) > 0.01f
+                ? (isGrounded ? groundAcceleration : airAcceleration)
+                : groundFriction;
+
+            currentHorizontalVelocity = Mathf.MoveTowards(currentHorizontalVelocity, targetHorizontalVelocity, accel * dt);
+
+            if (jumpBufferLeft > 0f && coyoteTimeLeft > 0f)
             {
-                // 地面の法線から、斜面に沿った方向ベクトルを計算
-                // 例: 法線が(0, 1)なら、方向は(1, 0) (右)
-                // 法線が左上がり(-0.7, 0.7)なら、方向は(0.7, 0.7) (斜め右上)
-                moveDir = new Vector2(currentGroundNormal.y, -currentGroundNormal.x).normalized;
+                jumpBufferLeft = 0f;
+                coyoteTimeLeft = 0f;
+                isGrounded = false;
+                verticalSpeed = jumpVelocity;
+                headController?.Jump();
+                animator?.SetBool("IsJump", true);
             }
 
-            // 斜面に沿った移動ベクトル + 垂直方向の速度ベクトル
-            Vector2 finalMovement = (moveDir * totalHorizontalSpeed + Vector2.up * verticalSpeed) * movementSpeed * Time.deltaTime;
-            
-            // 過度な移動を制限（めり込み防止）
-            finalMovement.x = Mathf.Clamp(finalMovement.x, -0.5f, 0.5f);
-            finalMovement.y = Mathf.Clamp(finalMovement.y, -0.5f, 0.5f);
-            
-            transform.Translate(finalMovement);
+            if (!isGrounded || verticalSpeed > 0f)
+            {
+                verticalSpeed = Mathf.MoveTowards(verticalSpeed, -maxFallSpeed, gravity * dt);
+            }
+            else if (verticalSpeed < 0f)
+            {
+                verticalSpeed = 0f;
+            }
+
+            Vector2 position = GetCurrentPosition();
+            Vector2 delta = BuildMovementDelta(currentHorizontalVelocity * dt, verticalSpeed * dt);
+            position = MoveWithCast(position, delta);
+            ApplyPosition(position);
+        }
+
+        private BoxCollider2D GetMovementCollider()
+        {
+            if (standingCollider != null && standingCollider.enabled)
+            {
+                return standingCollider;
+            }
+
+            if (sittingCollider != null && sittingCollider.enabled)
+            {
+                return sittingCollider;
+            }
+
+            return GetComponent<BoxCollider2D>();
+        }
+
+        private void SnapToGround()
+        {
+            if (verticalSpeed > 0.1f)
+            {
+                return;
+            }
+
+            Vector2 position = GetCurrentPosition();
+            if (!TryGetGroundHit(position, groundSnapDistance, out var hit))
+            {
+                return;
+            }
+
+            if (!IsWalkable(hit.normal))
+            {
+                return;
+            }
+
+            float snapDistance = Mathf.Max(0f, hit.distance - collisionSkinWidth);
+            if (snapDistance <= 0f)
+            {
+                return;
+            }
+
+            ApplyPosition(position + Vector2.down * snapDistance);
+            isGrounded = true;
+            currentGroundNormal = hit.normal;
+            verticalSpeed = 0f;
+        }
+
+        private void ResolvePenetration()
+        {
+            var collider = GetMovementCollider();
+            if (collider == null)
+            {
+                return;
+            }
+
+            const int maxIterations = 8;
+            const float step = 0.02f;
+
+            for (int i = 0; i < maxIterations; i++)
+            {
+                Bounds bounds = collider.bounds;
+                Collider2D[] overlaps = Physics2D.OverlapBoxAll(bounds.center, bounds.size - new Vector3(collisionSkinWidth, collisionSkinWidth, 0f), 0f, groundLayer);
+                bool hasForeignOverlap = false;
+                for (int j = 0; j < overlaps.Length; j++)
+                {
+                    if (overlaps[j] != null && overlaps[j] != collider)
+                    {
+                        hasForeignOverlap = true;
+                        break;
+                    }
+                }
+
+                if (!hasForeignOverlap)
+                {
+                    return;
+                }
+
+                ApplyPosition(GetCurrentPosition() + Vector2.up * step);
+            }
+        }
+
+        private Vector2 BuildMovementDelta(float horizontalDelta, float verticalDelta)
+        {
+            if (!isGrounded)
+            {
+                return new Vector2(horizontalDelta, verticalDelta);
+            }
+
+            Vector2 tangent = new Vector2(currentGroundNormal.y, -currentGroundNormal.x).normalized;
+            Vector2 slopeMove = tangent * horizontalDelta;
+            Vector2 verticalMove = Vector2.up * verticalDelta;
+            return slopeMove + verticalMove;
+        }
+
+        private Vector2 MoveWithCast(Vector2 position, Vector2 delta)
+        {
+            if (delta.sqrMagnitude <= 0.0000001f)
+            {
+                return position;
+            }
+
+            Vector2 direction = delta.normalized;
+            float castDistance = delta.magnitude;
+
+            if (!TryGetHit(position, direction, castDistance + collisionSkinWidth, out var hit))
+            {
+                return position + delta;
+            }
+
+            float moveDistance = Mathf.Max(0f, hit.distance - collisionSkinWidth);
+            position += direction * moveDistance;
+
+            if (delta.y < 0f && IsWalkable(hit.normal))
+            {
+                isGrounded = true;
+                currentGroundNormal = hit.normal;
+                verticalSpeed = 0f;
+            }
+            else if (delta.y > 0f)
+            {
+                verticalSpeed = 0f;
+            }
+
+            if (Mathf.Abs(delta.x) > 0f && !IsWalkable(hit.normal))
+            {
+                isWallAhead = true;
+                currentHorizontalVelocity = 0f;
+            }
+
+            return position;
+        }
+
+        private bool TryGetGroundHit(Vector2 position, float distance, out RaycastHit2D hit)
+        {
+            hit = default;
+            return TryGetHit(position, Vector2.down, distance, out hit) && IsWalkable(hit.normal);
+        }
+
+        private bool TryGetHit(Vector2 position, Vector2 direction, float distance, out RaycastHit2D bestHit)
+        {
+            bestHit = default;
+            var collider = GetMovementCollider();
+            if (collider == null)
+            {
+                return false;
+            }
+
+            Bounds bounds = collider.bounds;
+            Vector2 delta = position - GetCurrentPosition();
+            Vector2 center = (Vector2)bounds.center + delta;
+            Vector2 size = bounds.size - new Vector3(collisionSkinWidth * 2f, collisionSkinWidth * 2f, 0f);
+            size.x = Mathf.Max(size.x, 0.05f);
+            size.y = Mathf.Max(size.y, 0.05f);
+
+            bestHit = Physics2D.BoxCast(center, size, 0f, direction.normalized, distance, groundLayer);
+
+            Debug.DrawRay(center, direction.normalized * distance, bestHit.collider ? Color.green : Color.red, Time.fixedDeltaTime);
+            return bestHit.collider != null;
+        }
+
+        private bool IsWalkable(Vector2 normal)
+        {
+            return Vector2.Angle(normal, Vector2.up) <= maxGroundAngle;
+        }
+
+        private void RecalculateJumpVelocity()
+        {
+            jumpVelocity = jumpHeight > 0f
+                ? Mathf.Sqrt(2f * gravity * jumpHeight)
+                : 0f;
+        }
+
+        private Vector2 GetCurrentPosition()
+        {
+            return scriptedPosition;
+        }
+
+        private void ApplyPosition(Vector2 position)
+        {
+            scriptedPosition = position;
+
+            if (rigidbody2D != null)
+            {
+                rigidbody2D.position = position;
+            }
+
+            transform.position = position;
         }
 
         private void OnDrawGizmos()
         {
+            Gizmos.color = Color.green;
+            var collider = GetMovementCollider();
+            if (collider == null)
+            {
+                return;
+            }
 
-                if (groundCheckRayPoint == null) return;
-
-                Gizmos.color = Color.green;
-                Vector2 size = new Vector2(0.3f, 0.02f);
-                float maxDistance = 0.25f;
-                Vector3 origin = groundCheckRayPoint.position;
-                Vector3 center = origin + Vector3.down * maxDistance * 0.5f;
-                Gizmos.DrawWireCube(center, new Vector3(size.x, maxDistance, 0f));
-
-
+            Bounds bounds = collider.bounds;
+            Vector3 center = new Vector3(bounds.center.x, bounds.min.y + 0.02f, bounds.center.z);
+            Gizmos.DrawWireCube(center, new Vector3(bounds.size.x, 0.04f, 0f));
         }
 
         private void OnSpawn()
@@ -553,8 +707,6 @@ namespace OpenGS
             ResetPowerupState();
             isDashing = false;
             dashDir = Vector2.zero;
-            isJumping = false;
-            jumpTimer = 0f;
             invincible = false;
             SetSpriteAlpha(1f);
         }
@@ -828,122 +980,6 @@ namespace OpenGS
             }
         }
 
-        /*
-        [SerializeField] private GameObject myObject;
-        [SerializeField] private JetBooster booster;
-
-        [SerializeField] private LayerMask groundLayer;
-        [SerializeField] private float fallSpeed = 5f;
-        [SerializeField] private float groundCheckDistance = 0.1f;
-        [SerializeField] private float moveSpeed = 1.0f;
-        [SerializeField] private Vector2 groundCheckOffset = new Vector2(0, -0.5f);
-        // Use this for initialization
-        private bool isGrounded;
-        private float groundedTime;
-        //private JetBooster booster;
-        void Start()
-        {
-            booster = GetComponent<JetBooster>();
-        }
-        void CorrectGroundPenetration()
-        {
-            if (!IsGrounded()) return;
-
-            Vector2 origin = (Vector2)transform.position + groundCheckOffset;
-            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, groundCheckDistance + 0.2f, groundLayer);
-
-            if (hit.collider != null)
-            {
-                float penetration = groundCheckDistance - hit.distance;
-                if (penetration > 0f)
-                {
-                    transform.Translate(Vector2.up * penetration);
-                }
-            }
-        }
-        // Update is called once per frame
-        void Update()
-        {
-            isGrounded = IsGrounded();
-
-            // Booster に渡す
-            booster.SetGrounded(isGrounded);
-            HandleBooster();
-            HandleInput();
-            HandleGravity();
-            CorrectGroundPenetration();
-        }
-
-        private void FixedUpdate()
-        {
-
-        }
-        bool IsGrounded()
-        {
-            Vector2 origin = (Vector2)transform.position + groundCheckOffset;
-            float radius = 0.2f; // 衝突判定に使う半径
-
-            RaycastHit2D hit = Physics2D.CircleCast(origin, radius, Vector2.down, groundCheckDistance, groundLayer);
-
-//#if UNITY_EDITOR
-            Debug.DrawRay(origin, Vector2.down * groundCheckDistance, hit.collider ? Color.green : Color.red);
-//#endif
-
-            return hit.collider != null;
-        }
-        void HandleGravity()
-        {
-            RaycastHit2D hit = Physics2D.Raycast((Vector2)transform.position + groundCheckOffset, Vector2.down, groundCheckDistance + 0.2f, groundLayer);
-            if (hit.collider != null)
-            {
-                float penetration = (groundCheckDistance - hit.distance);
-                if (penetration > 0)
-                {
-                    // めり込んでたら少し上に戻す
-                    transform.Translate(Vector2.up * penetration);
-                }
-            }
-            else
-            {
-                transform.Translate(Vector2.down * fallSpeed * Time.deltaTime);
-            }
-        }
-        void HandleInput()
-        {
-            float horizontalInput = Input.GetAxis("Horizontal");
-
-            Vector2 origin = (Vector2)transform.position + groundCheckOffset;
-            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, groundCheckDistance + 0.2f, groundLayer);
-
-            if (hit.collider != null)
-            {
-                Vector2 groundNormal = hit.normal;
-                Vector2 moveDir = new Vector2(groundNormal.y, -groundNormal.x);
-                moveDir *= horizontalInput;
-
-                transform.Translate(moveDir * Time.deltaTime * moveSpeed);
-            }
-            else
-            {
-                transform.Translate(Vector2.right * horizontalInput * Time.deltaTime * moveSpeed);
-            }
-        }
-
-        void HandleBooster()
-        {
-            if (booster != null)
-            {
-                bool isBoosterActive = Input.GetMouseButton(1); // 右クリック
-                booster.Activate(isBoosterActive);
-            }
-        }
-
-        void Die()
-        {
-
-        }
-
-        */
     }
 
 
