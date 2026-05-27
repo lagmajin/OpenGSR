@@ -32,3 +32,10 @@ If a change would be hard to describe clearly, split it first.
 ## Safety Rule
 
 If unrelated edits start piling up, pause and separate them before touching `main` again.
+
+## Main-PC Marker
+
+- Marker path: `%USERPROFILE%\.codex-mainpc`
+- If this file exists, treat the current PC as the main development machine
+- On the main development machine, direct commits and pushes to `main` are OK
+- On other machines, prefer a short-lived branch first and merge back later

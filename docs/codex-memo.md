@@ -52,6 +52,9 @@
 - Use `name=assemblies` and `name=packages` for `/resource`
 - `inspect` works with `instanceId` or `gameObjectPath`
 - `command` uses `command: prefix.action`
+- Main-dev marker lives at `%USERPROFILE%\.codex-mainpc`
+- If the marker file exists, this PC is treated as the main development machine and may push directly to `main`
+- If the marker file does not exist, assume a sub machine and use a short-lived development branch first
 - Sprite audit menu: `OpenGSR/Tools/Sprite Scene Usage Report`
 - Sprite repair menu: `OpenGSR/Tools/Sprite Reference Repair`
 - Sprite auto-slice menu: `OpenGSR/Tools/Sprite Sheet Auto Slice`
