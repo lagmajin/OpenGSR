@@ -46,6 +46,7 @@
 - `docs/codex/main-branch-development.md`
 - `docs/codex/workstream-organization.md`
 - `docs/codex/playeragent-kinematic-movement.md`
+- `docs/codex/grenade-types.md`
 
 ## Notes
 
@@ -61,4 +62,5 @@
 - Direct main-branch development notes: `docs/codex/main-branch-development.md`
 - Workstream organization notes: `docs/codex/workstream-organization.md`
 - PlayerAgent scripted movement notes: `docs/codex/playeragent-kinematic-movement.md`
+- Grenade type notes: `docs/codex/grenade-types.md`
 - PlayerAgent now derives jump velocity from `jumpHeight` and uses coyote time / jump buffer for scripted movement
