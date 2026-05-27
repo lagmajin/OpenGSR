@@ -10,27 +10,24 @@ namespace OpenGS
     {
         public GameObject smokePrefab;
 
-        private void Start()
-        {
-
-        }
-
-        private void Update()
-        {
-
-        }
-
         public override void Exp()
         {
-            Instantiate(expEffect);
+            var effectPrefab = smokePrefab != null ? smokePrefab : expEffect;
+            if (effectPrefab != null)
+            {
+                Instantiate(effectPrefab, transform.position, Quaternion.identity);
+            }
 
-            //Instantiate(smokePrefab);
-
+            Destroy(gameObject);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var tags = collision.gameObject.GetComponent<MultipleTags>();
+            if (tags == null)
+            {
+                return;
+            }
 
             if (tags.HasPlayerTag())
             {

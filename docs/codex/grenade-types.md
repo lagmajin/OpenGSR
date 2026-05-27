@@ -57,6 +57,9 @@ Current grenade types in the project and how they are wired.
   - Use the shared `GrenadeProjectileController`
 - `Normal`, `Power`, `Fire`, `Mine`, `Magnetic`
   - Use the shared `GrenadeProjectileController`
+- `Smoke`
+  - Resolved from `Resources/Prefabs/Weapon/Projectile/SmokeGrenade`
+  - Uses a smoke effect prefab instead of an explosive damage payload
 - `Cluster`
   - Uses `GrenadeProjectileController` with child projectile spawning enabled
 - `Smoke`

@@ -21,6 +21,7 @@ namespace OpenGS
         [Required]public Sprite fireGrenade;
         [Required]public Sprite mineGrenade;
         [Required]public Sprite magneticGrenade;
+        [Required]public Sprite smokeGrenade;
 
         [Required] public Sprite clusterGrenade;
 
@@ -63,6 +64,16 @@ namespace OpenGS
                 return magneticGrenade;
             }
 
+            if (smokeGrenade != null)
+            {
+                return smokeGrenade;
+            }
+
+            if (normalGrenade != null)
+            {
+                return normalGrenade;
+            }
+
             if (clusterGrenade != null)
             {
                 return clusterGrenade;
@@ -98,6 +109,11 @@ namespace OpenGS
             if(type==EGrenadeType.Magnetic)
             {
                 return magneticGrenade;
+            }
+
+            if (type == EGrenadeType.Smoke)
+            {
+                return smokeGrenade != null ? smokeGrenade : normalGrenade;
             }
 
             if (type == EGrenadeType.Cluster)

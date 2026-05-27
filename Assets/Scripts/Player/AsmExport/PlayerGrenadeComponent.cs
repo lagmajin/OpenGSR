@@ -86,6 +86,11 @@ namespace OpenGS
         {
             if (grenadeListMasterData == null || grenadeListMasterData.dataList == null)
             {
+                if (grenadeType == EGrenadeType.Smoke)
+                {
+                    return LoadSmokeGrenadeEntry();
+                }
+
                 return null;
             }
 
@@ -112,6 +117,11 @@ namespace OpenGS
                 }
             }
 
+            if (grenadeType == EGrenadeType.Smoke)
+            {
+                return LoadSmokeGrenadeEntry();
+            }
+
             foreach (var entry in grenadeListMasterData.dataList)
             {
                 if (entry != null && entry.GrenadePrefab != null)
@@ -121,6 +131,22 @@ namespace OpenGS
             }
 
             return null;
+        }
+
+        private GrenadeEntry LoadSmokeGrenadeEntry()
+        {
+            var smokePrefab = Resources.Load<GameObject>("Prefabs/Weapon/Projectile/SmokeGrenade");
+            if (smokePrefab == null)
+            {
+                Debug.LogWarning("[PlayerGrenadeComponent] Smoke grenade prefab was not found in Resources/Prefabs/Weapon/Projectile/SmokeGrenade.");
+                return null;
+            }
+
+            return new GrenadeEntry
+            {
+                Name = "SmokeGrenade",
+                GrenadePrefab = smokePrefab
+            };
         }
 
         public void ThrowGrenade(float powerMultiplier)

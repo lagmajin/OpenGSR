@@ -6,18 +6,11 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class SmokeEffect : MonoBehaviour
     {
-        private float activeTime;
-        private SpriteRenderer spriteRenderer;
-        // Use this for initialization
-        void Start()
+        [SerializeField] private float lifetime = 2.5f;
+
+        private void Start()
         {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
+            Destroy(gameObject, Mathf.Max(0.1f, lifetime));
         }
     }
 }
