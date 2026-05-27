@@ -22,6 +22,14 @@ namespace OpenGS
         [SerializeField] private LayerMask hitMask = ~0;
         [SerializeField] private float spriteAngleOffset = 0f;
         [SerializeField] private bool alignToVelocity = true;
+        [Header("Cluster")]
+        [SerializeField] private bool spawnChildProjectiles;
+        [SerializeField] private GameObject childProjectilePrefab;
+        [SerializeField] private int childProjectileCount = 0;
+        [SerializeField] private float childLaunchSpeed = 8f;
+        [SerializeField] private float childSpreadAngle = 45f;
+        [SerializeField] private float childDamageMultiplier = 0.35f;
+        [SerializeField] private float childFuseTime = 1.25f;
 
         private Vector2 velocity;
         private float lifeTime;
@@ -55,6 +63,39 @@ namespace OpenGS
             launched = true;
             exploded = false;
             UpdateRotation();
+        }
+
+        public void SetDamage(float value)
+        {
+            damage = Mathf.Max(0f, value);
+        }
+
+        public void SetFuseTime(float value)
+        {
+            fuseTime = Mathf.Max(0f, value);
+        }
+
+        public void SetExplosionEffect(GameObject effect)
+        {
+            explosionEffect = effect;
+        }
+
+        public void ConfigureChildProjectiles(
+            bool enabled,
+            GameObject projectilePrefab,
+            int projectileCount,
+            float launchSpeed,
+            float spreadAngle,
+            float damageMultiplier,
+            float childFuse)
+        {
+            spawnChildProjectiles = enabled;
+            childProjectilePrefab = projectilePrefab;
+            childProjectileCount = Mathf.Max(0, projectileCount);
+            childLaunchSpeed = Mathf.Max(0f, launchSpeed);
+            childSpreadAngle = Mathf.Max(0f, spreadAngle);
+            childDamageMultiplier = Mathf.Max(0f, damageMultiplier);
+            childFuseTime = Mathf.Max(0f, childFuse);
         }
 
         private void Update()
@@ -184,7 +225,36 @@ namespace OpenGS
             }
 
             GrenadeExplosionDamageUtility.ApplyCircularDamage(position, ownerPlayerId, weaponName, ownerTeam, damage / 100f);
+            SpawnChildProjectiles(position);
             Destroy(gameObject);
+        }
+
+        private void SpawnChildProjectiles(Vector2 position)
+        {
+            if (!spawnChildProjectiles || childProjectilePrefab == null || childProjectileCount <= 0)
+            {
+                return;
+            }
+
+            var baseAngle = UnityEngine.Random.Range(0f, 360f);
+            for (var index = 0; index < childProjectileCount; index++)
+            {
+                var angleOffset = childProjectileCount == 1
+                    ? 0f
+                    : Mathf.Lerp(-childSpreadAngle, childSpreadAngle, (float)index / (childProjectileCount - 1));
+                var angle = baseAngle + angleOffset;
+                var direction = new Vector2(Mathf.Cos(angle * Mathf.Deg2Rad), Mathf.Sin(angle * Mathf.Deg2Rad));
+                var child = Instantiate(childProjectilePrefab, position, Quaternion.Euler(0f, 0f, angle));
+                var controller = child.GetComponent<GrenadeProjectileController>();
+                if (controller == null)
+                {
+                    continue;
+                }
+
+                controller.SetDamage(damage * childDamageMultiplier);
+                controller.SetFuseTime(childFuseTime);
+                controller.Launch(direction, childLaunchSpeed, ownerPlayerId, weaponName, ownerTeam, ownerTransform);
+            }
         }
     }
 }

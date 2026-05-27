@@ -85,6 +85,11 @@ namespace OpenGS
                 return powerGrenade;
             }
 
+            if (type == EGrenadeType.Fire)
+            {
+                return fireGrenade;
+            }
+
             if (type == EGrenadeType.Mine)
             {
                 return mineGrenade;
