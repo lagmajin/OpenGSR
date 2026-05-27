@@ -32,15 +32,24 @@ namespace OpenGS
         //[SerializeField] private PlayerAgent agent;
 
         [SerializeField]private PlayerAgent player;
+        private bool boostHeld;
+
         public void Activate(bool active)
         {
-            // Determine whether boost should be active (input + fuel)
-            bool willActivate = active && currentFuel > 0f;
+            boostHeld = active;
+        }
 
-            // If we start boosting this frame and were grounded, give a small upward impulse
+        public void SetBoostHeld(bool active)
+        {
+            boostHeld = active;
+        }
+
+        public float StepBoost(float dt)
+        {
+            bool willActivate = boostHeld && currentFuel > 0f;
+
             if (willActivate && !isActive)
             {
-                Debug.Log("🔥 Jet Boost Activated (initial burst)");
                 if (player != null && player.isGrounded)
                 {
                     player.verticalSpeed = Mathf.Max(player.verticalSpeed, 2f);
@@ -53,7 +62,43 @@ namespace OpenGS
             if (isActive)
             {
                 currentBoostSpeed = Mathf.Max(currentBoostSpeed, 2f);
+                return ApplyBoost(dt);
             }
+            ResetBoost();
+            return 0f;
+        }
+
+        public void RecoverFuel(float dt)
+        {
+            if (player == null)
+            {
+                return;
+            }
+
+            if (player.isGrounded && Time.time - groundedTime > groundedRecoveryDelay)
+            {
+                currentFuel = Mathf.Min(currentFuel + fuelRecoverRate * dt, maxFuel);
+            }
+        }
+
+        private float ApplyBoost(float dt)
+        {
+            currentFuel -= dt;
+            currentBoostSpeed = Mathf.Min(currentBoostSpeed + boostAccel * dt, maxBoostSpeed);
+            currentFuel = Mathf.Max(currentFuel, 0f);
+
+            if (currentFuel <= 0f)
+            {
+                ResetBoost();
+            }
+
+            return Mathf.Max(0f, currentBoostSpeed - gravityDuringBoost);
+        }
+
+        private void ResetBoost()
+        {
+            currentBoostSpeed = 0f;
+            isActive = false;
         }
 
         void Start()
@@ -61,6 +106,13 @@ namespace OpenGS
             currentFuel = maxFuel;
             LoadEquippedSettings();
             ApplyColor();
+        }
+
+        public void OnLanding()
+        {
+            currentBoostSpeed = 0f;
+            isActive = false;
+            groundedTime = Time.time;
         }
 
         private void LoadEquippedSettings()
@@ -99,61 +151,6 @@ namespace OpenGS
                 var main = boostParticles.main;
                 main.startColor = boostColor;
             }
-        }
-
-        void Update()
-        {
-            Activate(Input.GetMouseButton(1));
-            float dt = Time.deltaTime;
-
-            if (isActive && currentFuel > 0f)
-            {
-                ApplyBoost(dt);
-                if (currentFuel <= 0f)
-                {
-                    // out of fuel, stop boosting
-                    isActive = false;
-                    ResetBoost();
-                }
-            }
-            else
-            {
-                ResetBoost();
-            }
-
-            RecoverFuelIfGrounded();
-
-            currentFuel = Mathf.Max(currentFuel, 0f);
-        }
-
-        void ApplyBoost(float dt)
-        {
-            currentFuel -= dt;
-            currentBoostSpeed = Mathf.Min(currentBoostSpeed + boostAccel * dt, maxBoostSpeed);
-            player.verticalSpeed += (currentBoostSpeed - gravityDuringBoost) * dt;
-        }
-
-        void ResetBoost()
-        {
-            currentBoostSpeed = 0f;
-            isActive = false;
-        }
-
-        void RecoverFuelIfGrounded()
-        {
-            if (player.isGrounded && Time.time - groundedTime > groundedRecoveryDelay)
-            {
-                currentFuel = Mathf.Min(currentFuel + fuelRecoverRate * Time.deltaTime, maxFuel);
-            }
-        }
-
-        public void OnLanding()
-        {
-            player.verticalSpeed = 0f;
-            currentBoostSpeed = 0f;
-            player.isGrounded = true;
-            groundedTime = Time.time;
-
         }
 
         public float GetFuelRatio() => currentFuel / maxFuel;

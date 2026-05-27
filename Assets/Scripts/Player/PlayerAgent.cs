@@ -76,6 +76,7 @@ namespace OpenGS
         [SerializeField] private float groundFriction = 35f;
         [SerializeField] private float collisionSkinWidth = 0.02f;
         [SerializeField] private float maxFallSpeed = 12f;
+        [SerializeField] private float maxBoostRiseSpeed = 10f;
 
         private float currentHorizontalVelocity;
         private Vector2 scriptedPosition;
@@ -214,6 +215,7 @@ namespace OpenGS
             CheckJumping();
             CheckFlip();
             CheckDashing();
+            jetBooster?.SetBoostHeld(Input.GetMouseButton(1));
 
             if (!isDashing && isGrounded) // 地上限定
             {
@@ -283,6 +285,7 @@ namespace OpenGS
             ResolvePenetration();
             SnapToGround();
             CheckGround();
+            jetBooster?.RecoverFuel(Time.fixedDeltaTime);
         }
         void StartDash(Vector2 direction)
         {
@@ -493,6 +496,16 @@ namespace OpenGS
             else if (verticalSpeed < 0f)
             {
                 verticalSpeed = 0f;
+            }
+
+            if (jetBooster != null)
+            {
+                float boostAcceleration = jetBooster.StepBoost(dt);
+                if (boostAcceleration > 0f)
+                {
+                    verticalSpeed = Mathf.Min(verticalSpeed + boostAcceleration * dt, maxBoostRiseSpeed);
+                    isGrounded = false;
+                }
             }
 
             Vector2 position = GetCurrentPosition();

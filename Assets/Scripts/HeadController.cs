@@ -17,17 +17,50 @@ namespace OpenGS
         // Start is called before the first frame update
 
         [SerializeField] private GameObject head;
-        private Vector3 originalLocalHeadPos;
+        private Vector3 defaultLocalHeadPos;
+        private Vector3 jumpLocalHeadPos;
+        private Vector3 sitLocalHeadPos;
+        private bool initialized;
 
         [SerializeField]Transform jumpHeadPos;
         [SerializeField] Transform layDownPos;
 
         private void Start()
         {
-            //if(head == null) head = GetComponent<GameObject>();
+            InitializeHeadPoseCache();
+        }
 
+        private void OnValidate()
+        {
+            InitializeHeadPoseCache();
+        }
 
-            originalLocalHeadPos = head.transform.localPosition;
+        private void InitializeHeadPoseCache()
+        {
+            if (head == null)
+            {
+                return;
+            }
+
+            defaultLocalHeadPos = head.transform.localPosition;
+            jumpLocalHeadPos = ResolveLocalTarget(jumpHeadPos, defaultLocalHeadPos);
+            sitLocalHeadPos = ResolveLocalTarget(layDownPos, defaultLocalHeadPos);
+            initialized = true;
+        }
+
+        private Vector3 ResolveLocalTarget(Transform target, Vector3 fallback)
+        {
+            if (head == null || target == null)
+            {
+                return fallback;
+            }
+
+            if (target.parent == head.transform.parent)
+            {
+                return target.localPosition;
+            }
+
+            return head.transform.parent.InverseTransformPoint(target.position);
         }
 
         public void Reset()
@@ -68,15 +101,14 @@ namespace OpenGS
 
         public void Jump()
         {
-            if (head != null && jumpHeadPos != null)
+            if (head != null)
             {
-                // 現在のローカル位置を保存（親＝headの親、つまりPlayer基準）
-                originalLocalHeadPos = head.transform.localPosition;
+                if (!initialized)
+                {
+                    InitializeHeadPoseCache();
+                }
 
-                // jumpHeadPos（headの子）のワールド座標を取得し、
-                // それをheadの親（＝Player）のローカル座標に変換
-                Vector3 targetLocalPos = head.transform.parent.InverseTransformPoint(jumpHeadPos.position);
-                head.transform.localPosition = targetLocalPos;
+                head.transform.localPosition = jumpLocalHeadPos;
             }
         }
 
@@ -84,8 +116,12 @@ namespace OpenGS
         {
             if (head != null)
             {
-                // 元のローカル位置に戻す
-                head.transform.localPosition = originalLocalHeadPos;
+                if (!initialized)
+                {
+                    InitializeHeadPoseCache();
+                }
+
+                head.transform.localPosition = defaultLocalHeadPos;
             }
         }
 
@@ -95,19 +131,24 @@ namespace OpenGS
         {
             if (head != null)
             {
-                Sequence seq = DOTween.Sequence();
-                seq.AppendInterval(0.50f); // 0.1秒待つ
-                //seq.Append(head.transform.DOLocalMove(originalHeadPos + new Vector3(-0.02f, -0.03f, 0f), 0.2f)
-                    //.SetEase(Ease.OutSine));
+                if (!initialized)
+                {
+                    InitializeHeadPoseCache();
+                }
+
+                head.transform.localPosition = sitLocalHeadPos;
             }
         }
         public void StandUp()
         {
             if (head != null)
             {
-                Sequence seq = DOTween.Sequence();
-                seq.AppendInterval(0.50f); // 0.1秒ディレイ
-                //seq.Append(head.transform.DOLocalMove(originalHeadPos, 0.2f).SetEase(Ease.OutSine));
+                if (!initialized)
+                {
+                    InitializeHeadPoseCache();
+                }
+
+                head.transform.localPosition = defaultLocalHeadPos;
             }
         }
 
