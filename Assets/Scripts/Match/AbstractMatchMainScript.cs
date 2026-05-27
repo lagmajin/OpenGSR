@@ -557,7 +557,19 @@ namespace OpenGS
                         break;
                     case "GrenadePack":
                     case "NormalGrenadePack":
-                        player.RefillGrenade();
+                        player.RefillGrenade(EGrenadeType.Normal);
+                        break;
+                    case "PowerGrenadePack":
+                        player.RefillGrenade(EGrenadeType.Power);
+                        break;
+                    case "ClusterGrenadePack":
+                        player.RefillGrenade(EGrenadeType.Cluster);
+                        break;
+                    case "MagnetGrenadePack":
+                        player.RefillGrenade(EGrenadeType.Magnetic);
+                        break;
+                    case "MineGrenadePack":
+                        player.RefillGrenade(EGrenadeType.Mine);
                         break;
                 }
             }

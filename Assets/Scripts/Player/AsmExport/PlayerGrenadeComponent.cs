@@ -128,9 +128,15 @@ namespace OpenGS
             var owner = GetComponent<AbstractPlayer>();
             if (owner != null)
             {
-                if (!owner.Status.UseGrenade())
+                if (owner.Status == null)
                 {
-                    Debug.Log("グレネードの残弾がありません。");
+                    Debug.LogWarning("プレイヤーステータスが見つかりません");
+                    return;
+                }
+
+                if (!owner.Status.UseGrenade(grenadeType))
+                {
+                    Debug.Log($"選択中のグレネード({grenadeType})の残弾がありません。");
                     return;
                 }
             }

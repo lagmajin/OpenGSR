@@ -1,3 +1,5 @@
+using OpenGSCore;
+
 namespace OpenGS
 {
     /// <summary>
@@ -14,6 +16,7 @@ namespace OpenGS
         void IncreaseDefense(float sec = 30.0f);
         void Invisible(float sec = 30.0f);
         void RefillGrenade();
+        void RefillGrenade(EGrenadeType type, int amount = 3);
 
         void Berserk();
     }

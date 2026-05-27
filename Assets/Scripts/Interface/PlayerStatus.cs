@@ -1,5 +1,7 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UniRx;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -21,6 +23,12 @@ namespace OpenGS
         readonly ReactiveProperty<float> maxBooster = new(DefaultMaxBooster);
         readonly ReactiveProperty<float> boosterPower = new(3.0f);
         readonly ReactiveProperty<int> grenadeCount = new(DefaultMaxGrenade);
+        readonly EGrenadeType[] grenadeSlots = new EGrenadeType[DefaultMaxGrenade]
+        {
+            EGrenadeType.Empty,
+            EGrenadeType.Empty,
+            EGrenadeType.Empty
+        };
 
         // Kill/Death count properties for gameplay tracking
         readonly ReactiveProperty<int> killCount = new(0);
@@ -87,8 +95,10 @@ namespace OpenGS
         public int GrenadeCount
         {
             get => grenadeCount.Value;
-            set => grenadeCount.Value = Mathf.Clamp(value, 0, DefaultMaxGrenade);
+            set => SetGrenadeCount(value);
         }
+
+        public IReadOnlyList<EGrenadeType> GrenadeSlots => grenadeSlots;
 
         public IReadOnlyReactiveProperty<float> HpStream => hp;
         public IReadOnlyReactiveProperty<float> ArmorStream => armor;
@@ -163,33 +173,186 @@ namespace OpenGS
 
         public void ConsumeGrenade()
         {
-            ConsumeGrenade(1);
+            UseGrenade();
         }
 
         public bool ConsumeGrenade(int amount)
         {
-            if (amount <= 0 || GrenadeCount <= 0)
-            {
-                return false;
-            }
-
-            GrenadeCount = Mathf.Max(0, GrenadeCount - amount);
-            return true;
+            return ConsumeGrenade(EGrenadeType.Empty, amount);
         }
 
         public bool UseGrenade()
         {
-            if (!ConsumeGrenade(1))
-            {
-                return false;
-            }
-
-            return true;
+            return UseGrenade(out _);
         }
 
         public void RefillGrenade()
         {
-            GrenadeCount = DefaultMaxGrenade;
+            RefillGrenade(EGrenadeType.Normal, DefaultMaxGrenade);
+        }
+
+        public int RefillGrenade(EGrenadeType type, int amount = DefaultMaxGrenade)
+        {
+            if (amount <= 0)
+            {
+                return 0;
+            }
+
+            if (type == EGrenadeType.Empty)
+            {
+                type = EGrenadeType.Normal;
+            }
+
+            var filled = 0;
+            for (var index = 0; index < grenadeSlots.Length && filled < amount; index++)
+            {
+                if (grenadeSlots[index] != EGrenadeType.Empty)
+                {
+                    continue;
+                }
+
+                grenadeSlots[index] = type;
+                filled++;
+            }
+
+            SyncGrenadeCount();
+            return filled;
+        }
+
+        public bool UseGrenade(out EGrenadeType usedType)
+        {
+            for (var index = 0; index < grenadeSlots.Length; index++)
+            {
+                if (grenadeSlots[index] == EGrenadeType.Empty)
+                {
+                    continue;
+                }
+
+                usedType = grenadeSlots[index];
+                grenadeSlots[index] = EGrenadeType.Empty;
+                SyncGrenadeCount();
+                return true;
+            }
+
+            usedType = EGrenadeType.Empty;
+            return false;
+        }
+
+        public bool UseGrenade(EGrenadeType type)
+        {
+            return UseGrenade(type, out _);
+        }
+
+        public bool UseGrenade(EGrenadeType type, out int slotIndex)
+        {
+            slotIndex = -1;
+
+            if (type == EGrenadeType.Empty)
+            {
+                return UseGrenade(out _);
+            }
+
+            for (var index = 0; index < grenadeSlots.Length; index++)
+            {
+                if (grenadeSlots[index] != type)
+                {
+                    continue;
+                }
+
+                grenadeSlots[index] = EGrenadeType.Empty;
+                slotIndex = index;
+                SyncGrenadeCount();
+                return true;
+            }
+
+            return false;
+        }
+
+        public EGrenadeType GetGrenadeSlot(int index)
+        {
+            if (index < 0 || index >= grenadeSlots.Length)
+            {
+                return EGrenadeType.Empty;
+            }
+
+            return grenadeSlots[index];
+        }
+
+        public bool ConsumeGrenade(EGrenadeType type, int amount)
+        {
+            if (amount <= 0)
+            {
+                return false;
+            }
+
+            var consumed = 0;
+            for (var index = 0; index < grenadeSlots.Length && consumed < amount; index++)
+            {
+                if (grenadeSlots[index] == EGrenadeType.Empty)
+                {
+                    continue;
+                }
+
+                if (type != EGrenadeType.Empty && grenadeSlots[index] != type)
+                {
+                    continue;
+                }
+
+                grenadeSlots[index] = EGrenadeType.Empty;
+                consumed++;
+            }
+
+            if (consumed > 0)
+            {
+                SyncGrenadeCount();
+            }
+
+            return consumed > 0;
+        }
+
+        private void SetGrenadeCount(int value)
+        {
+            value = Mathf.Clamp(value, 0, DefaultMaxGrenade);
+            var current = GrenadeCount;
+
+            if (value == current)
+            {
+                return;
+            }
+
+            if (value > current)
+            {
+                RefillGrenade(EGrenadeType.Normal, value - current);
+                return;
+            }
+
+            var toRemove = current - value;
+            for (var index = grenadeSlots.Length - 1; index >= 0 && toRemove > 0; index--)
+            {
+                if (grenadeSlots[index] == EGrenadeType.Empty)
+                {
+                    continue;
+                }
+
+                grenadeSlots[index] = EGrenadeType.Empty;
+                toRemove--;
+            }
+
+            SyncGrenadeCount();
+        }
+
+        private void SyncGrenadeCount()
+        {
+            var count = 0;
+            for (var index = 0; index < grenadeSlots.Length; index++)
+            {
+                if (grenadeSlots[index] != EGrenadeType.Empty)
+                {
+                    count++;
+                }
+            }
+
+            grenadeCount.Value = Mathf.Clamp(count, 0, DefaultMaxGrenade);
         }
 
         public void FullCombatRecovery()

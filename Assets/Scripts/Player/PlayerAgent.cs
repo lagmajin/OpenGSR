@@ -829,7 +829,18 @@ namespace OpenGS
 
         public void RefillGrenade()
         {
-            normalGrenadeCount = 3;
+            RefillGrenade(EGrenadeType.Normal, 3);
+        }
+
+        public void RefillGrenade(EGrenadeType type, int amount = 3)
+        {
+            if (type != EGrenadeType.Normal)
+            {
+                Debug.Log($"[PlayerAgent] Grenade refill requested for {type}, but this controller only tracks normal grenades.");
+                return;
+            }
+
+            normalGrenadeCount = Mathf.Clamp(amount, 0, 3);
             Debug.Log($"[PlayerAgent] Normal grenade refilled: {NormalGrenadeCount}");
         }
 

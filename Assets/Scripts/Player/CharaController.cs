@@ -417,14 +417,20 @@ namespace OpenGS
                     Debug.Log("[CharaController] Used PoisonBullet.");
                     break;
                 case EInstantItemType.PowerGrenadePack:
+                    Status?.RefillGrenade(EGrenadeType.Power);
+                    Debug.Log("[CharaController] Used grenade pack: PowerGrenadePack.");
+                    break;
                 case EInstantItemType.ClusterGrenadePack:
+                    Status?.RefillGrenade(EGrenadeType.Cluster);
+                    Debug.Log("[CharaController] Used grenade pack: ClusterGrenadePack.");
+                    break;
                 case EInstantItemType.MagnetGrenadePack:
+                    Status?.RefillGrenade(EGrenadeType.Magnetic);
+                    Debug.Log("[CharaController] Used grenade pack: MagnetGrenadePack.");
+                    break;
                 case EInstantItemType.MineGrenadePack:
-                    if (Status != null)
-                    {
-                        Status.GrenadeCount = Mathf.Min(Status.GrenadeCount + 1, 3);
-                    }
-                    Debug.Log($"[CharaController] Used grenade pack: {itemType}.");
+                    Status?.RefillGrenade(EGrenadeType.Mine);
+                    Debug.Log("[CharaController] Used grenade pack: MineGrenadePack.");
                     break;
                 default:
                     Debug.LogWarning($"[CharaController] Unsupported instant item: {itemType}");

@@ -383,6 +383,16 @@ namespace OpenGS
             Status?.RefillGrenade();
         }
 
+        public virtual void RefillGrenade(EGrenadeType type, int amount = 3)
+        {
+            if (Status == null)
+            {
+                return;
+            }
+
+            Status.RefillGrenade(type, amount);
+        }
+
         public virtual void PoisonBullet(float sec)
         {
             Debug.Log($"[{GetType().Name}] PoisonBullet applied for {sec} sec");

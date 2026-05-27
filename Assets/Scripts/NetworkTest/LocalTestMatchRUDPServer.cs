@@ -449,19 +449,19 @@ namespace OpenGS
                     yield break;
 
                 case EInstantItemType.PowerGrenadePack:
-                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, EInstantItemType.PowerGrenadePack.ToString(), 0, 1f);
                     yield break;
 
                 case EInstantItemType.ClusterGrenadePack:
-                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, EInstantItemType.ClusterGrenadePack.ToString(), 0, 1f);
                     yield break;
 
                 case EInstantItemType.MagnetGrenadePack:
-                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, EInstantItemType.MagnetGrenadePack.ToString(), 0, 1f);
                     yield break;
 
                 case EInstantItemType.MineGrenadePack:
-                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, EInstantItemType.MineGrenadePack.ToString(), 0, 1f);
                     yield break;
 
                 default:

@@ -15,12 +15,12 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            TryApplyToPlayer(collision, powerupable => powerupable.RefillGrenade());
+            TryApplyToPlayer(collision, powerupable => powerupable.RefillGrenade(OpenGSCore.EGrenadeType.Normal));
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            TryApplyToPlayer(collision, powerupable => powerupable.RefillGrenade());
+            TryApplyToPlayer(collision, powerupable => powerupable.RefillGrenade(OpenGSCore.EGrenadeType.Normal));
         }
     }
 }
