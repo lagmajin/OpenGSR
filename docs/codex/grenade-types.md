@@ -44,6 +44,17 @@ Current grenade types in the project and how they are wired.
 
 ## Special behavior
 
+- `Normal`
+  - Plain grenade
+  - Baseline explosion behavior
+- `Power`
+  - Same grenade as `Normal`, but with higher damage / stronger impact
+- `Magnetic`
+  - Same grenade as `Normal`, but it sticks to terrain
+- `Mine`
+  - Same grenade as `Normal`, but with a longer fuse before exploding
+- `Fire`
+  - Use the shared `GrenadeProjectileController`
 - `Normal`, `Power`, `Fire`, `Mine`, `Magnetic`
   - Use the shared `GrenadeProjectileController`
 - `Cluster`
@@ -60,4 +71,3 @@ Current grenade types in the project and how they are wired.
   - `AllGrenadeListMasterData`
   - the projectile prefab under `Assets/Prefabs/Weapon/Projectile`
   - `InstantItemThumbnailMasterData` if the UI needs an icon
-
