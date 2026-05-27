@@ -1,0 +1,2275 @@
+fileFormatVersion: 2
+guid: 3c6de02c3951d4d4b87333425e4715a6
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 8246399353951745911
+    second: MD_help_exp13_0
+  - first:
+      213: 4286149861672775471
+    second: MD_help_exp13_1
+  - first:
+      213: 6749238488933463900
+    second: MD_help_exp13_2
+  - first:
+      213: -7879892169039038653
+    second: MD_help_exp13_3
+  - first:
+      213: 2121971316318617779
+    second: MD_help_exp13_4
+  - first:
+      213: -2506978691784496002
+    second: MD_help_exp13_5
+  - first:
+      213: 744858967366535991
+    second: MD_help_exp13_6
+  - first:
+      213: 1597048826590246240
+    second: MD_help_exp13_7
+  - first:
+      213: -3677525281915131996
+    second: MD_help_exp13_8
+  - first:
+      213: 1815804604339542253
+    second: MD_help_exp13_9
+  - first:
+      213: 493326331267878005
+    second: MD_help_exp13_10
+  - first:
+      213: 7014773887349821200
+    second: MD_help_exp13_11
+  - first:
+      213: -985705042290183257
+    second: MD_help_exp13_12
+  - first:
+      213: -2761612039544586509
+    second: MD_help_exp13_13
+  - first:
+      213: 4598493629366344049
+    second: MD_help_exp13_14
+  - first:
+      213: -7991239698564257685
+    second: MD_help_exp13_15
+  - first:
+      213: 457212348022796426
+    second: MD_help_exp13_16
+  - first:
+      213: -3677066375252089564
+    second: MD_help_exp13_17
+  - first:
+      213: -7435027984190422140
+    second: MD_help_exp13_18
+  - first:
+      213: -8268138859173449558
+    second: MD_help_exp13_19
+  - first:
+      213: -6071082407099346319
+    second: MD_help_exp13_20
+  - first:
+      213: 3578566792541211378
+    second: MD_help_exp13_21
+  - first:
+      213: 9183822796457112390
+    second: MD_help_exp13_22
+  - first:
+      213: -2484677149083054658
+    second: MD_help_exp13_23
+  - first:
+      213: 5590195620661510100
+    second: MD_help_exp13_24
+  - first:
+      213: 6578939603917429834
+    second: MD_help_exp13_25
+  - first:
+      213: -8087493362953751287
+    second: MD_help_exp13_26
+  - first:
+      213: -1372823010047637732
+    second: MD_help_exp13_27
+  - first:
+      213: -793079540270821979
+    second: MD_help_exp13_28
+  - first:
+      213: -3162568339197137139
+    second: MD_help_exp13_29
+  - first:
+      213: 9163259944645920776
+    second: MD_help_exp13_30
+  - first:
+      213: 6140019166292209001
+    second: MD_help_exp13_31
+  - first:
+      213: -4562031061115823397
+    second: MD_help_exp13_32
+  - first:
+      213: -6365792563402571804
+    second: MD_help_exp13_33
+  - first:
+      213: 2986758647010290311
+    second: MD_help_exp13_34
+  - first:
+      213: 5308682311974717786
+    second: MD_help_exp13_35
+  - first:
+      213: -289252853256897721
+    second: MD_help_exp13_36
+  - first:
+      213: -340886409566168478
+    second: MD_help_exp13_37
+  - first:
+      213: -4379264839951989715
+    second: MD_help_exp13_38
+  - first:
+      213: 775941897831716888
+    second: MD_help_exp13_39
+  - first:
+      213: 8103535198150878305
+    second: MD_help_exp13_40
+  - first:
+      213: -18728576983028073
+    second: MD_help_exp13_41
+  - first:
+      213: -6714669407352917875
+    second: MD_help_exp13_42
+  - first:
+      213: 6285819074713748192
+    second: MD_help_exp13_43
+  - first:
+      213: -2940662888303084132
+    second: MD_help_exp13_44
+  - first:
+      213: -7262269049868304952
+    second: MD_help_exp13_45
+  - first:
+      213: -3140576387107178138
+    second: MD_help_exp13_46
+  - first:
+      213: -6924300513854971447
+    second: MD_help_exp13_47
+  - first:
+      213: -2010923377002489370
+    second: MD_help_exp13_48
+  - first:
+      213: 813848928140799469
+    second: MD_help_exp13_49
+  - first:
+      213: 2410531609925195463
+    second: MD_help_exp13_50
+  - first:
+      213: 8273165705793176862
+    second: MD_help_exp13_51
+  - first:
+      213: -6786326444025126445
+    second: MD_help_exp13_52
+  - first:
+      213: 9005752152301739344
+    second: MD_help_exp13_53
+  - first:
+      213: 4982869272935881679
+    second: MD_help_exp13_54
+  - first:
+      213: -8417077049130119057
+    second: MD_help_exp13_55
+  - first:
+      213: -5827004287431272613
+    second: MD_help_exp13_56
+  - first:
+      213: 3042726227246237631
+    second: MD_help_exp13_57
+  - first:
+      213: 1006068577516221853
+    second: MD_help_exp13_58
+  - first:
+      213: -8142577879141976127
+    second: MD_help_exp13_59
+  - first:
+      213: -8806112959826594521
+    second: MD_help_exp13_60
+  - first:
+      213: 6811498794603947584
+    second: MD_help_exp13_61
+  - first:
+      213: -469804250421152659
+    second: MD_help_exp13_62
+  - first:
+      213: 1225372419564167438
+    second: MD_help_exp13_63
+  - first:
+      213: 2212852098420585682
+    second: MD_help_exp13_64
+  - first:
+      213: -2597115800842643767
+    second: MD_help_exp13_65
+  - first:
+      213: 4442755457179211391
+    second: MD_help_exp13_66
+  - first:
+      213: -5784288784055054357
+    second: MD_help_exp13_67
+  - first:
+      213: -1590086317316615499
+    second: MD_help_exp13_68
+  - first:
+      213: -1229201111013582102
+    second: MD_help_exp13_69
+  - first:
+      213: -2674472318436395433
+    second: MD_help_exp13_70
+  - first:
+      213: 1453690133218977672
+    second: MD_help_exp13_71
+  - first:
+      213: -7247575702516868610
+    second: MD_help_exp13_72
+  - first:
+      213: -251963405679776211
+    second: MD_help_exp13_73
+  - first:
+      213: -2954065317082131607
+    second: MD_help_exp13_74
+  - first:
+      213: -5546119576419008163
+    second: MD_help_exp13_75
+  - first:
+      213: 3817772002832751433
+    second: MD_help_exp13_76
+  - first:
+      213: 3503567183084034758
+    second: MD_help_exp13_77
+  - first:
+      213: -6403833717866892792
+    second: MD_help_exp13_78
+  - first:
+      213: -2929172915740782887
+    second: MD_help_exp13_79
+  - first:
+      213: -2414144116075347288
+    second: MD_help_exp13_80
+  - first:
+      213: -4078426255428017050
+    second: MD_help_exp13_81
+  - first:
+      213: 856855935663715170
+    second: MD_help_exp13_82
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: MD_help_exp13_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 343
+        width: 412
+        height: 47
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 777fd486588117270800000000000000
+      internalID: 8246399353951745911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_1
+      rect:
+        serializedVersion: 2
+        x: 5
+        y: 68
+        width: 402
+        height: 272
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2f681717967b7b30800000000000000
+      internalID: 4286149861672775471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_2
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 51
+        width: 16
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c57f54d85ac1aad50800000000000000
+      internalID: 6749238488933463900
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_3
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 51
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 347bb0c52dff4a290800000000000000
+      internalID: -7879892169039038653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_4
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 50
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3b04db46ba1c27d10800000000000000
+      internalID: 2121971316318617779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_5
+      rect:
+        serializedVersion: 2
+        x: 69
+        y: 50
+        width: 41
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e7c26b0992c653dd0800000000000000
+      internalID: -2506978691784496002
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_6
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 51
+        width: 39
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73b85adc845465a00800000000000000
+      internalID: 744858967366535991
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_7
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 51
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 065bddd327bd92610800000000000000
+      internalID: 1597048826590246240
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_8
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 50
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a72eee8d3ec6fcc0800000000000000
+      internalID: -3677525281915131996
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_9
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 51
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de85d27caa8033910800000000000000
+      internalID: 1815804604339542253
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_10
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 50
+        width: 27
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57c819d3fa5a8d600800000000000000
+      internalID: 493326331267878005
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_11
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 51
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 01f0c274fab795160800000000000000
+      internalID: 7014773887349821200
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_12
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 51
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a37bfc8c721252f0800000000000000
+      internalID: -985705042290183257
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_13
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 51
+        width: 28
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3feb08f4b78cca9d0800000000000000
+      internalID: -2761612039544586509
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_14
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 51
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1791740979121df30800000000000000
+      internalID: 4598493629366344049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_15
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 50
+        width: 11
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b68e31465d9691190800000000000000
+      internalID: -7991239698564257685
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_16
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 51
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8032d64538585600800000000000000
+      internalID: 457212348022796426
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_17
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 58
+        width: 13
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 425e0971d9f68fcc0800000000000000
+      internalID: -3677066375252089564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_18
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 51
+        width: 14
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 483cd3bd07971d890800000000000000
+      internalID: -7435027984190422140
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_19
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 51
+        width: 28
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa0fc59938ba14d80800000000000000
+      internalID: -8268138859173449558
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_20
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 51
+        width: 9
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17258ba77be2fbba0800000000000000
+      internalID: -6071082407099346319
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_21
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 52
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fa8d6aa98f99a130800000000000000
+      internalID: 3578566792541211378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_22
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 51
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 643f5f6ec2e737f70800000000000000
+      internalID: 9183822796457112390
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_23
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 34
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ebdcf5b1c47a48dd0800000000000000
+      internalID: -2484677149083054658
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_24
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 34
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4df39728c4d549d40800000000000000
+      internalID: 5590195620661510100
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_25
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 34
+        width: 28
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a4c5f3a86b61d4b50800000000000000
+      internalID: 6578939603917429834
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_26
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 34
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 905ffc1c2a373cf80800000000000000
+      internalID: -8087493362953751287
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_27
+      rect:
+        serializedVersion: 2
+        x: 93
+        y: 34
+        width: 28
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c17c0a2feb0c2fce0800000000000000
+      internalID: -1372823010047637732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_28
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 34
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ad078b2c5a6ef4f0800000000000000
+      internalID: -793079540270821979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_29
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 33
+        width: 28
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d0fe14cf9dc4c14d0800000000000000
+      internalID: -3162568339197137139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_30
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 40
+        width: 15
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8088f21ee507a2f70800000000000000
+      internalID: 9163259944645920776
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_31
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 34
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 96defe886eab53550800000000000000
+      internalID: 6140019166292209001
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_32
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 33
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bda94ebabe860b0c0800000000000000
+      internalID: -4562031061115823397
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_33
+      rect:
+        serializedVersion: 2
+        x: 179
+        y: 34
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4eff098146928a7a0800000000000000
+      internalID: -6365792563402571804
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_34
+      rect:
+        serializedVersion: 2
+        x: 190
+        y: 34
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 78aefd83a29137920800000000000000
+      internalID: 2986758647010290311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_35
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 34
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a5907a6af6a3ca940800000000000000
+      internalID: 5308682311974717786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_36
+      rect:
+        serializedVersion: 2
+        x: 212
+        y: 34
+        width: 25
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74bba5fff0e5cfbf0800000000000000
+      internalID: -289252853256897721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_37
+      rect:
+        serializedVersion: 2
+        x: 236
+        y: 33
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 26adc09dd9de44bf0800000000000000
+      internalID: -340886409566168478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_38
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 34
+        width: 28
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d24cd4594d9b933c0800000000000000
+      internalID: -4379264839951989715
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_39
+      rect:
+        serializedVersion: 2
+        x: 275
+        y: 34
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8181a928b03b4ca00800000000000000
+      internalID: 775941897831716888
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_40
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 33
+        width: 28
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 16468ae045a857070800000000000000
+      internalID: 8103535198150878305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_41
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 34
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79e27cd55767dbff0800000000000000
+      internalID: -18728576983028073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_42
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 34
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d80fb86ffb3b0d2a0800000000000000
+      internalID: -6714669407352917875
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_43
+      rect:
+        serializedVersion: 2
+        x: 343
+        y: 34
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e200be0527bb3750800000000000000
+      internalID: 6285819074713748192
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_44
+      rect:
+        serializedVersion: 2
+        x: 355
+        y: 34
+        width: 27
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9d3582feaaa037d0800000000000000
+      internalID: -2940662888303084132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_45
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 17
+        width: 13
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8cd394bb6cc373b90800000000000000
+      internalID: -7262269049868304952
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_46
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 17
+        width: 23
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6693f785a6e6a64d0800000000000000
+      internalID: -3140576387107178138
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_47
+      rect:
+        serializedVersion: 2
+        x: 41
+        y: 17
+        width: 32
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c1ae918e51f7ef90800000000000000
+      internalID: -6924300513854971447
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_48
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 16
+        width: 9
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e9dc3bc7d3c714e0800000000000000
+      internalID: -2010923377002489370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_49
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 17
+        width: 35
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ded2aa6c94f5b4b00800000000000000
+      internalID: 813848928140799469
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_50
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 17
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c611794abde37120800000000000000
+      internalID: 2410531609925195463
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_51
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 16
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e150fb5506030d270800000000000000
+      internalID: 8273165705793176862
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_52
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 17
+        width: 23
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d1ea0efd0022d1a0800000000000000
+      internalID: -6786326444025126445
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_53
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 16
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 05d97253edbdafc70800000000000000
+      internalID: 9005752152301739344
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_54
+      rect:
+        serializedVersion: 2
+        x: 159
+        y: 17
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcb5d8f0435b62540800000000000000
+      internalID: 4982869272935881679
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_55
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 17
+        width: 22
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f609187f409803b80800000000000000
+      internalID: -8417077049130119057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_56
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 17
+        width: 12
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b571bfe2972522fa0800000000000000
+      internalID: -5827004287431272613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_57
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 16
+        width: 44
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb7c6c3f16fe93a20800000000000000
+      internalID: 3042726227246237631
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_58
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 17
+        width: 23
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d9579867a0646fd00800000000000000
+      internalID: 1006068577516221853
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_59
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 17
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c7f9c56f80cffe80800000000000000
+      internalID: -8142577879141976127
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_60
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 16
+        width: 23
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72572997be66ac580800000000000000
+      internalID: -8806112959826594521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_61
+      rect:
+        serializedVersion: 2
+        x: 299
+        y: 17
+        width: 22
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 046ae58901e478e50800000000000000
+      internalID: 6811498794603947584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_62
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 17
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d64bdabf58bea79f0800000000000000
+      internalID: -469804250421152659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_63
+      rect:
+        serializedVersion: 2
+        x: 331
+        y: 17
+        width: 12
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e01eea929b5610110800000000000000
+      internalID: 1225372419564167438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_64
+      rect:
+        serializedVersion: 2
+        x: 341
+        y: 17
+        width: 33
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d436d26241a5be10800000000000000
+      internalID: 2212852098420585682
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_65
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 16
+        width: 23
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c6583270f035fbd0800000000000000
+      internalID: -2597115800842643767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_66
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 16
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f765811bc86d7ad30800000000000000
+      internalID: 4442755457179211391
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_67
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 1
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bef4f145ff31abfa0800000000000000
+      internalID: -5784288784055054357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_68
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 1
+        width: 41
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5b252264be0eee9e0800000000000000
+      internalID: -1590086317316615499
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_69
+      rect:
+        serializedVersion: 2
+        x: 108
+        y: 1
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aea15842a1001fee0800000000000000
+      internalID: -1229201111013582102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_70
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 1
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 756bbf9a89d52ead0800000000000000
+      internalID: -2674472318436395433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_71
+      rect:
+        serializedVersion: 2
+        x: 135
+        y: 1
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 887e104697b8c2410800000000000000
+      internalID: 1453690133218977672
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_72
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 1
+        width: 15
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ef9dab04c407b6b90800000000000000
+      internalID: -7247575702516868610
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_73
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 1
+        width: 27
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d2e2f041e98d08cf0800000000000000
+      internalID: -251963405679776211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_74
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 1
+        width: 37
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9639404de3d0107d0800000000000000
+      internalID: -2954065317082131607
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_75
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 1
+        width: 32
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5184bd31a93803b0800000000000000
+      internalID: -5546119576419008163
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_76
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 1
+        width: 15
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94b174eb8637bf430800000000000000
+      internalID: 3817772002832751433
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_77
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 1
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ca90725acb2f9030800000000000000
+      internalID: 3503567183084034758
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_78
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 1
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 802ffdd99230127a0800000000000000
+      internalID: -6403833717866892792
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_79
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 1
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9de4397a0cc7957d0800000000000000
+      internalID: -2929172915740782887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_80
+      rect:
+        serializedVersion: 2
+        x: 305
+        y: 1
+        width: 36
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8a2cab497bc3f7ed0800000000000000
+      internalID: -2414144116075347288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_81
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 2
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 664269adde48667c0800000000000000
+      internalID: -4078426255428017050
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: MD_help_exp13_82
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 0
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 263bbe40fe924eb00800000000000000
+      internalID: 856855935663715170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      MD_help_exp13_0: 8246399353951745911
+      MD_help_exp13_1: 4286149861672775471
+      MD_help_exp13_10: 493326331267878005
+      MD_help_exp13_11: 7014773887349821200
+      MD_help_exp13_12: -985705042290183257
+      MD_help_exp13_13: -2761612039544586509
+      MD_help_exp13_14: 4598493629366344049
+      MD_help_exp13_15: -7991239698564257685
+      MD_help_exp13_16: 457212348022796426
+      MD_help_exp13_17: -3677066375252089564
+      MD_help_exp13_18: -7435027984190422140
+      MD_help_exp13_19: -8268138859173449558
+      MD_help_exp13_2: 6749238488933463900
+      MD_help_exp13_20: -6071082407099346319
+      MD_help_exp13_21: 3578566792541211378
+      MD_help_exp13_22: 9183822796457112390
+      MD_help_exp13_23: -2484677149083054658
+      MD_help_exp13_24: 5590195620661510100
+      MD_help_exp13_25: 6578939603917429834
+      MD_help_exp13_26: -8087493362953751287
+      MD_help_exp13_27: -1372823010047637732
+      MD_help_exp13_28: -793079540270821979
+      MD_help_exp13_29: -3162568339197137139
+      MD_help_exp13_3: -7879892169039038653
+      MD_help_exp13_30: 9163259944645920776
+      MD_help_exp13_31: 6140019166292209001
+      MD_help_exp13_32: -4562031061115823397
+      MD_help_exp13_33: -6365792563402571804
+      MD_help_exp13_34: 2986758647010290311
+      MD_help_exp13_35: 5308682311974717786
+      MD_help_exp13_36: -289252853256897721
+      MD_help_exp13_37: -340886409566168478
+      MD_help_exp13_38: -4379264839951989715
+      MD_help_exp13_39: 775941897831716888
+      MD_help_exp13_4: 2121971316318617779
+      MD_help_exp13_40: 8103535198150878305
+      MD_help_exp13_41: -18728576983028073
+      MD_help_exp13_42: -6714669407352917875
+      MD_help_exp13_43: 6285819074713748192
+      MD_help_exp13_44: -2940662888303084132
+      MD_help_exp13_45: -7262269049868304952
+      MD_help_exp13_46: -3140576387107178138
+      MD_help_exp13_47: -6924300513854971447
+      MD_help_exp13_48: -2010923377002489370
+      MD_help_exp13_49: 813848928140799469
+      MD_help_exp13_5: -2506978691784496002
+      MD_help_exp13_50: 2410531609925195463
+      MD_help_exp13_51: 8273165705793176862
+      MD_help_exp13_52: -6786326444025126445
+      MD_help_exp13_53: 9005752152301739344
+      MD_help_exp13_54: 4982869272935881679
+      MD_help_exp13_55: -8417077049130119057
+      MD_help_exp13_56: -5827004287431272613
+      MD_help_exp13_57: 3042726227246237631
+      MD_help_exp13_58: 1006068577516221853
+      MD_help_exp13_59: -8142577879141976127
+      MD_help_exp13_6: 744858967366535991
+      MD_help_exp13_60: -8806112959826594521
+      MD_help_exp13_61: 6811498794603947584
+      MD_help_exp13_62: -469804250421152659
+      MD_help_exp13_63: 1225372419564167438
+      MD_help_exp13_64: 2212852098420585682
+      MD_help_exp13_65: -2597115800842643767
+      MD_help_exp13_66: 4442755457179211391
+      MD_help_exp13_67: -5784288784055054357
+      MD_help_exp13_68: -1590086317316615499
+      MD_help_exp13_69: -1229201111013582102
+      MD_help_exp13_7: 1597048826590246240
+      MD_help_exp13_70: -2674472318436395433
+      MD_help_exp13_71: 1453690133218977672
+      MD_help_exp13_72: -7247575702516868610
+      MD_help_exp13_73: -251963405679776211
+      MD_help_exp13_74: -2954065317082131607
+      MD_help_exp13_75: -5546119576419008163
+      MD_help_exp13_76: 3817772002832751433
+      MD_help_exp13_77: 3503567183084034758
+      MD_help_exp13_78: -6403833717866892792
+      MD_help_exp13_79: -2929172915740782887
+      MD_help_exp13_8: -3677525281915131996
+      MD_help_exp13_80: -2414144116075347288
+      MD_help_exp13_81: -4078426255428017050
+      MD_help_exp13_82: 856855935663715170
+      MD_help_exp13_9: 1815804604339542253
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
