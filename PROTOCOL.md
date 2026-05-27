@@ -48,6 +48,11 @@ For the transport split, see [NETWORK_TRANSPORT_POLICY.md](/C:/Users/kukul/OneDr
 - `ItemSpawnNotification`
 - `ItemDespawnNotification`
 
+### Scene transitions
+
+- `SceneTransitionRequest`
+- `SceneTransitionResponse`
+
 ### Wait room and loading
 
 - `WaitRoomEnter`
@@ -119,6 +124,7 @@ In practice:
 - `AddLobbyChat` -> `LobbyChatRequest`
 - `SendEnterRoom` -> `JoinRoomRequest`
 - `PlayerInfo` -> `PlayerInfoRequest`
+- `EquipRequest` -> `ShopEquipRequest`
 
 ## Field name conventions
 
@@ -156,3 +162,6 @@ Legacy casing such as `PlayerId`, `RoomId`, and `OwnerPlayerID` is still tolerat
 - When adding a new message, prefer defining it in `Packages/com.opengs.logic/MessageType.cs` first, then update server, client, and local test handlers together.
 - When a message belongs to the wrong transport, move it into the correct layer
   before adding more callers.
+- Local test bootstrap messages such as `ConnectServerSuccessful` may still be
+  emitted by the local TCP harness, but they are not part of the canonical
+  gameplay contract.

@@ -455,9 +455,10 @@ namespace OpenGS
 
         private void HandleWaitRoomPlayerList(JObject json)
         {
-            var roomId = json["RoomId"]?.ToString();
-            var roomName = json["RoomName"]?.ToString();
-            var players = json["Players"] as JArray;
+            var snapshot = OpenGSCore.WaitRoomSnapshot.FromJson(json);
+            var roomId = snapshot.RoomId;
+            var roomName = snapshot.RoomName;
+            var players = snapshot.Players;
             
             if (!string.IsNullOrWhiteSpace(roomId))
             {
@@ -470,40 +471,35 @@ namespace OpenGS
 
             if (players != null)
             {
-                currentPlayers = players;
+                currentPlayers = json["Players"] as JArray ?? new JArray();
                 if (waitRoomManager?.WaitRoom != null)
                 {
                     waitRoomManager.WaitRoom.RoomName = currentRoomName;
                     waitRoomManager.WaitRoom.PlayerCount = Mathf.Max(1, players.Count);
                     waitRoomManager.WaitRoom.PlayerList.Clear();
-                    foreach (var token in players)
+                    foreach (var playerInfo in players)
                     {
-                        if (token is not JObject playerJson)
+                        if (playerInfo == null)
                         {
                             continue;
                         }
 
-                        var info = new OpenGSCore.PlayerInfo(
-                            id: playerJson["PlayerId"]?.ToString() ?? playerJson["PlayerID"]?.ToString() ?? "",
-                            name: playerJson["PlayerName"]?.ToString() ?? "Player");
-                        info.IsReady = playerJson["IsReady"]?.ToObject<bool>() ?? false;
-                        info.playerCharacter = ParsePlayerCharacter(playerJson["PlayerCharacter"]?.ToString());
-                        waitRoomManager.WaitRoom.AddNewPlayer(info);
+                        waitRoomManager.WaitRoom.AddNewPlayer(playerInfo);
 
-                        if (string.Equals(info.Id, ResolveLocalPlayerId(), StringComparison.OrdinalIgnoreCase))
+                        if (string.Equals(playerInfo.Id, ResolveLocalPlayerId(), StringComparison.OrdinalIgnoreCase))
                         {
-                            isReady = info.IsReady;
+                            isReady = playerInfo.IsReady;
                         }
 
-                        if (playerJson["IsOwner"]?.ToObject<bool>() == true)
+                        if (string.Equals(playerInfo.Id, snapshot.OwnerId, StringComparison.OrdinalIgnoreCase))
                         {
-                            waitRoomManager.WaitRoom.OwnerId = info.Id;
+                            waitRoomManager.WaitRoom.OwnerId = playerInfo.Id;
                         }
                     }
                 }
 
                 PrettyLogger.Bold("WaitRoom", $"参加者更新: {players.Count}人 room={roomId}");
-                onPlayerList.OnNext(players);
+                onPlayerList.OnNext(currentPlayers);
             }
         }
 
@@ -536,8 +532,9 @@ namespace OpenGS
 
         private void HandleWaitRoomSettingsChange(JObject json)
         {
-            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
-            var roomName = json["RoomName"]?.ToString();
+            var roomInfo = RoomInfoSnapshot.FromJson(json);
+            var roomId = roomInfo.RoomId;
+            var roomName = roomInfo.RoomName;
             var settings = json["Settings"] as JObject;
 
             if (!string.IsNullOrWhiteSpace(roomId))
@@ -552,12 +549,12 @@ namespace OpenGS
             if (waitRoomManager?.WaitRoom != null && settings != null)
             {
                 waitRoomManager.WaitRoom.RoomName = currentRoomName;
-                if (Enum.TryParse(settings["GameMode"]?.ToString(), out EGameMode gameMode))
+                if (!string.IsNullOrWhiteSpace(roomInfo.GameMode) && Enum.TryParse(roomInfo.GameMode, out EGameMode roomGameMode))
                 {
-                    waitRoomManager.WaitRoom.GameMode = gameMode;
+                    waitRoomManager.WaitRoom.GameMode = roomGameMode;
                 }
 
-                if (Enum.TryParse(settings["Map"]?.ToString(), out EMap map))
+                if (!string.IsNullOrWhiteSpace(roomInfo.Map) && Enum.TryParse(roomInfo.Map, out EMap map))
                 {
                     waitRoomManager.WaitRoom.Map = map;
                 }
@@ -573,14 +570,16 @@ namespace OpenGS
                     }
                 }
 
-                if (settings["Capacity"] != null)
+                if (roomInfo.Capacity > 0)
                 {
-                    waitRoomManager.WaitRoom.Capacity = settings["Capacity"]!.ToObject<int>();
+                    waitRoomManager.WaitRoom.Capacity = roomInfo.Capacity;
                 }
 
-                if (settings["TeamBalance"] != null)
+                waitRoomManager.WaitRoom.TeamBalance = roomInfo.TeamBalance;
+
+                if (roomInfo.PlayerCount > 0)
                 {
-                    waitRoomManager.WaitRoom.TeamBalance = settings["TeamBalance"]!.ToObject<bool>();
+                    waitRoomManager.WaitRoom.PlayerCount = roomInfo.PlayerCount;
                 }
             }
             
@@ -646,9 +645,10 @@ namespace OpenGS
 
         private void HandleRoomCreated(JObject json)
         {
-            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
-            var roomName = json["RoomName"]?.ToString();
-            var ownerId = json["OwnerID"]?.ToString() ?? json["OwnerId"]?.ToString();
+            var roomInfo = RoomInfoSnapshot.FromJson(json);
+            var roomId = roomInfo.RoomId;
+            var roomName = roomInfo.RoomName;
+            var ownerId = roomInfo.OwnerId;
 
             if (!string.IsNullOrWhiteSpace(roomId))
             {
@@ -664,7 +664,8 @@ namespace OpenGS
 
         private void HandleRoomDeleted(JObject json)
         {
-            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
+            var roomInfo = RoomInfoSnapshot.FromJson(json);
+            var roomId = roomInfo.RoomId;
             
             PrettyLogger.Bold("RoomList", $"ルーム削除: {roomId}");
             if (string.IsNullOrWhiteSpace(roomId) || string.Equals(roomId, currentRoomId, StringComparison.OrdinalIgnoreCase))
@@ -676,14 +677,16 @@ namespace OpenGS
 
         private void HandleRoomFull(JObject json)
         {
-            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
+            var roomInfo = RoomInfoSnapshot.FromJson(json);
+            var roomId = roomInfo.RoomId;
             
             PrettyLogger.Bold("RoomList", $"満室ルーム: {roomId}");
         }
 
         private void HandleRoomNotFound(JObject json)
         {
-            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
+            var roomInfo = RoomInfoSnapshot.FromJson(json);
+            var roomId = roomInfo.RoomId;
 
             PrettyLogger.Bold("RoomList", $"ルーム未検出: {roomId}");
             if (string.IsNullOrWhiteSpace(roomId) || string.Equals(roomId, currentRoomId, StringComparison.OrdinalIgnoreCase))
@@ -695,32 +698,21 @@ namespace OpenGS
 
         private void HandleRoomSettingChanged(JObject json)
         {
-            var roomInfo = json["RoomInfo"] as JObject;
-            if (roomInfo != null)
+            var roomSnapshot = RoomInfoSnapshot.FromJson(json);
+            if (!string.IsNullOrWhiteSpace(roomSnapshot.RoomId))
             {
-                currentRoomId = roomInfo["RoomId"]?.ToString() ?? currentRoomId;
-                currentRoomName = roomInfo["RoomName"]?.ToString() ?? currentRoomName;
+                currentRoomId = roomSnapshot.RoomId;
+                currentRoomName = roomSnapshot.RoomName ?? currentRoomName;
 
                 if (waitRoomManager?.WaitRoom != null)
                 {
                     waitRoomManager.WaitRoom.RoomName = currentRoomName;
-                    waitRoomManager.WaitRoom.Capacity = roomInfo["Capacity"]?.ToObject<int>() ?? waitRoomManager.WaitRoom.Capacity;
+                    waitRoomManager.WaitRoom.Capacity = roomSnapshot.Capacity > 0 ? roomSnapshot.Capacity : waitRoomManager.WaitRoom.Capacity;
+                    waitRoomManager.WaitRoom.TeamBalance = roomSnapshot.TeamBalance;
 
-                    var gameModeToken = roomInfo["GameMode"];
-                    if (gameModeToken != null && Enum.TryParse(gameModeToken.ToString(), true, out EGameMode gameMode))
+                    if (!string.IsNullOrWhiteSpace(roomSnapshot.GameMode) && Enum.TryParse(roomSnapshot.GameMode, true, out EGameMode gameMode))
                     {
                         waitRoomManager.WaitRoom.GameMode = gameMode;
-                    }
-
-                    var players = roomInfo["Players"] as JArray;
-                    if (players != null)
-                    {
-                        HandleWaitRoomPlayerList(new JObject
-                        {
-                            ["MessageType"] = MessageType.WaitRoomPlayerList,
-                            ["RoomId"] = currentRoomId,
-                            ["Players"] = players
-                        });
                     }
                 }
             }

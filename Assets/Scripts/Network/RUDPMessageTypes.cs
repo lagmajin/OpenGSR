@@ -20,6 +20,14 @@ namespace OpenGS
         public const string PlayerDeath = MessageType.PlayerDeath;
         public const string MatchStart = MessageType.GameStartNotification;
         public const string MatchEnd = MessageType.MatchEndNotification;
+        public const string ClientConnect = "ClientConnect";
+        public const string TeamKill = "TeamKill";
+        public const string Snapshot = "Snapshot";
+        public const string MatchJoined = "MatchJoined";
+        public const string PositionUpdateAck = "PositionUpdateAck";
+        public const string PlayerKilled = "PlayerKilled";
+        public const string PlayerDamaged = "PlayerDamaged";
+        public const string GrenadeThrown = "GrenadeThrown";
 
         // CTF (Flag) 関連 - サーバー → クライアント
         public const string FlagCaptured = "FlagCaptured";        // フラッグキャプチャ
@@ -1271,48 +1279,73 @@ namespace OpenGS
         /// <summary>
         /// ルーム一覧更新メッセージを作成
         /// </summary>
+        public static JObject CreateRoomListUpdate(RoomListSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                snapshot = new RoomListSnapshot();
+            }
+
+            return snapshot.ToJson();
+        }
+
+        /// <summary>
+        /// ルーム一覧更新メッセージを作成
+        /// </summary>
         public static JObject CreateRoomListUpdate(JArray rooms)
         {
-            var json = new JObject();
-            json["MessageType"] = MessageType.RoomListUpdateNotification;
-            json["Rooms"] = rooms;
-            return json;
+            var snapshot = new RoomListSnapshot();
+            if (rooms != null)
+            {
+                foreach (var token in rooms)
+                {
+                    if (token is JObject roomJson)
+                    {
+                        snapshot.Rooms.Add(RoomListEntry.FromJson(roomJson));
+                    }
+                }
+            }
+
+            return snapshot.ToJson();
         }
 
         /// <summary>
         /// ルーム作成通知メッセージを作成
         /// </summary>
-        public static JObject CreateRoomCreated(string roomId, string roomName, string ownerId)
+        public static JObject CreateRoomCreated(RoomInfoSnapshot roomInfo)
         {
-            var json = new JObject();
-            json["MessageType"] = MessageType.RoomCreated;
-            json["RoomId"] = roomId;
-            json["RoomName"] = roomName;
-            json["OwnerId"] = ownerId;
-            return json;
+            return (roomInfo ?? new RoomInfoSnapshot()).ToNotificationJson(MessageType.RoomCreated);
         }
+
+        public static JObject CreateRoomCreated(string roomId, string roomName, string ownerId)
+            => CreateRoomCreated(new RoomInfoSnapshot
+            {
+                RoomId = roomId,
+                RoomName = roomName,
+                OwnerId = ownerId
+            });
 
         /// <summary>
         /// ルーム削除通知メッセージを作成
         /// </summary>
-        public static JObject CreateRoomDeleted(string roomId)
+        public static JObject CreateRoomDeleted(RoomInfoSnapshot roomInfo)
         {
-            var json = new JObject();
-            json["MessageType"] = MessageType.RoomDeleted;
-            json["RoomId"] = roomId;
-            return json;
+            return (roomInfo ?? new RoomInfoSnapshot()).ToNotificationJson(MessageType.RoomDeleted);
         }
+
+        public static JObject CreateRoomDeleted(string roomId)
+            => CreateRoomDeleted(new RoomInfoSnapshot { RoomId = roomId });
 
         /// <summary>
         /// ルーム満員通知メッセージを作成
         /// </summary>
-        public static JObject CreateRoomFull(string roomId)
+        public static JObject CreateRoomFull(RoomInfoSnapshot roomInfo)
         {
-            var json = new JObject();
-            json["MessageType"] = MessageType.RoomFull;
-            json["RoomId"] = roomId;
-            return json;
+            return (roomInfo ?? new RoomInfoSnapshot()).ToNotificationJson(MessageType.RoomFull);
         }
+
+        public static JObject CreateRoomFull(string roomId)
+            => CreateRoomFull(new RoomInfoSnapshot { RoomId = roomId });
 
         #endregion
 

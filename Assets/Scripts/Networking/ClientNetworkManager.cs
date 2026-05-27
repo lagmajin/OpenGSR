@@ -506,7 +506,7 @@ namespace OpenGS
             // サーバーにクライアントのPlayerIDを通知 (サーバー側のOnPeerConnectedでID取得できない場合のため)
             SendUdpInput(new JObject
             {
-                ["MessageType"] = "ClientConnect",
+                ["MessageType"] = RUDPMessageTypes.ClientConnect,
                 ["PlayerID"] = ClientPlayerId
             }, DeliveryMethod.ReliableOrdered);
         }
@@ -545,7 +545,7 @@ namespace OpenGS
             string messageType = message.GetStringOrNull("MessageType");
             switch (messageType)
             {
-                case "Snapshot":
+                case RUDPMessageTypes.Snapshot:
                     if (_matchRoomManager != null && _matchRoomManager.OnlineMatchRoom != null)
                     {
                         _matchRoomManager.OnlineMatchRoom.PushInput(message); // スナップショットをクライアントのMatchRoomバッファへ
@@ -555,7 +555,7 @@ namespace OpenGS
                         Debug.LogWarning("[ClientNetwork] Received Snapshot but MatchRoom is not ready.");
                     }
                     break;
-                case "MatchJoined":
+                case RUDPMessageTypes.MatchJoined:
                     CurrentMatchRoomId = message.GetStringOrNull("RoomID");
                     Debug.Log($"[ClientNetwork] Joined Match Room: {CurrentMatchRoomId}");
                     break;

@@ -345,14 +345,15 @@ namespace OpenGS
             {
                 lobbySceneController.ParseServerMessage(
                     json,
-                (roomId, roomName, capacity) =>
+                    (roomId, roomName, capacity) =>
                     {
                         Debug.Log($"OnlineLobbyScene: Room created. RoomID={roomId}, RoomName={roomName}");
-                        matchRoomManager.CreateNewOnlineWaitRoom(roomName, capacity);
-                        var createdGameMode = ParseGameMode(json["GameMode"]?.ToString());
-                        var createdOwnerId = json["OwnerID"]?.ToString() ?? json["OwnerId"]?.ToString() ?? "local_player";
-                        var createdTeamBalance = ParseBool(json["TeamBalance"]?.ToString());
-                        var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, capacity, 1, createdGameMode, createdOwnerId, createdTeamBalance);
+                        var roomInfo = RoomInfoSnapshot.FromJson(json);
+                        matchRoomManager.CreateNewOnlineWaitRoom(roomInfo.RoomName, roomInfo.Capacity);
+                        var createdGameMode = ParseGameMode(roomInfo.GameMode);
+                        var createdOwnerId = string.IsNullOrWhiteSpace(roomInfo.OwnerId) ? "local_player" : roomInfo.OwnerId;
+                        var createdTeamBalance = roomInfo.TeamBalance;
+                        var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, roomInfo.Capacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1, createdGameMode, createdOwnerId, createdTeamBalance);
                         waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName)
                         {
                             playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
@@ -364,22 +365,23 @@ namespace OpenGS
                         Debug.LogWarning($"OnlineLobbyScene: Failed to create room: {errorMessage}");
                         ShowInfoDialog("ルーム作成に失敗しました", errorMessage);
                     },
-                    rooms =>
+                    roomListSnapshot =>
                     {
-                        Debug.Log($"OnlineLobbyScene: Received {rooms?.Count ?? 0} rooms");
-                        currentRoomList = rooms ?? new JArray();
+                        var rooms = roomListSnapshot?.ToRoomArray() ?? new JArray();
+                        Debug.Log($"OnlineLobbyScene: Received {rooms.Count} rooms");
+                        currentRoomList = rooms;
                         RefreshRoomListView();
                     },
                     (roomId, roomName, capacity, playerCount) =>
                     {
                         Debug.Log($"OnlineLobbyScene: Entered room {roomId} ({roomName}), capacity={capacity}, playerCount={playerCount}");
-                        matchRoomManager.CreateNewOnlineWaitRoom(roomName, capacity);
-                        var selectedRoom = FindRoomById(currentRoomList, roomId);
-                        var selectedGameMode = ParseGameMode(selectedRoom?["GameMode"]?.ToString());
-                        var selectedOwnerId = selectedRoom?["OwnerID"]?.ToString() ?? selectedRoom?["OwnerId"]?.ToString() ?? "";
-                        var selectedCapacity = selectedRoom?["Capacity"]?.ToObject<int>() ?? capacity;
-                        var selectedTeamBalance = ParseBool(selectedRoom?["TeamBalance"]?.ToString());
-                        var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, selectedCapacity, playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
+                        var roomInfo = RoomInfoSnapshot.FromJson(json);
+                        matchRoomManager.CreateNewOnlineWaitRoom(roomInfo.RoomName, roomInfo.Capacity);
+                        var selectedGameMode = ParseGameMode(roomInfo.GameMode);
+                        var selectedOwnerId = string.IsNullOrWhiteSpace(roomInfo.OwnerId) ? "" : roomInfo.OwnerId;
+                        var selectedCapacity = roomInfo.Capacity > 0 ? roomInfo.Capacity : capacity;
+                        var selectedTeamBalance = roomInfo.TeamBalance;
+                        var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, selectedCapacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
                         waitRoom.AddNewPlayer(new PlayerInfo(
                             id: AccountManager.Instance.CurrentProfile.GlobalUserId,
                             name: AccountManager.Instance.CurrentProfile.DisplayName)
@@ -399,9 +401,10 @@ namespace OpenGS
             var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
             if (messageType == MessageType.RoomListUpdateNotification)
             {
-                var rooms = json["Rooms"] as JArray;
-                Debug.Log($"OnlineLobbyScene: Received {rooms?.Count ?? 0} rooms");
-                currentRoomList = rooms ?? new JArray();
+                var roomListSnapshot = OpenGSCore.RoomListSnapshot.FromJson(json);
+                var rooms = roomListSnapshot.ToRoomArray();
+                Debug.Log($"OnlineLobbyScene: Received {rooms.Count} rooms");
+                currentRoomList = rooms;
                 RefreshRoomListView();
             }
             else if (messageType == MessageType.CreateRoomResponse)
@@ -409,15 +412,13 @@ namespace OpenGS
                 var success = json["Success"]?.ToObject<bool>() ?? false;
                 if (success)
                 {
-                    var roomId = json["RoomID"]?.ToString() ?? "";
-                    var roomName = json["RoomName"]?.ToString() ?? "Room";
-                    var capacity = json["Capacity"]?.ToObject<int>() ?? 8;
-                    Debug.Log($"OnlineLobbyScene: Room created. RoomID={roomId}, RoomName={roomName}");
-                    matchRoomManager.CreateNewOnlineWaitRoom(roomName, capacity);
-                    var createdGameMode = ParseGameMode(json["GameMode"]?.ToString());
-                    var createdOwnerId = json["OwnerID"]?.ToString() ?? json["OwnerId"]?.ToString() ?? "local_player";
-                    var createdTeamBalance = ParseBool(json["TeamBalance"]?.ToString());
-                    var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, capacity, 1, createdGameMode, createdOwnerId, createdTeamBalance);
+                    var roomInfo = RoomInfoSnapshot.FromJson(json);
+                    Debug.Log($"OnlineLobbyScene: Room created. RoomID={roomInfo.RoomId}, RoomName={roomInfo.RoomName}");
+                    matchRoomManager.CreateNewOnlineWaitRoom(roomInfo.RoomName, roomInfo.Capacity);
+                    var createdGameMode = ParseGameMode(roomInfo.GameMode);
+                    var createdOwnerId = string.IsNullOrWhiteSpace(roomInfo.OwnerId) ? "local_player" : roomInfo.OwnerId;
+                    var createdTeamBalance = roomInfo.TeamBalance;
+                    var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, roomInfo.Capacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1, createdGameMode, createdOwnerId, createdTeamBalance);
                     waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName)
                     {
                         playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
@@ -436,16 +437,15 @@ namespace OpenGS
                 var success = json["Success"]?.ToObject<bool>() ?? false;
                 if (success)
                 {
-                    var roomId = json["RoomID"]?.ToString() ?? "";
-                    var roomName = json["RoomName"]?.ToString() ?? "Room";
-                    var capacity = json["Capacity"]?.ToObject<int>() ?? 0;
-                    var playerCount = ReadPlayerCount(json);
-                    matchRoomManager.CreateNewOnlineWaitRoom(roomName, capacity);
-                    var selectedRoom = FindRoomById(currentRoomList, roomId);
-                    var selectedGameMode = ParseGameMode(selectedRoom?["GameMode"]?.ToString());
-                    var selectedOwnerId = selectedRoom?["OwnerID"]?.ToString() ?? selectedRoom?["OwnerId"]?.ToString() ?? "";
-                    var selectedCapacity = selectedRoom?["Capacity"]?.ToObject<int>() ?? capacity;
-                    var selectedTeamBalance = ParseBool(selectedRoom?["TeamBalance"]?.ToString());
+                    var roomInfo = RoomInfoSnapshot.FromJson(json);
+                    var roomId = roomInfo.RoomId;
+                    var roomName = roomInfo.RoomName;
+                    var playerCount = roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : ReadPlayerCount(json);
+                    matchRoomManager.CreateNewOnlineWaitRoom(roomName, roomInfo.Capacity);
+                    var selectedGameMode = ParseGameMode(roomInfo.GameMode);
+                    var selectedOwnerId = roomInfo.OwnerId;
+                    var selectedCapacity = roomInfo.Capacity;
+                    var selectedTeamBalance = roomInfo.TeamBalance;
                     var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, selectedCapacity, playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
                     waitRoom.AddNewPlayer(new PlayerInfo(
                         id: AccountManager.Instance.CurrentProfile.GlobalUserId,

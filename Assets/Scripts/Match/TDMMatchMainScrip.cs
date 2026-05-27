@@ -137,7 +137,7 @@ namespace OpenGS
 
             var json = new JObject
             {
-                ["MessageType"] = "TeamKill",
+                ["MessageType"] = RUDPMessageTypes.TeamKill,
                 ["KillerTeam"] = killerTeam.ToString(),
                 ["VictimTeam"] = victimTeam.ToString()
             };
@@ -232,13 +232,13 @@ namespace OpenGS
 
             switch (messageType)
             {
-                case "TeamKill":
+                case RUDPMessageTypes.TeamKill:
                     HandleTeamKill(obj);
                     break;
-                case "KillScoreUpdate":
+                case RUDPMessageTypes.KillScoreUpdate:
                     HandleScoreUpdate(obj);
                     break;
-                case "PlayerKill":
+                case RUDPMessageTypes.PlayerKill:
                     HandlePlayerKill(obj);
                     break;
                 case OpenGSCore.MessageType.MatchEndNotification:

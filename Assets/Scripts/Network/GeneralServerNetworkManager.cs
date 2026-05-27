@@ -126,34 +126,28 @@ namespace OpenGS
 
         private void SendUpdateRoomRequestCore(System.Collections.Generic.List<OpenGSCore.EGameMode> modes)
         {
-            var rooms = new JArray();
+            var snapshot = new RoomListSnapshot();
             foreach (var room in localRooms)
             {
                 room.PlayerCount = room.Players.Count > 0 ? room.Players.Count : room.PlayerCount;
-                rooms.Add(new JObject
+                snapshot.Rooms.Add(new RoomListEntry
                 {
-                    ["RoomID"] = room.RoomId,
-                    ["RoomName"] = room.RoomName,
-                    ["OwnerID"] = room.OwnerId,
-                    ["Capacity"] = room.Capacity,
-                    ["GameMode"] = room.GameMode,
-                    ["TeamBalance"] = room.TeamBalance ? "True" : "False",
-                    ["PlayerCount"] = room.PlayerCount
+                    RoomId = room.RoomId,
+                    RoomName = room.RoomName,
+                    OwnerId = room.OwnerId,
+                    Capacity = room.Capacity,
+                    GameMode = room.GameMode,
+                    TeamBalance = room.TeamBalance,
+                    PlayerCount = room.PlayerCount
                 });
             }
 
-            var json = new JObject
-            {
-                ["MessageType"] = MessageType.RoomListUpdateRequest,
-                ["MatchRoomType"] = (modes == null || modes.Count == 0) ? "All" : string.Join(",", modes),
-                ["Options"] = ""
-            };
+            var json = snapshot.ToJson();
+            json["MessageType"] = MessageType.RoomListUpdateRequest;
+            json["MatchRoomType"] = (modes == null || modes.Count == 0) ? "All" : string.Join(",", modes);
+            json["Options"] = "";
             SendMessage(json);
-            EmitToClient(new JObject
-            {
-                ["MessageType"] = MessageType.RoomListUpdateNotification,
-                ["Rooms"] = rooms
-            });
+            EmitToClient(snapshot.ToJson());
         }
 
         public void SendCreateNewWaitRoomRequest(string roomName, int capacity, string gameMode, bool teamBalance, string password = "")
@@ -175,17 +169,8 @@ namespace OpenGS
             room.PlayerCount = room.Players.Count;
             localRooms.Add(room);
 
-            EmitToClient(new JObject
-            {
-                ["MessageType"] = MessageType.CreateRoomResponse,
-                ["Success"] = true,
-                ["RoomID"] = roomId,
-                ["RoomName"] = roomName,
-                ["Capacity"] = capacity,
-                ["GameMode"] = gameMode,
-                ["TeamBalance"] = teamBalance ? "True" : "False",
-                ["OwnerID"] = ownerId
-            });
+            EmitToClient(BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.CreateRoomResponse));
+            EmitToClient(BuildRoomInfoSnapshot(room).ToNotificationJson(MessageType.RoomCreated));
         }
 
         public void SendEnterWaitRoomRequest(string roomId, string playerId, string playerName, string password = "")
@@ -205,13 +190,7 @@ namespace OpenGS
 
             if (room.PlayerCount >= room.Capacity)
             {
-                EmitToClient(new JObject
-                {
-                    ["MessageType"] = MessageType.JoinRoomResponse,
-                    ["Success"] = false,
-                    ["ErrorMessage"] = "Room is full",
-                    ["RoomID"] = roomId
-                });
+                EmitToClient(BuildRoomInfoSnapshot(room).ToNotificationJson(MessageType.RoomFull));
                 return;
             }
 
@@ -228,17 +207,10 @@ namespace OpenGS
             room.PlayerCount = room.Players.Count;
             currentRoomId = room.RoomId;
             loadingCompletedPlayers.Clear();
-            EmitToClient(new JObject
-            {
-                ["MessageType"] = MessageType.JoinRoomResponse,
-                ["Success"] = true,
-                ["RoomID"] = room.RoomId,
-                ["RoomName"] = room.RoomName,
-                ["Capacity"] = room.Capacity,
-                ["PlayerID"] = playerId,
-                ["PlayerName"] = playerName,
-                ["Players"] = room.PlayerCount
-            });
+            var response = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.JoinRoomResponse);
+            response["PlayerID"] = playerId;
+            response["PlayerName"] = playerName;
+            EmitToClient(response);
         }
 
         public JObject GetCurrentWaitRoomPlayerListSnapshot()
@@ -261,6 +233,21 @@ namespace OpenGS
             {
                 LastMatchResult = json;
             }
+        }
+
+        private static RoomInfoSnapshot BuildRoomInfoSnapshot(RoomRecord room)
+        {
+            return new RoomInfoSnapshot
+            {
+                RoomId = room.RoomId,
+                RoomName = room.RoomName,
+                OwnerId = room.OwnerId,
+                Capacity = room.Capacity,
+                GameMode = room.GameMode,
+                Map = room.Map,
+                TeamBalance = room.TeamBalance,
+                PlayerCount = room.Players.Count
+            };
         }
 
         private static void NormalizeMessageType(JObject json)
@@ -535,7 +522,7 @@ namespace OpenGS
                     });
                     break;
                 }
-                case "SceneTransitionRequest":
+                case MessageType.SceneTransitionRequest:
                 {
                     HandleSceneTransitionRequest(json);
                     break;
@@ -633,7 +620,7 @@ namespace OpenGS
 
             EmitToClient(new JObject
             {
-                ["MessageType"] = "SceneTransitionResponse",
+                ["MessageType"] = MessageType.SceneTransitionResponse,
                 ["Approved"] = approved,
                 ["FromScene"] = fromScene,
                 ["ToScene"] = toScene,
@@ -833,6 +820,12 @@ namespace OpenGS
                 ["PlayerID"] = playerId,
                 ["RoomID"] = roomId
             });
+            if (room.PlayerCount == 0)
+            {
+                localRooms.Remove(room);
+                EmitToClient(BuildRoomInfoSnapshot(room).ToNotificationJson(MessageType.RoomDeleted));
+                return true;
+            }
             EmitToClient(BuildWaitRoomPlayerListMessage(room));
             return true;
         }
@@ -916,37 +909,42 @@ namespace OpenGS
             }
 
             room.PlayerCount = room.Players.Count;
-            EmitToClient(new JObject
-            {
-                ["MessageType"] = MessageType.WaitRoomSettingsChange,
-                ["RoomID"] = roomId,
-                ["Settings"] = settings
-            });
+            var response = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.WaitRoomSettingsChange);
+            response["RoomID"] = roomId;
+            response["Settings"] = settings;
+            EmitToClient(response);
             EmitToClient(BuildWaitRoomPlayerListMessage(room));
             return true;
         }
 
         private static JObject BuildWaitRoomPlayerListMessage(RoomRecord room)
         {
-            var players = new JArray();
+            var snapshot = new WaitRoomSnapshot
+            {
+                RoomId = room.RoomId,
+                RoomName = room.RoomName,
+                Capacity = room.Capacity,
+                GameMode = room.GameMode,
+                TeamBalance = room.TeamBalance,
+                OwnerId = room.OwnerId
+            };
+
             foreach (var player in room.Players)
             {
-                players.Add(new JObject
+                var info = new PlayerInfo(player.PlayerId, player.PlayerName)
                 {
-                    ["PlayerId"] = player.PlayerId,
-                    ["PlayerName"] = player.PlayerName,
-                    ["IsReady"] = player.IsReady,
-                    ["PlayerCharacter"] = player.PlayerCharacter,
-                    ["IsOwner"] = string.Equals(player.PlayerId, room.OwnerId, StringComparison.OrdinalIgnoreCase)
-                });
+                    IsReady = player.IsReady
+                };
+
+                if (Enum.TryParse(player.PlayerCharacter, true, out EPlayerCharacter playerCharacter))
+                {
+                    info.playerCharacter = playerCharacter;
+                }
+
+                snapshot.Players.Add(info);
             }
 
-            return new JObject
-            {
-                ["MessageType"] = MessageType.WaitRoomPlayerList,
-                ["RoomID"] = room.RoomId,
-                ["Players"] = players
-            };
+            return snapshot.ToNetworkJson(MessageType.WaitRoomPlayerList);
         }
 
         private string ResolveLocalPlayerId()

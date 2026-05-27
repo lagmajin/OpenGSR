@@ -441,7 +441,7 @@ namespace OpenGS
 
             var request = new JObject
             {
-                ["MessageType"] = "SceneTransitionRequest",
+                ["MessageType"] = OpenGSCore.MessageType.SceneTransitionRequest,
                 ["FromScene"] = fromSceneName,
                 ["ToScene"] = nextSceneName,
                 ["Reason"] = reason ?? string.Empty,
@@ -453,7 +453,7 @@ namespace OpenGS
                 .Where(json =>
                 {
                     var messageType = OpenGSCore.MessageType.Normalize(json?["MessageType"]?.ToString());
-                    if (!string.Equals(messageType, "SceneTransitionResponse", StringComparison.OrdinalIgnoreCase))
+                    if (!string.Equals(messageType, OpenGSCore.MessageType.SceneTransitionResponse, StringComparison.OrdinalIgnoreCase))
                     {
                         return false;
                     }

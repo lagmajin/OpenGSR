@@ -63,7 +63,7 @@ namespace OpenGS
 
             var welcome = new JObject
             {
-                ["MessageType"] = "Welcome",
+                ["MessageType"] = MessageType.WelcomeMessage,
                 ["PlayerID"] = userId,
                 ["ServerID"] = id
             };
@@ -160,7 +160,7 @@ namespace OpenGS
                     try
                     {
                         var connectMsg = new AIXJsonObject();
-                        connectMsg["MessageType"] = "ConnectServerSuccessful";
+                        connectMsg["MessageType"] = MessageType.ConnectServerSuccessful;
                         connectMsg["RSAPublicKey"] = "DUMMY_PUBLIC_KEY";
                         SendJsonToClient(connectMsg);
                     }
@@ -285,7 +285,7 @@ namespace OpenGS
 
                 }
 
-                if (messageType == "EquipRequest")
+                if (messageType == MessageType.ShopEquipRequest)
                 {
                     // Client requests equip info -> respond with PlayerEquipInfo loaded from persistent storage
                     try
@@ -294,7 +294,7 @@ namespace OpenGS
                         var equip = loader.Load();
 
                         var resp = new JObject();
-                        resp["MessageType"] = "PlayerEquipInfo";
+                        resp["MessageType"] = MessageType.PlayerEquipInfo;
                         resp["PlayerCharacter"] = equip?.PlayerCharacter.ToString() ?? "Ami";
 
                         var slots = new JArray();
@@ -312,7 +312,7 @@ namespace OpenGS
                     }
                     catch (Exception ex)
                     {
-                        Debug.LogWarning($"LocalTestTcpServer: failed to respond to EquipRequest: {ex.Message}");
+                        Debug.LogWarning($"LocalTestTcpServer: failed to respond to ShopEquipRequest: {ex.Message}");
                     }
                 }
 
@@ -345,18 +345,9 @@ namespace OpenGS
                             Players = new List<string> { ownerId }
                         };
 
-                        var resp = new JObject();
-                        resp["MessageType"] = MessageType.CreateRoomResponse;
-                        resp["Success"] = true;
-                        resp["RoomID"] = roomId;
-                        resp["RoomName"] = roomName;
-                        resp["Capacity"] = capacity;
-                        resp["GameMode"] = gameMode;
-                        resp["TeamBalance"] = teamBalance;
-                        resp["OwnerID"] = ownerId;
-                        resp["PlayerCount"] = 1;
-
-                        SendJsonToClient(resp);
+                        var snapshot = BuildRoomInfoSnapshot(_rooms[roomId]);
+                        SendJsonToClient(snapshot.ToResponseJson(MessageType.CreateRoomResponse));
+                        SendJsonToClient(snapshot.ToNotificationJson(MessageType.RoomCreated));
                         PrettyLogger.Bold("LocalServer", $"Created room: {roomName} (ID: {roomId})");
                     }
                     catch (Exception ex)
@@ -375,9 +366,7 @@ namespace OpenGS
                     // Client requests room list
                     try
                     {
-                        var resp = new JObject();
-                        resp["MessageType"] = MessageType.RoomListUpdateNotification;
-                        resp["Rooms"] = BuildRoomListSnapshot();
+                        var resp = BuildRoomListSnapshot().ToJson();
                         SendJsonToClient(resp);
                         PrettyLogger.Bold("LocalServer", "Sent RoomListUpdateNotification");
                     }
@@ -606,7 +595,7 @@ namespace OpenGS
 
             // Optionally request equipment from client to continue flow
             var message = new AIXJsonObject();
-            message["MessageType"] = "EquipRequest";
+            message["MessageType"] = MessageType.ShopEquipRequest;
             message[""] = "";
             SendJsonToClient(message);
 
@@ -755,13 +744,10 @@ namespace OpenGS
             }
 
             // 入室通知を送信
-            var resp = RUDPMessageBuilder.CreateWaitRoomEnter(playerId, playerName, roomId);
-            resp["RoomName"] = _rooms[roomId].RoomName;
-            resp["Capacity"] = _rooms[roomId].Capacity;
-            resp["GameMode"] = _rooms[roomId].GameMode;
-            resp["Map"] = _rooms[roomId].Map;
-            resp["OwnerID"] = _rooms[roomId].OwnerId;
-            resp["PlayerCount"] = _rooms[roomId].Players.Count;
+            var resp = BuildRoomInfoSnapshot(_rooms[roomId]).ToResponseJson(MessageType.JoinRoomResponse);
+            resp["PlayerID"] = playerId;
+            resp["PlayerName"] = playerName;
+            resp["Players"] = JArray.FromObject(_rooms[roomId].Players);
             SendJsonToClient(resp);
 
             // ルームのプレイヤー一覧を送信
@@ -820,25 +806,39 @@ namespace OpenGS
             };
         }
 
-        private JArray BuildRoomListSnapshot()
+        private static RoomInfoSnapshot BuildRoomInfoSnapshot(RoomInfo room)
         {
-            var rooms = new JArray();
+            return new RoomInfoSnapshot
+            {
+                RoomId = room.RoomId,
+                RoomName = room.RoomName,
+                OwnerId = room.OwnerId,
+                Capacity = room.Capacity,
+                GameMode = room.GameMode,
+                Map = room.Map,
+                TeamBalance = room.TeamBalance,
+                PlayerCount = room.Players.Count
+            };
+        }
+
+        private OpenGSCore.RoomListSnapshot BuildRoomListSnapshot()
+        {
+            var snapshot = new OpenGSCore.RoomListSnapshot();
             foreach (var room in _rooms.Values)
             {
-                rooms.Add(new JObject
+                snapshot.Rooms.Add(new OpenGSCore.RoomListEntry
                 {
-                    ["RoomID"] = room.RoomId,
-                    ["RoomName"] = room.RoomName,
-                    ["OwnerID"] = room.OwnerId,
-                    ["Capacity"] = room.Capacity,
-                    ["GameMode"] = room.GameMode,
-                    ["Map"] = room.Map,
-                    ["TeamBalance"] = room.TeamBalance,
-                    ["PlayerCount"] = room.Players.Count,
+                    RoomId = room.RoomId,
+                    RoomName = room.RoomName,
+                    OwnerId = room.OwnerId,
+                    Capacity = room.Capacity,
+                    GameMode = room.GameMode,
+                    TeamBalance = room.TeamBalance,
+                    PlayerCount = room.Players.Count
                 });
             }
 
-            return rooms;
+            return snapshot;
         }
 
         private static string ResolveLocalPlayerCharacter()
@@ -874,7 +874,9 @@ namespace OpenGS
                 // ルームが空になった場合は削除
                 if (_rooms[roomId].Players.Count == 0)
                 {
+                    var deletedSnapshot = BuildRoomInfoSnapshot(_rooms[roomId]);
                     _rooms.Remove(roomId);
+                    SendJsonToClient(deletedSnapshot.ToNotificationJson(MessageType.RoomDeleted));
                     PrettyLogger.Bold("LocalServer", $"Room {roomId} deleted (empty)");
                 }
             }
@@ -976,7 +978,9 @@ namespace OpenGS
                     }
                 }
 
-                var resp = RUDPMessageBuilder.CreateWaitRoomSettingsChange(roomId, settings ?? new JObject());
+                var resp = BuildRoomInfoSnapshot(_rooms[roomId]).ToResponseJson(MessageType.WaitRoomSettingsChange);
+                resp["RoomID"] = roomId;
+                resp["Settings"] = settings ?? new JObject();
                 SendJsonToClient(resp);
                 SendWaitRoomPlayerList(roomId);
 
@@ -1102,8 +1106,7 @@ namespace OpenGS
             // 満員チェック
             if (room.Players.Count >= room.Capacity)
             {
-                var resp = RUDPMessageBuilder.CreateRoomFull(roomId);
-                SendJsonToClient(resp);
+                SendJsonToClient(BuildRoomInfoSnapshot(room).ToNotificationJson(MessageType.RoomFull));
                 return;
             }
 
@@ -1120,24 +1123,35 @@ namespace OpenGS
             if (string.IsNullOrEmpty(roomId) || !_rooms.ContainsKey(roomId)) return;
 
             var room = _rooms[roomId];
-            var playersArray = new JArray();
+            var snapshot = new OpenGSCore.WaitRoomSnapshot
+            {
+                RoomId = room.RoomId,
+                RoomName = room.RoomName,
+                Capacity = room.Capacity,
+                GameMode = room.GameMode,
+                TeamBalance = room.TeamBalance,
+                OwnerId = room.OwnerId
+            };
 
             foreach (var playerId in room.Players)
             {
                 if (_lobbyPlayers.TryGetValue(playerId, out var player))
                 {
-                    playersArray.Add(new JObject
+                    var info = new OpenGSCore.PlayerInfo(player.PlayerId, player.PlayerName)
                     {
-                        ["PlayerId"] = player.PlayerId,
-                        ["PlayerName"] = player.PlayerName,
-                        ["IsReady"] = player.IsReady,
-                        ["PlayerCharacter"] = player.PlayerCharacter,
-                        ["IsOwner"] = player.PlayerId == room.OwnerId
-                    });
+                        IsReady = player.IsReady
+                    };
+
+                    if (Enum.TryParse(player.PlayerCharacter, true, out EPlayerCharacter playerCharacter))
+                    {
+                        info.playerCharacter = playerCharacter;
+                    }
+
+                    snapshot.Players.Add(info);
                 }
             }
 
-            var resp = RUDPMessageBuilder.CreateWaitRoomPlayerList(roomId, playersArray);
+            var resp = snapshot.ToNetworkJson(MessageType.WaitRoomPlayerList);
             SendJsonToClient(resp);
         }
 

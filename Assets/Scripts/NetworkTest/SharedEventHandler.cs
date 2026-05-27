@@ -87,14 +87,14 @@ namespace OpenGS.Network
             // マッチ
             Register(MessageType.LoadingCompletedNotification, HandleLoadingFinished);
             Register(RUDPMessageTypes.PlayerShot, HandlePlayerShot);
-            Register("PlayerKilled", HandlePlayerKilled);
-            Register("PlayerDamaged", HandlePlayerDamaged);
-            Register("GrenadeThrown", HandleGrenadeThrown);
+            Register(RUDPMessageTypes.PlayerKilled, HandlePlayerKilled);
+            Register(RUDPMessageTypes.PlayerDamaged, HandlePlayerDamaged);
+            Register(RUDPMessageTypes.GrenadeThrown, HandleGrenadeThrown);
             Register(RUDPMessageTypes.PlayerPositionUpdate, HandlePlayerPositionUpdate);
             Register(RUDPMessageTypes.PlayerRespawn, HandlePlayerRespawn);
 
             // 装備
-            Register("EquipRequest", HandleEquipRequest);
+            Register(MessageType.ShopEquipRequest, HandleEquipRequest);
         }
 
         /// <summary>
@@ -213,29 +213,14 @@ namespace OpenGS.Network
                 PlayerReady = new Dictionary<string, bool> { { ownerId, false } }
             };
 
-            var resp = new JObject
-            {
-                ["MessageType"] = MessageType.CreateRoomResponse,
-                ["Success"] = true,
-                ["RoomID"] = roomId,
-                ["RoomName"] = roomName,
-                ["Capacity"] = capacity,
-                ["TeamBalance"] = teamBalance,
-                ["GameMode"] = gameMode,
-                ["OwnerID"] = ownerId,
-                ["PlayerCount"] = 1
-            };
-            sender(resp);
+            var snapshot = BuildRoomInfoSnapshot(m_Rooms[roomId]);
+            sender(snapshot.ToResponseJson(MessageType.CreateRoomResponse));
+            sender(snapshot.ToNotificationJson(MessageType.RoomCreated));
         }
 
         private void HandleUpdateRoom(JObject json, Action<JObject> sender)
         {
-            var resp = new JObject
-            {
-                ["MessageType"] = MessageType.RoomListUpdateNotification,
-                ["Rooms"] = BuildRoomListSnapshot()
-            };
-            sender(resp);
+            sender(BuildRoomListSnapshot().ToJson());
         }
 
         private void HandleEnterRoom(JObject json, Action<JObject> sender)
@@ -274,17 +259,8 @@ namespace OpenGS.Network
             }
             room.PlayerReady[playerId] = false;
 
-            var resp = new JObject
-            {
-                ["MessageType"] = MessageType.JoinRoomResponse,
-                ["Success"] = true,
-                ["RoomID"] = roomId,
-                ["PlayerName"] = playerName,
-                ["Capacity"] = room.Capacity,
-                ["GameMode"] = room.GameMode,
-                ["OwnerID"] = room.OwnerId,
-                ["PlayerCount"] = room.Players.Count
-            };
+            var resp = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.JoinRoomResponse);
+            resp["PlayerName"] = playerName;
             sender(resp);
         }
 
@@ -330,24 +306,38 @@ namespace OpenGS.Network
             };
         }
 
-        private JArray BuildRoomListSnapshot()
+        private OpenGSCore.RoomListSnapshot BuildRoomListSnapshot()
         {
-            var rooms = new JArray();
+            var snapshot = new OpenGSCore.RoomListSnapshot();
             foreach (var room in m_Rooms.Values)
             {
-                rooms.Add(new JObject
+                snapshot.Rooms.Add(new OpenGSCore.RoomListEntry
                 {
-                    ["RoomID"] = room.RoomId,
-                    ["RoomName"] = room.RoomName,
-                    ["OwnerID"] = room.OwnerId,
-                    ["Capacity"] = room.Capacity,
-                    ["GameMode"] = room.GameMode,
-                    ["TeamBalance"] = room.TeamBalance,
-                    ["PlayerCount"] = room.Players.Count
+                    RoomId = room.RoomId,
+                    RoomName = room.RoomName,
+                    OwnerId = room.OwnerId,
+                    Capacity = room.Capacity,
+                    GameMode = room.GameMode,
+                    TeamBalance = room.TeamBalance,
+                    PlayerCount = room.Players.Count
                 });
             }
 
-            return rooms;
+            return snapshot;
+        }
+
+        private static RoomInfoSnapshot BuildRoomInfoSnapshot(RoomData room)
+        {
+            return new RoomInfoSnapshot
+            {
+                RoomId = room.RoomId,
+                RoomName = room.RoomName,
+                OwnerId = room.OwnerId,
+                Capacity = room.Capacity,
+                GameMode = room.GameMode,
+                TeamBalance = room.TeamBalance,
+                PlayerCount = room.Players.Count
+            };
         }
 
         private void HandleRoomChat(JObject json, Action<JObject> sender)
@@ -464,7 +454,7 @@ namespace OpenGS.Network
 
             var broadcast = new JObject
             {
-                ["MessageType"] = "PlayerKilled",
+                ["MessageType"] = RUDPMessageTypes.PlayerKilled,
                 ["KillerID"] = killerId,
                 ["VictimID"] = victimId
             };
@@ -479,7 +469,7 @@ namespace OpenGS.Network
 
             var broadcast = new JObject
             {
-                ["MessageType"] = "PlayerDamaged",
+                ["MessageType"] = RUDPMessageTypes.PlayerDamaged,
                 ["AttackerID"] = attackerId,
                 ["TargetID"] = targetId,
                 ["Damage"] = damage
@@ -493,7 +483,7 @@ namespace OpenGS.Network
 
             var broadcast = new JObject
             {
-                ["MessageType"] = "GrenadeThrown",
+                ["MessageType"] = RUDPMessageTypes.GrenadeThrown,
                 ["PlayerID"] = playerId
             };
             sender(broadcast);
@@ -507,7 +497,7 @@ namespace OpenGS.Network
 
             var ack = new JObject
             {
-                ["MessageType"] = "PositionUpdateAck",
+                ["MessageType"] = RUDPMessageTypes.PositionUpdateAck,
                 ["PlayerID"] = playerId,
                 ["SequenceNumber"] = seq
             };
@@ -532,7 +522,7 @@ namespace OpenGS.Network
         {
             var resp = new JObject
             {
-                ["MessageType"] = "PlayerEquipInfo",
+                ["MessageType"] = MessageType.PlayerEquipInfo,
                 ["PlayerCharacter"] = "Ami",
                 ["InstantItemSlot"] = new JArray()
             };

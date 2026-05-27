@@ -125,7 +125,7 @@ namespace OpenGS
 
             switch (messageType)
             {
-                case "Snapshot":
+                case RUDPMessageTypes.Snapshot:
                     // サーバーからのスナップショットを適用
                     ApplyServerSnapshot(input);
                     break;

@@ -2,6 +2,7 @@
 
 using Newtonsoft.Json.Linq;
 using OpenGSCore;
+using System;
 using System.Collections.Generic;
 
 namespace OpenGS
@@ -28,22 +29,19 @@ namespace OpenGS
 
         public void CreateNewWaitRoomFromJson(JObject json)
         {
-            IDictionary<string, JToken> dic = json;
+            var roomInfo = RoomInfoSnapshot.FromJson(json);
+            var newRoom = new ClientWaitRoom
+            {
+                RoomName = roomInfo.RoomName,
+                RoomId = roomInfo.RoomId,
+                Capacity = roomInfo.Capacity,
+                PlayerCount = roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1,
+                OwnerId = roomInfo.OwnerId,
+                GameMode = Enum.TryParse(roomInfo.GameMode, true, out EGameMode gameMode) ? gameMode : EGameMode.DeathMatch,
+                TeamBalance = roomInfo.TeamBalance
+            };
 
-            var roomName=dic["RoomInfo"]["RoomName"].ToString();
-
-            var roomId = dic["RoomInfo"]["RoomId"].ToString();
-
-            //var player = dic["RoomInfo"][""];
-            var playerCount = dic["RoomInfo"]["WaitingPlayerCount"].ToString();
-
-           var newRoom=new ClientWaitRoom();
-
-            newRoom.RoomName= roomName;
-            newRoom.RoomId = roomId;
-
-
-
+            this.WaitRoom = newRoom;
         }
         
     

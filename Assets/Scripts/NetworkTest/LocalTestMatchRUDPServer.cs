@@ -185,7 +185,7 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerDeath:
                     HandlePlayerDeath(json);
                     break;
-                case "TeamKill":
+                case RUDPMessageTypes.TeamKill:
                     HandleTeamKill(json);
                     break;
                 case "ItemUseRequest":

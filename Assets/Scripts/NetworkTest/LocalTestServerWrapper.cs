@@ -119,43 +119,29 @@ namespace OpenGS.Network
 
             m_Rooms[roomId] = room;
 
-            var resp = new JObject
-            {
-                ["MessageType"] = MessageType.CreateRoomResponse,
-                ["Success"] = true,
-                ["RoomID"] = roomId,
-                ["RoomName"] = roomName,
-                ["GameMode"] = gameMode,
-                ["OwnerID"] = ownerId,
-                ["Capacity"] = capacity,
-                ["PlayerCount"] = 1
-            };
-
-            sender(resp);
+            var snapshot = BuildRoomInfoSnapshot(room);
+            sender(snapshot.ToResponseJson(MessageType.CreateRoomResponse));
+            sender(snapshot.ToNotificationJson(MessageType.RoomCreated));
             Log($"Room created: {roomName} (ID: {roomId})");
         }
 
         private void HandleUpdateRoom(JObject json, Action<JObject> sender)
         {
-            var rooms = new JArray();
+            var snapshot = new OpenGSCore.RoomListSnapshot();
             foreach (var room in m_Rooms.Values)
             {
-                rooms.Add(new JObject
+                snapshot.Rooms.Add(new OpenGSCore.RoomListEntry
                 {
-                    ["RoomID"] = room.RoomId,
-                    ["RoomName"] = room.RoomName,
-                    ["OwnerID"] = room.OwnerId,
-                    ["Capacity"] = room.Capacity,
-                    ["GameMode"] = room.GameMode,
-                    ["PlayerCount"] = room.Players.Count
+                    RoomId = room.RoomId,
+                    RoomName = room.RoomName,
+                    OwnerId = room.OwnerId,
+                    Capacity = room.Capacity,
+                    GameMode = room.GameMode,
+                    PlayerCount = room.Players.Count
                 });
             }
 
-            sender(new JObject
-            {
-                ["MessageType"] = MessageType.RoomListUpdateNotification,
-                ["Rooms"] = rooms
-            });
+            sender(snapshot.ToJson());
         }
 
         private void HandleEnterRoom(JObject json, Action<JObject> sender)
@@ -191,19 +177,9 @@ namespace OpenGS.Network
             room.Players.Add(playerId);
             room.PlayerReady[playerId] = false;
 
-            var resp = new JObject
-            {
-                ["MessageType"] = MessageType.JoinRoomResponse,
-                ["Success"] = true,
-                ["RoomID"] = roomId,
-                ["RoomName"] = room.RoomName,
-                ["PlayerID"] = playerId,
-                ["Capacity"] = room.Capacity,
-                ["GameMode"] = room.GameMode,
-                ["OwnerID"] = room.OwnerId,
-                ["Players"] = JArray.FromObject(room.Players)
-            };
-
+            var resp = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.JoinRoomResponse);
+            resp["PlayerID"] = playerId;
+            resp["Players"] = JArray.FromObject(room.Players);
             sender(resp);
             Log($"Player {playerName} entered room {room.RoomName}");
         }
@@ -273,6 +249,19 @@ namespace OpenGS.Network
                 GameMode = "TeamDeathMatch",
                 Players = new List<string> { "host-002" },
                 PlayerReady = new Dictionary<string, bool> { { "host-002", false } }
+            };
+        }
+
+        private static RoomInfoSnapshot BuildRoomInfoSnapshot(RoomData room)
+        {
+            return new RoomInfoSnapshot
+            {
+                RoomId = room.RoomId,
+                RoomName = room.RoomName,
+                OwnerId = room.OwnerId,
+                Capacity = room.Capacity,
+                GameMode = room.GameMode,
+                PlayerCount = room.Players.Count
             };
         }
 
