@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using OpenGSCore;
 using UnityEngine;
 
 
@@ -12,6 +11,7 @@ namespace OpenGS
     public class PlayerGrenadeComponent : MonoBehaviour
     {
         [SerializeField] public AllGrenadeListMasterData grenadeListMasterData;
+        [SerializeField] private EGrenadeType grenadeType = EGrenadeType.Normal;
 
         [Header("Grenade Throw Settings")]
         [SerializeField] private float maxChargeTime = 2.0f; // パワー1.0になるまでの時間（秒）
@@ -77,12 +77,58 @@ namespace OpenGS
             ThrowGrenade(1.0f);
         }
 
+        public void SetGrenadeType(EGrenadeType type)
+        {
+            grenadeType = type;
+        }
+
+        private GrenadeEntry ResolveGrenadeEntry()
+        {
+            if (grenadeListMasterData == null || grenadeListMasterData.dataList == null)
+            {
+                return null;
+            }
+
+            var targetNames = new[]
+            {
+                grenadeType.ToString(),
+                $"{grenadeType}Grenade",
+                $"{grenadeType}Bomb"
+            };
+
+            foreach (var entry in grenadeListMasterData.dataList)
+            {
+                if (entry == null || entry.GrenadePrefab == null || string.IsNullOrWhiteSpace(entry.Name))
+                {
+                    continue;
+                }
+
+                foreach (var candidate in targetNames)
+                {
+                    if (string.Equals(entry.Name, candidate, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        return entry;
+                    }
+                }
+            }
+
+            foreach (var entry in grenadeListMasterData.dataList)
+            {
+                if (entry != null && entry.GrenadePrefab != null)
+                {
+                    return entry;
+                }
+            }
+
+            return null;
+        }
+
         public void ThrowGrenade(float powerMultiplier)
         {
-            var pAgent = GetComponent<AbstractPlayer>();
-            if (pAgent != null)
+            var owner = GetComponent<AbstractPlayer>();
+            if (owner != null)
             {
-                if (!pAgent.Status.UseGrenade())
+                if (!owner.Status.UseGrenade())
                 {
                     Debug.Log("グレネードの残弾がありません。");
                     return;
@@ -95,27 +141,34 @@ namespace OpenGS
                 return;
             }
 
-            // とりあえずリストの最初のグレネードを投げる（将来は装備中のインデックスを使用）
-            var grenadeData = grenadeListMasterData.dataList[0];
+            var grenadeData = ResolveGrenadeEntry();
             if (grenadeData == null || grenadeData.GrenadePrefab == null) return;
 
-            // プレハブを生成
+            var facingDir = transform.localScale.x < 0f ? Vector2.left : Vector2.right;
+            var throwDir = (facingDir + Vector2.up * 0.5f).normalized;
+            var throwSpeed = baseThrowForce * powerMultiplier;
             var grenadeObj = Instantiate(grenadeData.GrenadePrefab, throwPoint.position, Quaternion.identity);
+            var grenadeProjectile = grenadeObj.GetComponent<GrenadeProjectileController>();
 
-            // Rigidbody2D で物理的な力を加えて飛ばす
-            var rb = grenadeObj.GetComponent<Rigidbody2D>();
-            if (rb != null)
+            if (grenadeProjectile != null)
             {
-                // キャラクターの向いている方向を取得（仮に transform.right と少し上向きを合成）
-                // 実際はプレイヤーのエイム向きに合わせます
-                Vector2 throwDir = (transform.right + Vector3.up * 0.5f).normalized;
-                
-                // 力 = 基本値 × 溜め倍率
-                float force = baseThrowForce * powerMultiplier;
-                rb.AddForce(throwDir * force, ForceMode2D.Impulse);
-                
-                // 少し回転（トルク）をかけてっぽくする
-                rb.AddTorque(-5f * powerMultiplier, ForceMode2D.Impulse);
+                grenadeProjectile.Launch(
+                    throwDir,
+                    throwSpeed,
+                    owner != null ? owner.UniqueID().ToString() : string.Empty,
+                    grenadeData.Name,
+                    owner != null ? owner.Team() : ETeam.NoTeam,
+                    owner != null ? owner.transform : transform);
+            }
+            else
+            {
+                // 従来の Rigidbody2D ベース挙動へのフォールバック
+                var rb = grenadeObj.GetComponent<Rigidbody2D>();
+                if (rb != null)
+                {
+                    rb.AddForce(throwDir * throwSpeed, ForceMode2D.Impulse);
+                    rb.AddTorque(-5f * powerMultiplier, ForceMode2D.Impulse);
+                }
             }
 
             Debug.Log($"グレネードを投げました! パワー倍率: {powerMultiplier:F2}");
