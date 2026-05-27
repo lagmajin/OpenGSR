@@ -32,6 +32,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Loading/OnlineLoadingScene.unity
     guid: ff7c5097aa2f22345ba0ffd6f2b1c8ad
+  - enabled: 1
+    path: Assets/Scenes/Map/Battle/GreenHill1.unity
+    guid: 805b638796d59fd4aade37d92e8af677
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 089e42c240b1c874c96e43f372af0425,
       type: 3}

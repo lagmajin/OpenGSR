@@ -6,6 +6,11 @@
 /[Logs]/
 /[MemoryCaptures]/
 /[UserSettings]/
+/Logs/
+/ProjectSettings/Packages/
+/UserSettings/AI.Generators/
+/SavedData/
+/UserSettings/AI.*/
 
 # --- Visual Studio 関連（13700KFの演算用ゴミ） ---
 .vs/

@@ -281,8 +281,25 @@ namespace OpenGS
         void LoadGameScene()
         {
             Debug.Log("Go to loading Scene...");
+            CacheOnlineSelectionForLoading();
             GameFlagsManager.GetInstance().BeforeSceneName = generalSceneMasterData.OnlineWaitRoomScene();
             RequestSceneTransition(generalSceneMasterData.OnlineLoadingScene(), "GameStart");
+        }
+
+        private void CacheOnlineSelectionForLoading()
+        {
+            var room = ResolveWaitRoom();
+            if (room == null)
+            {
+                return;
+            }
+
+            GameModeSelectManager.Instance.OnlineGameSelect = new OnlineGameModeSelect
+            {
+                GameMode = room.GameMode,
+                Map = room.Map,
+                TeamBalance = room.TeamBalance
+            };
         }
 
         public void Plus()
