@@ -394,8 +394,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 299, y: -236.21}
-  m_SizeDelta: {x: 6301.88, y: 1299.77}
+  m_AnchoredPosition: {x: 270.13, y: -214.92}
+  m_SizeDelta: {x: 10786.76, y: 1795.62}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &46727475
 MonoBehaviour:
@@ -806,7 +806,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 1596554529, guid: ee6cbc73262abc54db77655c01ef7834, type: 3}
+  m_Sprite: {fileID: -1151876572, guid: d59693e5995020c4cb612ee6c8d4c646, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -980,8 +980,10 @@ MonoBehaviour:
   - {fileID: 6988913644000404347, guid: 19554603ad675e74a95c593dfecd0082, type: 3}
   - {fileID: -6677401363109432204, guid: 19554603ad675e74a95c593dfecd0082, type: 3}
   - {fileID: -979269601739778928, guid: 19554603ad675e74a95c593dfecd0082, type: 3}
+  initialSpriteOverride: {fileID: 0}
   framesPerSecond: 24
-  resetOnExit: 1
+  exitBehavior: 1
+  exitSpriteOverride: {fileID: 0}
 --- !u!1 &121916004
 GameObject:
   m_ObjectHideFlags: 0
@@ -1210,10 +1212,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 241534088}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8aedb38763af18649a72f23c02b27b96, type: 3}
+  m_Script: {fileID: 11500000, guid: b7d23746d4cc1c8479140af1205d18b0, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  createNewRoomDialogPrefab: {fileID: 3770645929957561130, guid: 5c28601275fa489469e3fe8622d63890, type: 3}
+  m_EditorClassIdentifier: OpenGSR::OpenGS.LobbySceneMediateObject
+  createNewRoomDialogPrefab: {fileID: 408933094}
 --- !u!1 &243734336
 GameObject:
   m_ObjectHideFlags: 0
@@ -1526,8 +1528,10 @@ MonoBehaviour:
   - {fileID: 39152723019669925, guid: ad669ac91f7ff584fa09849391ab928a, type: 3}
   - {fileID: 6512894880447731190, guid: ad669ac91f7ff584fa09849391ab928a, type: 3}
   - {fileID: -8554630810852458068, guid: ad669ac91f7ff584fa09849391ab928a, type: 3}
+  initialSpriteOverride: {fileID: 0}
   framesPerSecond: 30
-  resetOnExit: 1
+  exitBehavior: 1
+  exitSpriteOverride: {fileID: 0}
 --- !u!1 &321206541
 GameObject:
   m_ObjectHideFlags: 0
@@ -1722,8 +1726,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 385.85, y: -236.21}
-  m_SizeDelta: {x: 195.17, y: 40.39}
+  m_AnchoredPosition: {x: 388, y: -214.92}
+  m_SizeDelta: {x: 251.8, y: 47.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &355594053
 MonoBehaviour:
@@ -1841,7 +1845,8 @@ MonoBehaviour:
   - {fileID: 5750599876880849339, guid: efc861c4b6e00a74b84c38f129f721fe, type: 3}
   - {fileID: 4201932943282749581, guid: efc861c4b6e00a74b84c38f129f721fe, type: 3}
   - {fileID: -334550933759578243, guid: efc861c4b6e00a74b84c38f129f721fe, type: 3}
-  initialSpriteOverride: {fileID: -263963389573516538, guid: efc861c4b6e00a74b84c38f129f721fe, type: 3}
+  initialSpriteOverride: {fileID: -263963389573516538, guid: efc861c4b6e00a74b84c38f129f721fe,
+    type: 3}
   framesPerSecond: 24
   exitBehavior: 1
   exitSpriteOverride: {fileID: 0}
@@ -2059,7 +2064,7 @@ MonoBehaviour:
     type: 2}
   soundMasterData: {fileID: 11400000, guid: 6fd089da29a58924f89ce13d7ee5bbba, type: 2}
   bgmMasterData: {fileID: 0}
-  generalSceneMasterData: {fileID: 11400000, guid: 6889c6af97c6c8340b0cbdf8f0f9b650,
+  generalSceneMasterData: {fileID: 11400000, guid: e0e6a797ab6bad64f90a1aa6af8bc59b,
     type: 2}
   timer: {fileID: 366503647}
   sceneController: {fileID: 0}
@@ -2069,7 +2074,7 @@ MonoBehaviour:
   InfoDialog: {fileID: 0}
   robbyNetworkManager: {fileID: 0}
   roomPanel: {fileID: 0}
-  mediateObject: {fileID: 241534091}
+  mediateObject: {fileID: 0}
   lobbySceneController: {fileID: 0}
 --- !u!1 &374098836
 GameObject:
@@ -2616,6 +2621,18 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5c28601275fa489469e3fe8622d63890, type: 3}
+--- !u!114 &408933094 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3770645929957561130, guid: 5c28601275fa489469e3fe8622d63890,
+    type: 3}
+  m_PrefabInstance: {fileID: 408933093}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2868ee9d40235934882fad3ecfb079a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.CreateNewRoomDialog
 --- !u!1 &434928166
 GameObject:
   m_ObjectHideFlags: 0
@@ -3044,8 +3061,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 288.7, y: -2}
-  m_SizeDelta: {x: 200, y: 258}
+  m_AnchoredPosition: {x: 308.79, y: 1.06}
+  m_SizeDelta: {x: 203.58, y: 275.89}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &485937828
 MonoBehaviour:
@@ -4494,7 +4511,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 47.770004, y: 0}
+  m_AnchoredPosition: {x: 33.000008, y: 0}
   m_SizeDelta: {x: 21.77, y: 13.4}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &967894788
@@ -4540,8 +4557,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 682268323}
   m_HandleRect: {fileID: 682268322}
   m_Direction: 2
-  m_Value: 0
-  m_Size: 0.8599822
+  m_Value: -0.005694677
+  m_Size: 0.9191218
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5312,7 +5329,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a7e8629d3759724786ae1202fafd5c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mediateObject: {fileID: 241534091}
+  mediateObject: {fileID: 0}
 --- !u!4 &1166261147
 Transform:
   m_ObjectHideFlags: 0
@@ -6014,8 +6031,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 326, y: -274}
-  m_SizeDelta: {x: 160, y: 30}
+  m_AnchoredPosition: {x: 328.23, y: -264.78}
+  m_SizeDelta: {x: 179.31, y: 46.161}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1376187402
 MonoBehaviour:
@@ -7427,8 +7444,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1933545358}
-  - component: {fileID: 1933545357}
-  - component: {fileID: 1933545359}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -7436,18 +7451,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1933545357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1933545356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa3f9f9bbea8f6e4d800ff150fc7a018, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1933545358
 Transform:
   m_ObjectHideFlags: 0
@@ -7463,18 +7466,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1933545359
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1933545356}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1ea07e6f0aeb92d41b4a63626a4d74d6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2035453488
 GameObject:
   m_ObjectHideFlags: 0
@@ -7896,7 +7887,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0.00053748075, y: 42}
+  m_AnchoredPosition: {x: 0.00053748075, y: 24.247286}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &2081770936

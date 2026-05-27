@@ -26,6 +26,12 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Waitroom/OnlineWaitRoom.unity
     guid: 6e121dc2d3d62c74eae8db1c5a3ef554
+  - enabled: 1
+    path: Assets/Scenes/Shop/ShopScene.unity
+    guid: 308d81fa91987b6488bce68a92cb7d2d
+  - enabled: 1
+    path: Assets/Scenes/Loading/OnlineLoadingScene.unity
+    guid: ff7c5097aa2f22345ba0ffd6f2b1c8ad
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 089e42c240b1c874c96e43f372af0425,
       type: 3}
