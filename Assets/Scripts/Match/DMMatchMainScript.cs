@@ -307,25 +307,17 @@ namespace OpenGS
 
         public override void OnStartUnityEditor()
         {
-            //throw new NotImplementedException();
+            base.OnStartUnityEditor();
         }
 
         protected override void OnQuitUnityEditor()
         {
-            //throw new NotImplementedException();
+            base.OnQuitUnityEditor();
         }
 
         protected override void OnStartFromEditorDirectly()
         {
-            //throw new NotImplementedException();
-
-            var room=matchRoomManager.OnlineMatchRoom;
-
-            //var pm=room.playerma
-
-            var playerInfo = new OpenGSCore.PlayerInfo();
-
-            //room.PlayerManager.AddPlayer()
+            base.OnStartFromEditorDirectly();
 
         }
     }

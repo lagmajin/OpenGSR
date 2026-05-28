@@ -51,6 +51,7 @@ namespace OpenGS
 
         public void CreateNewRoom()
         {
+            MissionRoomManager.Instance.CreateNewRoom("MissionRoom", 3);
             Debug.Log("[MissionLobbyScene] CreateNewRoom");
         }
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,8 +28,25 @@ namespace OpenGS
         private bool _matchEnded;
         private int _totalDeathEvents;
         private readonly Dictionary<string, int> _teamKills = new();
+        private readonly ConcurrentDictionary<string, LocalPlayerState> _players = new(StringComparer.OrdinalIgnoreCase);
 
         public event Action<JObject> MessageProduced;
+
+        private sealed class LocalPlayerState
+        {
+            public string PlayerId { get; set; } = string.Empty;
+            public string PlayerName { get; set; } = string.Empty;
+            public string Team { get; set; } = "Blue";
+            public bool IsAlive { get; set; } = true;
+            public float PosX { get; set; }
+            public float PosY { get; set; }
+            public float Rotation { get; set; }
+            public int Kills { get; set; }
+            public int Deaths { get; set; }
+            public int Score { get; set; }
+            public string LastWeaponType { get; set; } = "Unknown";
+            public string LastStateReason { get; set; } = "Spawn";
+        }
 
         // 送信テスト用プレイヤー状態
         private float testPlayerX = 0f;
@@ -102,6 +120,7 @@ namespace OpenGS
             _teamKills.Clear();
             _teamKills["Red"] = 0;
             _teamKills["Blue"] = 0;
+            _players.Clear();
         }
 
         private void ResetDummyPlayerState()
@@ -212,18 +231,30 @@ namespace OpenGS
 
         private void HandlePlayerInput(JObject json)
         {
-            // プレイヤー入力を受け取ったら、他のクライアントにブロードキャスト（今は自分に返す）
-            PrettyLogger.Bold("RUDP Server", $"PlayerInput received: {json}");
+            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? "unknown";
+            var state = EnsurePlayerState(playerId, json["PlayerName"]?.ToString());
+            state.PosX = json["PosX"]?.ToObject<float>() ?? state.PosX;
+            state.PosY = json["PosY"]?.ToObject<float>() ?? state.PosY;
+            state.Rotation = json["Rotation"]?.ToObject<float>() ?? state.Rotation;
+            state.LastStateReason = "Input";
+            PrettyLogger.Bold("RUDP Server", $"PlayerInput received: {playerId} -> ({state.PosX}, {state.PosY}) rot={state.Rotation}");
+
+            SendJson(RUDPMessageBuilder.CreatePlayerPositionUpdate(playerId, new Vector2(state.PosX, state.PosY), state.Rotation));
         }
 
         private void HandleShootRequest(JObject json)
         {
-            // 射撃リクエストを受け取ったら、射撃イベントを全クライアントに通知
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var weaponType = json["WeaponType"]?.ToString() ?? "Pistol";
+            var state = EnsurePlayerState(playerId, json["PlayerName"]?.ToString());
+            state.LastWeaponType = weaponType;
             PrettyLogger.Bold("RUDP Server", $"ShootRequest from {playerId}");
 
-            // テスト：射撃イベントを返す
-            var shotMsg = RUDPMessageBuilder.CreatePlayerShot(playerId, new Vector2(0, 0), new Vector2(1, 0), "Pistol");
+            var shotMsg = RUDPMessageBuilder.CreatePlayerShot(
+                playerId,
+                new Vector2(state.PosX, state.PosY),
+                ResolveDirection(json, state),
+                weaponType);
             SendJson(shotMsg);
         }
 
@@ -238,10 +269,14 @@ namespace OpenGS
             var dirX = json["DirX"]?.ToObject<float>() ?? 0f;
             var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
             var weaponType = json["WeaponType"]?.ToString() ?? "Unknown";
+            var state = EnsurePlayerState(playerId, json["PlayerName"]?.ToString());
+            state.PosX = posX;
+            state.PosY = posY;
+            state.LastWeaponType = weaponType;
+            state.LastStateReason = "Shot";
 
             PrettyLogger.Bold("RUDP Server", $"PlayerShot from {playerId}: {weaponType} at ({posX}, {posY}) dir({dirX}, {dirY})");
 
-            // テスト：他のクライアントにブロードキャスト（自分に返す）
             var broadcastMsg = RUDPMessageBuilder.CreatePlayerShot(playerId, new Vector2(posX, posY), new Vector2(dirX, dirY), weaponType);
             SendJson(broadcastMsg);
         }
@@ -253,34 +288,43 @@ namespace OpenGS
         {
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
             var killerId = json["KillerId"]?.ToString() ?? "";
+            var victim = EnsurePlayerState(playerId, json["PlayerName"]?.ToString());
+            victim.IsAlive = false;
+            victim.Deaths++;
+            victim.Score = Math.Max(0, victim.Score - 50);
+            victim.LastStateReason = "Death";
+
+            LocalPlayerState? killer = null;
+            if (!string.IsNullOrWhiteSpace(killerId))
+            {
+                killer = EnsurePlayerState(killerId, json["KillerName"]?.ToString());
+                killer.Kills++;
+                killer.Score += 100;
+                killer.LastStateReason = "Kill";
+            }
 
             PrettyLogger.Bold("RUDP Server", $"PlayerDeath: {playerId} killed by {killerId}");
 
-            // テスト：死亡イベントをブロードキャスト
             var deathMsg = RUDPMessageBuilder.CreatePlayerDeath(playerId, killerId);
             SendJson(deathMsg);
 
-            // テスト：キルスコア更新を送信
-            var killerTeam = "Red";
-            var victimTeam = "Blue";
-            
-            var killScoreMsg = RUDPMessageBuilder.CreateKillScoreUpdate(
-                killerId, 
-                1, // kills
-                0, // deaths
-                100, // score
-                killerTeam
-            );
-            SendJson(killScoreMsg);
+            if (killer != null)
+            {
+                var killerScoreMsg = RUDPMessageBuilder.CreateKillScoreUpdate(
+                    killer.PlayerId,
+                    killer.Kills,
+                    killer.Deaths,
+                    killer.Score,
+                    killer.Team);
+                SendJson(killerScoreMsg);
+            }
 
-            // 死亡者のスコアも更新
             var deathScoreMsg = RUDPMessageBuilder.CreateKillScoreUpdate(
-                playerId,
-                0,
-                1,
-                0,
-                victimTeam
-            );
+                victim.PlayerId,
+                victim.Kills,
+                victim.Deaths,
+                victim.Score,
+                victim.Team);
             SendJson(deathScoreMsg);
 
             _totalDeathEvents++;
@@ -298,6 +342,15 @@ namespace OpenGS
             }
 
             _teamKills[killerTeam]++;
+            if (killerTeam.Equals("Red", StringComparison.OrdinalIgnoreCase) || killerTeam.Equals("Blue", StringComparison.OrdinalIgnoreCase))
+            {
+                var teamPlayers = _players.Values.Where(player => string.Equals(player.Team, killerTeam, StringComparison.OrdinalIgnoreCase)).ToList();
+                foreach (var player in teamPlayers)
+                {
+                    player.Kills++;
+                    player.Score += 100;
+                }
+            }
 
             var killScoreMsg = new JObject
             {
@@ -360,6 +413,11 @@ namespace OpenGS
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
             var posX = json["PosX"]?.ToObject<float>() ?? 0f;
             var posY = json["PosY"]?.ToObject<float>() ?? 0f;
+            var state = EnsurePlayerState(playerId, json["PlayerName"]?.ToString());
+            state.PosX = posX;
+            state.PosY = posY;
+            state.IsAlive = true;
+            state.LastStateReason = "Respawn";
 
             PrettyLogger.Bold("RUDP Server", $"PlayerRespawn: {playerId} at ({posX}, {posY})");
 
@@ -370,6 +428,75 @@ namespace OpenGS
                 ["PosX"] = posX,
                 ["PosY"] = posY
             });
+        }
+
+        private LocalPlayerState EnsurePlayerState(string playerId, string? playerName = null)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                playerId = "unknown";
+            }
+
+            return _players.GetOrAdd(playerId, id => new LocalPlayerState
+            {
+                PlayerId = id,
+                PlayerName = string.IsNullOrWhiteSpace(playerName) ? id : playerName,
+                Team = InferTeam(id)
+            });
+        }
+
+        private static string InferTeam(string playerId)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return "Blue";
+            }
+
+            var hash = StringComparer.OrdinalIgnoreCase.GetHashCode(playerId);
+            return (hash & 1) == 0 ? "Red" : "Blue";
+        }
+
+        private static Vector2 ResolveDirection(JObject json, LocalPlayerState state)
+        {
+            var dirX = json["DirX"]?.ToObject<float>() ?? 0f;
+            var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
+            if (Math.Abs(dirX) < 0.0001f && Math.Abs(dirY) < 0.0001f)
+            {
+                var rad = state.Rotation * Mathf.Deg2Rad;
+                dirX = Mathf.Cos(rad);
+                dirY = Mathf.Sin(rad);
+            }
+
+            return new Vector2(dirX, dirY);
+        }
+
+        private JObject BuildScoreSnapshot()
+        {
+            var players = new JArray();
+            foreach (var player in _players.Values.OrderByDescending(p => p.Score).ThenBy(p => p.PlayerId))
+            {
+                players.Add(new JObject
+                {
+                    ["PlayerId"] = player.PlayerId,
+                    ["PlayerName"] = player.PlayerName,
+                    ["Team"] = player.Team,
+                    ["IsAlive"] = player.IsAlive,
+                    ["PosX"] = player.PosX,
+                    ["PosY"] = player.PosY,
+                    ["Rotation"] = player.Rotation,
+                    ["Kills"] = player.Kills,
+                    ["Deaths"] = player.Deaths,
+                    ["Score"] = player.Score,
+                    ["LastStateReason"] = player.LastStateReason
+                });
+            }
+
+            return new JObject
+            {
+                ["Red"] = _teamKills.TryGetValue("Red", out var red) ? red : 0,
+                ["Blue"] = _teamKills.TryGetValue("Blue", out var blue) ? blue : 0,
+                ["Players"] = players
+            };
         }
 
         private void TryBroadcastMatchEnd()
@@ -569,13 +696,7 @@ namespace OpenGS
 
         private JObject BuildDummyGameStateSync(int frameCount)
         {
-            var scores = new JObject
-            {
-                ["TeamA"] = random.Next(0, 10),
-                ["TeamB"] = random.Next(0, 10)
-            };
-
-            return RUDPMessageBuilder.CreateGameStateSync(300 - frameCount / 60, scores);
+            return RUDPMessageBuilder.CreateGameStateSync(Math.Max(0, 300 - frameCount / 60), BuildScoreSnapshot());
         }
 
 

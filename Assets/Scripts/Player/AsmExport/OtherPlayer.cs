@@ -23,7 +23,8 @@ namespace OpenGS
 
         public override void AddDamage(Vector2 source, float damage, eDamageType type)
         {
-            //throw new NotImplementedException();
+            Debug.Log($"[OtherPlayer] Damage {damage}");
+            base.AddDamage(source, damage, type);
         }
 
         public override void IncreaseAttack(float sec)

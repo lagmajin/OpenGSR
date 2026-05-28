@@ -27,6 +27,7 @@ public class PlayerAllData
     public class PlayerMatchManager 
     {
         private readonly List<PlayerAllData> players = new List<PlayerAllData>();
+        private string myPlayerId = string.Empty;
         
       
         public PlayerMatchManager()
@@ -45,11 +46,21 @@ public class PlayerAllData
             players.Add(new PlayerAllData(info, status));
         }
 
+        public void SetMyPlayerId(string playerId)
+        {
+            myPlayerId = playerId ?? string.Empty;
+        }
+
         public void RemovePlayer()
         {
             if (players.Count > 0)
             {
+                var removed = players[players.Count - 1];
                 players.RemoveAt(players.Count - 1);
+                if (removed?.PlayerInfo != null && string.Equals(removed.PlayerInfo.Id, myPlayerId, System.StringComparison.OrdinalIgnoreCase))
+                {
+                    myPlayerId = string.Empty;
+                }
                 return;
             }
 
@@ -58,6 +69,18 @@ public class PlayerAllData
 
         public PlayerAllData MyPlayer()
         {
+            if (!string.IsNullOrWhiteSpace(myPlayerId))
+            {
+                for (var index = 0; index < players.Count; index++)
+                {
+                    var player = players[index];
+                    if (player?.PlayerInfo != null && string.Equals(player.PlayerInfo.Id, myPlayerId, System.StringComparison.OrdinalIgnoreCase))
+                    {
+                        return player;
+                    }
+                }
+            }
+
             if (players.Count == 0)
             {
                 Debug.LogWarning("[PlayerMatchManager] MyPlayer requested but no players are registered.");
@@ -70,6 +93,7 @@ public class PlayerAllData
         public void RemoveAll()
         {
             players.Clear();
+            myPlayerId = string.Empty;
         }
 
         
