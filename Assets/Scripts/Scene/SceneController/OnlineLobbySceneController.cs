@@ -53,7 +53,7 @@ namespace OpenGS
             JObject json,
             System.Action<string, string, int> onRoomCreateSuccess,
             System.Action<string> onRoomCreateFailed,
-            System.Action<RoomListSnapshot> onRoomListUpdated,
+            System.Action<RoomListSnapshot, JObject> onRoomListUpdated,
             System.Action<string, string, int, int> onRoomEnterSuccess = null,
             System.Action<string> onRoomEnterFailed = null)
         {
@@ -70,7 +70,7 @@ namespace OpenGS
                     HandleCreateNewWaitRoomResponse(json, onRoomCreateSuccess, onRoomCreateFailed);
                     break;
                 case MessageType.RoomListUpdateNotification:
-                    onRoomListUpdated?.Invoke(RoomListSnapshot.FromJson(json));
+                    onRoomListUpdated?.Invoke(RoomListSnapshot.FromJson(json), json);
                     break;
                 case MessageType.JoinRoomResponse:
                     HandleEnterWaitRoomResponse(json, onRoomEnterSuccess, onRoomEnterFailed);

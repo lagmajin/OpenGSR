@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine.UI;
+using TMPro;
 using Sirenix.OdinInspector;
 using OpenGSCore;
 using UniRx;
@@ -33,6 +34,13 @@ namespace OpenGS
         [SerializeField] public GameObject InfoDialog;
         [SerializeField] public GameObject robbyNetworkManager;
         [SerializeField] public GameObject roomPanel;
+        [SerializeField] private GuildPanel guildPanel;
+        [SerializeField] private GameObject roomPasswordDialog;
+        [SerializeField] private TMP_InputField roomPasswordInput;
+        [SerializeField] private Button roomPasswordOkButton;
+        [SerializeField] private Button roomPasswordCancelButton;
+        [SerializeField] private TextMeshProUGUI roomPasswordTitleText;
+        [SerializeField] private TextMeshProUGUI roomPasswordMessageText;
 
         [SerializeField] [Required] public LobbySceneMediateObject mediateObject;
         [SerializeField] private OnlineLobbySceneController lobbySceneController;
@@ -48,6 +56,10 @@ namespace OpenGS
         private JArray currentRoomList = new JArray();
         private string currentRoomFilter = "All";
         private string currentSelectedRoomId = "";
+        private string pendingPasswordRoomId = "";
+        private string pendingPasswordRoomName = "";
+        private string pendingPasswordPlayerId = "";
+        private string pendingPasswordPlayerName = "";
         private readonly List<GameObject> spawnedRoomButtons = new List<GameObject>();
 
         // ─── Unity ライフサイクル ────────────────────────────────────
@@ -221,9 +233,10 @@ namespace OpenGS
             var maxPlayer = dialogScript != null ? dialogScript.MaxPlayer() : 8;
             var password = dialogScript != null ? dialogScript.Password() : "";
             var gameMode = dialogScript != null ? dialogScript.GameMode().ToString() : EGameMode.TeamDeathMatch.ToString();
+            var map = dialogScript != null ? dialogScript.Map() : EMap.DryDays;
             var teamBalance = dialogScript != null && dialogScript.TeamBalance();
 
-            net.SendCreateNewWaitRoomRequest(roomName, maxPlayer, gameMode, teamBalance, password);
+            net.SendCreateNewWaitRoomRequest(roomName, maxPlayer, gameMode, map.ToString(), teamBalance, password);
         }
 
         /// <summary>
@@ -249,6 +262,16 @@ namespace OpenGS
             if (string.IsNullOrWhiteSpace(roomId))
             {
                 Debug.LogWarning("OnlineLobbyScene.SendEnterRoomRequest: room id is empty");
+                return;
+            }
+
+            if (IsPasswordProtectedRoom(room))
+            {
+                ShowPasswordPrompt(
+                    roomId,
+                    room["RoomName"]?.ToString() ?? "Room",
+                    GetCurrentPlayerId(),
+                    GetCurrentPlayerName());
                 return;
             }
 
@@ -315,6 +338,34 @@ namespace OpenGS
             SceneManager.LoadScene(sceneName);
         }
 
+        [Button("ギルドパネル表示")]
+        public void ShowGuildPanel()
+        {
+            if (guildPanel != null)
+            {
+                guildPanel.Show();
+                return;
+            }
+
+            Debug.LogWarning("[OnlineLobbyScene] GuildPanel is not assigned.");
+        }
+
+        public void HideGuildPanel()
+        {
+            if (guildPanel != null)
+            {
+                guildPanel.Hide();
+            }
+        }
+
+        public void ToggleGuildPanel()
+        {
+            if (guildPanel != null)
+            {
+                guildPanel.Toggle();
+            }
+        }
+
         public void GotoOnlineWaitRoom()
         {
             mainThread.Post(__ =>
@@ -351,9 +402,11 @@ namespace OpenGS
                         var roomInfo = RoomInfoSnapshot.FromJson(json);
                         matchRoomManager.CreateNewOnlineWaitRoom(roomInfo.RoomName, roomInfo.Capacity);
                         var createdGameMode = ParseGameMode(roomInfo.GameMode);
+                        var createdMap = ParseMap(roomInfo.Map);
                         var createdOwnerId = string.IsNullOrWhiteSpace(roomInfo.OwnerId) ? "local_player" : roomInfo.OwnerId;
                         var createdTeamBalance = roomInfo.TeamBalance;
-                        var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, roomInfo.Capacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1, createdGameMode, createdOwnerId, createdTeamBalance);
+                        var createdPassword = json["Password"]?.ToString() ?? "";
+                        var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, roomInfo.Capacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1, createdGameMode, createdOwnerId, createdTeamBalance, createdMap, createdPassword);
                         waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName)
                         {
                             playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
@@ -365,9 +418,9 @@ namespace OpenGS
                         Debug.LogWarning($"OnlineLobbyScene: Failed to create room: {errorMessage}");
                         ShowInfoDialog("ルーム作成に失敗しました", errorMessage);
                     },
-                    roomListSnapshot =>
+                    (roomListSnapshot, roomListJson) =>
                     {
-                        var rooms = roomListSnapshot?.ToRoomArray() ?? new JArray();
+                        var rooms = ExtractRoomArray(roomListJson, roomListSnapshot);
                         Debug.Log($"OnlineLobbyScene: Received {rooms.Count} rooms");
                         currentRoomList = rooms;
                         RefreshRoomListView();
@@ -378,10 +431,12 @@ namespace OpenGS
                         var roomInfo = RoomInfoSnapshot.FromJson(json);
                         matchRoomManager.CreateNewOnlineWaitRoom(roomInfo.RoomName, roomInfo.Capacity);
                         var selectedGameMode = ParseGameMode(roomInfo.GameMode);
+                        var selectedMap = ParseMap(roomInfo.Map);
                         var selectedOwnerId = string.IsNullOrWhiteSpace(roomInfo.OwnerId) ? "" : roomInfo.OwnerId;
                         var selectedCapacity = roomInfo.Capacity > 0 ? roomInfo.Capacity : capacity;
                         var selectedTeamBalance = roomInfo.TeamBalance;
-                        var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, selectedCapacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
+                        var selectedPassword = json["Password"]?.ToString() ?? "";
+                        var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, selectedCapacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance, selectedMap, selectedPassword);
                         waitRoom.AddNewPlayer(new PlayerInfo(
                             id: AccountManager.Instance.CurrentProfile.GlobalUserId,
                             name: AccountManager.Instance.CurrentProfile.DisplayName)
@@ -402,7 +457,7 @@ namespace OpenGS
             if (messageType == MessageType.RoomListUpdateNotification)
             {
                 var roomListSnapshot = OpenGSCore.RoomListSnapshot.FromJson(json);
-                var rooms = roomListSnapshot.ToRoomArray();
+                var rooms = ExtractRoomArray(json, roomListSnapshot);
                 Debug.Log($"OnlineLobbyScene: Received {rooms.Count} rooms");
                 currentRoomList = rooms;
                 RefreshRoomListView();
@@ -416,9 +471,11 @@ namespace OpenGS
                     Debug.Log($"OnlineLobbyScene: Room created. RoomID={roomInfo.RoomId}, RoomName={roomInfo.RoomName}");
                     matchRoomManager.CreateNewOnlineWaitRoom(roomInfo.RoomName, roomInfo.Capacity);
                     var createdGameMode = ParseGameMode(roomInfo.GameMode);
+                    var createdMap = ParseMap(roomInfo.Map);
                     var createdOwnerId = string.IsNullOrWhiteSpace(roomInfo.OwnerId) ? "local_player" : roomInfo.OwnerId;
                     var createdTeamBalance = roomInfo.TeamBalance;
-                    var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, roomInfo.Capacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1, createdGameMode, createdOwnerId, createdTeamBalance);
+                    var createdPassword = json["Password"]?.ToString() ?? "";
+                    var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, roomInfo.Capacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1, createdGameMode, createdOwnerId, createdTeamBalance, createdMap, createdPassword);
                     waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName)
                     {
                         playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
@@ -443,10 +500,12 @@ namespace OpenGS
                     var playerCount = roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : ReadPlayerCount(json);
                     matchRoomManager.CreateNewOnlineWaitRoom(roomName, roomInfo.Capacity);
                     var selectedGameMode = ParseGameMode(roomInfo.GameMode);
+                    var selectedMap = ParseMap(roomInfo.Map);
                     var selectedOwnerId = roomInfo.OwnerId;
                     var selectedCapacity = roomInfo.Capacity;
                     var selectedTeamBalance = roomInfo.TeamBalance;
-                    var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, selectedCapacity, playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
+                    var selectedPassword = json["Password"]?.ToString() ?? "";
+                    var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, selectedCapacity, playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance, selectedMap, selectedPassword);
                     waitRoom.AddNewPlayer(new PlayerInfo(
                         id: AccountManager.Instance.CurrentProfile.GlobalUserId,
                         name: AccountManager.Instance.CurrentProfile.DisplayName)
@@ -557,6 +616,7 @@ namespace OpenGS
             var maxPlayer = dialogScript.MaxPlayer();
             var password  = dialogScript.Password();
             var gameMode  = dialogScript.GameMode();
+            var map = dialogScript.Map();
 
             var json = new JObject
             {
@@ -564,6 +624,7 @@ namespace OpenGS
                 ["RoomName"] = dialogScript.RoomName(),
                 ["Capacity"] = maxPlayer.ToString(),
                 ["GameMode"] = gameMode.ToString(),
+                ["Map"] = map.ToString(),
                 ["TeamBalance"] = dialogScript.TeamBalance() ? "True" : "False",
                 ["Password"] = password ?? ""
             };
@@ -572,6 +633,7 @@ namespace OpenGS
                 dialogScript.RoomName(),
                 maxPlayer,
                 gameMode.ToString(),
+                map.ToString(),
                 dialogScript.TeamBalance(),
                 password);
             Debug.Log($"OnlineLobbyScene: Sent {MessageType.CreateRoomRequest}: {json.ToString(Formatting.None)}");
@@ -735,6 +797,287 @@ namespace OpenGS
             return null;
         }
 
+        private void ShowPasswordPrompt(string roomId, string roomName, string playerId, string playerName)
+        {
+            pendingPasswordRoomId = roomId ?? "";
+            pendingPasswordRoomName = roomName ?? "Room";
+            pendingPasswordPlayerId = playerId ?? GetCurrentPlayerId();
+            pendingPasswordPlayerName = playerName ?? GetCurrentPlayerName();
+
+            EnsurePasswordPromptUi();
+
+            if (roomPasswordTitleText != null)
+            {
+                roomPasswordTitleText.text = "パスワードが必要です";
+            }
+
+            if (roomPasswordMessageText != null)
+            {
+                roomPasswordMessageText.text = $"{pendingPasswordRoomName} は鍵付きです。";
+            }
+
+            if (roomPasswordInput != null)
+            {
+                roomPasswordInput.text = "";
+                roomPasswordInput.ActivateInputField();
+                roomPasswordInput.Select();
+            }
+
+            if (roomPasswordDialog != null)
+            {
+                roomPasswordDialog.SetActive(true);
+            }
+        }
+
+        private void HidePasswordPrompt()
+        {
+            if (roomPasswordDialog != null)
+            {
+                roomPasswordDialog.SetActive(false);
+            }
+        }
+
+        private void ConfirmPasswordPrompt()
+        {
+            var password = roomPasswordInput != null ? roomPasswordInput.text : "";
+            var roomId = pendingPasswordRoomId;
+            var playerId = pendingPasswordPlayerId;
+            var playerName = pendingPasswordPlayerName;
+
+            HidePasswordPrompt();
+
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                ShowInfoDialog("パスワード入力", "部屋情報が見つかりませんでした。");
+                return;
+            }
+
+            SendEnterRoomRequest(roomId, playerId, playerName, password);
+        }
+
+        private void CancelPasswordPrompt()
+        {
+            pendingPasswordRoomId = "";
+            pendingPasswordRoomName = "";
+            pendingPasswordPlayerId = "";
+            pendingPasswordPlayerName = "";
+            HidePasswordPrompt();
+        }
+
+        private void EnsurePasswordPromptUi()
+        {
+            if (roomPasswordDialog == null)
+            {
+                roomPasswordDialog = GetOrCreatePasswordPromptRoot();
+            }
+
+            if (roomPasswordDialog == null)
+            {
+                return;
+            }
+
+            if (roomPasswordTitleText == null)
+            {
+                roomPasswordTitleText = roomPasswordDialog.GetComponentInChildren<TextMeshProUGUI>(true);
+            }
+
+            if (roomPasswordMessageText == null)
+            {
+                var texts = roomPasswordDialog.GetComponentsInChildren<TextMeshProUGUI>(true);
+                if (texts.Length > 1)
+                {
+                    roomPasswordMessageText = texts[1];
+                }
+            }
+
+            if (roomPasswordInput == null)
+            {
+                roomPasswordInput = roomPasswordDialog.GetComponentInChildren<TMP_InputField>(true);
+            }
+
+            if (roomPasswordOkButton == null)
+            {
+                roomPasswordOkButton = FindChildButton(roomPasswordDialog.transform, "OK");
+            }
+
+            if (roomPasswordCancelButton == null)
+            {
+                roomPasswordCancelButton = FindChildButton(roomPasswordDialog.transform, "Cancel");
+            }
+
+            if (roomPasswordOkButton != null)
+            {
+                roomPasswordOkButton.onClick.RemoveListener(ConfirmPasswordPrompt);
+                roomPasswordOkButton.onClick.AddListener(ConfirmPasswordPrompt);
+            }
+
+            if (roomPasswordCancelButton != null)
+            {
+                roomPasswordCancelButton.onClick.RemoveListener(CancelPasswordPrompt);
+                roomPasswordCancelButton.onClick.AddListener(CancelPasswordPrompt);
+            }
+        }
+
+        private GameObject GetOrCreatePasswordPromptRoot()
+        {
+            if (roomPasswordDialog != null)
+            {
+                return roomPasswordDialog;
+            }
+
+            var parent = GetCreateNewRoomDialogParent();
+            if (parent == null)
+            {
+                parent = transform;
+            }
+
+            var root = new GameObject("RoomPasswordDialog", typeof(RectTransform), typeof(Image));
+            root.transform.SetParent(parent, false);
+
+            var rect = root.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(520f, 260f);
+            rect.anchoredPosition = Vector2.zero;
+
+            var background = root.GetComponent<Image>();
+            background.color = new Color(0.08f, 0.12f, 0.18f, 0.96f);
+
+            CreatePromptText(root.transform, "Title", "パスワードが必要です", new Vector2(0f, 90f), 30f, FontStyles.Bold);
+            CreatePromptText(root.transform, "Message", "この部屋は鍵付きです。", new Vector2(0f, 56f), 20f, FontStyles.Normal);
+            roomPasswordInput = CreatePasswordInput(root.transform);
+            roomPasswordOkButton = CreatePromptButton(root.transform, "OK", "OK", new Vector2(-90f, -78f));
+            roomPasswordCancelButton = CreatePromptButton(root.transform, "Cancel", "Cancel", new Vector2(90f, -78f));
+
+            roomPasswordTitleText = root.transform.Find("Title")?.GetComponent<TextMeshProUGUI>();
+            roomPasswordMessageText = root.transform.Find("Message")?.GetComponent<TextMeshProUGUI>();
+
+            root.SetActive(false);
+            return root;
+        }
+
+        private static TextMeshProUGUI CreatePromptText(Transform parent, string name, string text, Vector2 anchoredPosition, float fontSize, FontStyles fontStyle)
+        {
+            var go = new GameObject(name, typeof(RectTransform));
+            go.transform.SetParent(parent, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(460f, 32f);
+            rect.anchoredPosition = anchoredPosition;
+
+            var label = go.AddComponent<TextMeshProUGUI>();
+            label.text = text;
+            label.fontSize = fontSize;
+            label.fontStyle = fontStyle;
+            label.alignment = TextAlignmentOptions.Center;
+            label.color = Color.white;
+            label.raycastTarget = false;
+            return label;
+        }
+
+        private static TMP_InputField CreatePasswordInput(Transform parent)
+        {
+            var go = new GameObject("PasswordInput", typeof(RectTransform), typeof(Image), typeof(TMP_InputField));
+            go.transform.SetParent(parent, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(300f, 40f);
+            rect.anchoredPosition = new Vector2(0f, 5f);
+
+            var bg = go.GetComponent<Image>();
+            bg.color = new Color(1f, 1f, 1f, 0.95f);
+
+            var textArea = new GameObject("Text Area", typeof(RectTransform));
+            textArea.transform.SetParent(go.transform, false);
+            var textAreaRect = textArea.GetComponent<RectTransform>();
+            textAreaRect.anchorMin = new Vector2(0f, 0f);
+            textAreaRect.anchorMax = new Vector2(1f, 1f);
+            textAreaRect.offsetMin = new Vector2(10f, 6f);
+            textAreaRect.offsetMax = new Vector2(-10f, -6f);
+
+            var placeholderGO = new GameObject("Placeholder", typeof(RectTransform));
+            placeholderGO.transform.SetParent(textArea.transform, false);
+            var placeholder = placeholderGO.AddComponent<TextMeshProUGUI>();
+            placeholder.text = "4桁のパスワード";
+            placeholder.fontSize = 18f;
+            placeholder.color = new Color(0.55f, 0.55f, 0.55f, 1f);
+            placeholder.alignment = TextAlignmentOptions.MidlineLeft;
+            placeholder.raycastTarget = false;
+
+            var textGO = new GameObject("Text", typeof(RectTransform));
+            textGO.transform.SetParent(textArea.transform, false);
+            var text = textGO.AddComponent<TextMeshProUGUI>();
+            text.fontSize = 18f;
+            text.color = new Color(0.1f, 0.1f, 0.1f, 1f);
+            text.alignment = TextAlignmentOptions.MidlineLeft;
+            text.raycastTarget = false;
+
+            var input = go.GetComponent<TMP_InputField>();
+            input.textViewport = textAreaRect;
+            input.textComponent = text;
+            input.placeholder = placeholder;
+            input.contentType = TMP_InputField.ContentType.IntegerNumber;
+            input.characterLimit = 4;
+            input.lineType = TMP_InputField.LineType.SingleLine;
+            return input;
+        }
+
+        private static Button CreatePromptButton(Transform parent, string name, string labelText, Vector2 anchoredPosition)
+        {
+            var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button));
+            go.transform.SetParent(parent, false);
+            var rect = go.GetComponent<RectTransform>();
+            rect.anchorMin = new Vector2(0.5f, 0.5f);
+            rect.anchorMax = new Vector2(0.5f, 0.5f);
+            rect.pivot = new Vector2(0.5f, 0.5f);
+            rect.sizeDelta = new Vector2(120f, 36f);
+            rect.anchoredPosition = anchoredPosition;
+
+            var image = go.GetComponent<Image>();
+            image.color = new Color(0.2f, 0.35f, 0.55f, 1f);
+
+            var labelGO = new GameObject("Label", typeof(RectTransform));
+            labelGO.transform.SetParent(go.transform, false);
+            var labelRect = labelGO.GetComponent<RectTransform>();
+            labelRect.anchorMin = Vector2.zero;
+            labelRect.anchorMax = Vector2.one;
+            labelRect.offsetMin = Vector2.zero;
+            labelRect.offsetMax = Vector2.zero;
+
+            var label = labelGO.AddComponent<TextMeshProUGUI>();
+            label.text = labelText;
+            label.fontSize = 18f;
+            label.fontStyle = FontStyles.Bold;
+            label.alignment = TextAlignmentOptions.Center;
+            label.color = Color.white;
+            label.raycastTarget = false;
+
+            return go.GetComponent<Button>();
+        }
+
+        private static Button FindChildButton(Transform root, string buttonName)
+        {
+            if (root == null)
+            {
+                return null;
+            }
+
+            foreach (var button in root.GetComponentsInChildren<Button>(true))
+            {
+                if (button != null && string.Equals(button.name, buttonName, StringComparison.OrdinalIgnoreCase))
+                {
+                    return button;
+                }
+            }
+
+            return null;
+        }
+
         private void OnGameSceneLoaded(Scene next, LoadSceneMode mode)
         {
             SceneManager.sceneLoaded -= OnGameSceneLoaded;
@@ -792,6 +1135,7 @@ namespace OpenGS
                 var gameMode = room["GameMode"]?.ToString() ?? "";
                 var capacity = room["Capacity"]?.ToObject<int>() ?? 0;
                 var players = room["PlayerCount"]?.ToObject<int>() ?? room["Players"]?.ToObject<int>() ?? 0;
+                var accessMark = IsPasswordProtectedRoom(room) ? " [LOCK]" : "";
                 var isSelected = string.Equals(roomId, currentSelectedRoomId, StringComparison.OrdinalIgnoreCase);
 
                 var instance = Instantiate(RoomButton, roomPanel.transform);
@@ -812,7 +1156,7 @@ namespace OpenGS
                 var label = instance.GetComponentInChildren<Text>(true);
                 if (label != null)
                 {
-                    label.text = $"{roomName}\n{gameMode}  {players}/{capacity}";
+                    label.text = $"{roomName}{accessMark}\n{gameMode}  {players}/{capacity}";
                 }
 
                 var image = instance.GetComponent<Image>();
@@ -895,6 +1239,16 @@ namespace OpenGS
             }
 
             return filtered;
+        }
+
+        private static JArray ExtractRoomArray(JObject json, OpenGSCore.RoomListSnapshot roomListSnapshot)
+        {
+            if (json?["Rooms"] is JArray rawRooms)
+            {
+                return rawRooms;
+            }
+
+            return roomListSnapshot?.ToRoomArray() ?? new JArray();
         }
 
         private JObject FindFirstFilteredRoom()
@@ -1018,6 +1372,10 @@ namespace OpenGS
 
                 var capacity = room["Capacity"]?.ToObject<int>() ?? 0;
                 var playerCount = GetRoomPlayerCount(room);
+                if (IsPasswordProtectedRoom(room))
+                {
+                    continue;
+                }
                 if (capacity <= 0 || playerCount >= capacity)
                 {
                     continue;
@@ -1065,6 +1423,22 @@ namespace OpenGS
             return 0;
         }
 
+        private static bool IsPasswordProtectedRoom(JObject room)
+        {
+            if (room == null)
+            {
+                return false;
+            }
+
+            var hasPasswordToken = room["HasPassword"];
+            if (hasPasswordToken != null && bool.TryParse(hasPasswordToken.ToString(), out var hasPassword))
+            {
+                return hasPassword;
+            }
+
+            return !string.IsNullOrWhiteSpace(room["Password"]?.ToString());
+        }
+
         private string GetCurrentPlayerName()
         {
             var profile = AccountManager.Instance?.CurrentProfile;
@@ -1081,6 +1455,11 @@ namespace OpenGS
         private static EGameMode ParseGameMode(string value)
         {
             return Enum.TryParse(value, out EGameMode parsed) ? parsed : EGameMode.DeathMatch;
+        }
+
+        private static EMap ParseMap(string value)
+        {
+            return Enum.TryParse(value, out EMap parsed) ? parsed : EMap.DryDays;
         }
 
         private static bool ParseBool(string value)

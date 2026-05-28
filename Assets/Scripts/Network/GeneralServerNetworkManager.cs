@@ -28,6 +28,7 @@ namespace OpenGS
             public int Capacity { get; set; } = 8;
             public string GameMode { get; set; } = "TeamDeathMatch";
             public string Map { get; set; } = "";
+            public string Password { get; set; } = "";
             public bool TeamBalance { get; set; } = true;
             public int PlayerCount { get; set; } = 0;
             public List<RoomPlayerRecord> Players { get; } = new List<RoomPlayerRecord>();
@@ -43,6 +44,25 @@ namespace OpenGS
             public Dictionary<int, string> EquippedInstantItems { get; } = new Dictionary<int, string>();
         }
 
+        private sealed class GuildMemberRecord
+        {
+            public string PlayerId { get; set; } = "";
+            public string Role { get; set; } = "Member";
+            public string JoinedAt { get; set; } = DateTime.UtcNow.ToString("o");
+        }
+
+        private sealed class GuildRecord
+        {
+            public string Id { get; set; } = Guid.NewGuid().ToString("N");
+            public string GuildName { get; set; } = "";
+            public string GuildShortName { get; set; } = "";
+            public string LeaderId { get; set; } = "";
+            public int Level { get; set; } = 1;
+            public long Experience { get; set; } = 0;
+            public string CreationTime { get; set; } = DateTime.UtcNow.ToString("o");
+            public Dictionary<string, GuildMemberRecord> Members { get; } = new Dictionary<string, GuildMemberRecord>(StringComparer.OrdinalIgnoreCase);
+        }
+
         private readonly Subject<JObject> dataReceivedSubject = new Subject<JObject>();
         private readonly Subject<Unit> connectedSubject = new Subject<Unit>();
         private readonly Subject<Unit> disconnectedSubject = new Subject<Unit>();
@@ -50,6 +70,7 @@ namespace OpenGS
         private readonly List<INetworkManagerScript> scripts = new List<INetworkManagerScript>();
         private readonly List<RoomRecord> localRooms = new List<RoomRecord>();
         private readonly Dictionary<string, AccountRecord> accounts = new Dictionary<string, AccountRecord>();
+        private readonly Dictionary<string, GuildRecord> localGuilds = new Dictionary<string, GuildRecord>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> loadingCompletedPlayers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private int localRoomSequence = 1;
         private string currentAccountId = "";
@@ -143,14 +164,32 @@ namespace OpenGS
             }
 
             var json = snapshot.ToJson();
+            if (json["Rooms"] is JArray rooms)
+            {
+                foreach (var roomToken in rooms)
+                {
+                    if (roomToken is not JObject roomJson)
+                    {
+                        continue;
+                    }
+
+                    var roomId = roomJson["RoomId"]?.ToString() ?? roomJson["RoomID"]?.ToString() ?? "";
+                    var room = localRooms.Find(candidate => string.Equals(candidate.RoomId, roomId, StringComparison.OrdinalIgnoreCase));
+                    if (room != null)
+                    {
+                        roomJson["HasPassword"] = !string.IsNullOrWhiteSpace(room.Password);
+                    }
+                }
+            }
+
             json["MessageType"] = MessageType.RoomListUpdateRequest;
             json["MatchRoomType"] = (modes == null || modes.Count == 0) ? "All" : string.Join(",", modes);
             json["Options"] = "";
             SendMessage(json);
-            EmitToClient(snapshot.ToJson());
+            EmitToClient(json);
         }
 
-        public void SendCreateNewWaitRoomRequest(string roomName, int capacity, string gameMode, bool teamBalance, string password = "")
+        public void SendCreateNewWaitRoomRequest(string roomName, int capacity, string gameMode, string map, bool teamBalance, string password = "")
         {
             var roomId = $"room-{localRoomSequence++:D4}";
             var ownerId = ResolveLocalPlayerId();
@@ -163,13 +202,17 @@ namespace OpenGS
                 OwnerId = ownerId,
                 Capacity = capacity,
                 GameMode = string.IsNullOrWhiteSpace(gameMode) ? "TeamDeathMatch" : gameMode,
+                Map = string.IsNullOrWhiteSpace(map) ? EMap.Unknown.ToString() : map,
+                Password = password ?? "",
                 TeamBalance = teamBalance
             };
             room.Players.Add(CreateLocalRoomPlayerRecord(ownerId, ResolveLocalPlayerName(), false));
             room.PlayerCount = room.Players.Count;
             localRooms.Add(room);
 
-            EmitToClient(BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.CreateRoomResponse));
+            var createResponse = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.CreateRoomResponse);
+            createResponse["Password"] = room.Password;
+            EmitToClient(createResponse);
             EmitToClient(BuildRoomInfoSnapshot(room).ToNotificationJson(MessageType.RoomCreated));
         }
 
@@ -183,6 +226,18 @@ namespace OpenGS
                     ["MessageType"] = MessageType.JoinRoomResponse,
                     ["Success"] = false,
                     ["ErrorMessage"] = "Room not found",
+                    ["RoomID"] = roomId
+                });
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(room.Password) && !string.Equals(room.Password, password ?? string.Empty, StringComparison.Ordinal))
+            {
+                EmitToClient(new JObject
+                {
+                    ["MessageType"] = MessageType.JoinRoomResponse,
+                    ["Success"] = false,
+                    ["ErrorMessage"] = "Incorrect password",
                     ["RoomID"] = roomId
                 });
                 return;
@@ -210,6 +265,7 @@ namespace OpenGS
             var response = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.JoinRoomResponse);
             response["PlayerID"] = playerId;
             response["PlayerName"] = playerName;
+            response["Password"] = password ?? "";
             EmitToClient(response);
         }
 
@@ -509,6 +565,187 @@ namespace OpenGS
                     });
                     break;
                 }
+                case MessageType.GuildListRequest:
+                {
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.GuildListResponse,
+                        ["Success"] = true,
+                        ["Guilds"] = BuildGuildListArray()
+                    });
+                    break;
+                }
+                case MessageType.GuildInfoRequest:
+                {
+                    var guildName = json["GuildName"]?.ToString() ?? "";
+                    if (!TryGetGuild(guildName, out var guild))
+                    {
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = MessageType.GuildInfoResponse,
+                            ["Success"] = false,
+                            ["GuildName"] = guildName,
+                            ["ErrorMessage"] = $"Guild '{guildName}' was not found"
+                        });
+                        break;
+                    }
+
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.GuildInfoResponse,
+                        ["Success"] = true,
+                        ["Guild"] = BuildGuildDetailJson(guild)
+                    });
+                    break;
+                }
+                case MessageType.GuildCreateRequest:
+                {
+                    var guildName = json["GuildName"]?.ToString() ?? "";
+                    var shortName = json["GuildShortName"]?.ToString() ?? guildName;
+                    var leaderId = ResolvePlayerId(json, "LeaderId", "LeaderID", "PlayerID", "PlayerId");
+                    var created = TryCreateGuild(guildName, shortName, leaderId, out var guild);
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.GuildCreateResponse,
+                        ["Success"] = created,
+                        ["GuildName"] = guildName,
+                        ["Guild"] = created ? BuildGuildDetailJson(guild) : null,
+                        ["ErrorMessage"] = created ? string.Empty : $"Guild '{guildName}' could not be created"
+                    });
+                    break;
+                }
+                case MessageType.GuildJoinRequest:
+                {
+                    var guildName = json["GuildName"]?.ToString() ?? "";
+                    var memberId = ResolvePlayerId(json, "MemberId", "MemberID", "PlayerID", "PlayerId");
+                    var role = json["Role"]?.ToString() ?? "Member";
+                    var joined = TryJoinGuild(guildName, memberId, role, out var guild);
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.GuildJoinResponse,
+                        ["Success"] = joined,
+                        ["GuildName"] = guildName,
+                        ["MemberId"] = memberId,
+                        ["Role"] = role,
+                        ["Guild"] = joined ? BuildGuildDetailJson(guild) : null,
+                        ["ErrorMessage"] = joined ? string.Empty : $"Failed to join guild '{guildName}'"
+                    });
+                    break;
+                }
+                case MessageType.GuildLeaveRequest:
+                {
+                    var guildName = json["GuildName"]?.ToString() ?? "";
+                    var memberId = ResolvePlayerId(json, "MemberId", "MemberID", "PlayerID", "PlayerId");
+                    var left = TryLeaveGuild(guildName, memberId, out var guild);
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.GuildLeaveResponse,
+                        ["Success"] = left,
+                        ["GuildName"] = guildName,
+                        ["MemberId"] = memberId,
+                        ["Guild"] = left && guild != null ? BuildGuildDetailJson(guild) : null,
+                        ["ErrorMessage"] = left ? string.Empty : $"Failed to leave guild '{guildName}'"
+                    });
+                    break;
+                }
+                case MessageType.GuildInviteRequest:
+                {
+                    var guildName = json["GuildName"]?.ToString() ?? "";
+                    var targetPlayerId = ResolvePlayerId(json, "TargetPlayerId", "TargetPlayerID", "MemberId", "MemberID");
+                    var inviterId = ResolvePlayerId(json, "InviterId", "InviterID", "PlayerID", "PlayerId");
+                    var message = json["Message"]?.ToString() ?? "";
+                    var canInvite = TryGetGuild(guildName, out var guild) && !IsGuildMember(guildName, targetPlayerId);
+                    var delivered = false;
+
+                    if (canInvite && !string.IsNullOrWhiteSpace(targetPlayerId))
+                    {
+                        delivered = true;
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = MessageType.GuildInviteNotification,
+                            ["Success"] = true,
+                            ["GuildName"] = guildName,
+                            ["TargetPlayerId"] = targetPlayerId,
+                            ["InviterId"] = inviterId,
+                            ["Message"] = message,
+                            ["Guild"] = BuildGuildDetailJson(guild)
+                        });
+                    }
+
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.GuildInviteResponse,
+                        ["Success"] = canInvite,
+                        ["GuildName"] = guildName,
+                        ["TargetPlayerId"] = targetPlayerId,
+                        ["InviterId"] = inviterId,
+                        ["Delivered"] = delivered,
+                        ["ErrorMessage"] = canInvite ? string.Empty : $"Failed to invite '{targetPlayerId}' to guild '{guildName}'"
+                    });
+                    break;
+                }
+                case MessageType.GuildKickRequest:
+                {
+                    var guildName = json["GuildName"]?.ToString() ?? "";
+                    var memberId = ResolvePlayerId(json, "MemberId", "MemberID", "TargetPlayerId", "TargetPlayerID");
+                    var kickerId = ResolvePlayerId(json, "KickerId", "KickerID", "PlayerID", "PlayerId");
+                    var kicked = TryKickGuildMember(guildName, memberId, out var guild);
+                    if (kicked && !string.IsNullOrWhiteSpace(memberId))
+                    {
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = MessageType.GuildKickNotification,
+                            ["Success"] = true,
+                            ["GuildName"] = guildName,
+                            ["MemberId"] = memberId,
+                            ["KickerId"] = kickerId,
+                            ["Guild"] = BuildGuildDetailJson(guild)
+                        });
+                    }
+
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.GuildKickResponse,
+                        ["Success"] = kicked,
+                        ["GuildName"] = guildName,
+                        ["MemberId"] = memberId,
+                        ["KickerId"] = kickerId,
+                        ["ErrorMessage"] = kicked ? string.Empty : $"Failed to kick '{memberId}' from guild '{guildName}'"
+                    });
+                    break;
+                }
+                case MessageType.GuildChatRequest:
+                {
+                    var guildName = json["GuildName"]?.ToString() ?? "";
+                    var senderId = ResolvePlayerId(json, "SenderId", "SenderID", "PlayerID", "PlayerId");
+                    var message = json["Message"]?.ToString() ?? "";
+                    if (TryGetGuild(guildName, out var guild) && !string.IsNullOrWhiteSpace(message))
+                    {
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = MessageType.GuildChatNotification,
+                            ["Success"] = true,
+                            ["GuildName"] = guildName,
+                            ["SenderID"] = senderId,
+                            ["Message"] = message,
+                            ["Guild"] = BuildGuildDetailJson(guild),
+                            ["Timestamp"] = DateTime.UtcNow.ToString("o")
+                        });
+                    }
+                    else
+                    {
+                        EmitToClient(new JObject
+                        {
+                            ["MessageType"] = MessageType.GuildChatNotification,
+                            ["Success"] = false,
+                            ["GuildName"] = guildName,
+                            ["SenderID"] = senderId,
+                            ["Message"] = message,
+                            ["ErrorMessage"] = $"Failed to send guild chat for '{guildName}'"
+                        });
+                    }
+                    break;
+                }
                 case MessageType.MatchServerInfoRequest:
                 {
                     EmitToClient(new JObject
@@ -626,6 +863,175 @@ namespace OpenGS
                 ["ToScene"] = toScene,
                 ["Reason"] = approved ? "Approved" : BuildSceneTransitionDenyReason(fromScene, toScene, reason)
             });
+        }
+
+        private JArray BuildGuildListArray()
+        {
+            var result = new JArray();
+            foreach (var guild in localGuilds.Values.OrderBy(g => g.GuildName))
+            {
+                result.Add(BuildGuildSummaryJson(guild));
+            }
+
+            return result;
+        }
+
+        private static JObject BuildGuildSummaryJson(GuildRecord guild)
+        {
+            return new JObject
+            {
+                ["Id"] = guild.Id,
+                ["GuildName"] = guild.GuildName,
+                ["GuildShortName"] = guild.GuildShortName,
+                ["LeaderId"] = guild.LeaderId,
+                ["Level"] = guild.Level,
+                ["Experience"] = guild.Experience,
+                ["CreationTime"] = guild.CreationTime,
+                ["MemberCount"] = guild.Members.Count
+            };
+        }
+
+        private static JObject BuildGuildDetailJson(GuildRecord guild)
+        {
+            var memberArray = new JArray();
+            foreach (var member in guild.Members.Values
+                         .OrderBy(member => string.Equals(member.Role, "Leader", StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+                         .ThenBy(member => member.PlayerId))
+            {
+                memberArray.Add(new JObject
+                {
+                    ["MemberId"] = member.PlayerId,
+                    ["Role"] = member.Role,
+                    ["JoinedAt"] = member.JoinedAt
+                });
+            }
+
+            return new JObject
+            {
+                ["Id"] = guild.Id,
+                ["GuildName"] = guild.GuildName,
+                ["GuildShortName"] = guild.GuildShortName,
+                ["LeaderId"] = guild.LeaderId,
+                ["Level"] = guild.Level,
+                ["Experience"] = guild.Experience,
+                ["CreationTime"] = guild.CreationTime,
+                ["MemberCount"] = guild.Members.Count,
+                ["Members"] = memberArray
+            };
+        }
+
+        private bool TryGetGuild(string guildName, out GuildRecord guild)
+        {
+            guild = null;
+
+            if (string.IsNullOrWhiteSpace(guildName))
+            {
+                return false;
+            }
+
+            return localGuilds.TryGetValue(guildName, out guild);
+        }
+
+        private bool TryCreateGuild(string guildName, string shortName, string leaderId, out GuildRecord guild)
+        {
+            guild = null;
+
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(leaderId))
+            {
+                return false;
+            }
+
+            if (localGuilds.ContainsKey(guildName))
+            {
+                return false;
+            }
+
+            guild = new GuildRecord
+            {
+                GuildName = guildName,
+                GuildShortName = string.IsNullOrWhiteSpace(shortName) ? guildName : shortName,
+                LeaderId = leaderId
+            };
+
+            guild.Members[leaderId] = new GuildMemberRecord
+            {
+                PlayerId = leaderId,
+                Role = "Leader",
+                JoinedAt = DateTime.UtcNow.ToString("o")
+            };
+
+            localGuilds[guildName] = guild;
+            return true;
+        }
+
+        private bool TryJoinGuild(string guildName, string memberId, string role, out GuildRecord guild)
+        {
+            guild = null;
+
+            if (!TryGetGuild(guildName, out guild) || string.IsNullOrWhiteSpace(memberId))
+            {
+                return false;
+            }
+
+            if (guild.Members.ContainsKey(memberId))
+            {
+                return false;
+            }
+
+            guild.Members[memberId] = new GuildMemberRecord
+            {
+                PlayerId = memberId,
+                Role = string.IsNullOrWhiteSpace(role) ? "Member" : role,
+                JoinedAt = DateTime.UtcNow.ToString("o")
+            };
+
+            if (string.Equals(role, "Leader", StringComparison.OrdinalIgnoreCase))
+            {
+                guild.LeaderId = memberId;
+            }
+
+            return true;
+        }
+
+        private bool TryLeaveGuild(string guildName, string memberId, out GuildRecord guild)
+        {
+            guild = null;
+
+            if (!TryGetGuild(guildName, out guild) || string.IsNullOrWhiteSpace(memberId))
+            {
+                return false;
+            }
+
+            if (!guild.Members.Remove(memberId))
+            {
+                return false;
+            }
+
+            if (string.Equals(guild.LeaderId, memberId, StringComparison.OrdinalIgnoreCase))
+            {
+                var nextLeader = guild.Members.Values.FirstOrDefault();
+                if (nextLeader != null)
+                {
+                    nextLeader.Role = "Leader";
+                    guild.LeaderId = nextLeader.PlayerId;
+                }
+                else
+                {
+                    guild.LeaderId = string.Empty;
+                }
+            }
+
+            return true;
+        }
+
+        private bool TryKickGuildMember(string guildName, string memberId, out GuildRecord guild)
+        {
+            return TryLeaveGuild(guildName, memberId, out guild);
+        }
+
+        private bool IsGuildMember(string guildName, string memberId)
+        {
+            return TryGetGuild(guildName, out var guild) && guild.Members.ContainsKey(memberId);
         }
 
         private bool IsSceneTransitionAllowed(string fromScene, string toScene, string reason)
@@ -900,6 +1306,11 @@ namespace OpenGS
             if (settings["TeamBalance"] != null)
             {
                 room.TeamBalance = settings["TeamBalance"]!.ToObject<bool>();
+            }
+
+            if (settings["Password"] != null)
+            {
+                room.Password = settings["Password"]!.ToString();
             }
 
             if (settings["PlayerCharacter"] != null)

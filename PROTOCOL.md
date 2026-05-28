@@ -89,6 +89,27 @@ For the transport split, see [NETWORK_TRANSPORT_POLICY.md](/C:/Users/kukul/OneDr
 - `ShopEquipRequest`
 - `ShopEquipResponse`
 
+### Guild
+
+- `GuildListRequest`
+- `GuildListResponse`
+- `GuildInfoRequest`
+- `GuildInfoResponse`
+- `GuildCreateRequest`
+- `GuildCreateResponse`
+- `GuildJoinRequest`
+- `GuildJoinResponse`
+- `GuildLeaveRequest`
+- `GuildLeaveResponse`
+- `GuildInviteRequest`
+- `GuildInviteResponse`
+- `GuildInviteNotification`
+- `GuildKickRequest`
+- `GuildKickResponse`
+- `GuildKickNotification`
+- `GuildChatRequest`
+- `GuildChatNotification`
+
 ### Match result
 
 - `MatchEndNotification`
@@ -98,8 +119,8 @@ For the transport split, see [NETWORK_TRANSPORT_POLICY.md](/C:/Users/kukul/OneDr
 The canonical message list above does not automatically define the transport.
 Use the transport policy document for the actual split:
 
-- `TCP` for authentication, lobby, room, wait-room, loading, shop, friend, and
-  result flow
+- `TCP` for authentication, lobby, room, wait-room, loading, shop, friend,
+  guild, and result flow
 - `RUDP` for match-time player state, combat events, and fast sync
 
 In practice:

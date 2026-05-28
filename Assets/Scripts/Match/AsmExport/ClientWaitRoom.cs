@@ -18,6 +18,7 @@ namespace OpenGS
         public EGameMode GameMode { get; set; } = EGameMode.DeathMatch;
         public EMap Map { get; set; } = EMap.Unknown;
         public bool TeamBalance { get; set; } = false;
+        public string Password { get; set; } = "";
 
         public List<OpenGSCore.PlayerInfo> PlayerList { get; set; } = new();
 

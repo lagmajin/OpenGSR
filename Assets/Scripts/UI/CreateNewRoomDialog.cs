@@ -27,6 +27,9 @@ namespace OpenGS
         
         [Header("ゲームモード")]
         [SerializeField] private TMP_Dropdown gameModeDropdown;
+
+        [Header("マップ")]
+        [SerializeField] private TMP_Dropdown mapDropdown;
         
         [Header("チームバランス")]
         [SerializeField] private Toggle teamBalanceToggle;
@@ -47,6 +50,7 @@ namespace OpenGS
         private int maxPlayer = 8;
         private string password = "";
         private EGameMode selectedGameMode = EGameMode.TeamDeathMatch;
+        private EMap selectedMap = EMap.DryDays;
         private bool teamBalance = true;
         private bool isPasswordEnabled = false;
         private TextMeshProUGUI fallbackTitleText;
@@ -108,6 +112,21 @@ namespace OpenGS
                 }
             }
 
+            if (mapDropdown != null)
+            {
+                mapDropdown.ClearOptions();
+                var maps = Enum.GetValues(typeof(EMap))
+                    .Cast<EMap>()
+                    .Where(map => map != EMap.Unknown)
+                    .ToList();
+                var mapOptions = maps.Select(GetMapDisplayName).ToList();
+                mapDropdown.AddOptions(mapOptions);
+                var defaultMap = ResolveDefaultMap(selectedGameMode);
+                var mapIndex = maps.IndexOf(defaultMap);
+                mapDropdown.value = mapIndex >= 0 ? mapIndex : 0;
+                selectedMap = mapIndex >= 0 ? maps[mapIndex] : maps.FirstOrDefault();
+            }
+
             // パスワードパネルを非表示
             if (passwordPanel != null)
             {
@@ -159,6 +178,11 @@ namespace OpenGS
                 gameModeDropdown.onValueChanged.AddListener(OnGameModeChanged);
             }
 
+            if (mapDropdown != null)
+            {
+                mapDropdown.onValueChanged.AddListener(OnMapChanged);
+            }
+
             // チームバランストグル
             if (teamBalanceToggle != null)
             {
@@ -182,6 +206,20 @@ namespace OpenGS
             roomNameInput ??= GetComponentsInChildren<TMP_InputField>(true).FirstOrDefault();
             passwordInput ??= GetComponentsInChildren<TMP_InputField>(true).Skip(roomNameInput != null ? 1 : 0).FirstOrDefault();
             passwordPanel ??= passwordInput != null ? passwordInput.transform.parent?.gameObject : null;
+
+            var dropdowns = GetComponentsInChildren<TMP_Dropdown>(true).ToList();
+            if (maxPlayerDropdown == null && dropdowns.Count > 0)
+            {
+                maxPlayerDropdown = dropdowns[0];
+            }
+            if (gameModeDropdown == null && dropdowns.Count > 1)
+            {
+                gameModeDropdown = dropdowns[1];
+            }
+            if (mapDropdown == null)
+            {
+                mapDropdown = dropdowns.FirstOrDefault(dropdown => dropdown != maxPlayerDropdown && dropdown != gameModeDropdown);
+            }
 
             var toggles = GetComponentsInChildren<Toggle>(true).ToList();
             if (passwordToggle == null && toggles.Count > 0)
@@ -316,6 +354,7 @@ namespace OpenGS
                 $"Mode: {GetGameModeDisplayName(selectedGameMode)}",
                 $"Players: {maxPlayer}",
                 $"Password: {(isPasswordEnabled && !string.IsNullOrEmpty(password) ? "Enabled" : "None")}",
+                $"Map: {GetMapDisplayName(selectedMap)}",
                 $"Team Balance: {(teamBalance ? "On" : "Off")}"
             };
 
@@ -379,6 +418,7 @@ namespace OpenGS
             if (index >= 0 && index < gameModes.Count)
             {
                 selectedGameMode = gameModes[index];
+                ApplyDefaultMapForMode(selectedGameMode);
             }
         }
 
@@ -515,6 +555,11 @@ namespace OpenGS
             return selectedGameMode;
         }
 
+        public override EMap Map()
+        {
+            return selectedMap;
+        }
+
         public override bool TeamBalance()
         {
             return teamBalance;
@@ -526,6 +571,7 @@ namespace OpenGS
                 $"名前={roomName}, " +
                 $"人数={maxPlayer}, " +
                 $"モード={selectedGameMode}, " +
+                $"マップ={selectedMap}, " +
                 $"パスワード={(!string.IsNullOrEmpty(password) ? "設定済み" : "なし")}, " +
                 $"チームバランス={teamBalance}");
 
@@ -543,6 +589,7 @@ namespace OpenGS
             maxPlayer = 8;
             password = "";
             selectedGameMode = EGameMode.TeamDeathMatch;
+            selectedMap = ResolveDefaultMap(selectedGameMode);
             teamBalance = true;
             isPasswordEnabled = false;
 
@@ -551,6 +598,7 @@ namespace OpenGS
             if (passwordToggle != null) passwordToggle.isOn = false;
             if (passwordInput != null) passwordInput.text = "";
             if (gameModeDropdown != null) gameModeDropdown.value = 1; // TeamDeathMatch
+            ApplyDefaultMapForMode(selectedGameMode);
             if (teamBalanceToggle != null) teamBalanceToggle.isOn = true;
             if (passwordPanel != null) passwordPanel.SetActive(false);
 
@@ -606,10 +654,96 @@ namespace OpenGS
                 RoomName = roomName,
                 MaxPlayer = maxPlayer,
                 GameMode = selectedGameMode.ToString(),
+                Map = selectedMap.ToString(),
                 HasPassword = isPasswordEnabled,
                 TeamBalance = teamBalance
             };
             return JsonUtility.ToJson(settings, true);
+        }
+
+        private void ApplyDefaultMapForMode(EGameMode mode)
+        {
+            selectedMap = ResolveDefaultMap(mode);
+
+            if (mapDropdown == null)
+            {
+                return;
+            }
+
+            var maps = Enum.GetValues(typeof(EMap))
+                .Cast<EMap>()
+                .Where(map => map != EMap.Unknown)
+                .ToList();
+            var index = maps.IndexOf(selectedMap);
+            if (index >= 0)
+            {
+                mapDropdown.SetValueWithoutNotify(index);
+            }
+        }
+
+        private void OnMapChanged(int index)
+        {
+            var maps = Enum.GetValues(typeof(EMap))
+                .Cast<EMap>()
+                .Where(map => map != EMap.Unknown)
+                .ToList();
+
+            if (index >= 0 && index < maps.Count)
+            {
+                selectedMap = maps[index];
+            }
+        }
+
+        private static EMap ResolveDefaultMap(EGameMode mode)
+        {
+            return mode switch
+            {
+                EGameMode.TeamDeathMatch => EMap.GreenHillSide1,
+                EGameMode.CaptureTheFlag => EMap.BattlePortCTF,
+                EGameMode.Survival => EMap.DryDays,
+                EGameMode.TeamSurvival => EMap.DryDays,
+                _ => EMap.DryDays,
+            };
+        }
+
+        private static string GetMapDisplayName(EMap map)
+        {
+            return map switch
+            {
+                EMap.DryDays => "Dry Days",
+                EMap.GreenHillSide1 => "Green Hill 1",
+                EMap.GreenHillSide2 => "Green Hill 2",
+                EMap.CityOfDarkness1 => "City of Darkness 1",
+                EMap.CityOfDarkness2 => "City of Darkness 2",
+                EMap.BluffStructure1 => "Bluff Structure 1",
+                EMap.BluffStructure2 => "Bluff Structure 2",
+                EMap.DesertedJungleSide1 => "Deserted Jungle 1",
+                EMap.DesertedJungleSide2 => "Deserted Jungle 2",
+                EMap.BattlePort1 => "Battle Port 1",
+                EMap.BattlePortCTF => "Battle Port CTF",
+                EMap.FullHouse => "Full House",
+                EMap.FactoryInGaol => "Factory In Gaol",
+                EMap.RobotFactory => "Robot Factory",
+                EMap.RedStorm1 => "Red Storm 1",
+                EMap.RedStorm2 => "Red Storm 2",
+                EMap.ThePark => "The Park",
+                EMap.TheParkCTF => "The Park CTF",
+                EMap.RuinOfWarSide1 => "Ruin of War 1",
+                EMap.RuinOfWarSide2 => "Ruin of War 2",
+                EMap.Nocturne => "Nocturne",
+                EMap.Waterfall => "Waterfall",
+                EMap.SkyHigh => "Sky High",
+                EMap.SkyHighCTF => "Sky High CTF",
+                EMap.GhostHouse => "Ghost House",
+                EMap.OnStudio => "On Studio",
+                EMap.Christmas => "Christmas",
+                EMap.SeaSideBase => "Sea Side Base",
+                EMap.AuroraClassic => "Aurora Classic",
+                EMap.ArchLoadOfGunster => "Arch Load Of Gunster",
+                EMap.IceValley => "Ice Valley",
+                EMap.RandomMap => "Random Map",
+                _ => map.ToString()
+            };
         }
     }
 }

@@ -33,6 +33,8 @@ namespace OpenGS.Network
             public string OwnerId { get; set; } = "";
             public int Capacity { get; set; } = 8;
             public string GameMode { get; set; } = "DeathMatch";
+            public string Map { get; set; } = EMap.DryDays.ToString();
+            public string Password { get; set; } = "";
             public bool TeamBalance { get; set; } = true;
             public List<string> Players { get; set; } = new();
             public Dictionary<string, bool> PlayerReady { get; set; } = new();
@@ -198,6 +200,8 @@ namespace OpenGS.Network
             var capacity = json["Capacity"]?.ToObject<int>() ?? 8;
             var teamBalance = json["TeamBalance"]?.ToObject<bool?>() ?? true;
             var gameMode = json["GameMode"]?.ToString() ?? "DeathMatch";
+            var map = json["Map"]?.ToString() ?? EMap.DryDays.ToString();
+            var password = json["Password"]?.ToString() ?? "";
             var ownerId = json["PlayerID"]?.ToString() ?? "owner";
             var roomId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
@@ -208,25 +212,48 @@ namespace OpenGS.Network
                 OwnerId = ownerId,
                 Capacity = capacity,
                 GameMode = gameMode,
+                Map = map,
+                Password = password,
                 TeamBalance = teamBalance,
                 Players = new List<string> { ownerId },
                 PlayerReady = new Dictionary<string, bool> { { ownerId, false } }
             };
 
             var snapshot = BuildRoomInfoSnapshot(m_Rooms[roomId]);
-            sender(snapshot.ToResponseJson(MessageType.CreateRoomResponse));
+            var createResponse = snapshot.ToResponseJson(MessageType.CreateRoomResponse);
+            createResponse["Password"] = password;
+            sender(createResponse);
             sender(snapshot.ToNotificationJson(MessageType.RoomCreated));
         }
 
         private void HandleUpdateRoom(JObject json, Action<JObject> sender)
         {
-            sender(BuildRoomListSnapshot().ToJson());
+            var snapshot = BuildRoomListSnapshot().ToJson();
+            if (snapshot["Rooms"] is JArray rooms)
+            {
+                foreach (var roomToken in rooms)
+                {
+                    if (roomToken is not JObject roomJson)
+                    {
+                        continue;
+                    }
+
+                    var roomId = roomJson["RoomId"]?.ToString() ?? roomJson["RoomID"]?.ToString() ?? "";
+                    if (m_Rooms.TryGetValue(roomId, out var room))
+                    {
+                        roomJson["HasPassword"] = !string.IsNullOrWhiteSpace(room.Password);
+                    }
+                }
+            }
+
+            sender(snapshot);
         }
 
         private void HandleEnterRoom(JObject json, Action<JObject> sender)
         {
             var roomId = json["RoomID"]?.ToString() ?? "";
             var playerName = json["PlayerName"]?.ToString() ?? "Unknown";
+            var password = json["Password"]?.ToString() ?? "";
 
             if (!m_Rooms.TryGetValue(roomId, out var room))
             {
@@ -235,6 +262,18 @@ namespace OpenGS.Network
                     ["MessageType"] = MessageType.JoinRoomResponse,
                     ["Success"] = false,
                     ["ErrorMessage"] = "Room not found",
+                    ["RoomID"] = roomId
+                });
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(room.Password) && !string.Equals(room.Password, password, StringComparison.Ordinal))
+            {
+                sender(new JObject
+                {
+                    ["MessageType"] = MessageType.JoinRoomResponse,
+                    ["Success"] = false,
+                    ["ErrorMessage"] = "Incorrect password",
                     ["RoomID"] = roomId
                 });
                 return;
@@ -261,6 +300,8 @@ namespace OpenGS.Network
 
             var resp = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.JoinRoomResponse);
             resp["PlayerName"] = playerName;
+            resp["Password"] = password;
+            resp["Map"] = room.Map;
             sender(resp);
         }
 
@@ -281,13 +322,14 @@ namespace OpenGS.Network
                 return;
             }
 
-            m_Rooms["room-0001"] = new RoomData
+                m_Rooms["room-0001"] = new RoomData
             {
                 RoomId = "room-0001",
                 RoomName = "Default DM Room",
                 OwnerId = "host-001",
                 Capacity = 8,
                 GameMode = "DeathMatch",
+                Map = EMap.DryDays.ToString(),
                 TeamBalance = true,
                 Players = new List<string> { "host-001" },
                 PlayerReady = new Dictionary<string, bool> { { "host-001", false } }
@@ -300,6 +342,7 @@ namespace OpenGS.Network
                 OwnerId = "host-002",
                 Capacity = 12,
                 GameMode = "TeamDeathMatch",
+                Map = EMap.GreenHillSide1.ToString(),
                 TeamBalance = true,
                 Players = new List<string> { "host-002" },
                 PlayerReady = new Dictionary<string, bool> { { "host-002", false } }
@@ -328,17 +371,18 @@ namespace OpenGS.Network
 
         private static RoomInfoSnapshot BuildRoomInfoSnapshot(RoomData room)
         {
-            return new RoomInfoSnapshot
-            {
-                RoomId = room.RoomId,
-                RoomName = room.RoomName,
-                OwnerId = room.OwnerId,
-                Capacity = room.Capacity,
-                GameMode = room.GameMode,
-                TeamBalance = room.TeamBalance,
-                PlayerCount = room.Players.Count
-            };
-        }
+                return new RoomInfoSnapshot
+                {
+                    RoomId = room.RoomId,
+                    RoomName = room.RoomName,
+                    OwnerId = room.OwnerId,
+                    Capacity = room.Capacity,
+                    GameMode = room.GameMode,
+                    Map = room.Map,
+                    TeamBalance = room.TeamBalance,
+                    PlayerCount = room.Players.Count
+                };
+            }
 
         private void HandleRoomChat(JObject json, Action<JObject> sender)
         {

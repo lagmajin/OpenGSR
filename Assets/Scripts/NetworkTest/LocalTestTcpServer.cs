@@ -324,6 +324,7 @@ namespace OpenGS
                         var roomName = json["RoomName"]?.ToString() ?? "New Room";
                         var capacity = json["Capacity"]?.ToString() ?? "2";
                         var gameMode = json["GameMode"]?.ToString() ?? "DeathMatch";
+                        var map = json["Map"]?.ToString() ?? EMap.DryDays.ToString();
                         var teamBalance = json["TeamBalance"]?.ToString() ?? "true";
                         var password = json["Password"]?.ToString() ?? "";
 
@@ -340,13 +341,16 @@ namespace OpenGS
                             OwnerId = ownerId,
                             Capacity = int.TryParse(capacity, out var parsedCapacity) ? parsedCapacity : 8,
                             GameMode = gameMode,
+                            Map = map,
                             TeamBalance = bool.TryParse(teamBalance, out var parsedTeamBalance) ? parsedTeamBalance : true,
                             Password = password,
                             Players = new List<string> { ownerId }
                         };
 
                         var snapshot = BuildRoomInfoSnapshot(_rooms[roomId]);
-                        SendJsonToClient(snapshot.ToResponseJson(MessageType.CreateRoomResponse));
+                        var createResponse = snapshot.ToResponseJson(MessageType.CreateRoomResponse);
+                        createResponse["Password"] = password;
+                        SendJsonToClient(createResponse);
                         SendJsonToClient(snapshot.ToNotificationJson(MessageType.RoomCreated));
                         PrettyLogger.Bold("LocalServer", $"Created room: {roomName} (ID: {roomId})");
                     }
@@ -367,6 +371,22 @@ namespace OpenGS
                     try
                     {
                         var resp = BuildRoomListSnapshot().ToJson();
+                        if (resp["Rooms"] is JArray rooms)
+                        {
+                            foreach (var roomToken in rooms)
+                            {
+                                if (roomToken is not JObject roomJson)
+                                {
+                                    continue;
+                                }
+
+                                var roomId = roomJson["RoomId"]?.ToString() ?? roomJson["RoomID"]?.ToString() ?? "";
+                                if (_rooms.TryGetValue(roomId, out var room))
+                                {
+                                    roomJson["HasPassword"] = !string.IsNullOrWhiteSpace(room.Password);
+                                }
+                            }
+                        }
                         SendJsonToClient(resp);
                         PrettyLogger.Bold("LocalServer", "Sent RoomListUpdateNotification");
                     }
@@ -747,6 +767,7 @@ namespace OpenGS
             var resp = BuildRoomInfoSnapshot(_rooms[roomId]).ToResponseJson(MessageType.JoinRoomResponse);
             resp["PlayerID"] = playerId;
             resp["PlayerName"] = playerName;
+            resp["Password"] = password;
             resp["Players"] = JArray.FromObject(_rooms[roomId].Players);
             SendJsonToClient(resp);
 

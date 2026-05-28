@@ -38,6 +38,8 @@ namespace OpenGS.Network
             public string OwnerId { get; set; } = "";
             public int Capacity { get; set; } = 8;
             public string GameMode { get; set; } = "DeathMatch";
+            public string Map { get; set; } = EMap.DryDays.ToString();
+            public string Password { get; set; } = "";
             public List<string> Players { get; set; } = new();
             public Dictionary<string, bool> PlayerReady { get; set; } = new();
         }
@@ -102,6 +104,8 @@ namespace OpenGS.Network
             var roomName = json["RoomName"]?.ToString() ?? "New Room";
             var ownerId = json["PlayerID"]?.ToString() ?? "owner";
             var gameMode = json["GameMode"]?.ToString() ?? "DeathMatch";
+            var map = json["Map"]?.ToString() ?? EMap.DryDays.ToString();
+            var password = json["Password"]?.ToString() ?? "";
             var capacity = json["Capacity"]?.ToObject<int>() ?? 8;
 
             var roomId = Guid.NewGuid().ToString("N").Substring(0, 8);
@@ -113,6 +117,8 @@ namespace OpenGS.Network
                 OwnerId = ownerId,
                 Capacity = capacity,
                 GameMode = gameMode,
+                Map = map,
+                Password = password,
                 Players = new List<string> { ownerId },
                 PlayerReady = new Dictionary<string, bool> { { ownerId, false } }
             };
@@ -120,7 +126,9 @@ namespace OpenGS.Network
             m_Rooms[roomId] = room;
 
             var snapshot = BuildRoomInfoSnapshot(room);
-            sender(snapshot.ToResponseJson(MessageType.CreateRoomResponse));
+            var createResponse = snapshot.ToResponseJson(MessageType.CreateRoomResponse);
+            createResponse["Password"] = password;
+            sender(createResponse);
             sender(snapshot.ToNotificationJson(MessageType.RoomCreated));
             Log($"Room created: {roomName} (ID: {roomId})");
         }
@@ -141,7 +149,25 @@ namespace OpenGS.Network
                 });
             }
 
-            sender(snapshot.ToJson());
+            var jsonResp = snapshot.ToJson();
+            if (jsonResp["Rooms"] is JArray rooms)
+            {
+                foreach (var roomToken in rooms)
+                {
+                    if (roomToken is not JObject roomJson)
+                    {
+                        continue;
+                    }
+
+                    var roomId = roomJson["RoomId"]?.ToString() ?? roomJson["RoomID"]?.ToString() ?? "";
+                    if (m_Rooms.TryGetValue(roomId, out var room))
+                    {
+                        roomJson["HasPassword"] = !string.IsNullOrWhiteSpace(room.Password);
+                    }
+                }
+            }
+
+            sender(jsonResp);
         }
 
         private void HandleEnterRoom(JObject json, Action<JObject> sender)
@@ -149,6 +175,7 @@ namespace OpenGS.Network
             var roomId = json["RoomID"]?.ToString() ?? "";
             var playerId = json["PlayerID"]?.ToString() ?? "";
             var playerName = json["PlayerName"]?.ToString() ?? "Unknown";
+            var password = json["Password"]?.ToString() ?? "";
 
             if (!m_Rooms.TryGetValue(roomId, out var room))
             {
@@ -157,6 +184,19 @@ namespace OpenGS.Network
                     ["MessageType"] = MessageType.JoinRoomResponse,
                     ["Success"] = false,
                     ["ErrorMessage"] = "Room not found"
+                };
+                sender(errorResp);
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(room.Password) && !string.Equals(room.Password, password, StringComparison.Ordinal))
+            {
+                var errorResp = new JObject
+                {
+                    ["MessageType"] = MessageType.JoinRoomResponse,
+                    ["Success"] = false,
+                    ["ErrorMessage"] = "Incorrect password",
+                    ["RoomID"] = roomId
                 };
                 sender(errorResp);
                 return;
@@ -179,6 +219,7 @@ namespace OpenGS.Network
 
             var resp = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.JoinRoomResponse);
             resp["PlayerID"] = playerId;
+            resp["Password"] = password;
             resp["Players"] = JArray.FromObject(room.Players);
             sender(resp);
             Log($"Player {playerName} entered room {room.RoomName}");
@@ -261,6 +302,7 @@ namespace OpenGS.Network
                 OwnerId = room.OwnerId,
                 Capacity = room.Capacity,
                 GameMode = room.GameMode,
+                Map = room.Map,
                 PlayerCount = room.Players.Count
             };
         }

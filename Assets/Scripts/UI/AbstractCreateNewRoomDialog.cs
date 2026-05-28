@@ -14,6 +14,7 @@ namespace OpenGS
         public abstract int MaxPlayer();
         public abstract string Password();
         public abstract EGameMode GameMode();
+        public abstract EMap Map();
         public abstract bool TeamBalance();
         public abstract void ShowDialog();
     }
