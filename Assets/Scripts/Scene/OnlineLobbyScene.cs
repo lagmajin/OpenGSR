@@ -7,7 +7,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using UnityEngine.UI;
-using TMPro;
 using Sirenix.OdinInspector;
 using OpenGSCore;
 using UniRx;
@@ -35,12 +34,6 @@ namespace OpenGS
         [SerializeField] public GameObject robbyNetworkManager;
         [SerializeField] public GameObject roomPanel;
         [SerializeField] private GuildPanel guildPanel;
-        [SerializeField] private GameObject roomPasswordDialog;
-        [SerializeField] private TMP_InputField roomPasswordInput;
-        [SerializeField] private Button roomPasswordOkButton;
-        [SerializeField] private Button roomPasswordCancelButton;
-        [SerializeField] private TextMeshProUGUI roomPasswordTitleText;
-        [SerializeField] private TextMeshProUGUI roomPasswordMessageText;
 
         [SerializeField] [Required] public LobbySceneMediateObject mediateObject;
         [SerializeField] private OnlineLobbySceneController lobbySceneController;
@@ -56,10 +49,6 @@ namespace OpenGS
         private JArray currentRoomList = new JArray();
         private string currentRoomFilter = "All";
         private string currentSelectedRoomId = "";
-        private string pendingPasswordRoomId = "";
-        private string pendingPasswordRoomName = "";
-        private string pendingPasswordPlayerId = "";
-        private string pendingPasswordPlayerName = "";
         private readonly List<GameObject> spawnedRoomButtons = new List<GameObject>();
 
         // ─── Unity ライフサイクル ────────────────────────────────────
@@ -267,11 +256,8 @@ namespace OpenGS
 
             if (IsPasswordProtectedRoom(room))
             {
-                ShowPasswordPrompt(
-                    roomId,
-                    room["RoomName"]?.ToString() ?? "Room",
-                    GetCurrentPlayerId(),
-                    GetCurrentPlayerName());
+                var roomName = room["RoomName"]?.ToString() ?? "Room";
+                ShowInfoDialog("パスワードが必要です", $"{roomName} は鍵付きです。");
                 return;
             }
 
@@ -792,287 +778,6 @@ namespace OpenGS
             if (roomPanel != null && roomPanel.transform.parent != null)
             {
                 return roomPanel.transform.parent;
-            }
-
-            return null;
-        }
-
-        private void ShowPasswordPrompt(string roomId, string roomName, string playerId, string playerName)
-        {
-            pendingPasswordRoomId = roomId ?? "";
-            pendingPasswordRoomName = roomName ?? "Room";
-            pendingPasswordPlayerId = playerId ?? GetCurrentPlayerId();
-            pendingPasswordPlayerName = playerName ?? GetCurrentPlayerName();
-
-            EnsurePasswordPromptUi();
-
-            if (roomPasswordTitleText != null)
-            {
-                roomPasswordTitleText.text = "パスワードが必要です";
-            }
-
-            if (roomPasswordMessageText != null)
-            {
-                roomPasswordMessageText.text = $"{pendingPasswordRoomName} は鍵付きです。";
-            }
-
-            if (roomPasswordInput != null)
-            {
-                roomPasswordInput.text = "";
-                roomPasswordInput.ActivateInputField();
-                roomPasswordInput.Select();
-            }
-
-            if (roomPasswordDialog != null)
-            {
-                roomPasswordDialog.SetActive(true);
-            }
-        }
-
-        private void HidePasswordPrompt()
-        {
-            if (roomPasswordDialog != null)
-            {
-                roomPasswordDialog.SetActive(false);
-            }
-        }
-
-        private void ConfirmPasswordPrompt()
-        {
-            var password = roomPasswordInput != null ? roomPasswordInput.text : "";
-            var roomId = pendingPasswordRoomId;
-            var playerId = pendingPasswordPlayerId;
-            var playerName = pendingPasswordPlayerName;
-
-            HidePasswordPrompt();
-
-            if (string.IsNullOrWhiteSpace(roomId))
-            {
-                ShowInfoDialog("パスワード入力", "部屋情報が見つかりませんでした。");
-                return;
-            }
-
-            SendEnterRoomRequest(roomId, playerId, playerName, password);
-        }
-
-        private void CancelPasswordPrompt()
-        {
-            pendingPasswordRoomId = "";
-            pendingPasswordRoomName = "";
-            pendingPasswordPlayerId = "";
-            pendingPasswordPlayerName = "";
-            HidePasswordPrompt();
-        }
-
-        private void EnsurePasswordPromptUi()
-        {
-            if (roomPasswordDialog == null)
-            {
-                roomPasswordDialog = GetOrCreatePasswordPromptRoot();
-            }
-
-            if (roomPasswordDialog == null)
-            {
-                return;
-            }
-
-            if (roomPasswordTitleText == null)
-            {
-                roomPasswordTitleText = roomPasswordDialog.GetComponentInChildren<TextMeshProUGUI>(true);
-            }
-
-            if (roomPasswordMessageText == null)
-            {
-                var texts = roomPasswordDialog.GetComponentsInChildren<TextMeshProUGUI>(true);
-                if (texts.Length > 1)
-                {
-                    roomPasswordMessageText = texts[1];
-                }
-            }
-
-            if (roomPasswordInput == null)
-            {
-                roomPasswordInput = roomPasswordDialog.GetComponentInChildren<TMP_InputField>(true);
-            }
-
-            if (roomPasswordOkButton == null)
-            {
-                roomPasswordOkButton = FindChildButton(roomPasswordDialog.transform, "OK");
-            }
-
-            if (roomPasswordCancelButton == null)
-            {
-                roomPasswordCancelButton = FindChildButton(roomPasswordDialog.transform, "Cancel");
-            }
-
-            if (roomPasswordOkButton != null)
-            {
-                roomPasswordOkButton.onClick.RemoveListener(ConfirmPasswordPrompt);
-                roomPasswordOkButton.onClick.AddListener(ConfirmPasswordPrompt);
-            }
-
-            if (roomPasswordCancelButton != null)
-            {
-                roomPasswordCancelButton.onClick.RemoveListener(CancelPasswordPrompt);
-                roomPasswordCancelButton.onClick.AddListener(CancelPasswordPrompt);
-            }
-        }
-
-        private GameObject GetOrCreatePasswordPromptRoot()
-        {
-            if (roomPasswordDialog != null)
-            {
-                return roomPasswordDialog;
-            }
-
-            var parent = GetCreateNewRoomDialogParent();
-            if (parent == null)
-            {
-                parent = transform;
-            }
-
-            var root = new GameObject("RoomPasswordDialog", typeof(RectTransform), typeof(Image));
-            root.transform.SetParent(parent, false);
-
-            var rect = root.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(520f, 260f);
-            rect.anchoredPosition = Vector2.zero;
-
-            var background = root.GetComponent<Image>();
-            background.color = new Color(0.08f, 0.12f, 0.18f, 0.96f);
-
-            CreatePromptText(root.transform, "Title", "パスワードが必要です", new Vector2(0f, 90f), 30f, FontStyles.Bold);
-            CreatePromptText(root.transform, "Message", "この部屋は鍵付きです。", new Vector2(0f, 56f), 20f, FontStyles.Normal);
-            roomPasswordInput = CreatePasswordInput(root.transform);
-            roomPasswordOkButton = CreatePromptButton(root.transform, "OK", "OK", new Vector2(-90f, -78f));
-            roomPasswordCancelButton = CreatePromptButton(root.transform, "Cancel", "Cancel", new Vector2(90f, -78f));
-
-            roomPasswordTitleText = root.transform.Find("Title")?.GetComponent<TextMeshProUGUI>();
-            roomPasswordMessageText = root.transform.Find("Message")?.GetComponent<TextMeshProUGUI>();
-
-            root.SetActive(false);
-            return root;
-        }
-
-        private static TextMeshProUGUI CreatePromptText(Transform parent, string name, string text, Vector2 anchoredPosition, float fontSize, FontStyles fontStyle)
-        {
-            var go = new GameObject(name, typeof(RectTransform));
-            go.transform.SetParent(parent, false);
-            var rect = go.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(460f, 32f);
-            rect.anchoredPosition = anchoredPosition;
-
-            var label = go.AddComponent<TextMeshProUGUI>();
-            label.text = text;
-            label.fontSize = fontSize;
-            label.fontStyle = fontStyle;
-            label.alignment = TextAlignmentOptions.Center;
-            label.color = Color.white;
-            label.raycastTarget = false;
-            return label;
-        }
-
-        private static TMP_InputField CreatePasswordInput(Transform parent)
-        {
-            var go = new GameObject("PasswordInput", typeof(RectTransform), typeof(Image), typeof(TMP_InputField));
-            go.transform.SetParent(parent, false);
-            var rect = go.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(300f, 40f);
-            rect.anchoredPosition = new Vector2(0f, 5f);
-
-            var bg = go.GetComponent<Image>();
-            bg.color = new Color(1f, 1f, 1f, 0.95f);
-
-            var textArea = new GameObject("Text Area", typeof(RectTransform));
-            textArea.transform.SetParent(go.transform, false);
-            var textAreaRect = textArea.GetComponent<RectTransform>();
-            textAreaRect.anchorMin = new Vector2(0f, 0f);
-            textAreaRect.anchorMax = new Vector2(1f, 1f);
-            textAreaRect.offsetMin = new Vector2(10f, 6f);
-            textAreaRect.offsetMax = new Vector2(-10f, -6f);
-
-            var placeholderGO = new GameObject("Placeholder", typeof(RectTransform));
-            placeholderGO.transform.SetParent(textArea.transform, false);
-            var placeholder = placeholderGO.AddComponent<TextMeshProUGUI>();
-            placeholder.text = "4桁のパスワード";
-            placeholder.fontSize = 18f;
-            placeholder.color = new Color(0.55f, 0.55f, 0.55f, 1f);
-            placeholder.alignment = TextAlignmentOptions.MidlineLeft;
-            placeholder.raycastTarget = false;
-
-            var textGO = new GameObject("Text", typeof(RectTransform));
-            textGO.transform.SetParent(textArea.transform, false);
-            var text = textGO.AddComponent<TextMeshProUGUI>();
-            text.fontSize = 18f;
-            text.color = new Color(0.1f, 0.1f, 0.1f, 1f);
-            text.alignment = TextAlignmentOptions.MidlineLeft;
-            text.raycastTarget = false;
-
-            var input = go.GetComponent<TMP_InputField>();
-            input.textViewport = textAreaRect;
-            input.textComponent = text;
-            input.placeholder = placeholder;
-            input.contentType = TMP_InputField.ContentType.IntegerNumber;
-            input.characterLimit = 4;
-            input.lineType = TMP_InputField.LineType.SingleLine;
-            return input;
-        }
-
-        private static Button CreatePromptButton(Transform parent, string name, string labelText, Vector2 anchoredPosition)
-        {
-            var go = new GameObject(name, typeof(RectTransform), typeof(Image), typeof(Button));
-            go.transform.SetParent(parent, false);
-            var rect = go.GetComponent<RectTransform>();
-            rect.anchorMin = new Vector2(0.5f, 0.5f);
-            rect.anchorMax = new Vector2(0.5f, 0.5f);
-            rect.pivot = new Vector2(0.5f, 0.5f);
-            rect.sizeDelta = new Vector2(120f, 36f);
-            rect.anchoredPosition = anchoredPosition;
-
-            var image = go.GetComponent<Image>();
-            image.color = new Color(0.2f, 0.35f, 0.55f, 1f);
-
-            var labelGO = new GameObject("Label", typeof(RectTransform));
-            labelGO.transform.SetParent(go.transform, false);
-            var labelRect = labelGO.GetComponent<RectTransform>();
-            labelRect.anchorMin = Vector2.zero;
-            labelRect.anchorMax = Vector2.one;
-            labelRect.offsetMin = Vector2.zero;
-            labelRect.offsetMax = Vector2.zero;
-
-            var label = labelGO.AddComponent<TextMeshProUGUI>();
-            label.text = labelText;
-            label.fontSize = 18f;
-            label.fontStyle = FontStyles.Bold;
-            label.alignment = TextAlignmentOptions.Center;
-            label.color = Color.white;
-            label.raycastTarget = false;
-
-            return go.GetComponent<Button>();
-        }
-
-        private static Button FindChildButton(Transform root, string buttonName)
-        {
-            if (root == null)
-            {
-                return null;
-            }
-
-            foreach (var button in root.GetComponentsInChildren<Button>(true))
-            {
-                if (button != null && string.Equals(button.name, buttonName, StringComparison.OrdinalIgnoreCase))
-                {
-                    return button;
-                }
             }
 
             return null;
