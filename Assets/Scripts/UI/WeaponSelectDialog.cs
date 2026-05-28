@@ -8,18 +8,6 @@ using OpenGSCore;
 
 namespace OpenGS
 {
-    [Serializable]
-    public class WeaponSelectSlotView
-    {
-        [SerializeField] public Image iconImage;
-        [SerializeField] public TextMeshProUGUI nameText;
-        [SerializeField] public TextMeshProUGUI detailText;
-        [SerializeField] public Button selectButton;
-        [SerializeField] public GameObject selectedMarker;
-        [SerializeField] public GameObject bannedMarker;
-        [SerializeField] public CanvasGroup canvasGroup;
-    }
-
     /// <summary>
     /// Weapon selection dialog.
     /// Left side shows favorite/shop weapons, right side shows representative weakest weapons.
@@ -31,16 +19,14 @@ namespace OpenGS
 
         [Header("Dialog")]
         [SerializeField] private CanvasGroup group;
-        [SerializeField] private Button okButton;
-        [SerializeField] private Button cancelButton;
         [SerializeField] private TextMeshProUGUI statusText;
 
         [Header("Left Side")]
-        [SerializeField] private WeaponSelectSlotView[] leftSlots = new WeaponSelectSlotView[SlotCount];
+        [SerializeField] private WeaponSelectDialogSlot[] leftSlots = new WeaponSelectDialogSlot[SlotCount];
         [SerializeField] private bool autoLoadFavoriteWeapons = true;
 
         [Header("Right Side")]
-        [SerializeField] private WeaponSelectSlotView[] rightSlots = new WeaponSelectSlotView[SlotCount];
+        [SerializeField] private WeaponSelectDialogSlot[] rightSlots = new WeaponSelectDialogSlot[SlotCount];
         [SerializeField] private bool allowRightSideBanToggle = true;
 
         [Header("Colors")]
@@ -145,8 +131,6 @@ namespace OpenGS
             }
 
             group ??= GetComponent<CanvasGroup>();
-            okButton ??= FindButton("Ok") ?? FindButton("OKButton");
-            cancelButton ??= FindButton("Cancel") ?? FindButton("CancelButton");
         }
 
         private void EnsureRuntimeLayout()
@@ -218,32 +202,21 @@ namespace OpenGS
 
             statusText ??= CreateText(bottom, "StatusText", "LEFT 0/5  RIGHT 0/5", 24, TextAlignmentOptions.Left);
 
-            if (okButton == null)
-            {
-                okButton = CreateButton(bottom, "OkButton", "OK", new Vector2(240f, 60f), new Vector2(-150f, 0f));
-            }
-
-            if (cancelButton == null)
-            {
-                cancelButton = CreateButton(bottom, "CancelButton", "Cancel", new Vector2(240f, 60f), new Vector2(150f, 0f));
-            }
-
             leftSlots = BuildRuntimeSlots(leftPanel, "LeftSlot", true);
             rightSlots = BuildRuntimeSlots(rightPanel, "RightSlot", false);
         }
 
-        private WeaponSelectSlotView[] BuildRuntimeSlots(RectTransform parent, string prefix, bool isLeft)
+        private WeaponSelectDialogSlot[] BuildRuntimeSlots(RectTransform parent, string prefix, bool isLeft)
         {
-            var slots = new WeaponSelectSlotView[SlotCount];
+            var slots = new WeaponSelectDialogSlot[SlotCount];
             for (var index = 0; index < SlotCount; index++)
             {
                 var slotRoot = CreateRectTransform($"{prefix}{index + 1}", parent);
                 ConfigureSlotRoot(slotRoot, index);
 
-                var view = new WeaponSelectSlotView
-                {
-                    canvasGroup = slotRoot.gameObject.GetComponent<CanvasGroup>() ?? slotRoot.gameObject.AddComponent<CanvasGroup>()
-                };
+                var view = slotRoot.gameObject.AddComponent<WeaponSelectDialogSlot>();
+                view.canvasGroup = slotRoot.gameObject.GetComponent<CanvasGroup>() ?? slotRoot.gameObject.AddComponent<CanvasGroup>();
+                view.CacheReferences();
 
                 var background = CreateImage(slotRoot, "Background", new Color(0.12f, 0.12f, 0.12f, 0.92f));
                 StretchFull(background.rectTransform);
@@ -419,23 +392,13 @@ namespace OpenGS
                 return;
             }
 
-            if (okButton != null)
-            {
-                okButton.onClick.AddListener(OnOkClicked);
-            }
-
-            if (cancelButton != null)
-            {
-                cancelButton.onClick.AddListener(OnCancelClicked);
-            }
-
             RegisterSlotListeners(leftSlots, true);
             RegisterSlotListeners(rightSlots, false);
 
             listenersRegistered = true;
         }
 
-        private void RegisterSlotListeners(WeaponSelectSlotView[] slots, bool isLeft)
+        private void RegisterSlotListeners(WeaponSelectDialogSlot[] slots, bool isLeft)
         {
             if (slots == null)
             {
@@ -501,7 +464,7 @@ namespace OpenGS
             UpdateStatusText();
         }
 
-        private void SyncSlotGroup(WeaponSelectSlotView[] slots, bool isLeft)
+        private void SyncSlotGroup(WeaponSelectDialogSlot[] slots, bool isLeft)
         {
             if (slots == null)
             {
@@ -529,7 +492,7 @@ namespace OpenGS
             }
         }
 
-        private void UpdateLeftSlot(WeaponSelectSlotView slot, EWeaponType weapon, int index)
+        private void UpdateLeftSlot(WeaponSelectDialogSlot slot, EWeaponType weapon, int index)
         {
             if (slot == null)
             {
@@ -550,7 +513,7 @@ namespace OpenGS
             }
         }
 
-        private void UpdateRightSlot(WeaponSelectSlotView slot, eWeaponType weapon, int index)
+        private void UpdateRightSlot(WeaponSelectDialogSlot slot, eWeaponType weapon, int index)
         {
             if (slot == null)
             {
@@ -572,7 +535,7 @@ namespace OpenGS
         }
 
         private void ApplySlotVisual(
-            WeaponSelectSlotView slot,
+            WeaponSelectDialogSlot slot,
             Sprite icon,
             string displayName,
             string detail,
@@ -677,18 +640,6 @@ namespace OpenGS
             matchRoomManager.WeaponLimit.Toggle(weapon);
             RefreshUI();
             UpdateStatusText();
-        }
-
-        private void OnOkClicked()
-        {
-            OnLeftSelectionConfirmed?.Invoke(leftWeapons);
-            OnRightSelectionConfirmed?.Invoke(rightWeapons);
-            Close();
-        }
-
-        private void OnCancelClicked()
-        {
-            Close();
         }
 
         private void Close()
@@ -848,23 +799,5 @@ namespace OpenGS
             }
         }
 
-        private Button FindButton(string objectName)
-        {
-            if (string.IsNullOrWhiteSpace(objectName))
-            {
-                return null;
-            }
-
-            var buttons = GetComponentsInChildren<Button>(true);
-            foreach (var candidate in buttons)
-            {
-                if (candidate != null && candidate.gameObject.name == objectName)
-                {
-                    return candidate;
-                }
-            }
-
-            return null;
-        }
     }
 }

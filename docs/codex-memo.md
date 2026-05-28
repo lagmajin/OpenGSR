@@ -47,6 +47,7 @@
 - `docs/codex/workstream-organization.md`
 - `docs/codex/playeragent-kinematic-movement.md`
 - `docs/codex/grenade-types.md`
+- `docs/codex/slot-definitions.md`
 
 ## Notes
 
@@ -63,4 +64,5 @@
 - Workstream organization notes: `docs/codex/workstream-organization.md`
 - PlayerAgent scripted movement notes: `docs/codex/playeragent-kinematic-movement.md`
 - Grenade type notes: `docs/codex/grenade-types.md`
+- Slot definition notes: `docs/codex/slot-definitions.md`
 - PlayerAgent now derives jump velocity from `jumpHeight` and uses coyote time / jump buffer for scripted movement

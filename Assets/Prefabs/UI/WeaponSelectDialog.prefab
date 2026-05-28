@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 3648287487412055143}
   - component: {fileID: 2333178374464950054}
   - component: {fileID: 1149077339000000001}
+  - component: {fileID: 3197240201759340549}
   m_Layer: 5
   m_Name: WeaponSelectDialog
   m_TagString: Untagged
@@ -107,6 +108,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5123140246825769299}
+  - {fileID: 5335167321366600865}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -150,8 +152,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   group: {fileID: 0}
-  okButton: {fileID: 0}
-  cancelButton: {fileID: 0}
   statusText: {fileID: 0}
   leftSlots: []
   autoLoadFavoriteWeapons: 1
@@ -161,9 +161,101 @@ MonoBehaviour:
   selectedColor: {r: 1, g: 0.92, b: 0.25, a: 1}
   bannedColor: {r: 0.45, g: 0.45, b: 0.45, a: 1}
   emptyColor: {r: 1, g: 1, b: 1, a: 0.25}
-  fallbackRightWeapons:
-  - 19
-  - 21
-  - 2
-  - 7
-  - 12
+  fallbackRightWeapons: 130000001500000002000000070000000c000000
+--- !u!114 &3197240201759340549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4021532214393019223}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.CanvasScaler
+  m_UiScaleMode: 2
+  m_ReferencePixelsPerUnit: 94.9
+  m_ScaleFactor: 1
+  m_ReferenceResolution: {x: 785.4, y: 600}
+  m_ScreenMatchMode: 2
+  m_MatchWidthOrHeight: 0
+  m_PhysicalUnit: 3
+  m_FallbackScreenDPI: 96
+  m_DefaultSpriteDPI: 96
+  m_DynamicPixelsPerUnit: 1
+  m_PresetInfoIsWorld: 0
+--- !u!1001 &962650433211618874
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 3648287487412055143}
+    m_Modifications:
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 483.92508
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 285.30002
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7345284620204688891, guid: a17c59f4994045f41a84cb9ec0920804,
+        type: 3}
+      propertyPath: m_Name
+      value: WeaponSlot
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: a17c59f4994045f41a84cb9ec0920804, type: 3}
+--- !u!4 &5335167321366600865 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5140391813552556699, guid: a17c59f4994045f41a84cb9ec0920804,
+    type: 3}
+  m_PrefabInstance: {fileID: 962650433211618874}
+  m_PrefabAsset: {fileID: 0}

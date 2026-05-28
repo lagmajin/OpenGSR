@@ -112,6 +112,13 @@ MonoBehaviour:
   collisionRadius: 0.08
   hitMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 2147467063
   spriteAngleOffset: 0
   alignToVelocity: 1
+  spawnChildProjectiles: 0
+  childProjectilePrefab: {fileID: 0}
+  childProjectileCount: 0
+  childLaunchSpeed: 8
+  childSpreadAngle: 45
+  childDamageMultiplier: 0.35
+  childFuseTime: 1.25
