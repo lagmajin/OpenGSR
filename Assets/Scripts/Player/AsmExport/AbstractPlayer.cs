@@ -4,6 +4,7 @@ using System.Collections;
 using JetBrains.Annotations;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Zenject;
 
 namespace OpenGS
 {
@@ -85,6 +86,7 @@ namespace OpenGS
         private bool canWarp;
         private bool canJump;
         private MultipleTags myTags;
+        private IEffectService effectService;
 
         protected SpriteRenderer spriteRenderer;
 
@@ -314,8 +316,15 @@ namespace OpenGS
         {
             if (lavaDamageCounter <= 0f)
             {
-                var effect = Instantiate(PlayerEffectPrefabMasterData.HitEffect);
-                effect.transform.position = gameObject.transform.position;
+                if (effectService != null)
+                {
+                    effectService.PlayImpactEffect(gameObject.transform.position, Vector2.up);
+                }
+                else
+                {
+                    var effect = Instantiate(PlayerEffectPrefabMasterData.HitEffect);
+                    effect.transform.position = gameObject.transform.position;
+                }
                 StartCoroutine(LavaCounter());
             }
         }
@@ -692,6 +701,12 @@ namespace OpenGS
 
             var effect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
             effect.transform.SetParent(transform, true);
+        }
+
+        [Inject]
+        private void InjectEffectService([InjectOptional] IEffectService effectService)
+        {
+            this.effectService = effectService;
         }
     }
 }
