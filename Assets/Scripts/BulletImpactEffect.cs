@@ -11,12 +11,6 @@ namespace OpenGS
 
         private Coroutine lifetimeCoroutine;
         private Action<GameObject> releaseAction;
-        private float activeLifetime;
-
-        private void OnEnable()
-        {
-            Play(defaultLifetime);
-        }
 
         private void OnDisable()
         {
@@ -31,7 +25,7 @@ namespace OpenGS
 
         public void Play(float lifetime, Action<GameObject> onRelease = null)
         {
-            activeLifetime = Mathf.Max(0f, lifetime);
+            var activeLifetime = lifetime > 0f ? lifetime : defaultLifetime;
             releaseAction = onRelease;
 
             if (!isActiveAndEnabled)

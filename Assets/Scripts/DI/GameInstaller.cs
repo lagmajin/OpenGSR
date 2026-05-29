@@ -11,7 +11,11 @@ namespace OpenGS
         public override void InstallBindings()
         {
             Debug.Log("[GameInstaller] ProjectContext に ClientSessionData を登録");
-            Container.BindInstance(Resources.Load<EffectPrefabMasterData>("MasterData/Effect/EffectPrefab")).AsSingle();
+            var effectPrefabs = Resources.Load<EffectPrefabMasterData>("MasterData/Effect/EffectPrefab");
+            if (effectPrefabs != null)
+            {
+                Container.BindInstance(effectPrefabs).AsSingle();
+            }
             Container.Bind<IEffectService>().To<EffectService>().AsSingle();
             Container.Bind<OnlineLoadingSceneNetworkManager>()
  .FromComponentInHierarchy()
