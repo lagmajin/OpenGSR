@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 namespace OpenGS
 {
@@ -33,6 +34,13 @@ namespace OpenGS
 
         private float currentHealth;
         private Coroutine resetCoroutine;
+        private IEffectService effectService;
+
+        [Inject]
+        private void Construct([InjectOptional] IEffectService effectService)
+        {
+            this.effectService = effectService;
+        }
 
         private struct DamageLogEntry
         {
@@ -156,7 +164,14 @@ namespace OpenGS
 
             if (hitEffectPrefab != null)
             {
-                Instantiate(hitEffectPrefab, sourcePosition, Quaternion.identity);
+                if (effectService != null)
+                {
+                    effectService.PlayOneShotEffect(hitEffectPrefab, sourcePosition, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(hitEffectPrefab, sourcePosition, Quaternion.identity);
+                }
             }
 
             Debug.Log($"[SandboxDummyEnemy] damage={damage}, hp={Mathf.Max(0f, currentHealth)}/{maxHealth}, reason={reason}");

@@ -702,6 +702,12 @@ namespace OpenGS
                 return;
             }
 
+            if (effectService != null)
+            {
+                effectService.PlayOneShotEffect(effectPrefab, transform.position, Quaternion.identity);
+                return;
+            }
+
             var effect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
             effect.transform.SetParent(transform, true);
         }
