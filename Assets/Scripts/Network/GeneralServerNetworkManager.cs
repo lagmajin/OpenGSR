@@ -31,6 +31,7 @@ namespace OpenGS
             public int Capacity { get; set; } = 8;
             public string GameMode { get; set; } = "TeamDeathMatch";
             public string Map { get; set; } = "";
+            public string Password { get; set; } = "";
             public bool TeamBalance { get; set; } = true;
             public int PlayerCount { get; set; } = 0;
             public List<RoomPlayerRecord> Players { get; } = new List<RoomPlayerRecord>();
@@ -472,6 +473,7 @@ namespace OpenGS
                 OwnerId = ownerId,
                 Capacity = capacity,
                 GameMode = string.IsNullOrWhiteSpace(gameMode) ? "TeamDeathMatch" : gameMode,
+                Password = password ?? string.Empty,
                 TeamBalance = teamBalance
             };
             room.Players.Add(CreateLocalRoomPlayerRecord(ownerId, ResolveLocalPlayerName(), false));
@@ -501,6 +503,18 @@ namespace OpenGS
             if (room.PlayerCount >= room.Capacity)
             {
                 EmitToClient(BuildRoomInfoSnapshot(room).ToNotificationJson(MessageType.RoomFull));
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(room.Password) && !string.Equals(room.Password, password ?? string.Empty, StringComparison.Ordinal))
+            {
+                EmitToClient(new JObject
+                {
+                    ["MessageType"] = MessageType.JoinRoomResponse,
+                    ["Success"] = false,
+                    ["ErrorMessage"] = "Incorrect password",
+                    ["RoomID"] = roomId
+                });
                 return;
             }
 
