@@ -9,6 +9,7 @@ namespace OpenGS
     public interface IEffectService
     {
         void PlayImpactEffect(Vector2 position, Vector2 normal);
+        void PlayOneShotEffect(GameObject prefab, Vector3 position, Quaternion rotation, float lifetime = -1f);
         void ShakeCamera(float intensity, float duration);
     }
 
@@ -54,6 +55,26 @@ namespace OpenGS
             else
             {
                 Object.Destroy(effect, DefaultHitLifetime);
+            }
+        }
+
+        public void PlayOneShotEffect(GameObject prefab, Vector3 position, Quaternion rotation, float lifetime = -1f)
+        {
+            if (prefab == null)
+            {
+                return;
+            }
+
+            if (_prefabs != null && _prefabs.HitEffect == prefab)
+            {
+                PlayImpactEffect(position, Vector2.up);
+                return;
+            }
+
+            var effect = Object.Instantiate(prefab, position, rotation);
+            if (lifetime > 0f)
+            {
+                Object.Destroy(effect, lifetime);
             }
         }
 

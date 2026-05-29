@@ -318,12 +318,15 @@ namespace OpenGS
             {
                 if (effectService != null)
                 {
-                    effectService.PlayImpactEffect(gameObject.transform.position, Vector2.up);
+                    effectService.PlayOneShotEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.HitEffect : null, gameObject.transform.position, Quaternion.identity);
                 }
                 else
                 {
-                    var effect = Instantiate(PlayerEffectPrefabMasterData.HitEffect);
-                    effect.transform.position = gameObject.transform.position;
+                    if (PlayerEffectPrefabMasterData != null && PlayerEffectPrefabMasterData.HitEffect != null)
+                    {
+                        var effect = Instantiate(PlayerEffectPrefabMasterData.HitEffect);
+                        effect.transform.position = gameObject.transform.position;
+                    }
                 }
                 StartCoroutine(LavaCounter());
             }

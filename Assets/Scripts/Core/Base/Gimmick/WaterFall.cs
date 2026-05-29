@@ -96,7 +96,7 @@ namespace OpenGS
             {
                 if (effectService != null)
                 {
-                    effectService.PlayImpactEffect(player.transform.position, Vector2.up);
+                    effectService.PlayOneShotEffect(effectPrefabMasterData != null ? effectPrefabMasterData.HitEffect : null, player.transform.position, Quaternion.identity);
                 }
                 else if (effectPrefabMasterData != null && effectPrefabMasterData.HitEffect != null)
                 {
