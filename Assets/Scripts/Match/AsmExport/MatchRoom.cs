@@ -58,6 +58,7 @@ namespace OpenGS
         {
             Id = id;
             RoomName = "New Match Room";
+            Stage = new Stage();
             // ClientNetworkManagerのインスタンスを検索（Awake/Start時が望ましい）
             _networkManager = GameObject.FindFirstObjectByType<ClientNetworkManager>();
             if (_networkManager == null)
@@ -157,10 +158,7 @@ namespace OpenGS
             JObject gameSceneSnapshot = snapshot.Value<JObject>("Snapshot");
             if (gameSceneSnapshot != null)
             {
-                // TODO: UnityプロジェクトのGameSceneクラスにApplySnapshotメソッドを実装する必要があります。
-                // 例: Stage?.ApplySnapshot(gameSceneSnapshot);
-                // GameScene.ApplySnapshot(gameSceneSnapshot); // 仮の呼び出し
-                Debug.Log("[MatchRoom] GameScene Snapshot received, needs specific application logic.");
+                Stage?.ApplySnapshot(gameSceneSnapshot);
             }
 
             // プレイヤー情報の更新（もしスナップショットに含まれていれば）
@@ -172,8 +170,27 @@ namespace OpenGS
         {
             lock (_lockObj)
             {
-                // プレイヤー追加ロジック (クライアントのデータベースやUIに反映)
-                // database.AddPlayer(info);
+                if (info == null)
+                {
+                    Debug.LogWarning("[MatchRoom] AddPlayer called with null info.");
+                    return;
+                }
+
+                if (string.IsNullOrWhiteSpace(info.Id))
+                {
+                    info.Id = Guid.NewGuid().ToString("N");
+                }
+
+                var status = new PlayerStatus(info.Team, EPlayerType.OtherPlayer, Math.Max(1, info.MaxHealth), 100f)
+                {
+                    Hp = info.Health,
+                    AttackPower = info.AttackPower,
+                    DefensePower = info.DefensePower
+                };
+
+                var playerData = new PlayerData(info, status);
+                database.AddPlayer(playerData);
+                PlayerManager.AddPlayer(info, status);
                 Debug.Log($"[MatchRoom] Player {info.Name} ({info.Id}) added locally.");
             }
         }
@@ -193,9 +210,30 @@ namespace OpenGS
 
         public PlayerData MyPlayer()
         {
-            // クライアントのローカルプレイヤー情報を返すロジック
+            var localPlayerId = ResolveLocalPlayerId();
+            if (!string.IsNullOrWhiteSpace(localPlayerId) && database.TryGetPlayer(localPlayerId, out var databasePlayer))
+            {
+                return databasePlayer;
+            }
+
+            var myPlayer = PlayerManager.MyPlayer();
+            if (myPlayer != null)
+            {
+                return new PlayerData(myPlayer.PlayerInfo, myPlayer.Status);
+            }
+
+            if (database.AllPlayer().Count > 0)
+            {
+                return database.AllPlayer()[database.AllPlayer().Count - 1];
+            }
+
             Debug.LogWarning("[MatchRoom] MyPlayer was requested but no local player data is available.");
             return null;
+        }
+
+        private string ResolveLocalPlayerId()
+        {
+            return _networkManager != null ? _networkManager.ClientPlayerId : string.Empty;
         }
     }
 }

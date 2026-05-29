@@ -1,5 +1,6 @@
 ﻿
 using UnityEngine;
+using Zenject;
 
 
 
@@ -15,7 +16,14 @@ namespace OpenGS
             var effectPrefab = smokePrefab != null ? smokePrefab : expEffect;
             if (effectPrefab != null)
             {
-                Instantiate(effectPrefab, transform.position, Quaternion.identity);
+                if (effectService != null)
+                {
+                    effectService.PlayOneShotEffect(effectPrefab, transform.position, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(effectPrefab, transform.position, Quaternion.identity);
+                }
             }
 
             Destroy(gameObject);

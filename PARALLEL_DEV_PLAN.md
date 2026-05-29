@@ -9,6 +9,18 @@ stable. The key rule is simple:
 - When one side is incomplete, the other side should still compile and fall back
   cleanly.
 
+## Repository Roles
+
+The three repositories should be treated as one coordinated system:
+
+- `OpenGSCore` defines shared contracts, DTOs, and pure domain rules.
+- `OpenGSServer` owns authority, validation, persistence, and transport.
+- `OpenGSR` stays focused on client-side core logic, input, and adapter code.
+
+The client repository should not be treated as a second source of truth for
+game rules. If a feature needs real gameplay authority, it belongs in Core or
+Server first, then the client follows the contract.
+
 ## Shared Contract First
 
 Before starting a new slice, lock these items:
@@ -94,6 +106,19 @@ Shared acceptance:
 3. Implement the client reaction immediately after.
 4. Run a build on both repos or both project files.
 5. Commit once the pair reaches a usable milestone.
+
+## OpenGSR Scope
+
+When working in `OpenGSR`, keep the focus on core logic and contract wiring:
+
+- network request and response handling
+- scene state transitions that depend on shared contracts
+- local adapters that keep the client compiling and testable
+- state display only when it directly reflects server-owned data
+
+Avoid expanding `OpenGSR` into a separate rule owner. UI polish, one-off
+presentation experiments, and duplicate rule logic should stay out unless they
+are needed to keep the client contract alive.
 
 ## Current Best Next Pair
 

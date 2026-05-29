@@ -138,8 +138,19 @@ namespace OpenGS
 
         protected void CreateMuzzulleFlash()
         {
-            if (shotEffectPrefab && muzzle)
+            if (!shotEffectPrefab || !muzzle)
+            {
+                return;
+            }
+
+            if (effectService != null)
+            {
+                effectService.PlayOneShotEffect(shotEffectPrefab, muzzle.position, muzzle.rotation);
+            }
+            else
+            {
                 Instantiate(shotEffectPrefab, muzzle.position, muzzle.rotation);
+            }
         }
 
         protected float GetEffectiveDamage(AbstractPlayer player)

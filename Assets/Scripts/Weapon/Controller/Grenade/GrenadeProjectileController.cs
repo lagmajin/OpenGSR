@@ -1,6 +1,7 @@
 using System;
 using OpenGSCore;
 using UnityEngine;
+using Zenject;
 
 namespace OpenGS
 {
@@ -40,6 +41,13 @@ namespace OpenGS
         private string weaponName = "Grenade";
         private ETeam ownerTeam = ETeam.NoTeam;
         private SpriteRenderer spriteRenderer;
+        private IEffectService effectService;
+
+        [Inject]
+        private void Construct([InjectOptional] IEffectService effectService)
+        {
+            this.effectService = effectService;
+        }
 
         private void Awake()
         {
@@ -221,7 +229,14 @@ namespace OpenGS
 
             if (explosionEffect != null)
             {
-                Instantiate(explosionEffect, position, Quaternion.identity);
+                if (effectService != null)
+                {
+                    effectService.PlayOneShotEffect(explosionEffect, position, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(explosionEffect, position, Quaternion.identity);
+                }
             }
 
             GrenadeExplosionDamageUtility.ApplyCircularDamage(position, ownerPlayerId, weaponName, ownerTeam, damage / 100f);

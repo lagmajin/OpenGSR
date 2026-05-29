@@ -1,6 +1,7 @@
 ﻿
 using OpenGSCore;
 using UnityEngine;
+using Zenject;
 
 namespace OpenGS
 {
@@ -16,6 +17,13 @@ namespace OpenGS
 
 
         [SerializeField] private GameObject explosion;
+        private IEffectService effectService;
+
+        [Inject]
+        private void Construct([InjectOptional] IEffectService effectService)
+        {
+            this.effectService = effectService;
+        }
 
         public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerPlayerId, string weaponName, ETeam team)
         {
@@ -38,7 +46,14 @@ namespace OpenGS
         {
             if (explosion)
             {
-                Instantiate(explosion).transform.position = gameObject.transform.position;
+                if (effectService != null)
+                {
+                    effectService.PlayOneShotEffect(explosion, gameObject.transform.position, Quaternion.identity);
+                }
+                else
+                {
+                    Instantiate(explosion).transform.position = gameObject.transform.position;
+                }
             }
 
             ApplyExplosionDamage();

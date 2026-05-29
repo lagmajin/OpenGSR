@@ -12,7 +12,14 @@ namespace OpenGS
 
         public override void Exp()
         {
-            Instantiate(expEffect).transform.position = gameObject.transform.position;
+            if (effectService != null)
+            {
+                effectService.PlayOneShotEffect(expEffect, gameObject.transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(expEffect).transform.position = gameObject.transform.position;
+            }
             SoundManager.Instance.PlayGameSound(EMatchSound.GameStartVoice);
             Destroy(gameObject);
         }

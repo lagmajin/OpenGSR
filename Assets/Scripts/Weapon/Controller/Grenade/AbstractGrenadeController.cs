@@ -1,4 +1,5 @@
 using UnityEngine;
+using Zenject;
 
 namespace OpenGS
 {
@@ -16,6 +17,13 @@ namespace OpenGS
         public Rigidbody2D body;
 
         public MultipleTags myTags;
+        protected IEffectService effectService;
+
+        [Inject]
+        private void Construct([InjectOptional] IEffectService effectService)
+        {
+            this.effectService = effectService;
+        }
 
         private void Start()
         {
@@ -24,7 +32,14 @@ namespace OpenGS
 
         public virtual void Exp()
         {
-            Instantiate(expEffect, gameObject.transform);
+            if (effectService != null)
+            {
+                effectService.PlayOneShotEffect(expEffect, transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(expEffect, gameObject.transform);
+            }
             Destroy(this.gameObject);
         }
 

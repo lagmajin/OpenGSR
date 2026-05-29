@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
-
+using Zenject;
 
 namespace OpenGS
 {
@@ -11,54 +11,36 @@ namespace OpenGS
         void CreateHitEffect();
     }
 
-
-
-
-
-
-
     [DisallowMultipleComponent]
     public class PlayerHitEffectController : MonoBehaviour, IPlayerEffect
     {
         [SerializeField] [Required] public AbstractPlayer player;
         [SerializeField] [Required] [SceneObjectsOnly] public Transform transforom;
         [SerializeField] [Required] private GameObject hitEffect;
+        private IEffectService effectService;
 
-
-
-
-
-        // Start is called before the first frame update
-        void Start()
+        [Inject]
+        private void Construct([InjectOptional] IEffectService effectService)
         {
-
+            this.effectService = effectService;
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-
-        [Button("エフェクト生成テスト")]
+        [Button("Effect Test")]
         public void CreateHitEffect()
         {
-            if (hitEffect)
+            if (!hitEffect || player == null)
             {
-                var effect = Instantiate(hitEffect);
-
-                effect.transform.position = player.transform.position;
-
-
+                return;
             }
 
+            if (effectService != null)
+            {
+                effectService.PlayOneShotEffect(hitEffect, player.transform.position, Quaternion.identity);
+                return;
+            }
 
+            var effect = Instantiate(hitEffect);
+            effect.transform.position = player.transform.position;
         }
-
-
-
     }
-
-
 }

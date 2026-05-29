@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Zenject;
 //using UnityEngine;
 
 namespace OpenGS
@@ -33,6 +34,13 @@ namespace OpenGS
         [SerializeField] private float damageAmount = 70f;
 
         private Coroutine damageCoroutine;
+        private IEffectService effectService;
+
+        [Inject]
+        public void Construct([InjectOptional] IEffectService effectService)
+        {
+            this.effectService = effectService;
+        }
 
         private void Awake()
         {
@@ -86,7 +94,11 @@ namespace OpenGS
             // play effect
             try
             {
-                if (effectPrefabMasterData != null && effectPrefabMasterData.HitEffect != null)
+                if (effectService != null)
+                {
+                    effectService.PlayOneShotEffect(effectPrefabMasterData != null ? effectPrefabMasterData.HitEffect : null, player.transform.position, Quaternion.identity);
+                }
+                else if (effectPrefabMasterData != null && effectPrefabMasterData.HitEffect != null)
                 {
                     var fx = Instantiate(effectPrefabMasterData.HitEffect);
                     fx.transform.position = player.transform.position;

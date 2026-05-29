@@ -31,7 +31,14 @@ namespace OpenGS
             }
 
             exploded = true;
-            Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
+            if (effectService != null)
+            {
+                effectService.PlayOneShotEffect(expEffect, gameObject.transform.position, Quaternion.identity);
+            }
+            else
+            {
+                Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
+            }
             var owner = GetOwnerPlayer();
             var resolvedOwnerId = !string.IsNullOrWhiteSpace(ownerPlayerId)
                 ? ownerPlayerId
