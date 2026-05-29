@@ -10,5 +10,8 @@ namespace OpenGS
         public AudioClip shotSound;
         public float reloadTime = 2.0f;
         public int maxBullet = 30;
+        public Sprite inGameSprite;
+        public Sprite inSelectionSprite;
+        public Sprite shilhouetteSprite;
     }
 }

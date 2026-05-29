@@ -674,6 +674,12 @@ namespace OpenGS
                 return null;
             }
 
+            var weaponMasterSprite = WeaponSelectionSpriteResolver.Resolve(weaponId);
+            if (weaponMasterSprite != null)
+            {
+                return weaponMasterSprite;
+            }
+
             var catalogItem = ShopCatalogFactory.GetDefaultItemById(weaponId);
             if (catalogItem != null && catalogItem.icon != null)
             {

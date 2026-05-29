@@ -9,27 +9,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b343cd5316c07b49a83d40ad4f0476b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
   m_Name: Dragunov
   m_EditorClassIdentifier: 
-  type: 9
-  gunType: 3
-  Name: 
-  maxBullet: 10
-  bulletSpeed: 54.69
-  bulletCount: 1
-  damage: 1
+  weaponType: 8
+  shotSound: {fileID: 8300000, guid: b2773d695becc8a4e97c0dadfc0c32e2, type: 3}
   reloadTime: 30
+  maxBullet: 10
   inGameSprite: {fileID: 6703948851185705133, guid: 02bd226d8f2dfba429dcd8be24f51433,
     type: 3}
   inSelectionSprite: {fileID: 1379829763446114492, guid: f7a8d3ea3cd7ed9469d67ab08c8e1a50,
     type: 3}
   shilhouetteSprite: {fileID: 5987503236870700002, guid: b1dfd422aeb77f54b8ce9d842ea7687d,
     type: 3}
-  reloadStartSound: {fileID: 8300000, guid: a9394e737a6167646bb580c4ca089b1d, type: 3}
-  shotSound: {fileID: 8300000, guid: b2773d695becc8a4e97c0dadfc0c32e2, type: 3}
-  shotHitObjectSound: {fileID: 0}
-  shellPrefab: {fileID: 0}
-  bulletPrefab: {fileID: 98903386295969332, guid: efd869fa700bff14aaff24f1dd3f76d3,
-    type: 3}
-  shotEffectPrefab: {fileID: 0}

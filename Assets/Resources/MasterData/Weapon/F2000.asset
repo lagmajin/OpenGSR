@@ -9,22 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b343cd5316c07b49a83d40ad4f0476b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
   m_Name: F2000
   m_EditorClassIdentifier: 
-  type: 3
-  gunType: 1
-  Name: 
-  maxBullet: 17
-  bulletSpeed: 0
-  bulletCount: 1
-  damage: 1
+  weaponType: 4
+  shotSound: {fileID: 0}
   reloadTime: 30
+  maxBullet: 17
   inGameSprite: {fileID: 0}
   inSelectionSprite: {fileID: 0}
   shilhouetteSprite: {fileID: 21300000, guid: e3e280f2ee79e294c8a72fa57ff0f8cc, type: 3}
-  reloadStartSound: {fileID: 0}
-  shotSound: {fileID: 0}
-  shellPrefab: {fileID: 0}
-  bulletPrefab: {fileID: 0}
-  shotEffectPrefab: {fileID: 0}
