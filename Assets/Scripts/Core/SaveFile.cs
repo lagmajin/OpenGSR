@@ -39,27 +39,33 @@ namespace OpenGS
 
         public static bool Save(string filename, AudioClip clip)
         {
-            if (!filename.ToLower().EndsWith(".wav"))
+            try
             {
-                filename += ".wav";
+                if (!filename.ToLower().EndsWith(".wav"))
+                {
+                    filename += ".wav";
+                }
+
+                var filepath = Path.Combine(Application.persistentDataPath, filename);
+
+                Debug.Log(filepath);
+
+                // Make sure directory exists if user is saving to sub dir.
+                Directory.CreateDirectory(Path.GetDirectoryName(filepath));
+
+                using (var fileStream = CreateEmpty(filepath))
+                {
+                    ConvertAndWrite(fileStream, clip);
+                    WriteHeader(fileStream, clip);
+                }
+
+                return true;
             }
-
-            var filepath = Path.Combine(Application.persistentDataPath, filename);
-
-            Debug.Log(filepath);
-
-            // Make sure directory exists if user is saving to sub dir.
-            Directory.CreateDirectory(Path.GetDirectoryName(filepath));
-
-            using (var fileStream = CreateEmpty(filepath))
+            catch (Exception ex)
             {
-
-                ConvertAndWrite(fileStream, clip);
-
-                WriteHeader(fileStream, clip);
+                Debug.LogWarning($"[SavWav] Failed to save wav file: {ex.Message}");
+                return false;
             }
-
-            return true; // TODO: return false if there's a failure saving the file
         }
 
         public static AudioClip TrimSilence(AudioClip clip, float min)

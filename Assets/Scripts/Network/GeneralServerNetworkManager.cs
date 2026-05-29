@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System;
+using System.IO;
+using System.Linq;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json;
 using UniRx;
 using UnityEngine;
 using OpenGSCore;
@@ -57,10 +60,15 @@ namespace OpenGS
         private readonly string localMatchServerIp = "127.0.0.1";
         private const int LocalMatchServerPort = 60001;
         private const int LocalMatchServerUdpPort = 63000;
+        private const string LocalServerStateFileName = "general_server_state.json";
 
         public GeneralServerNetworkManager()
         {
-            SeedLocalRooms();
+            LoadLocalServerState();
+            if (localRooms.Count == 0)
+            {
+                SeedLocalRooms();
+            }
         }
 
         public System.IObservable<JObject> DataReceivedStream => dataReceivedSubject.AsObservable();
@@ -81,15 +89,316 @@ namespace OpenGS
 
         public void ConnectToGeneralServerSync(string ip, int port, string id, string pass)
         {
+            _ = ip;
+            _ = port;
+            _ = pass;
+
+            Online = true;
+            var resolvedAccountName = string.IsNullOrWhiteSpace(AccountManager.Instance.CurrentProfile.DisplayName)
+                ? "Player"
+                : AccountManager.Instance.CurrentProfile.DisplayName;
+            var resolvedAccountId = string.IsNullOrWhiteSpace(id)
+                ? AccountManager.Instance.CurrentProfile.GlobalUserId
+                : id;
+
+            if (string.IsNullOrWhiteSpace(resolvedAccountId))
+            {
+                resolvedAccountId = "local-account";
+            }
+
+            SetCurrentAccount(resolvedAccountName, resolvedAccountId);
+            connectedSubject.OnNext(Unit.Default);
         }
 
         public void TryConnectToServer(string ip, int port)
         {
+            ConnectToGeneralServerSync(ip, port, AccountManager.Instance.CurrentProfile.GlobalUserId, "");
         }
 
         public void Disconnect()
         {
+            SaveLocalServerState();
             Online = false;
+            AccountManager.Instance.Logout();
+            disconnectedSubject.OnNext(Unit.Default);
+        }
+
+        private string LocalServerStatePath => Path.Combine(Application.persistentDataPath, LocalServerStateFileName);
+
+        private void LoadLocalServerState()
+        {
+            try
+            {
+                if (!File.Exists(LocalServerStatePath))
+                {
+                    return;
+                }
+
+                var root = JObject.Parse(File.ReadAllText(LocalServerStatePath));
+
+                localRooms.Clear();
+                accounts.Clear();
+                localGuilds.Clear();
+
+                localRoomSequence = root.Value<int?>("LocalRoomSequence") ?? 1;
+                currentAccountId = root.Value<string>("CurrentAccountId") ?? string.Empty;
+                currentRoomId = root.Value<string>("CurrentRoomId") ?? string.Empty;
+
+                if (root["Accounts"] is JArray accountArray)
+                {
+                    foreach (var token in accountArray.OfType<JObject>())
+                    {
+                        var account = BuildAccountRecord(token);
+                        if (!string.IsNullOrWhiteSpace(account.GlobalUserId))
+                        {
+                            accounts[account.GlobalUserId] = account;
+                        }
+                    }
+                }
+
+                if (root["Rooms"] is JArray roomArray)
+                {
+                    foreach (var token in roomArray.OfType<JObject>())
+                    {
+                        var room = BuildRoomRecord(token);
+                        if (!string.IsNullOrWhiteSpace(room.RoomId))
+                        {
+                            localRooms.Add(room);
+                        }
+                    }
+                }
+
+                if (root["Guilds"] is JArray guildArray)
+                {
+                    foreach (var token in guildArray.OfType<JObject>())
+                    {
+                        var guild = BuildGuildRecord(token);
+                        if (!string.IsNullOrWhiteSpace(guild.GuildName))
+                        {
+                            localGuilds[guild.GuildName] = guild;
+                        }
+                    }
+                }
+
+                if (!string.IsNullOrWhiteSpace(currentAccountId) && accounts.TryGetValue(currentAccountId, out var currentAccount))
+                {
+                    AccountManager.Instance.LoginData(currentAccount.AccountName, "", currentAccount.GlobalUserId);
+                    AccountManager.Instance.SetCredits(currentAccount.Credits);
+                }
+                else if (!string.IsNullOrWhiteSpace(currentAccountId))
+                {
+                    currentAccountId = string.Empty;
+                }
+
+                if (!string.IsNullOrWhiteSpace(currentRoomId) &&
+                    !localRooms.Any(room => string.Equals(room.RoomId, currentRoomId, StringComparison.OrdinalIgnoreCase)))
+                {
+                    currentRoomId = string.Empty;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[GeneralServerNetworkManager] Failed to load local state: {ex.Message}");
+            }
+        }
+
+        private void SaveLocalServerState()
+        {
+            try
+            {
+                var root = new JObject
+                {
+                    ["LocalRoomSequence"] = localRoomSequence,
+                    ["CurrentAccountId"] = currentAccountId ?? string.Empty,
+                    ["CurrentRoomId"] = currentRoomId ?? string.Empty,
+                    ["Accounts"] = new JArray(accounts.Values.Select(BuildAccountJson)),
+                    ["Rooms"] = new JArray(localRooms.Select(BuildRoomJson)),
+                    ["Guilds"] = new JArray(localGuilds.Values.Select(BuildGuildJson))
+                };
+
+                File.WriteAllText(LocalServerStatePath, JsonConvert.SerializeObject(root, Formatting.Indented));
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[GeneralServerNetworkManager] Failed to save local state: {ex.Message}");
+            }
+        }
+
+        private static JObject BuildAccountJson(AccountRecord account)
+        {
+            return new JObject
+            {
+                ["GlobalUserId"] = account.GlobalUserId,
+                ["AccountName"] = account.AccountName,
+                ["Credits"] = account.Credits,
+                ["PurchasedItems"] = new JArray(account.PurchasedItems),
+                ["EquippedItems"] = new JArray(account.EquippedItems.Select(item => new JObject
+                {
+                    ["Category"] = item.Key.ToString(),
+                    ["ItemId"] = item.Value ?? string.Empty
+                })),
+                ["EquippedInstantItems"] = new JArray(account.EquippedInstantItems.Select(item => new JObject
+                {
+                    ["Slot"] = item.Key,
+                    ["ItemId"] = item.Value ?? string.Empty
+                }))
+            };
+        }
+
+        private static AccountRecord BuildAccountRecord(JObject json)
+        {
+            var account = new AccountRecord
+            {
+                GlobalUserId = json["GlobalUserId"]?.ToString() ?? string.Empty,
+                AccountName = json["AccountName"]?.ToString() ?? string.Empty,
+                Credits = json["Credits"]?.ToObject<long>() ?? 1000
+            };
+
+            if (json["PurchasedItems"] is JArray purchasedItems)
+            {
+                foreach (var item in purchasedItems)
+                {
+                    var itemId = item?.ToString();
+                    if (!string.IsNullOrWhiteSpace(itemId))
+                    {
+                        account.PurchasedItems.Add(itemId);
+                    }
+                }
+            }
+
+            if (json["EquippedItems"] is JArray equippedItems)
+            {
+                foreach (var item in equippedItems.OfType<JObject>())
+                {
+                    var categoryText = item["Category"]?.ToString() ?? string.Empty;
+                    if (Enum.TryParse(categoryText, true, out EShopCategory category))
+                    {
+                        account.EquippedItems[category] = item["ItemId"]?.ToString() ?? string.Empty;
+                    }
+                }
+            }
+
+            if (json["EquippedInstantItems"] is JArray instantItems)
+            {
+                foreach (var item in instantItems.OfType<JObject>())
+                {
+                    var slot = item["Slot"]?.ToObject<int>() ?? 0;
+                    account.EquippedInstantItems[slot] = item["ItemId"]?.ToString() ?? string.Empty;
+                }
+            }
+
+            return account;
+        }
+
+        private static JObject BuildRoomJson(RoomRecord room)
+        {
+            return new JObject
+            {
+                ["RoomId"] = room.RoomId,
+                ["RoomName"] = room.RoomName,
+                ["OwnerId"] = room.OwnerId,
+                ["Capacity"] = room.Capacity,
+                ["GameMode"] = room.GameMode,
+                ["Map"] = room.Map,
+                ["Password"] = room.Password,
+                ["TeamBalance"] = room.TeamBalance,
+                ["PlayerCount"] = room.PlayerCount,
+                ["Players"] = new JArray(room.Players.Select(player => new JObject
+                {
+                    ["PlayerId"] = player.PlayerId,
+                    ["PlayerName"] = player.PlayerName,
+                    ["IsReady"] = player.IsReady,
+                    ["PlayerCharacter"] = player.PlayerCharacter
+                }))
+            };
+        }
+
+        private static RoomRecord BuildRoomRecord(JObject json)
+        {
+            var room = new RoomRecord
+            {
+                RoomId = json["RoomId"]?.ToString() ?? string.Empty,
+                RoomName = json["RoomName"]?.ToString() ?? string.Empty,
+                OwnerId = json["OwnerId"]?.ToString() ?? string.Empty,
+                Capacity = json["Capacity"]?.ToObject<int>() ?? 8,
+                GameMode = json["GameMode"]?.ToString() ?? "TeamDeathMatch",
+                Map = json["Map"]?.ToString() ?? string.Empty,
+                Password = json["Password"]?.ToString() ?? string.Empty,
+                TeamBalance = json["TeamBalance"]?.ToObject<bool>() ?? true,
+                PlayerCount = json["PlayerCount"]?.ToObject<int>() ?? 0
+            };
+
+            if (json["Players"] is JArray players)
+            {
+                foreach (var token in players.OfType<JObject>())
+                {
+                    room.Players.Add(new RoomRecord.RoomPlayerRecord
+                    {
+                        PlayerId = token["PlayerId"]?.ToString() ?? string.Empty,
+                        PlayerName = token["PlayerName"]?.ToString() ?? string.Empty,
+                        IsReady = token["IsReady"]?.ToObject<bool>() ?? false,
+                        PlayerCharacter = token["PlayerCharacter"]?.ToString() ?? EPlayerCharacter.Misty.ToString()
+                    });
+                }
+            }
+
+            room.PlayerCount = room.Players.Count;
+            return room;
+        }
+
+        private static JObject BuildGuildJson(GuildRecord guild)
+        {
+            return new JObject
+            {
+                ["Id"] = guild.Id,
+                ["GuildName"] = guild.GuildName,
+                ["GuildShortName"] = guild.GuildShortName,
+                ["LeaderId"] = guild.LeaderId,
+                ["Level"] = guild.Level,
+                ["Experience"] = guild.Experience,
+                ["CreationTime"] = guild.CreationTime,
+                ["Members"] = new JArray(guild.Members.Values.Select(member => new JObject
+                {
+                    ["PlayerId"] = member.PlayerId,
+                    ["Role"] = member.Role,
+                    ["JoinedAt"] = member.JoinedAt
+                }))
+            };
+        }
+
+        private static GuildRecord BuildGuildRecord(JObject json)
+        {
+            var guild = new GuildRecord
+            {
+                Id = json["Id"]?.ToString() ?? Guid.NewGuid().ToString("N"),
+                GuildName = json["GuildName"]?.ToString() ?? string.Empty,
+                GuildShortName = json["GuildShortName"]?.ToString() ?? string.Empty,
+                LeaderId = json["LeaderId"]?.ToString() ?? string.Empty,
+                Level = json["Level"]?.ToObject<int>() ?? 1,
+                Experience = json["Experience"]?.ToObject<long>() ?? 0,
+                CreationTime = json["CreationTime"]?.ToString() ?? DateTime.UtcNow.ToString("o")
+            };
+
+            if (json["Members"] is JArray members)
+            {
+                foreach (var token in members.OfType<JObject>())
+                {
+                    var playerId = token["PlayerId"]?.ToString() ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(playerId))
+                    {
+                        continue;
+                    }
+
+                    guild.Members[playerId] = new GuildMemberRecord
+                    {
+                        PlayerId = playerId,
+                        Role = token["Role"]?.ToString() ?? "Member",
+                        JoinedAt = token["JoinedAt"]?.ToString() ?? DateTime.UtcNow.ToString("o")
+                    };
+                }
+            }
+
+            return guild;
         }
 
         public void SendMessage(JObject json)
@@ -171,6 +480,7 @@ namespace OpenGS
 
             EmitToClient(BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.CreateRoomResponse));
             EmitToClient(BuildRoomInfoSnapshot(room).ToNotificationJson(MessageType.RoomCreated));
+            SaveLocalServerState();
         }
 
         public void SendEnterWaitRoomRequest(string roomId, string playerId, string playerName, string password = "")
@@ -211,6 +521,7 @@ namespace OpenGS
             response["PlayerID"] = playerId;
             response["PlayerName"] = playerName;
             EmitToClient(response);
+            SaveLocalServerState();
         }
 
         public JObject GetCurrentWaitRoomPlayerListSnapshot()
@@ -288,6 +599,7 @@ namespace OpenGS
             currentAccountId = account.GlobalUserId;
             AccountManager.Instance.LoginData(account.AccountName, "", account.GlobalUserId);
             AccountManager.Instance.SetCredits(account.Credits);
+            SaveLocalServerState();
         }
 
         public long GetCredits()
@@ -314,6 +626,7 @@ namespace OpenGS
             AccountManager.Instance.SetCredits(account.Credits);
             UserSaveManager.SetPurchased(itemId, true);
             EconomyManager.SetCredits((int)account.Credits);
+            SaveLocalServerState();
             return true;
         }
 
@@ -336,6 +649,7 @@ namespace OpenGS
                 UserSaveManager.EquipItem(itemId, category);
             }
 
+            SaveLocalServerState();
             return true;
         }
 
@@ -353,6 +667,7 @@ namespace OpenGS
                 UserSaveManager.EquipItem("", category);
             }
 
+            SaveLocalServerState();
             return true;
         }
 
@@ -628,6 +943,178 @@ namespace OpenGS
             });
         }
 
+        private JArray BuildGuildListArray()
+        {
+            var result = new JArray();
+            foreach (var guild in localGuilds.Values.OrderBy(g => g.GuildName))
+            {
+                result.Add(BuildGuildSummaryJson(guild));
+            }
+
+            return result;
+        }
+
+        private static JObject BuildGuildSummaryJson(GuildRecord guild)
+        {
+            return new JObject
+            {
+                ["Id"] = guild.Id,
+                ["GuildName"] = guild.GuildName,
+                ["GuildShortName"] = guild.GuildShortName,
+                ["LeaderId"] = guild.LeaderId,
+                ["Level"] = guild.Level,
+                ["Experience"] = guild.Experience,
+                ["CreationTime"] = guild.CreationTime,
+                ["MemberCount"] = guild.Members.Count
+            };
+        }
+
+        private static JObject BuildGuildDetailJson(GuildRecord guild)
+        {
+            var memberArray = new JArray();
+            foreach (var member in guild.Members.Values
+                         .OrderBy(member => string.Equals(member.Role, "Leader", StringComparison.OrdinalIgnoreCase) ? 0 : 1)
+                         .ThenBy(member => member.PlayerId))
+            {
+                memberArray.Add(new JObject
+                {
+                    ["MemberId"] = member.PlayerId,
+                    ["Role"] = member.Role,
+                    ["JoinedAt"] = member.JoinedAt
+                });
+            }
+
+            return new JObject
+            {
+                ["Id"] = guild.Id,
+                ["GuildName"] = guild.GuildName,
+                ["GuildShortName"] = guild.GuildShortName,
+                ["LeaderId"] = guild.LeaderId,
+                ["Level"] = guild.Level,
+                ["Experience"] = guild.Experience,
+                ["CreationTime"] = guild.CreationTime,
+                ["MemberCount"] = guild.Members.Count,
+                ["Members"] = memberArray
+            };
+        }
+
+        private bool TryGetGuild(string guildName, out GuildRecord guild)
+        {
+            guild = null;
+
+            if (string.IsNullOrWhiteSpace(guildName))
+            {
+                return false;
+            }
+
+            return localGuilds.TryGetValue(guildName, out guild);
+        }
+
+        private bool TryCreateGuild(string guildName, string shortName, string leaderId, out GuildRecord guild)
+        {
+            guild = null;
+
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(leaderId))
+            {
+                return false;
+            }
+
+            if (localGuilds.ContainsKey(guildName))
+            {
+                return false;
+            }
+
+            guild = new GuildRecord
+            {
+                GuildName = guildName,
+                GuildShortName = string.IsNullOrWhiteSpace(shortName) ? guildName : shortName,
+                LeaderId = leaderId
+            };
+
+            guild.Members[leaderId] = new GuildMemberRecord
+            {
+                PlayerId = leaderId,
+                Role = "Leader",
+                JoinedAt = DateTime.UtcNow.ToString("o")
+            };
+
+            localGuilds[guildName] = guild;
+            SaveLocalServerState();
+            return true;
+        }
+
+        private bool TryJoinGuild(string guildName, string memberId, string role, out GuildRecord guild)
+        {
+            guild = null;
+
+            if (!TryGetGuild(guildName, out guild) || string.IsNullOrWhiteSpace(memberId))
+            {
+                return false;
+            }
+
+            if (guild.Members.ContainsKey(memberId))
+            {
+                return false;
+            }
+
+            guild.Members[memberId] = new GuildMemberRecord
+            {
+                PlayerId = memberId,
+                Role = string.IsNullOrWhiteSpace(role) ? "Member" : role,
+                JoinedAt = DateTime.UtcNow.ToString("o")
+            };
+
+            if (string.Equals(role, "Leader", StringComparison.OrdinalIgnoreCase))
+            {
+                guild.LeaderId = memberId;
+            }
+
+            SaveLocalServerState();
+            return true;
+        }
+
+        private bool TryLeaveGuild(string guildName, string memberId, out GuildRecord guild)
+        {
+            guild = null;
+
+            if (!TryGetGuild(guildName, out guild) || string.IsNullOrWhiteSpace(memberId))
+            {
+                return false;
+            }
+
+            if (!guild.Members.Remove(memberId))
+            {
+                return false;
+            }
+
+            if (string.Equals(guild.LeaderId, memberId, StringComparison.OrdinalIgnoreCase))
+            {
+                var nextLeader = guild.Members.Values.FirstOrDefault();
+                if (nextLeader != null)
+                {
+                    nextLeader.Role = "Leader";
+                    guild.LeaderId = nextLeader.PlayerId;
+                }
+                else
+                {
+                    guild.LeaderId = string.Empty;
+                }
+            }
+
+            SaveLocalServerState();
+            return true;
+        }
+
+        private bool TryKickGuildMember(string guildName, string memberId, out GuildRecord guild)
+        {
+            return TryLeaveGuild(guildName, memberId, out guild);
+        }
+
+        private bool IsGuildMember(string guildName, string memberId)
+        {
+            return TryGetGuild(guildName, out var guild) && guild.Members.ContainsKey(memberId);
+        }
+
         private bool IsSceneTransitionAllowed(string fromScene, string toScene, string reason)
         {
             var generalScenes = GeneralSceneMasterData.Instance();
@@ -736,6 +1223,7 @@ namespace OpenGS
             }
 
             localRooms.Add(tdmRoom);
+            SaveLocalServerState();
         }
 
         private bool HandleLocalWaitRoomMessage(JObject json)
@@ -824,9 +1312,11 @@ namespace OpenGS
             {
                 localRooms.Remove(room);
                 EmitToClient(BuildRoomInfoSnapshot(room).ToNotificationJson(MessageType.RoomDeleted));
+                SaveLocalServerState();
                 return true;
             }
             EmitToClient(BuildWaitRoomPlayerListMessage(room));
+            SaveLocalServerState();
             return true;
         }
 
@@ -869,6 +1359,7 @@ namespace OpenGS
                 });
             }
 
+            SaveLocalServerState();
             return true;
         }
 
@@ -914,6 +1405,7 @@ namespace OpenGS
             response["Settings"] = settings;
             EmitToClient(response);
             EmitToClient(BuildWaitRoomPlayerListMessage(room));
+            SaveLocalServerState();
             return true;
         }
 
