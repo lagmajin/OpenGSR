@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Reflection;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using UniRx;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -18,6 +22,7 @@ namespace OpenGS.EditorTools
         private enum DashboardTab
         {
             Overview,
+            Network,
             Players,
             Logs,
             Events,
@@ -47,6 +52,16 @@ namespace OpenGS.EditorTools
             public string TimeLabel;
             public string Channel;
             public string Name;
+            public string Summary;
+        }
+
+        [Serializable]
+        private sealed class NetworkEntry
+        {
+            public string TimeLabel;
+            public string Source;
+            public string Direction;
+            public string MessageType;
             public string Summary;
         }
 
@@ -82,38 +97,70 @@ namespace OpenGS.EditorTools
             }
         }
 
+        private readonly struct QueuedNetworkEntry
+        {
+            public readonly string TimeLabel;
+            public readonly string Source;
+            public readonly string Direction;
+            public readonly string MessageType;
+            public readonly string Summary;
+
+            public QueuedNetworkEntry(string timeLabel, string source, string direction, string messageType, string summary)
+            {
+                TimeLabel = timeLabel;
+                Source = source;
+                Direction = direction;
+                MessageType = messageType;
+                Summary = summary;
+            }
+        }
+
         [SerializeField] private DashboardTab currentTab = DashboardTab.Overview;
         [SerializeField] private List<WatchItem> watchItems = new List<WatchItem>();
         [SerializeField] private List<LogEntry> logEntries = new List<LogEntry>();
         [SerializeField] private List<EventEntry> eventEntries = new List<EventEntry>();
+        [SerializeField] private List<NetworkEntry> networkEntries = new List<NetworkEntry>();
         [SerializeField] private bool autoAddSelectionAsWatch = true;
         [SerializeField] private bool showSelectionPreview = true;
         [SerializeField] private bool repaintWhilePlaying = true;
         [SerializeField] private float repaintInterval = 0.2f;
         [SerializeField] private bool captureLogs = true;
         [SerializeField] private bool captureEvents = true;
+        [SerializeField] private bool captureNetwork = true;
         [SerializeField] private bool autoScrollLogs = true;
         [SerializeField] private bool autoScrollEvents = true;
+        [SerializeField] private bool autoScrollNetwork = true;
         [SerializeField] private bool showInfoLogs = true;
         [SerializeField] private bool showWarnings = true;
         [SerializeField] private bool showErrors = true;
         [SerializeField] private bool showExceptions = true;
         [SerializeField] private string logSearch = string.Empty;
         [SerializeField] private string eventSearch = string.Empty;
+        [SerializeField] private string networkSearch = string.Empty;
         [SerializeField] private string watchSearch = string.Empty;
         [SerializeField] private int maxLogEntries = 500;
         [SerializeField] private int maxEventEntries = 250;
+        [SerializeField] private int maxNetworkEntries = 250;
 
         private readonly ConcurrentQueue<QueuedLog> pendingLogs = new ConcurrentQueue<QueuedLog>();
         private readonly ConcurrentQueue<QueuedEvent> pendingEvents = new ConcurrentQueue<QueuedEvent>();
+        private readonly ConcurrentQueue<QueuedNetworkEntry> pendingNetworkEntries = new ConcurrentQueue<QueuedNetworkEntry>();
 
         private Vector2 mainScroll;
         private Vector2 logsScroll;
         private Vector2 eventsScroll;
+        private Vector2 networkScroll;
         private double nextRepaintTime;
         private UnityEngine.Object pendingAddTarget;
         private PlayerRegistry trackedRegistry;
         private readonly List<IDisposable> brokerSubscriptions = new List<IDisposable>();
+        private readonly List<IDisposable> networkSubscriptions = new List<IDisposable>();
+        private GeneralServerNetworkManager trackedGeneralNetworkManager;
+        private MatchRUDPServerNetworkManager trackedMatchNetworkManager;
+        private ClientNetworkManager trackedClientNetworkManager;
+        private WaitRoomNetworkManager trackedWaitRoomNetworkManager;
+        private bool generalNetworkSubscribed;
+        private bool matchNetworkSubscribed;
         private bool logHooked;
 
         [MenuItem("OpenGSR/Tools/Debug Dashboard")]
@@ -133,6 +180,7 @@ namespace OpenGS.EditorTools
 
             HookLogCapture();
             SyncRuntimeHooks(force: true);
+            SyncNetworkHooks(force: true);
             CacheSelectionPreview();
         }
 
@@ -144,7 +192,9 @@ namespace OpenGS.EditorTools
 
             UnhookLogCapture();
             DisposeEventSubscriptions();
+            DisposeNetworkSubscriptions();
             UnhookTrackedRegistry();
+            UnhookTrackedNetworkManagers();
         }
 
         private void OnPlayModeStateChanged(PlayModeStateChange change)
@@ -157,7 +207,9 @@ namespace OpenGS.EditorTools
                     break;
                 case PlayModeStateChange.ExitingPlayMode:
                     DisposeEventSubscriptions();
+                    DisposeNetworkSubscriptions();
                     UnhookTrackedRegistry();
+                    UnhookTrackedNetworkManagers();
                     break;
             }
 
@@ -184,6 +236,7 @@ namespace OpenGS.EditorTools
 
             DrainQueues();
             SyncRuntimeHooks(force: false);
+            SyncNetworkHooks(force: false);
 
             if (!Application.isPlaying || !repaintWhilePlaying)
             {
@@ -210,6 +263,9 @@ namespace OpenGS.EditorTools
             {
                 case DashboardTab.Overview:
                     DrawOverviewTab();
+                    break;
+                case DashboardTab.Network:
+                    DrawNetworkTab();
                     break;
                 case DashboardTab.Players:
                     DrawPlayersTab();
@@ -258,6 +314,7 @@ namespace OpenGS.EditorTools
                 showSelectionPreview = GUILayout.Toggle(showSelectionPreview, "Selection", EditorStyles.toolbarButton);
                 captureLogs = GUILayout.Toggle(captureLogs, "Logs", EditorStyles.toolbarButton);
                 captureEvents = GUILayout.Toggle(captureEvents, "Events", EditorStyles.toolbarButton);
+                captureNetwork = GUILayout.Toggle(captureNetwork, "Network", EditorStyles.toolbarButton);
                 autoScrollLogs = GUILayout.Toggle(autoScrollLogs, "Scroll Logs", EditorStyles.toolbarButton);
                 autoScrollEvents = GUILayout.Toggle(autoScrollEvents, "Scroll Events", EditorStyles.toolbarButton);
             }
@@ -265,6 +322,7 @@ namespace OpenGS.EditorTools
             using (new EditorGUILayout.HorizontalScope(EditorStyles.toolbar))
             {
                 DrawTabButton(DashboardTab.Overview, "Overview", 80f);
+                DrawTabButton(DashboardTab.Network, "Network", 75f);
                 DrawTabButton(DashboardTab.Players, "Players", 70f);
                 DrawTabButton(DashboardTab.Logs, "Logs", 60f);
                 DrawTabButton(DashboardTab.Events, "Events", 70f);
@@ -298,6 +356,7 @@ namespace OpenGS.EditorTools
                 EditorGUILayout.LabelField("Watch Count", watchItems.Count.ToString());
                 EditorGUILayout.LabelField("Log Count", logEntries.Count.ToString());
                 EditorGUILayout.LabelField("Event Count", eventEntries.Count.ToString());
+                EditorGUILayout.LabelField("Network Count", networkEntries.Count.ToString());
                 EditorGUILayout.LabelField("Selected Character", GamePlayerManager.Instance != null ? GamePlayerManager.Instance.SelectedPlayerCharacter().ToString() : "-");
             }
 
@@ -309,6 +368,86 @@ namespace OpenGS.EditorTools
 
             EditorGUILayout.Space(4f);
             DrawPlayerRegistrySummary();
+        }
+
+        private void DrawNetworkTab()
+        {
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                EditorGUILayout.LabelField("Network", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField("Capture", captureNetwork ? "On" : "Off");
+                EditorGUILayout.LabelField("Total Entries", networkEntries.Count.ToString());
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    captureNetwork = GUILayout.Toggle(captureNetwork, "Capture", EditorStyles.miniButton);
+                    autoScrollNetwork = GUILayout.Toggle(autoScrollNetwork, "Auto Scroll", EditorStyles.miniButton);
+
+                    GUILayout.FlexibleSpace();
+
+                    if (GUILayout.Button("Refresh", GUILayout.Width(75f)))
+                    {
+                        SyncNetworkHooks(force: true);
+                    }
+
+                    if (GUILayout.Button("Clear", GUILayout.Width(60f)))
+                    {
+                        networkEntries.Clear();
+                    }
+
+                    if (GUILayout.Button("Copy Visible", GUILayout.Width(95f)))
+                    {
+                        EditorGUIUtility.systemCopyBuffer = BuildVisibleNetworkText();
+                    }
+                }
+
+                DrawNetworkSummaryPanel();
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    GUILayout.Label("Search", GUILayout.Width(44f));
+                    networkSearch = EditorGUILayout.TextField(networkSearch);
+                }
+
+                var visibleEntries = GetVisibleNetworkEntries().ToArray();
+                EditorGUILayout.LabelField("Visible", visibleEntries.Length.ToString());
+
+                if (autoScrollNetwork)
+                {
+                    networkScroll.y = float.MaxValue;
+                }
+
+                using (var scroll = new EditorGUILayout.ScrollViewScope(networkScroll, GUILayout.MinHeight(240f)))
+                {
+                    networkScroll = scroll.scrollPosition;
+
+                    for (var i = 0; i < visibleEntries.Length; i++)
+                    {
+                        DrawNetworkEntry(visibleEntries[i]);
+                    }
+                }
+            }
+        }
+
+        private void DrawNetworkSummaryPanel()
+        {
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                EditorGUILayout.LabelField("Connections", EditorStyles.boldLabel);
+                DrawNetworkSourceSummary("General Server", trackedGeneralNetworkManager != null ? "Resolved" : "Missing", DescribeGeneralNetworkManager());
+                DrawNetworkSourceSummary("Match RUDP", trackedMatchNetworkManager != null ? "Resolved" : "Missing", DescribeMatchNetworkManager());
+                DrawNetworkSourceSummary("Client TCP/UDP", trackedClientNetworkManager != null ? "Scene Object" : "Missing", DescribeClientNetworkManager());
+                DrawNetworkSourceSummary("WaitRoom", trackedWaitRoomNetworkManager != null ? "Scene Object" : "Missing", DescribeWaitRoomNetworkManager());
+            }
+        }
+
+        private void DrawNetworkSourceSummary(string label, string status, string details)
+        {
+            EditorGUILayout.LabelField(label, status);
+            if (!string.IsNullOrWhiteSpace(details))
+            {
+                EditorGUILayout.LabelField(" ", details);
+            }
         }
 
         private void DrawPlayerRegistrySummary()
@@ -678,6 +817,23 @@ namespace OpenGS.EditorTools
             }
         }
 
+        private void DrawNetworkEntry(NetworkEntry entry)
+        {
+            if (!MatchesFilter(entry.Source, networkSearch) &&
+                !MatchesFilter(entry.Direction, networkSearch) &&
+                !MatchesFilter(entry.MessageType, networkSearch) &&
+                !MatchesFilter(entry.Summary, networkSearch))
+            {
+                return;
+            }
+
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                EditorGUILayout.LabelField($"[{entry.TimeLabel}] {entry.Source} {entry.Direction} {entry.MessageType}", EditorStyles.boldLabel);
+                EditorGUILayout.SelectableLabel(entry.Summary, EditorStyles.textArea, GUILayout.MinHeight(22f));
+            }
+        }
+
         private void SyncRuntimeHooks(bool force)
         {
             if (captureLogs)
@@ -702,6 +858,76 @@ namespace OpenGS.EditorTools
 
             EnsureEventSubscriptions();
             SyncTrackedRegistry();
+        }
+
+        private void SyncNetworkHooks(bool force)
+        {
+            if (!captureNetwork || !Application.isPlaying)
+            {
+                if (force || !captureNetwork)
+                {
+                    DisposeNetworkSubscriptions();
+                    UnhookTrackedNetworkManagers();
+                }
+
+                return;
+            }
+
+            if (force)
+            {
+                DisposeNetworkSubscriptions();
+                UnhookTrackedNetworkManagers();
+            }
+
+            ResolveNetworkManagers();
+            SubscribeToNetworkManagers();
+        }
+
+        private void ResolveNetworkManagers()
+        {
+            trackedGeneralNetworkManager ??= TryResolveGeneralNetworkManager();
+            trackedMatchNetworkManager ??= TryResolveMatchNetworkManager();
+            trackedClientNetworkManager ??= FindFirstObjectByType<ClientNetworkManager>();
+            trackedWaitRoomNetworkManager ??= FindFirstObjectByType<WaitRoomNetworkManager>();
+        }
+
+        private void SubscribeToNetworkManagers()
+        {
+            if (trackedGeneralNetworkManager != null && !generalNetworkSubscribed)
+            {
+                networkSubscriptions.Add(trackedGeneralNetworkManager.ConnectedStream.Subscribe(_ => EnqueueNetworkState("GeneralServer", "Connected", "Connected", "connected")));
+                networkSubscriptions.Add(trackedGeneralNetworkManager.DisconnectedStream.Subscribe(_ => EnqueueNetworkState("GeneralServer", "Disconnected", "Disconnected", "disconnected")));
+                networkSubscriptions.Add(trackedGeneralNetworkManager.DataReceivedStream.Subscribe(json => EnqueueNetworkJson("GeneralServer", "Received", json)));
+                generalNetworkSubscribed = true;
+            }
+
+            if (trackedMatchNetworkManager != null && !matchNetworkSubscribed)
+            {
+                networkSubscriptions.Add(trackedMatchNetworkManager.ConnectedStream.Subscribe(_ => EnqueueNetworkState("MatchRUDP", "Connected", "Connected", "connected")));
+                networkSubscriptions.Add(trackedMatchNetworkManager.DisconnectedStream.Subscribe(_ => EnqueueNetworkState("MatchRUDP", "Disconnected", "Disconnected", "disconnected")));
+                networkSubscriptions.Add(trackedMatchNetworkManager.DataReceivedStream.Subscribe(json => EnqueueNetworkJson("MatchRUDP", "Received", json)));
+                matchNetworkSubscribed = true;
+            }
+        }
+
+        private void DisposeNetworkSubscriptions()
+        {
+            for (var i = 0; i < networkSubscriptions.Count; i++)
+            {
+                networkSubscriptions[i]?.Dispose();
+            }
+
+            networkSubscriptions.Clear();
+            generalNetworkSubscribed = false;
+            matchNetworkSubscribed = false;
+        }
+
+        private void UnhookTrackedNetworkManagers()
+        {
+            trackedGeneralNetworkManager = null;
+            trackedMatchNetworkManager = null;
+            trackedClientNetworkManager = null;
+            trackedWaitRoomNetworkManager = null;
         }
 
         private void HookLogCapture()
@@ -761,8 +987,21 @@ namespace OpenGS.EditorTools
                 });
             }
 
+            while (pendingNetworkEntries.TryDequeue(out var net))
+            {
+                networkEntries.Add(new NetworkEntry
+                {
+                    TimeLabel = net.TimeLabel,
+                    Source = net.Source,
+                    Direction = net.Direction,
+                    MessageType = net.MessageType,
+                    Summary = net.Summary
+                });
+            }
+
             TrimToLimit(logEntries, maxLogEntries);
             TrimToLimit(eventEntries, maxEventEntries);
+            TrimToLimit(networkEntries, maxNetworkEntries);
         }
 
         private void EnsureEventSubscriptions()
@@ -941,6 +1180,33 @@ namespace OpenGS.EditorTools
             pendingEvents.Enqueue(new QueuedEvent(timeLabel, channel, name, summary));
         }
 
+        private void EnqueueNetworkState(string source, string direction, string messageType, string summary)
+        {
+            if (!captureNetwork)
+            {
+                return;
+            }
+
+            var timeLabel = DateTime.Now.ToString("HH:mm:ss");
+            pendingNetworkEntries.Enqueue(new QueuedNetworkEntry(timeLabel, source, direction, messageType, summary));
+        }
+
+        private void EnqueueNetworkJson(string source, string direction, JObject json)
+        {
+            if (!captureNetwork || json == null)
+            {
+                return;
+            }
+
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            if (string.IsNullOrWhiteSpace(messageType))
+            {
+                messageType = "(no MessageType)";
+            }
+
+            EnqueueNetworkState(source, direction, messageType, SummarizeNetworkJson(json));
+        }
+
         private void CacheSelectionPreview()
         {
             if (autoAddSelectionAsWatch && Selection.activeObject != null)
@@ -1014,6 +1280,28 @@ namespace OpenGS.EditorTools
             }
         }
 
+        private IEnumerable<NetworkEntry> GetVisibleNetworkEntries()
+        {
+            for (var i = 0; i < networkEntries.Count; i++)
+            {
+                var entry = networkEntries[i];
+                if (entry == null)
+                {
+                    continue;
+                }
+
+                if (!MatchesFilter(entry.Source, networkSearch) &&
+                    !MatchesFilter(entry.Direction, networkSearch) &&
+                    !MatchesFilter(entry.MessageType, networkSearch) &&
+                    !MatchesFilter(entry.Summary, networkSearch))
+                {
+                    continue;
+                }
+
+                yield return entry;
+            }
+        }
+
         private string BuildVisibleLogText()
         {
             var builder = new StringBuilder();
@@ -1038,6 +1326,20 @@ namespace OpenGS.EditorTools
             {
                 builder.Append('[').Append(entry.TimeLabel).Append("] ");
                 builder.Append(entry.Channel).Append('.').Append(entry.Name).Append(" - ");
+                builder.AppendLine(entry.Summary ?? string.Empty);
+            }
+
+            return builder.ToString();
+        }
+
+        private string BuildVisibleNetworkText()
+        {
+            var builder = new StringBuilder();
+            foreach (var entry in GetVisibleNetworkEntries())
+            {
+                builder.Append('[').Append(entry.TimeLabel).Append("] ");
+                builder.Append(entry.Source).Append(' ').Append(entry.Direction).Append(' ');
+                builder.Append(entry.MessageType).Append(" - ");
                 builder.AppendLine(entry.Summary ?? string.Empty);
             }
 
@@ -1135,6 +1437,144 @@ namespace OpenGS.EditorTools
         private static string FormatVector3(Vector3 value)
         {
             return $"({value.x:F2}, {value.y:F2}, {value.z:F2})";
+        }
+
+        private static string SummarizeNetworkJson(JObject json)
+        {
+            if (json == null)
+            {
+                return string.Empty;
+            }
+
+            var keys = new[]
+            {
+                "MessageType",
+                "RoomID",
+                "RoomId",
+                "PlayerID",
+                "PlayerId",
+                "TargetPlayerID",
+                "TargetPlayerId",
+                "AccountName",
+                "Progress",
+                "Message",
+                "Success",
+                "Error",
+                "IP",
+                "IPAddress",
+                "Port",
+                "UdpPort",
+                "Reason",
+                "Countdown"
+            };
+
+            var parts = new List<string>();
+            foreach (var key in keys)
+            {
+                if (json.TryGetValue(key, out var token) && token != null && token.Type != JTokenType.Null)
+                {
+                    parts.Add($"{key}={token}");
+                }
+            }
+
+            if (parts.Count == 0)
+            {
+                var raw = json.ToString(Newtonsoft.Json.Formatting.None);
+                return raw.Length > 240 ? raw.Substring(0, 240) + "..." : raw;
+            }
+
+            var summary = string.Join(" | ", parts);
+            return summary.Length > 300 ? summary.Substring(0, 300) + "..." : summary;
+        }
+
+        private static GeneralServerNetworkManager TryResolveGeneralNetworkManager()
+        {
+            try
+            {
+                return DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static MatchRUDPServerNetworkManager TryResolveMatchNetworkManager()
+        {
+            try
+            {
+                return DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private string DescribeGeneralNetworkManager()
+        {
+            if (trackedGeneralNetworkManager == null)
+            {
+                return "not resolved";
+            }
+
+            return $"online={trackedGeneralNetworkManager.Online}";
+        }
+
+        private string DescribeMatchNetworkManager()
+        {
+            if (trackedMatchNetworkManager == null)
+            {
+                return "not resolved";
+            }
+
+            return $"connected={trackedMatchNetworkManager.IsConnected()}";
+        }
+
+        private string DescribeClientNetworkManager()
+        {
+            if (trackedClientNetworkManager == null)
+            {
+                return "not found";
+            }
+
+            var tcpClient = GetPrivateFieldValue<TcpClient>(trackedClientNetworkManager, "_tcpClient");
+            var serverPeer = GetPrivateFieldValue<object>(trackedClientNetworkManager, "_serverPeer");
+            var matchAttempted = GetPrivateFieldValue<bool>(trackedClientNetworkManager, "_matchUdpConnectAttempted");
+            var tcpConnected = tcpClient != null && tcpClient.Connected;
+            return $"player={trackedClientNetworkManager.ClientPlayerId} tcp={tcpConnected} udpPeer={(serverPeer != null ? "present" : "none")} matchAttempted={matchAttempted} matchRoom={trackedClientNetworkManager.CurrentMatchRoomId}";
+        }
+
+        private string DescribeWaitRoomNetworkManager()
+        {
+            if (trackedWaitRoomNetworkManager == null)
+            {
+                return "not found";
+            }
+
+            return $"room={trackedWaitRoomNetworkManager.CurrentRoomId} ready={trackedWaitRoomNetworkManager.IsReady} players={trackedWaitRoomNetworkManager.CurrentPlayers?.Count ?? 0}";
+        }
+
+        private static T GetPrivateFieldValue<T>(object instance, string fieldName)
+        {
+            if (instance == null || string.IsNullOrWhiteSpace(fieldName))
+            {
+                return default;
+            }
+
+            var field = instance.GetType().GetField(fieldName, BindingFlags.Instance | BindingFlags.NonPublic);
+            if (field == null)
+            {
+                return default;
+            }
+
+            var value = field.GetValue(instance);
+            if (value is T typed)
+            {
+                return typed;
+            }
+
+            return default;
         }
 
         private static string Colorize(string text, Color color)

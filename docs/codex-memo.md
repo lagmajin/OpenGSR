@@ -31,6 +31,7 @@
 - Added sprite sheet auto-slice helper in `Assets/Editor/SpriteSheetAutoSliceWindow.cs`
 - Added an Editor-only debug dashboard in `Assets/Editor/DebugDashboardWindow.cs`
 - The debug dashboard captures Unity console logs, PlayerRegistry state, and recent GameEventBroker events
+- The debug dashboard now includes a Network tab for general server, match RUDP, ClientNetworkManager, and WaitRoomNetworkManager status
 - Sprite sheet auto-slice menu: `OpenGSR/Tools/Sprite Sheet Auto Slice`
 - The auto-slice helper can preview or apply Multiple import settings from selected textures or folders
 - It supports transparency-island slicing, fixed grid divide mode, and auto grid detection from transparent separators
