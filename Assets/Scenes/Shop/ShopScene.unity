@@ -671,6 +671,12 @@ MonoBehaviour:
   m_ChildScaleWidth: 0
   m_ChildScaleHeight: 0
   m_ReverseArrangement: 0
+--- !u!1 &740764668 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 5471861839420605999, guid: d5fcbfd2ffaf496428a16b02b2d7192a,
+    type: 3}
+  m_PrefabInstance: {fileID: 3413898849833886224}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &793626306
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -992,7 +998,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0.5}
   m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: -116.69, y: 200.01}
+  m_AnchoredPosition: {x: -116.68994, y: 200.01}
   m_SizeDelta: {x: 169.55, y: 27.38}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &893787417
@@ -1136,7 +1142,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -189, y: -265}
+  m_AnchoredPosition: {x: -191, y: -233}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &947119679
@@ -1352,6 +1358,18 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 3413898849833886224}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1082832605
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 740764668}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91bccedd50b94b068c79bb8efef39c6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.ShopPlayerButton
 --- !u!1 &1175421689
 GameObject:
   m_ObjectHideFlags: 0
@@ -1918,7 +1936,7 @@ MonoBehaviour:
   m_BlockingObjects: 0
   m_BlockingMask:
     serializedVersion: 2
-    m_Bits: 2146172791
+    m_Bits: 2146156343
 --- !u!114 &1396070027
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3363,12 +3381,12 @@ PrefabInstance:
     - target: {fileID: 2716298235448814174, guid: d5fcbfd2ffaf496428a16b02b2d7192a,
         type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 170.09998
+      value: 175
       objectReference: {fileID: 0}
     - target: {fileID: 2716298235448814174, guid: d5fcbfd2ffaf496428a16b02b2d7192a,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -98.849976
+      value: -118.57
       objectReference: {fileID: 0}
     - target: {fileID: 2716298235448814174, guid: d5fcbfd2ffaf496428a16b02b2d7192a,
         type: 3}
@@ -3393,7 +3411,11 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5471861839420605999, guid: d5fcbfd2ffaf496428a16b02b2d7192a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1082832605}
   m_SourcePrefab: {fileID: 100100000, guid: d5fcbfd2ffaf496428a16b02b2d7192a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

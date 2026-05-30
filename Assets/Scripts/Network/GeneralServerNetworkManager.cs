@@ -1,5 +1,5 @@
-using System.Collections.Generic;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json.Linq;
@@ -15,6 +15,25 @@ namespace OpenGS
     /// </summary>
     public class GeneralServerNetworkManager
     {
+        private sealed class GuildMemberRecord
+        {
+            public string PlayerId { get; set; } = "";
+            public string Role { get; set; } = "Member";
+            public string JoinedAt { get; set; } = "";
+        }
+
+        private sealed class GuildRecord
+        {
+            public string Id { get; set; } = "";
+            public string GuildName { get; set; } = "";
+            public string GuildShortName { get; set; } = "";
+            public string LeaderId { get; set; } = "";
+            public int Level { get; set; } = 1;
+            public long Experience { get; set; } = 0;
+            public string CreationTime { get; set; } = "";
+            public Dictionary<string, GuildMemberRecord> Members { get; } = new Dictionary<string, GuildMemberRecord>(StringComparer.OrdinalIgnoreCase);
+        }
+
         private sealed class RoomRecord
         {
             public sealed class RoomPlayerRecord
@@ -54,6 +73,7 @@ namespace OpenGS
         private readonly List<INetworkManagerScript> scripts = new List<INetworkManagerScript>();
         private readonly List<RoomRecord> localRooms = new List<RoomRecord>();
         private readonly Dictionary<string, AccountRecord> accounts = new Dictionary<string, AccountRecord>();
+        private readonly Dictionary<string, GuildRecord> localGuilds = new Dictionary<string, GuildRecord>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> loadingCompletedPlayers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private int localRoomSequence = 1;
         private string currentAccountId = "";

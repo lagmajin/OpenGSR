@@ -1,0 +1,1027 @@
+fileFormatVersion: 2
+guid: 39cfb8222406b12469fb9fc936c3bc7d
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -4362164990604372336
+    second: efx_ExplodeNPC_0
+  - first:
+      213: 6928296596969455909
+    second: efx_ExplodeNPC_1
+  - first:
+      213: 5462114694065917414
+    second: efx_ExplodeNPC_2
+  - first:
+      213: -4274182924450890383
+    second: efx_ExplodeNPC_3
+  - first:
+      213: -6602542080672674980
+    second: efx_ExplodeNPC_4
+  - first:
+      213: 1714255302200324194
+    second: efx_ExplodeNPC_5
+  - first:
+      213: 8467195961536505539
+    second: efx_ExplodeNPC_6
+  - first:
+      213: 8321261602655559641
+    second: efx_ExplodeNPC_7
+  - first:
+      213: -2719557026189719155
+    second: efx_ExplodeNPC_8
+  - first:
+      213: 5561141556989296810
+    second: efx_ExplodeNPC_9
+  - first:
+      213: 276604934546725044
+    second: efx_ExplodeNPC_10
+  - first:
+      213: 2868904478485267877
+    second: efx_ExplodeNPC_11
+  - first:
+      213: -7496453871942888243
+    second: efx_ExplodeNPC_12
+  - first:
+      213: -1123155765145815213
+    second: efx_ExplodeNPC_13
+  - first:
+      213: 1636068083231187756
+    second: efx_ExplodeNPC_14
+  - first:
+      213: 200112451516611800
+    second: efx_ExplodeNPC_15
+  - first:
+      213: 8553076829487260383
+    second: efx_ExplodeNPC_16
+  - first:
+      213: -835396002592318057
+    second: efx_ExplodeNPC_17
+  - first:
+      213: -5809670149502974867
+    second: efx_ExplodeNPC_18
+  - first:
+      213: 6717296453884630712
+    second: efx_ExplodeNPC_19
+  - first:
+      213: 2785721964604432940
+    second: efx_ExplodeNPC_20
+  - first:
+      213: -7844702758749316736
+    second: efx_ExplodeNPC_21
+  - first:
+      213: 2079164089615788519
+    second: efx_ExplodeNPC_22
+  - first:
+      213: -1410592885042167037
+    second: efx_ExplodeNPC_23
+  - first:
+      213: -4164291870902874673
+    second: efx_ExplodeNPC_24
+  - first:
+      213: -1827639017321928444
+    second: efx_ExplodeNPC_25
+  - first:
+      213: 1623884787039874266
+    second: efx_ExplodeNPC_26
+  - first:
+      213: 6931524741809839810
+    second: efx_ExplodeNPC_27
+  - first:
+      213: 5631058687811205306
+    second: efx_ExplodeNPC_28
+  - first:
+      213: -4892256164870070828
+    second: efx_ExplodeNPC_29
+  - first:
+      213: -4250656751642371121
+    second: efx_ExplodeNPC_30
+  - first:
+      213: -2312223385597764497
+    second: efx_ExplodeNPC_31
+  - first:
+      213: -1076330807459609057
+    second: efx_ExplodeNPC_32
+  - first:
+      213: 7678410052985126072
+    second: efx_ExplodeNPC_33
+  - first:
+      213: -6517244127871430729
+    second: efx_ExplodeNPC_34
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_0
+      rect:
+        serializedVersion: 2
+        x: 415
+        y: 1117
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09691638d0a7673c0800000000000000
+      internalID: -4362164990604372336
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_1
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 1114
+        width: 18
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52189e81c01462060800000000000000
+      internalID: 6928296596969455909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_2
+      rect:
+        serializedVersion: 2
+        x: 452
+        y: 1109
+        width: 22
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ed8d3eef545dcb40800000000000000
+      internalID: 5462114694065917414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_3
+      rect:
+        serializedVersion: 2
+        x: 624
+        y: 911
+        width: 253
+        height: 272
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 17d701b964d0fa4c0800000000000000
+      internalID: -4274182924450890383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_4
+      rect:
+        serializedVersion: 2
+        x: 924
+        y: 912
+        width: 253
+        height: 272
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c5bcfea95fe0f54a0800000000000000
+      internalID: -6602542080672674980
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_5
+      rect:
+        serializedVersion: 2
+        x: 389
+        y: 982
+        width: 113
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 260faf56d124ac710800000000000000
+      internalID: 1714255302200324194
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_6
+      rect:
+        serializedVersion: 2
+        x: 429
+        y: 1099
+        width: 8
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c6610badd5818570800000000000000
+      internalID: 8467195961536505539
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_7
+      rect:
+        serializedVersion: 2
+        x: 438
+        y: 1102
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dfd165f65f0b7370800000000000000
+      internalID: 8321261602655559641
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_8
+      rect:
+        serializedVersion: 2
+        x: 446
+        y: 1103
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d894b832b41324ad0800000000000000
+      internalID: -2719557026189719155
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_9
+      rect:
+        serializedVersion: 2
+        x: 463
+        y: 1104
+        width: 8
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: aa0820a28c42d2d40800000000000000
+      internalID: 5561141556989296810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_10
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 1025
+        width: 50
+        height: 56
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b817c2f8b2b6d300800000000000000
+      internalID: 276604934546725044
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_11
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 1072
+        width: 6
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a544ae4c6560d720800000000000000
+      internalID: 2868904478485267877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_12
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 1048
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc41ebfdbee37f790800000000000000
+      internalID: -7496453871942888243
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_13
+      rect:
+        serializedVersion: 2
+        x: 919
+        y: 1049
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3573d0748cfb960f0800000000000000
+      internalID: -1123155765145815213
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_14
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 1014
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c236951e04b74b610800000000000000
+      internalID: 1636068083231187756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_15
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 1025
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8dcb7c3e631f6c200800000000000000
+      internalID: 200112451516611800
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_16
+      rect:
+        serializedVersion: 2
+        x: 25
+        y: 613
+        width: 252
+        height: 271
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd2663e6f02a2b670800000000000000
+      internalID: 8553076829487260383
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_17
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 613
+        width: 251
+        height: 271
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 79d14b203c31864f0800000000000000
+      internalID: -835396002592318057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_18
+      rect:
+        serializedVersion: 2
+        x: 619
+        y: 616
+        width: 254
+        height: 268
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d644faca7c7ef5fa0800000000000000
+      internalID: -5809670149502974867
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_19
+      rect:
+        serializedVersion: 2
+        x: 947
+        y: 625
+        width: 214
+        height: 234
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b6d8c8f881a83d50800000000000000
+      internalID: 6717296453884630712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_20
+      rect:
+        serializedVersion: 2
+        x: 1083
+        y: 857
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c22204f0e5fd8a620800000000000000
+      internalID: 2785721964604432940
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_21
+      rect:
+        serializedVersion: 2
+        x: 571
+        y: 801
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08958386764022390800000000000000
+      internalID: -7844702758749316736
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_22
+      rect:
+        serializedVersion: 2
+        x: 19
+        y: 750
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e92c4f39bcaadc10800000000000000
+      internalID: 2079164089615788519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_23
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 750
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3034e54ae319c6ce0800000000000000
+      internalID: -1410592885042167037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_24
+      rect:
+        serializedVersion: 2
+        x: 551
+        y: 747
+        width: 26
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcd89c55b967536c0800000000000000
+      internalID: -4164291870902874673
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_25
+      rect:
+        serializedVersion: 2
+        x: 853
+        y: 747
+        width: 23
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 409e1ea3ffbe2a6e0800000000000000
+      internalID: -1827639017321928444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_26
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 333
+        width: 209
+        height: 213
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: adc2caf2c92398610800000000000000
+      internalID: 1623884787039874266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_27
+      rect:
+        serializedVersion: 2
+        x: 116
+        y: 545
+        width: 21
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ce18632709b13060800000000000000
+      internalID: 6931524741809839810
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_28
+      rect:
+        serializedVersion: 2
+        x: 346
+        y: 325
+        width: 221
+        height: 226
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab83d5cba0a852e40800000000000000
+      internalID: 5631058687811205306
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_29
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 322
+        width: 236
+        height: 238
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dd54b630f63b1cb0800000000000000
+      internalID: -4892256164870070828
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_30
+      rect:
+        serializedVersion: 2
+        x: 932
+        y: 319
+        width: 245
+        height: 247
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fcb9d309432a205c0800000000000000
+      internalID: -4250656751642371121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_31
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 18
+        width: 248
+        height: 251
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f6c181cd41559efd0800000000000000
+      internalID: -2312223385597764497
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_32
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 16
+        width: 251
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f168f8055da1011f0800000000000000
+      internalID: -1076330807459609057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_33
+      rect:
+        serializedVersion: 2
+        x: 628
+        y: 16
+        width: 252
+        height: 256
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bc77ffd2413f8a60800000000000000
+      internalID: 7678410052985126072
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_ExplodeNPC_34
+      rect:
+        serializedVersion: 2
+        x: 929
+        y: 24
+        width: 250
+        height: 248
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bf09bbdef81e85a0800000000000000
+      internalID: -6517244127871430729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      efx_ExplodeNPC_0: -4362164990604372336
+      efx_ExplodeNPC_1: 6928296596969455909
+      efx_ExplodeNPC_10: 276604934546725044
+      efx_ExplodeNPC_11: 2868904478485267877
+      efx_ExplodeNPC_12: -7496453871942888243
+      efx_ExplodeNPC_13: -1123155765145815213
+      efx_ExplodeNPC_14: 1636068083231187756
+      efx_ExplodeNPC_15: 200112451516611800
+      efx_ExplodeNPC_16: 8553076829487260383
+      efx_ExplodeNPC_17: -835396002592318057
+      efx_ExplodeNPC_18: -5809670149502974867
+      efx_ExplodeNPC_19: 6717296453884630712
+      efx_ExplodeNPC_2: 5462114694065917414
+      efx_ExplodeNPC_20: 2785721964604432940
+      efx_ExplodeNPC_21: -7844702758749316736
+      efx_ExplodeNPC_22: 2079164089615788519
+      efx_ExplodeNPC_23: -1410592885042167037
+      efx_ExplodeNPC_24: -4164291870902874673
+      efx_ExplodeNPC_25: -1827639017321928444
+      efx_ExplodeNPC_26: 1623884787039874266
+      efx_ExplodeNPC_27: 6931524741809839810
+      efx_ExplodeNPC_28: 5631058687811205306
+      efx_ExplodeNPC_29: -4892256164870070828
+      efx_ExplodeNPC_3: -4274182924450890383
+      efx_ExplodeNPC_30: -4250656751642371121
+      efx_ExplodeNPC_31: -2312223385597764497
+      efx_ExplodeNPC_32: -1076330807459609057
+      efx_ExplodeNPC_33: 7678410052985126072
+      efx_ExplodeNPC_34: -6517244127871430729
+      efx_ExplodeNPC_4: -6602542080672674980
+      efx_ExplodeNPC_5: 1714255302200324194
+      efx_ExplodeNPC_6: 8467195961536505539
+      efx_ExplodeNPC_7: 8321261602655559641
+      efx_ExplodeNPC_8: -2719557026189719155
+      efx_ExplodeNPC_9: 5561141556989296810
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

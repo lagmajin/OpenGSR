@@ -1,0 +1,533 @@
+fileFormatVersion: 2
+guid: 76f4744730beaae4c9171fe01b12badc
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 2025454933714332786
+    second: efx_bossfire_0
+  - first:
+      213: 6622875446077168485
+    second: efx_bossfire_1
+  - first:
+      213: -1397398725778630815
+    second: efx_bossfire_2
+  - first:
+      213: 3962272681541381593
+    second: efx_bossfire_3
+  - first:
+      213: -724386481415388020
+    second: efx_bossfire_4
+  - first:
+      213: 6412702082136866204
+    second: efx_bossfire_5
+  - first:
+      213: 6346138220715099417
+    second: efx_bossfire_6
+  - first:
+      213: 6557715512501487439
+    second: efx_bossfire_7
+  - first:
+      213: 4379146309356956666
+    second: efx_bossfire_8
+  - first:
+      213: 6230451469333713628
+    second: efx_bossfire_9
+  - first:
+      213: -7089199215581780587
+    second: efx_bossfire_10
+  - first:
+      213: -6058751910630149830
+    second: efx_bossfire_11
+  - first:
+      213: -8246150953780987851
+    second: efx_bossfire_12
+  - first:
+      213: 2981177026159484057
+    second: efx_bossfire_13
+  - first:
+      213: -3966687760686709576
+    second: efx_bossfire_14
+  - first:
+      213: -6847953592468712037
+    second: efx_bossfire_15
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: efx_bossfire_0
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 257
+        width: 43
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27cea98e78cdb1c10800000000000000
+      internalID: 2025454933714332786
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_1
+      rect:
+        serializedVersion: 2
+        x: 95
+        y: 255
+        width: 49
+        height: 50
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56b1613f02e29eb50800000000000000
+      internalID: 6622875446077168485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_2
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 252
+        width: 54
+        height: 57
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 167916c33417b9ce0800000000000000
+      internalID: -1397398725778630815
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_3
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 250
+        width: 56
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9dd2286c202dcf630800000000000000
+      internalID: 3962272681541381593
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_4
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 167
+        width: 61
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c840427455672f5f0800000000000000
+      internalID: -724386481415388020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_5
+      rect:
+        serializedVersion: 2
+        x: 87
+        y: 165
+        width: 66
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c9dfc28519e7ef850800000000000000
+      internalID: 6412702082136866204
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_6
+      rect:
+        serializedVersion: 2
+        x: 166
+        y: 165
+        width: 67
+        height: 70
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 915c045a613021850800000000000000
+      internalID: 6346138220715099417
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_7
+      rect:
+        serializedVersion: 2
+        x: 245
+        y: 164
+        width: 68
+        height: 71
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4748bca38fa10b50800000000000000
+      internalID: 6557715512501487439
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_8
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 83
+        width: 71
+        height: 73
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afb2facdd5ad5cc30800000000000000
+      internalID: 4379146309356956666
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_9
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 83
+        width: 72
+        height: 74
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd252fbd992077650800000000000000
+      internalID: 6230451469333713628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_10
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 82
+        width: 73
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5952545afda1e9d90800000000000000
+      internalID: -7089199215581780587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_11
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 82
+        width: 75
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a31bba8ec3dfaeba0800000000000000
+      internalID: -6058751910630149830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 3
+        width: 75
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 538b2a3c569cf8d80800000000000000
+      internalID: -8246150953780987851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_13
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 3
+        width: 73
+        height: 75
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99c9ac8d5b44f5920800000000000000
+      internalID: 2981177026159484057
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_14
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 6
+        width: 66
+        height: 69
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8b401618f7e73f8c0800000000000000
+      internalID: -3966687760686709576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: efx_bossfire_15
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 12
+        width: 58
+        height: 58
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b95da8a5d7e27f0a0800000000000000
+      internalID: -6847953592468712037
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      efx_bossfire_0: 2025454933714332786
+      efx_bossfire_1: 6622875446077168485
+      efx_bossfire_10: -7089199215581780587
+      efx_bossfire_11: -6058751910630149830
+      efx_bossfire_12: -8246150953780987851
+      efx_bossfire_13: 2981177026159484057
+      efx_bossfire_14: -3966687760686709576
+      efx_bossfire_15: -6847953592468712037
+      efx_bossfire_2: -1397398725778630815
+      efx_bossfire_3: 3962272681541381593
+      efx_bossfire_4: -724386481415388020
+      efx_bossfire_5: 6412702082136866204
+      efx_bossfire_6: 6346138220715099417
+      efx_bossfire_7: 6557715512501487439
+      efx_bossfire_8: 4379146309356956666
+      efx_bossfire_9: 6230451469333713628
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

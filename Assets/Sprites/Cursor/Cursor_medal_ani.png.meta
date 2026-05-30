@@ -1,0 +1,741 @@
+fileFormatVersion: 2
+guid: 24dd0114e1edc6341bb140cc005aafbb
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 1991875608759658938
+    second: Cursor_medal_ani_0
+  - first:
+      213: -7155619693924512541
+    second: Cursor_medal_ani_1
+  - first:
+      213: -3036788216945795464
+    second: Cursor_medal_ani_2
+  - first:
+      213: -3763658173993803476
+    second: Cursor_medal_ani_3
+  - first:
+      213: 4154502342339152528
+    second: Cursor_medal_ani_4
+  - first:
+      213: -2963416084109717814
+    second: Cursor_medal_ani_5
+  - first:
+      213: 721782013059083529
+    second: Cursor_medal_ani_6
+  - first:
+      213: 5671493814911403851
+    second: Cursor_medal_ani_7
+  - first:
+      213: -3203919049015076523
+    second: Cursor_medal_ani_8
+  - first:
+      213: -4109830830617091148
+    second: Cursor_medal_ani_9
+  - first:
+      213: -989109795111895112
+    second: Cursor_medal_ani_10
+  - first:
+      213: -9131780034651036457
+    second: Cursor_medal_ani_11
+  - first:
+      213: 2432357595392773245
+    second: Cursor_medal_ani_12
+  - first:
+      213: 6723245551761802146
+    second: Cursor_medal_ani_13
+  - first:
+      213: 6634271381161246695
+    second: Cursor_medal_ani_14
+  - first:
+      213: 5726250053219666337
+    second: Cursor_medal_ani_15
+  - first:
+      213: 7840453868956230688
+    second: Cursor_medal_ani_16
+  - first:
+      213: 2877736760130275981
+    second: Cursor_medal_ani_17
+  - first:
+      213: -7715858632776490990
+    second: Cursor_medal_ani_18
+  - first:
+      213: 2107364993149189564
+    second: Cursor_medal_ani_19
+  - first:
+      213: 4742074713559574211
+    second: Cursor_medal_ani_20
+  - first:
+      213: -5784976104285938177
+    second: Cursor_medal_ani_21
+  - first:
+      213: 3691865194280366779
+    second: Cursor_medal_ani_22
+  - first:
+      213: 3407377428522808527
+    second: Cursor_medal_ani_23
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Cursor_medal_ani_0
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ab962e0105094ab10800000000000000
+      internalID: 1991875608759658938
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_1
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ec07dbecc122bc90800000000000000
+      internalID: -7155619693924512541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_2
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 87e9adec4392bd5d0800000000000000
+      internalID: -3036788216945795464
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_3
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c21aa1bd4dcc4cbc0800000000000000
+      internalID: -3763658173993803476
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_4
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 09a47ad6ed1c7a930800000000000000
+      internalID: 4154502342339152528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_5
+      rect:
+        serializedVersion: 2
+        x: 601
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ace06f8b5c4dfd6d0800000000000000
+      internalID: -2963416084109717814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_6
+      rect:
+        serializedVersion: 2
+        x: 721
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90d27adaae8440a00800000000000000
+      internalID: 721782013059083529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_7
+      rect:
+        serializedVersion: 2
+        x: 841
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b478e97639135be40800000000000000
+      internalID: 5671493814911403851
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_8
+      rect:
+        serializedVersion: 2
+        x: 961
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 559595a99946983d0800000000000000
+      internalID: -3203919049015076523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_9
+      rect:
+        serializedVersion: 2
+        x: 1081
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b3ae1662a2f6f6c0800000000000000
+      internalID: -4109830830617091148
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_10
+      rect:
+        serializedVersion: 2
+        x: 1201
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8bffe72c1e9f542f0800000000000000
+      internalID: -989109795111895112
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_11
+      rect:
+        serializedVersion: 2
+        x: 1321
+        y: 129
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7d4ee93d076654180800000000000000
+      internalID: -9131780034651036457
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_12
+      rect:
+        serializedVersion: 2
+        x: 1
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7c0c18885871c120800000000000000
+      internalID: 2432357595392773245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_13
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a3cc724534cd4d50800000000000000
+      internalID: 6723245551761802146
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_14
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7eff7a9dbaaa11c50800000000000000
+      internalID: 6634271381161246695
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_15
+      rect:
+        serializedVersion: 2
+        x: 361
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a9483d951ab77f40800000000000000
+      internalID: 5726250053219666337
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_16
+      rect:
+        serializedVersion: 2
+        x: 481
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 02429f8d043eecc60800000000000000
+      internalID: 7840453868956230688
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_17
+      rect:
+        serializedVersion: 2
+        x: 601
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d8a06a02656cfe720800000000000000
+      internalID: 2877736760130275981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_18
+      rect:
+        serializedVersion: 2
+        x: 721
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 210e9303473cbe490800000000000000
+      internalID: -7715858632776490990
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_19
+      rect:
+        serializedVersion: 2
+        x: 844
+        y: 9
+        width: 115
+        height: 97
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cbd30c4cb4dde3d10800000000000000
+      internalID: 2107364993149189564
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_20
+      rect:
+        serializedVersion: 2
+        x: 961
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c6a410d3db3fc140800000000000000
+      internalID: 4742074713559574211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_21
+      rect:
+        serializedVersion: 2
+        x: 1081
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ffdd9ed12e2a7bfa0800000000000000
+      internalID: -5784976104285938177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_22
+      rect:
+        serializedVersion: 2
+        x: 1201
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb2b5b775d32c3330800000000000000
+      internalID: 3691865194280366779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Cursor_medal_ani_23
+      rect:
+        serializedVersion: 2
+        x: 1321
+        y: 9
+        width: 118
+        height: 102
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc439cad7bf694f20800000000000000
+      internalID: 3407377428522808527
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      Cursor_medal_ani_0: 1991875608759658938
+      Cursor_medal_ani_1: -7155619693924512541
+      Cursor_medal_ani_10: -989109795111895112
+      Cursor_medal_ani_11: -9131780034651036457
+      Cursor_medal_ani_12: 2432357595392773245
+      Cursor_medal_ani_13: 6723245551761802146
+      Cursor_medal_ani_14: 6634271381161246695
+      Cursor_medal_ani_15: 5726250053219666337
+      Cursor_medal_ani_16: 7840453868956230688
+      Cursor_medal_ani_17: 2877736760130275981
+      Cursor_medal_ani_18: -7715858632776490990
+      Cursor_medal_ani_19: 2107364993149189564
+      Cursor_medal_ani_2: -3036788216945795464
+      Cursor_medal_ani_20: 4742074713559574211
+      Cursor_medal_ani_21: -5784976104285938177
+      Cursor_medal_ani_22: 3691865194280366779
+      Cursor_medal_ani_23: 3407377428522808527
+      Cursor_medal_ani_3: -3763658173993803476
+      Cursor_medal_ani_4: 4154502342339152528
+      Cursor_medal_ani_5: -2963416084109717814
+      Cursor_medal_ani_6: 721782013059083529
+      Cursor_medal_ani_7: 5671493814911403851
+      Cursor_medal_ani_8: -3203919049015076523
+      Cursor_medal_ani_9: -4109830830617091148
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

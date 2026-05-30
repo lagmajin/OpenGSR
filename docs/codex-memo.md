@@ -29,6 +29,8 @@
 - The sprite audit now reports both valid sprite references and broken SpriteRenderer/UI Image links
 - Added sprite reference repair helper in `Assets/Editor/SpriteReferenceRepairWindow.cs`
 - Added sprite sheet auto-slice helper in `Assets/Editor/SpriteSheetAutoSliceWindow.cs`
+- Added an Editor-only debug dashboard in `Assets/Editor/DebugDashboardWindow.cs`
+- The debug dashboard captures Unity console logs, PlayerRegistry state, and recent GameEventBroker events
 - Sprite sheet auto-slice menu: `OpenGSR/Tools/Sprite Sheet Auto Slice`
 - The auto-slice helper can preview or apply Multiple import settings from selected textures or folders
 - It supports transparency-island slicing, fixed grid divide mode, and auto grid detection from transparent separators

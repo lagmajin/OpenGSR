@@ -181,16 +181,19 @@ namespace OpenGS
                     info.Id = Guid.NewGuid().ToString("N");
                 }
 
-                var status = new PlayerStatus(info.Team, EPlayerType.OtherPlayer, Math.Max(1, info.MaxHealth), 100f)
+                var coreStatus = new OpenGSCore.PlayerStatus
                 {
+                    MaxHp = Math.Max(1, info.MaxHealth),
                     Hp = info.Health,
                     AttackPower = info.AttackPower,
-                    DefensePower = info.DefensePower
+                    DefensePower = info.DefensePower,
+                    MaxBooster = 100f,
+                    Booster = 100f
                 };
 
-                var playerData = new PlayerData(info, status);
+                var playerData = new PlayerData(info, coreStatus);
                 database.AddPlayer(playerData);
-                PlayerManager.AddPlayer(info, status);
+                PlayerManager.AddPlayer(info, coreStatus);
                 Debug.Log($"[MatchRoom] Player {info.Name} ({info.Id}) added locally.");
             }
         }

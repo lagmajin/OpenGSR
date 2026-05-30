@@ -1,0 +1,4147 @@
+fileFormatVersion: 2
+guid: 817e0b114db663f42b7e6f29cb696797
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -2870311544852341909
+    second: CLAintro_Exp06_0
+  - first:
+      213: 6525217093293781770
+    second: CLAintro_Exp06_1
+  - first:
+      213: 6967337450249900824
+    second: CLAintro_Exp06_2
+  - first:
+      213: 4688212489268853507
+    second: CLAintro_Exp06_3
+  - first:
+      213: -6342807216479432836
+    second: CLAintro_Exp06_4
+  - first:
+      213: 4791498416027974749
+    second: CLAintro_Exp06_5
+  - first:
+      213: 1580678724287694403
+    second: CLAintro_Exp06_6
+  - first:
+      213: 5716152487638930809
+    second: CLAintro_Exp06_7
+  - first:
+      213: -7834069302667033242
+    second: CLAintro_Exp06_8
+  - first:
+      213: 4230629712158374477
+    second: CLAintro_Exp06_9
+  - first:
+      213: 8691014124847366202
+    second: CLAintro_Exp06_10
+  - first:
+      213: -6503027184106315694
+    second: CLAintro_Exp06_11
+  - first:
+      213: 5621002694000473414
+    second: CLAintro_Exp06_12
+  - first:
+      213: -2279939062484306512
+    second: CLAintro_Exp06_13
+  - first:
+      213: 7976961877460074854
+    second: CLAintro_Exp06_14
+  - first:
+      213: 6310025082592889008
+    second: CLAintro_Exp06_15
+  - first:
+      213: 9202127507208739132
+    second: CLAintro_Exp06_16
+  - first:
+      213: -4430790288315539598
+    second: CLAintro_Exp06_17
+  - first:
+      213: 5971359348733947393
+    second: CLAintro_Exp06_18
+  - first:
+      213: -7337454021615739606
+    second: CLAintro_Exp06_19
+  - first:
+      213: 4946423068048252511
+    second: CLAintro_Exp06_20
+  - first:
+      213: 7060647994376038321
+    second: CLAintro_Exp06_21
+  - first:
+      213: 2936427492727245639
+    second: CLAintro_Exp06_22
+  - first:
+      213: 1314480167752615746
+    second: CLAintro_Exp06_23
+  - first:
+      213: 3096784894912082949
+    second: CLAintro_Exp06_24
+  - first:
+      213: -4628784770873585134
+    second: CLAintro_Exp06_25
+  - first:
+      213: 426510123628028229
+    second: CLAintro_Exp06_26
+  - first:
+      213: 7319755748400893377
+    second: CLAintro_Exp06_27
+  - first:
+      213: 2135296702535164301
+    second: CLAintro_Exp06_28
+  - first:
+      213: -7742849054095212477
+    second: CLAintro_Exp06_29
+  - first:
+      213: -508988935417856102
+    second: CLAintro_Exp06_30
+  - first:
+      213: -7221189123538427705
+    second: CLAintro_Exp06_31
+  - first:
+      213: -2159627208130763880
+    second: CLAintro_Exp06_32
+  - first:
+      213: 6562093364244646324
+    second: CLAintro_Exp06_33
+  - first:
+      213: -3789991325864850719
+    second: CLAintro_Exp06_34
+  - first:
+      213: -1642729358765393802
+    second: CLAintro_Exp06_35
+  - first:
+      213: 6731302051962228549
+    second: CLAintro_Exp06_36
+  - first:
+      213: 7307419751172746515
+    second: CLAintro_Exp06_37
+  - first:
+      213: 9129665641093644927
+    second: CLAintro_Exp06_38
+  - first:
+      213: 6533743379607475905
+    second: CLAintro_Exp06_39
+  - first:
+      213: 2889225800888045710
+    second: CLAintro_Exp06_40
+  - first:
+      213: 7617201644947908637
+    second: CLAintro_Exp06_41
+  - first:
+      213: -2544947933500239199
+    second: CLAintro_Exp06_42
+  - first:
+      213: -8889528471809084907
+    second: CLAintro_Exp06_43
+  - first:
+      213: 5751883766016942478
+    second: CLAintro_Exp06_44
+  - first:
+      213: 3527597885725921400
+    second: CLAintro_Exp06_45
+  - first:
+      213: 7090086630846493489
+    second: CLAintro_Exp06_46
+  - first:
+      213: 9174223729687609241
+    second: CLAintro_Exp06_47
+  - first:
+      213: 6991805972657856210
+    second: CLAintro_Exp06_48
+  - first:
+      213: 2400589045631680827
+    second: CLAintro_Exp06_49
+  - first:
+      213: -4291304385137044575
+    second: CLAintro_Exp06_50
+  - first:
+      213: -9203925154131156396
+    second: CLAintro_Exp06_51
+  - first:
+      213: 4181744264390519523
+    second: CLAintro_Exp06_52
+  - first:
+      213: 3997554698372994280
+    second: CLAintro_Exp06_53
+  - first:
+      213: -5462019683341845392
+    second: CLAintro_Exp06_54
+  - first:
+      213: -2502669905280182777
+    second: CLAintro_Exp06_55
+  - first:
+      213: 9212618969450586407
+    second: CLAintro_Exp06_56
+  - first:
+      213: -5917691794836204590
+    second: CLAintro_Exp06_57
+  - first:
+      213: -5083989378704291389
+    second: CLAintro_Exp06_58
+  - first:
+      213: 3281295454670922298
+    second: CLAintro_Exp06_59
+  - first:
+      213: 855645151534544134
+    second: CLAintro_Exp06_60
+  - first:
+      213: -2963122934261472999
+    second: CLAintro_Exp06_61
+  - first:
+      213: -3861619520306549979
+    second: CLAintro_Exp06_62
+  - first:
+      213: -2611390601803874502
+    second: CLAintro_Exp06_63
+  - first:
+      213: 2614323857672104300
+    second: CLAintro_Exp06_64
+  - first:
+      213: -7759883469701683160
+    second: CLAintro_Exp06_65
+  - first:
+      213: 5821002040786350628
+    second: CLAintro_Exp06_66
+  - first:
+      213: -3005735485803069389
+    second: CLAintro_Exp06_67
+  - first:
+      213: -6801819018568576429
+    second: CLAintro_Exp06_68
+  - first:
+      213: 8756443142395073847
+    second: CLAintro_Exp06_69
+  - first:
+      213: -3825807769318213603
+    second: CLAintro_Exp06_70
+  - first:
+      213: -1423252567972237584
+    second: CLAintro_Exp06_71
+  - first:
+      213: 2354583217129168790
+    second: CLAintro_Exp06_72
+  - first:
+      213: 6920802143805444308
+    second: CLAintro_Exp06_73
+  - first:
+      213: -1005374224138086971
+    second: CLAintro_Exp06_74
+  - first:
+      213: 56027858871399203
+    second: CLAintro_Exp06_75
+  - first:
+      213: 101547026735898443
+    second: CLAintro_Exp06_76
+  - first:
+      213: -6836460953688185211
+    second: CLAintro_Exp06_77
+  - first:
+      213: -2661115253274835166
+    second: CLAintro_Exp06_78
+  - first:
+      213: -8750576223509683502
+    second: CLAintro_Exp06_79
+  - first:
+      213: -5439650455170875779
+    second: CLAintro_Exp06_80
+  - first:
+      213: 4370963086586037054
+    second: CLAintro_Exp06_81
+  - first:
+      213: -6709709582028535537
+    second: CLAintro_Exp06_82
+  - first:
+      213: 8470927101419828729
+    second: CLAintro_Exp06_83
+  - first:
+      213: 2375356180734977529
+    second: CLAintro_Exp06_84
+  - first:
+      213: 7609937754857125890
+    second: CLAintro_Exp06_85
+  - first:
+      213: -2941298316079899861
+    second: CLAintro_Exp06_86
+  - first:
+      213: 5846649665542163910
+    second: CLAintro_Exp06_87
+  - first:
+      213: 3618018479130957995
+    second: CLAintro_Exp06_88
+  - first:
+      213: -6613962263743393460
+    second: CLAintro_Exp06_89
+  - first:
+      213: -8118150466108868028
+    second: CLAintro_Exp06_90
+  - first:
+      213: -6466185899818919874
+    second: CLAintro_Exp06_91
+  - first:
+      213: -8035267770666328738
+    second: CLAintro_Exp06_92
+  - first:
+      213: -4890531747752490177
+    second: CLAintro_Exp06_93
+  - first:
+      213: 5532579390176421629
+    second: CLAintro_Exp06_94
+  - first:
+      213: -2932898512857307076
+    second: CLAintro_Exp06_95
+  - first:
+      213: 4476115380734847974
+    second: CLAintro_Exp06_96
+  - first:
+      213: -2239862219575952305
+    second: CLAintro_Exp06_97
+  - first:
+      213: 7805194814101354108
+    second: CLAintro_Exp06_98
+  - first:
+      213: -4742830812163698053
+    second: CLAintro_Exp06_99
+  - first:
+      213: 6390780478866459540
+    second: CLAintro_Exp06_100
+  - first:
+      213: -4571978720655579321
+    second: CLAintro_Exp06_101
+  - first:
+      213: -712847165592876280
+    second: CLAintro_Exp06_102
+  - first:
+      213: -985630722227841639
+    second: CLAintro_Exp06_103
+  - first:
+      213: -7215143434128012414
+    second: CLAintro_Exp06_104
+  - first:
+      213: 3397284567476753025
+    second: CLAintro_Exp06_105
+  - first:
+      213: -5649162599657804220
+    second: CLAintro_Exp06_106
+  - first:
+      213: 5629968188978888107
+    second: CLAintro_Exp06_107
+  - first:
+      213: -7752097993379165378
+    second: CLAintro_Exp06_108
+  - first:
+      213: -1046498906549386121
+    second: CLAintro_Exp06_109
+  - first:
+      213: 3912659838484195625
+    second: CLAintro_Exp06_110
+  - first:
+      213: 1681021687827732561
+    second: CLAintro_Exp06_111
+  - first:
+      213: 2410150650679855789
+    second: CLAintro_Exp06_112
+  - first:
+      213: 1115942453653765667
+    second: CLAintro_Exp06_113
+  - first:
+      213: -2849503134973087061
+    second: CLAintro_Exp06_114
+  - first:
+      213: 450526947708914684
+    second: CLAintro_Exp06_115
+  - first:
+      213: 1478107294686466505
+    second: CLAintro_Exp06_116
+  - first:
+      213: 6469749437289739234
+    second: CLAintro_Exp06_117
+  - first:
+      213: -1375397383754772217
+    second: CLAintro_Exp06_118
+  - first:
+      213: -8785765474866155016
+    second: CLAintro_Exp06_119
+  - first:
+      213: 4241069976709108684
+    second: CLAintro_Exp06_120
+  - first:
+      213: -3662597535486935272
+    second: CLAintro_Exp06_121
+  - first:
+      213: -3965646361291155384
+    second: CLAintro_Exp06_122
+  - first:
+      213: 2691762232491298724
+    second: CLAintro_Exp06_123
+  - first:
+      213: -798713204104832700
+    second: CLAintro_Exp06_124
+  - first:
+      213: -6989732893401267808
+    second: CLAintro_Exp06_125
+  - first:
+      213: -5395249933801747055
+    second: CLAintro_Exp06_126
+  - first:
+      213: -6622868582551509707
+    second: CLAintro_Exp06_127
+  - first:
+      213: -6028824702715811419
+    second: CLAintro_Exp06_128
+  - first:
+      213: -6000424792327623596
+    second: CLAintro_Exp06_129
+  - first:
+      213: 1158260539972971326
+    second: CLAintro_Exp06_130
+  - first:
+      213: -7976599239154556407
+    second: CLAintro_Exp06_131
+  - first:
+      213: 5554530039041388664
+    second: CLAintro_Exp06_132
+  - first:
+      213: -7913723465457370663
+    second: CLAintro_Exp06_133
+  - first:
+      213: 5917850537839294714
+    second: CLAintro_Exp06_134
+  - first:
+      213: -5033609757815775529
+    second: CLAintro_Exp06_135
+  - first:
+      213: 2799200502400155508
+    second: CLAintro_Exp06_136
+  - first:
+      213: 4722467343186234886
+    second: CLAintro_Exp06_137
+  - first:
+      213: -1911666175535556997
+    second: CLAintro_Exp06_138
+  - first:
+      213: -5544077629175021620
+    second: CLAintro_Exp06_139
+  - first:
+      213: -4177555445371856151
+    second: CLAintro_Exp06_140
+  - first:
+      213: -1423052996171897222
+    second: CLAintro_Exp06_141
+  - first:
+      213: 5551397814319271970
+    second: CLAintro_Exp06_142
+  - first:
+      213: -4422065774732541929
+    second: CLAintro_Exp06_143
+  - first:
+      213: 5630995549670305714
+    second: CLAintro_Exp06_144
+  - first:
+      213: -8709391005105300252
+    second: CLAintro_Exp06_145
+  - first:
+      213: -4023524240313724443
+    second: CLAintro_Exp06_146
+  - first:
+      213: 5029762947413964721
+    second: CLAintro_Exp06_147
+  - first:
+      213: -7194372915959488630
+    second: CLAintro_Exp06_148
+  - first:
+      213: 4685456517853263824
+    second: CLAintro_Exp06_149
+  - first:
+      213: 1368487604541170571
+    second: CLAintro_Exp06_150
+  - first:
+      213: 2536690654710892265
+    second: CLAintro_Exp06_151
+  - first:
+      213: -8344223958939081713
+    second: CLAintro_Exp06_152
+  - first:
+      213: -6593348389980264135
+    second: CLAintro_Exp06_153
+  - first:
+      213: 764021001136756444
+    second: CLAintro_Exp06_154
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: CLAintro_Exp06_0
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 280
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b6b9f568bda9a28d0800000000000000
+      internalID: -2870311544852341909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_1
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 280
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a033510df5a3e8a50800000000000000
+      internalID: 6525217093293781770
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_2
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 280
+        width: 28
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 813db681f74f0b060800000000000000
+      internalID: 6967337450249900824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_3
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 281
+        width: 14
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30b7b667b60ef0140800000000000000
+      internalID: 4688212489268853507
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_4
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 281
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c7f85f63172d9f7a0800000000000000
+      internalID: -6342807216479432836
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_5
+      rect:
+        serializedVersion: 2
+        x: 133
+        y: 280
+        width: 42
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5cb1354c62de7240800000000000000
+      internalID: 4791498416027974749
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_6
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 284
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3468f29cce2bfe510800000000000000
+      internalID: 1580678724287694403
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_7
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 281
+        width: 16
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9751fabe66ad35f40800000000000000
+      internalID: 5716152487638930809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_8
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 290
+        width: 15
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6654db4d97bc74390800000000000000
+      internalID: -7834069302667033242
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_9
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 281
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d4ab961fe4736ba30800000000000000
+      internalID: 4230629712158374477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_10
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 281
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a300e61bc4fac9870800000000000000
+      internalID: 8691014124847366202
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_11
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 280
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 25062a60b3b90c5a0800000000000000
+      internalID: -6503027184106315694
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_12
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 281
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 64579693b20d10e40800000000000000
+      internalID: 5621002694000473414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_13
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 290
+        width: 17
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b5f51790870c50e0800000000000000
+      internalID: -2279939062484306512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_14
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 280
+        width: 17
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 66147d4509cd3be60800000000000000
+      internalID: 7976961877460074854
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_15
+      rect:
+        serializedVersion: 2
+        x: 280
+        y: 280
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0b801c37166b19750800000000000000
+      internalID: 6310025082592889008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_16
+      rect:
+        serializedVersion: 2
+        x: 296
+        y: 280
+        width: 47
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c39170d763684bf70800000000000000
+      internalID: 9202127507208739132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_17
+      rect:
+        serializedVersion: 2
+        x: 342
+        y: 280
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 27f93b645bba282c0800000000000000
+      internalID: -4430790288315539598
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_18
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 282
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 10eae77a0b78ed250800000000000000
+      internalID: 5971359348733947393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_19
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 280
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a2d15dd51702c2a90800000000000000
+      internalID: -7337454021615739606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_20
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 281
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f5e50d7b29935a440800000000000000
+      internalID: 4946423068048252511
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_21
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 262
+        width: 27
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b7abd421f57cf160800000000000000
+      internalID: 7060647994376038321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_22
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 262
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74bc2bc2f3940c820800000000000000
+      internalID: 2936427492727245639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_23
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 261
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 247c0378fb8fd3210800000000000000
+      internalID: 1314480167752615746
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_24
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 261
+        width: 30
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 504b707547df9fa20800000000000000
+      internalID: 3096784894912082949
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_25
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 261
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 212975676c043cfb0800000000000000
+      internalID: -4628784770873585134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_26
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 262
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 541e4fb92b44be500800000000000000
+      internalID: 426510123628028229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_27
+      rect:
+        serializedVersion: 2
+        x: 115
+        y: 262
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1cd0f0a421ff49560800000000000000
+      internalID: 7319755748400893377
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_28
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 262
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d81eba4a90912ad10800000000000000
+      internalID: 2135296702535164301
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_29
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 261
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3408f250fcfdb8490800000000000000
+      internalID: -7742849054095212477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_30
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 262
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9f70dd8245bfe8f0800000000000000
+      internalID: -508988935417856102
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_31
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 262
+        width: 47
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7c0e39b60ce29cb90800000000000000
+      internalID: -7221189123538427705
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_32
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 261
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 893e8141f767702e0800000000000000
+      internalID: -2159627208130763880
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_33
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 261
+        width: 16
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4b900c6b52d311b50800000000000000
+      internalID: 6562093364244646324
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_34
+      rect:
+        serializedVersion: 2
+        x: 254
+        y: 262
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1ea830828fe376bc0800000000000000
+      internalID: -3789991325864850719
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_35
+      rect:
+        serializedVersion: 2
+        x: 269
+        y: 262
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 678feac0a5ad339e0800000000000000
+      internalID: -1642729358765393802
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_36
+      rect:
+        serializedVersion: 2
+        x: 285
+        y: 261
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54f01136d836a6d50800000000000000
+      internalID: 6731302051962228549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_37
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 261
+        width: 47
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31d235d1c8b296560800000000000000
+      internalID: 7307419751172746515
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_38
+      rect:
+        serializedVersion: 2
+        x: 347
+        y: 262
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f72c97f878613be70800000000000000
+      internalID: 9129665641093644927
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_39
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 262
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c6501b8cf48caa50800000000000000
+      internalID: 6533743379607475905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_40
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 262
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8053d1ee87981820800000000000000
+      internalID: 2889225800888045710
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_41
+      rect:
+        serializedVersion: 2
+        x: 393
+        y: 261
+        width: 9
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d1824a5d98cb5b960800000000000000
+      internalID: 7617201644947908637
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_42
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 242
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a29ad396578eacd0800000000000000
+      internalID: -2544947933500239199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_43
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 243
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 512391124fc02a480800000000000000
+      internalID: -8889528471809084907
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_44
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 243
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e81a6c67fcbc2df40800000000000000
+      internalID: 5751883766016942478
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_45
+      rect:
+        serializedVersion: 2
+        x: 216
+        y: 242
+        width: 26
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 870dc19469b84f030800000000000000
+      internalID: 3527597885725921400
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_46
+      rect:
+        serializedVersion: 2
+        x: 241
+        y: 244
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 133f952d93c056260800000000000000
+      internalID: 7090086630846493489
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_47
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 243
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 99f3df100e3615f70800000000000000
+      internalID: 9174223729687609241
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_48
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 223
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2ded9baec72e70160800000000000000
+      internalID: 6991805972657856210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_49
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 223
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b310294a40b905120800000000000000
+      internalID: 2400589045631680827
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_50
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 222
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1a394d4e5693274c0800000000000000
+      internalID: -4291304385137044575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_51
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 222
+        width: 27
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 452eab836d6154080800000000000000
+      internalID: -9203925154131156396
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_52
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 222
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ea268ca04a880a30800000000000000
+      internalID: 4181744264390519523
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_53
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 223
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8e457b671da2a7730800000000000000
+      internalID: 3997554698372994280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_54
+      rect:
+        serializedVersion: 2
+        x: 194
+        y: 223
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07cb73a79020334b0800000000000000
+      internalID: -5462019683341845392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_55
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 223
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 706d6b91bfab44dd0800000000000000
+      internalID: -2502669905280182777
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_56
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 222
+        width: 47
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 721a025642cc9df70800000000000000
+      internalID: 9212618969450586407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_57
+      rect:
+        serializedVersion: 2
+        x: 271
+        y: 222
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d35b867aa220eda0800000000000000
+      internalID: -5917691794836204590
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_58
+      rect:
+        serializedVersion: 2
+        x: 287
+        y: 223
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3c9c870a89a0279b0800000000000000
+      internalID: -5083989378704291389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_59
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 223
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a32a3cab4d0898d20800000000000000
+      internalID: 3281295454670922298
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_60
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 203
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 605700f5bbcdfdb00800000000000000
+      internalID: 855645151534544134
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_61
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 204
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 911288df36fd0e6d0800000000000000
+      internalID: -2963122934261472999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_62
+      rect:
+        serializedVersion: 2
+        x: 62
+        y: 203
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52be96a8185c86ac0800000000000000
+      internalID: -3861619520306549979
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_63
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 203
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a3fbfa9551a72cbd0800000000000000
+      internalID: -2611390601803874502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_64
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 204
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c69ef5082b1f74420800000000000000
+      internalID: 2614323857672104300
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_65
+      rect:
+        serializedVersion: 2
+        x: 109
+        y: 203
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8286102191b5f4490800000000000000
+      internalID: -7759883469701683160
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_66
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 203
+        width: 17
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 422f4edd38a58c050800000000000000
+      internalID: 5821002040786350628
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_67
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 211
+        width: 15
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3300cef208b7946d0800000000000000
+      internalID: -3005735485803069389
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_68
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 204
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 35259b3e3a51b91a0800000000000000
+      internalID: -6801819018568576429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_69
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 203
+        width: 33
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7351d56f4a2258970800000000000000
+      internalID: 8756443142395073847
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_70
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 203
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d18bbd29a1008eac0800000000000000
+      internalID: -3825807769318213603
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_71
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 204
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0fe2a5484579f3ce0800000000000000
+      internalID: -1423252567972237584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_72
+      rect:
+        serializedVersion: 2
+        x: 229
+        y: 204
+        width: 22
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69f941bf5f82da020800000000000000
+      internalID: 2354583217129168790
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_73
+      rect:
+        serializedVersion: 2
+        x: 250
+        y: 204
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4d0194eb1e0ab0060800000000000000
+      internalID: 6920802143805444308
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_74
+      rect:
+        serializedVersion: 2
+        x: 265
+        y: 204
+        width: 45
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5c55ae748713c02f0800000000000000
+      internalID: -1005374224138086971
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_75
+      rect:
+        serializedVersion: 2
+        x: 309
+        y: 204
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3233e817a0d07c000800000000000000
+      internalID: 56027858871399203
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_76
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 204
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b4f17989b74c86100800000000000000
+      internalID: 101547026735898443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_77
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 204
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5866696dbf20021a0800000000000000
+      internalID: -6836460953688185211
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_78
+      rect:
+        serializedVersion: 2
+        x: 354
+        y: 203
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2270e2eb6c1d11bd0800000000000000
+      internalID: -2661115253274835166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_79
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 204
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d2e9b98945bf8680800000000000000
+      internalID: -8750576223509683502
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_80
+      rect:
+        serializedVersion: 2
+        x: 78
+        y: 165
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7e7f354bba7284b0800000000000000
+      internalID: -5439650455170875779
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_81
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 166
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e334e46d4c7c8ac30800000000000000
+      internalID: 4370963086586037054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_82
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 165
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f0987294fa252e2a0800000000000000
+      internalID: -6709709582028535537
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_83
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 166
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f5bb5e5157ce8570800000000000000
+      internalID: 8470927101419828729
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_84
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 166
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f5acb77cd5f6f020800000000000000
+      internalID: 2375356180734977529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_85
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 165
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 208b711a11eeb9960800000000000000
+      internalID: 7609937754857125890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_86
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 165
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b2b5a93e3c86e27d0800000000000000
+      internalID: -2941298316079899861
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_87
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 166
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cd0cc8d4e8732150800000000000000
+      internalID: 5846649665542163910
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_88
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 166
+        width: 31
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba8566f33a8c53230800000000000000
+      internalID: 3618018479130957995
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_89
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 166
+        width: 47
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c419cb70d5c7634a0800000000000000
+      internalID: -6613962263743393460
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_90
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 166
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44ab862b929865f80800000000000000
+      internalID: -8118150466108868028
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_91
+      rect:
+        serializedVersion: 2
+        x: 324
+        y: 165
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3857a5fe2e7346a0800000000000000
+      internalID: -6466185899818919874
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_92
+      rect:
+        serializedVersion: 2
+        x: 39
+        y: 147
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e5dd946098efc7090800000000000000
+      internalID: -8035267770666328738
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_93
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 146
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f3b417c5947512cb0800000000000000
+      internalID: -4890531747752490177
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_94
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 146
+        width: 10
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: df6ec1b74aba7cc40800000000000000
+      internalID: 5532579390176421629
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_95
+      rect:
+        serializedVersion: 2
+        x: 81
+        y: 146
+        width: 22
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c386eda77504c47d0800000000000000
+      internalID: -2932898512857307076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_96
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 156
+        width: 17
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6ebec5a293b5e1e30800000000000000
+      internalID: 4476115380734847974
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_97
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 146
+        width: 11
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f4c7b58bd296ae0e0800000000000000
+      internalID: -2239862219575952305
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_98
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 148
+        width: 7
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c767b39645f915c60800000000000000
+      internalID: 7805194814101354108
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_99
+      rect:
+        serializedVersion: 2
+        x: 118
+        y: 147
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b72943341841e2eb0800000000000000
+      internalID: -4742830812163698053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_100
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 146
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 49b06585cfc90b850800000000000000
+      internalID: 6390780478866459540
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_101
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 146
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 747eda2b3911d80c0800000000000000
+      internalID: -4571978720655579321
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_102
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 147
+        width: 18
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 80b41bb97457b16f0800000000000000
+      internalID: -712847165592876280
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_103
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 147
+        width: 61
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 995d5e984165252f0800000000000000
+      internalID: -985630722227841639
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_104
+      rect:
+        serializedVersion: 2
+        x: 256
+        y: 147
+        width: 31
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28bce4d2649aedb90800000000000000
+      internalID: -7215143434128012414
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_105
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 147
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1825e558054952f20800000000000000
+      internalID: 3397284567476753025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_106
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 147
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 44e69f0db842a91b0800000000000000
+      internalID: -5649162599657804220
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_107
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 146
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: badf5d03d3aa12e40800000000000000
+      internalID: 5629968188978888107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_108
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 147
+        width: 41
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3bcd9882f30b6490800000000000000
+      internalID: -7752097993379165378
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_109
+      rect:
+        serializedVersion: 2
+        x: 362
+        y: 147
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7740a410ac61a71f0800000000000000
+      internalID: -1046498906549386121
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_110
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 127
+        width: 46
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 929a9c7946f8c4630800000000000000
+      internalID: 3912659838484195625
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_111
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 127
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15813b29150345710800000000000000
+      internalID: 1681021687827732561
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_112
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 127
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: daa03fc4f33927120800000000000000
+      internalID: 2410150650679855789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_113
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 127
+        width: 32
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32e7fc3cfbf9c7f00800000000000000
+      internalID: 1115942453653765667
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_114
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 127
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ba2319dfef78478d0800000000000000
+      internalID: -2849503134973087061
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_115
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 127
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cfb4ee73fd7904600800000000000000
+      internalID: 450526947708914684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_116
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 127
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c153bfc0ca438410800000000000000
+      internalID: 1478107294686466505
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_117
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 93
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e33073c5da29c950800000000000000
+      internalID: 6469749437289739234
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_118
+      rect:
+        serializedVersion: 2
+        x: 73
+        y: 89
+        width: 15
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7019b4cdd5b99ece0800000000000000
+      internalID: -1375397383754772217
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_119
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 89
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f136be79d0b21680800000000000000
+      internalID: -8785765474866155016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_120
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 88
+        width: 8
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc312557cae4bda30800000000000000
+      internalID: 4241069976709108684
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_121
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 88
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81f741e52f6db2dc0800000000000000
+      internalID: -3662597535486935272
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_122
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 88
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8489b6235a137f8c0800000000000000
+      internalID: -3965646361291155384
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_123
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 89
+        width: 15
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4afc4772d7f0b5520800000000000000
+      internalID: 2691762232491298724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_124
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 89
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 449dae792966ae4f0800000000000000
+      internalID: -798713204104832700
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_125
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 88
+        width: 31
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0a144f577fa7ffe90800000000000000
+      internalID: -6989732893401267808
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_126
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 89
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 19d0c4d35c83025b0800000000000000
+      internalID: -5395249933801747055
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_127
+      rect:
+        serializedVersion: 2
+        x: 218
+        y: 89
+        width: 21
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5352ce61d18d614a0800000000000000
+      internalID: -6622868582551509707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_128
+      rect:
+        serializedVersion: 2
+        x: 235
+        y: 89
+        width: 14
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5a9268dffdf455ca0800000000000000
+      internalID: -6028824702715811419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_129
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 89
+        width: 31
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 45c6dd761753abca0800000000000000
+      internalID: -6000424792327623596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_130
+      rect:
+        serializedVersion: 2
+        x: 279
+        y: 88
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e3be07a03d7f21010800000000000000
+      internalID: 1158260539972971326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_131
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 89
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 902aa8af04d6d4190800000000000000
+      internalID: -7976599239154556407
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_132
+      rect:
+        serializedVersion: 2
+        x: 307
+        y: 89
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8707c4f24a7a51d40800000000000000
+      internalID: 5554530039041388664
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_133
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 89
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9d97db6df6ecc2290800000000000000
+      internalID: -7913723465457370663
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_134
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 70
+        width: 16
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af8f3c5c5bd602250800000000000000
+      internalID: 5917850537839294714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_135
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 79
+        width: 15
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7de537f2896052ab0800000000000000
+      internalID: -5033609757815775529
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_136
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 70
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47ff7a0b602c8d620800000000000000
+      internalID: 2799200502400155508
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_137
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 69
+        width: 21
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60e8ff52703998140800000000000000
+      internalID: 4722467343186234886
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_138
+      rect:
+        serializedVersion: 2
+        x: 175
+        y: 70
+        width: 26
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b76d216edb56875e0800000000000000
+      internalID: -1911666175535556997
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_139
+      rect:
+        serializedVersion: 2
+        x: 199
+        y: 70
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ccf35d125ca7f03b0800000000000000
+      internalID: -5544077629175021620
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_140
+      rect:
+        serializedVersion: 2
+        x: 214
+        y: 70
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ea9c11c4775606c0800000000000000
+      internalID: -4177555445371856151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_141
+      rect:
+        serializedVersion: 2
+        x: 230
+        y: 70
+        width: 16
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a766e92f6dc404ce0800000000000000
+      internalID: -1423052996171897222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_142
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 79
+        width: 14
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 220516946e68a0d40800000000000000
+      internalID: 5551397814319271970
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_143
+      rect:
+        serializedVersion: 2
+        x: 244
+        y: 70
+        width: 17
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71087a36b9aa1a2c0800000000000000
+      internalID: -4422065774732541929
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_144
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 70
+        width: 13
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bf67ed3e90552e40800000000000000
+      internalID: 5630995549670305714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_145
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 73
+        width: 6
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ec57b27607022780800000000000000
+      internalID: -8709391005105300252
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_146
+      rect:
+        serializedVersion: 2
+        x: 276
+        y: 70
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5e15dee55029928c0800000000000000
+      internalID: -4023524240313724443
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_147
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 51
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b7f70970ce4dc540800000000000000
+      internalID: 5029762947413964721
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_148
+      rect:
+        serializedVersion: 2
+        x: 146
+        y: 51
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8f1b8a43f3782c90800000000000000
+      internalID: -7194372915959488630
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_149
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 51
+        width: 17
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0d7be2dd0e5160140800000000000000
+      internalID: 4685456517853263824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_150
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 50
+        width: 95
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b83a33cc938ddf210800000000000000
+      internalID: 1368487604541170571
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_151
+      rect:
+        serializedVersion: 2
+        x: 270
+        y: 51
+        width: 10
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e68813e5b2243320800000000000000
+      internalID: 2536690654710892265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_152
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 30
+        width: 17
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f04e129d48c533c80800000000000000
+      internalID: -8344223958939081713
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_153
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 30
+        width: 78
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93925d68298bf74a0800000000000000
+      internalID: -6593348389980264135
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: CLAintro_Exp06_154
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 30
+        width: 38
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cd6d1b57d095a9a00800000000000000
+      internalID: 764021001136756444
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      CLAintro_Exp06_0: -2870311544852341909
+      CLAintro_Exp06_1: 6525217093293781770
+      CLAintro_Exp06_10: 8691014124847366202
+      CLAintro_Exp06_100: 6390780478866459540
+      CLAintro_Exp06_101: -4571978720655579321
+      CLAintro_Exp06_102: -712847165592876280
+      CLAintro_Exp06_103: -985630722227841639
+      CLAintro_Exp06_104: -7215143434128012414
+      CLAintro_Exp06_105: 3397284567476753025
+      CLAintro_Exp06_106: -5649162599657804220
+      CLAintro_Exp06_107: 5629968188978888107
+      CLAintro_Exp06_108: -7752097993379165378
+      CLAintro_Exp06_109: -1046498906549386121
+      CLAintro_Exp06_11: -6503027184106315694
+      CLAintro_Exp06_110: 3912659838484195625
+      CLAintro_Exp06_111: 1681021687827732561
+      CLAintro_Exp06_112: 2410150650679855789
+      CLAintro_Exp06_113: 1115942453653765667
+      CLAintro_Exp06_114: -2849503134973087061
+      CLAintro_Exp06_115: 450526947708914684
+      CLAintro_Exp06_116: 1478107294686466505
+      CLAintro_Exp06_117: 6469749437289739234
+      CLAintro_Exp06_118: -1375397383754772217
+      CLAintro_Exp06_119: -8785765474866155016
+      CLAintro_Exp06_12: 5621002694000473414
+      CLAintro_Exp06_120: 4241069976709108684
+      CLAintro_Exp06_121: -3662597535486935272
+      CLAintro_Exp06_122: -3965646361291155384
+      CLAintro_Exp06_123: 2691762232491298724
+      CLAintro_Exp06_124: -798713204104832700
+      CLAintro_Exp06_125: -6989732893401267808
+      CLAintro_Exp06_126: -5395249933801747055
+      CLAintro_Exp06_127: -6622868582551509707
+      CLAintro_Exp06_128: -6028824702715811419
+      CLAintro_Exp06_129: -6000424792327623596
+      CLAintro_Exp06_13: -2279939062484306512
+      CLAintro_Exp06_130: 1158260539972971326
+      CLAintro_Exp06_131: -7976599239154556407
+      CLAintro_Exp06_132: 5554530039041388664
+      CLAintro_Exp06_133: -7913723465457370663
+      CLAintro_Exp06_134: 5917850537839294714
+      CLAintro_Exp06_135: -5033609757815775529
+      CLAintro_Exp06_136: 2799200502400155508
+      CLAintro_Exp06_137: 4722467343186234886
+      CLAintro_Exp06_138: -1911666175535556997
+      CLAintro_Exp06_139: -5544077629175021620
+      CLAintro_Exp06_14: 7976961877460074854
+      CLAintro_Exp06_140: -4177555445371856151
+      CLAintro_Exp06_141: -1423052996171897222
+      CLAintro_Exp06_142: 5551397814319271970
+      CLAintro_Exp06_143: -4422065774732541929
+      CLAintro_Exp06_144: 5630995549670305714
+      CLAintro_Exp06_145: -8709391005105300252
+      CLAintro_Exp06_146: -4023524240313724443
+      CLAintro_Exp06_147: 5029762947413964721
+      CLAintro_Exp06_148: -7194372915959488630
+      CLAintro_Exp06_149: 4685456517853263824
+      CLAintro_Exp06_15: 6310025082592889008
+      CLAintro_Exp06_150: 1368487604541170571
+      CLAintro_Exp06_151: 2536690654710892265
+      CLAintro_Exp06_152: -8344223958939081713
+      CLAintro_Exp06_153: -6593348389980264135
+      CLAintro_Exp06_154: 764021001136756444
+      CLAintro_Exp06_16: 9202127507208739132
+      CLAintro_Exp06_17: -4430790288315539598
+      CLAintro_Exp06_18: 5971359348733947393
+      CLAintro_Exp06_19: -7337454021615739606
+      CLAintro_Exp06_2: 6967337450249900824
+      CLAintro_Exp06_20: 4946423068048252511
+      CLAintro_Exp06_21: 7060647994376038321
+      CLAintro_Exp06_22: 2936427492727245639
+      CLAintro_Exp06_23: 1314480167752615746
+      CLAintro_Exp06_24: 3096784894912082949
+      CLAintro_Exp06_25: -4628784770873585134
+      CLAintro_Exp06_26: 426510123628028229
+      CLAintro_Exp06_27: 7319755748400893377
+      CLAintro_Exp06_28: 2135296702535164301
+      CLAintro_Exp06_29: -7742849054095212477
+      CLAintro_Exp06_3: 4688212489268853507
+      CLAintro_Exp06_30: -508988935417856102
+      CLAintro_Exp06_31: -7221189123538427705
+      CLAintro_Exp06_32: -2159627208130763880
+      CLAintro_Exp06_33: 6562093364244646324
+      CLAintro_Exp06_34: -3789991325864850719
+      CLAintro_Exp06_35: -1642729358765393802
+      CLAintro_Exp06_36: 6731302051962228549
+      CLAintro_Exp06_37: 7307419751172746515
+      CLAintro_Exp06_38: 9129665641093644927
+      CLAintro_Exp06_39: 6533743379607475905
+      CLAintro_Exp06_4: -6342807216479432836
+      CLAintro_Exp06_40: 2889225800888045710
+      CLAintro_Exp06_41: 7617201644947908637
+      CLAintro_Exp06_42: -2544947933500239199
+      CLAintro_Exp06_43: -8889528471809084907
+      CLAintro_Exp06_44: 5751883766016942478
+      CLAintro_Exp06_45: 3527597885725921400
+      CLAintro_Exp06_46: 7090086630846493489
+      CLAintro_Exp06_47: 9174223729687609241
+      CLAintro_Exp06_48: 6991805972657856210
+      CLAintro_Exp06_49: 2400589045631680827
+      CLAintro_Exp06_5: 4791498416027974749
+      CLAintro_Exp06_50: -4291304385137044575
+      CLAintro_Exp06_51: -9203925154131156396
+      CLAintro_Exp06_52: 4181744264390519523
+      CLAintro_Exp06_53: 3997554698372994280
+      CLAintro_Exp06_54: -5462019683341845392
+      CLAintro_Exp06_55: -2502669905280182777
+      CLAintro_Exp06_56: 9212618969450586407
+      CLAintro_Exp06_57: -5917691794836204590
+      CLAintro_Exp06_58: -5083989378704291389
+      CLAintro_Exp06_59: 3281295454670922298
+      CLAintro_Exp06_6: 1580678724287694403
+      CLAintro_Exp06_60: 855645151534544134
+      CLAintro_Exp06_61: -2963122934261472999
+      CLAintro_Exp06_62: -3861619520306549979
+      CLAintro_Exp06_63: -2611390601803874502
+      CLAintro_Exp06_64: 2614323857672104300
+      CLAintro_Exp06_65: -7759883469701683160
+      CLAintro_Exp06_66: 5821002040786350628
+      CLAintro_Exp06_67: -3005735485803069389
+      CLAintro_Exp06_68: -6801819018568576429
+      CLAintro_Exp06_69: 8756443142395073847
+      CLAintro_Exp06_7: 5716152487638930809
+      CLAintro_Exp06_70: -3825807769318213603
+      CLAintro_Exp06_71: -1423252567972237584
+      CLAintro_Exp06_72: 2354583217129168790
+      CLAintro_Exp06_73: 6920802143805444308
+      CLAintro_Exp06_74: -1005374224138086971
+      CLAintro_Exp06_75: 56027858871399203
+      CLAintro_Exp06_76: 101547026735898443
+      CLAintro_Exp06_77: -6836460953688185211
+      CLAintro_Exp06_78: -2661115253274835166
+      CLAintro_Exp06_79: -8750576223509683502
+      CLAintro_Exp06_8: -7834069302667033242
+      CLAintro_Exp06_80: -5439650455170875779
+      CLAintro_Exp06_81: 4370963086586037054
+      CLAintro_Exp06_82: -6709709582028535537
+      CLAintro_Exp06_83: 8470927101419828729
+      CLAintro_Exp06_84: 2375356180734977529
+      CLAintro_Exp06_85: 7609937754857125890
+      CLAintro_Exp06_86: -2941298316079899861
+      CLAintro_Exp06_87: 5846649665542163910
+      CLAintro_Exp06_88: 3618018479130957995
+      CLAintro_Exp06_89: -6613962263743393460
+      CLAintro_Exp06_9: 4230629712158374477
+      CLAintro_Exp06_90: -8118150466108868028
+      CLAintro_Exp06_91: -6466185899818919874
+      CLAintro_Exp06_92: -8035267770666328738
+      CLAintro_Exp06_93: -4890531747752490177
+      CLAintro_Exp06_94: 5532579390176421629
+      CLAintro_Exp06_95: -2932898512857307076
+      CLAintro_Exp06_96: 4476115380734847974
+      CLAintro_Exp06_97: -2239862219575952305
+      CLAintro_Exp06_98: 7805194814101354108
+      CLAintro_Exp06_99: -4742830812163698053
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,1287 @@
+fileFormatVersion: 2
+guid: f61b2dbcd27729a4dae8a69f716bf53c
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8447952032732320576
+    second: QuestMap_Map04_0
+  - first:
+      213: 6010301293974164325
+    second: QuestMap_Map04_1
+  - first:
+      213: -1236459600101302481
+    second: QuestMap_Map04_2
+  - first:
+      213: 7105799459268705799
+    second: QuestMap_Map04_3
+  - first:
+      213: -6644482296423817585
+    second: QuestMap_Map04_4
+  - first:
+      213: -4940356536865346818
+    second: QuestMap_Map04_5
+  - first:
+      213: 5434544026598408199
+    second: QuestMap_Map04_6
+  - first:
+      213: 372299541311194197
+    second: QuestMap_Map04_7
+  - first:
+      213: 1174379113625569586
+    second: QuestMap_Map04_8
+  - first:
+      213: -6124159155257690181
+    second: QuestMap_Map04_9
+  - first:
+      213: -509295896276573053
+    second: QuestMap_Map04_10
+  - first:
+      213: -5972941503265449425
+    second: QuestMap_Map04_11
+  - first:
+      213: -4699681122035052432
+    second: QuestMap_Map04_12
+  - first:
+      213: -6085029295484430697
+    second: QuestMap_Map04_13
+  - first:
+      213: 4747561421098295837
+    second: QuestMap_Map04_14
+  - first:
+      213: -7334956565125291992
+    second: QuestMap_Map04_15
+  - first:
+      213: -70796096220731230
+    second: QuestMap_Map04_16
+  - first:
+      213: 3329988706483335905
+    second: QuestMap_Map04_17
+  - first:
+      213: 6387047488937661129
+    second: QuestMap_Map04_18
+  - first:
+      213: -8375232674521373973
+    second: QuestMap_Map04_19
+  - first:
+      213: -2206119698503611683
+    second: QuestMap_Map04_20
+  - first:
+      213: 3658282296755936035
+    second: QuestMap_Map04_21
+  - first:
+      213: -8641941127326504772
+    second: QuestMap_Map04_22
+  - first:
+      213: -6872196580145676541
+    second: QuestMap_Map04_23
+  - first:
+      213: 751783302023893214
+    second: QuestMap_Map04_24
+  - first:
+      213: -5059458699577114402
+    second: QuestMap_Map04_25
+  - first:
+      213: 8196497927307974167
+    second: QuestMap_Map04_26
+  - first:
+      213: -6174134281984612622
+    second: QuestMap_Map04_27
+  - first:
+      213: -1449479444601367000
+    second: QuestMap_Map04_28
+  - first:
+      213: 4359162112944720852
+    second: QuestMap_Map04_29
+  - first:
+      213: 1199363337383711458
+    second: QuestMap_Map04_30
+  - first:
+      213: -7226952363321677268
+    second: QuestMap_Map04_31
+  - first:
+      213: -4017562340569640594
+    second: QuestMap_Map04_32
+  - first:
+      213: -4832231940733677674
+    second: QuestMap_Map04_33
+  - first:
+      213: 2505391388724502769
+    second: QuestMap_Map04_34
+  - first:
+      213: -1776454793833098720
+    second: QuestMap_Map04_35
+  - first:
+      213: -5400464032834501636
+    second: QuestMap_Map04_36
+  - first:
+      213: -8120938116572897984
+    second: QuestMap_Map04_37
+  - first:
+      213: -6183058565982887562
+    second: QuestMap_Map04_38
+  - first:
+      213: -7656980734310627819
+    second: QuestMap_Map04_39
+  - first:
+      213: 6496536057158916004
+    second: QuestMap_Map04_40
+  - first:
+      213: -2841742727013138227
+    second: QuestMap_Map04_41
+  - first:
+      213: 2124166706089094592
+    second: QuestMap_Map04_42
+  - first:
+      213: 6449661275945549532
+    second: QuestMap_Map04_43
+  - first:
+      213: 1857284264857886822
+    second: QuestMap_Map04_44
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: QuestMap_Map04_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 233
+        width: 230
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cc6379a268d2ca80800000000000000
+      internalID: -8447952032732320576
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_1
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 100
+        width: 230
+        height: 131
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5639664de21e86350800000000000000
+      internalID: 6010301293974164325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 69
+        width: 230
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2f17d47b8637dee0800000000000000
+      internalID: -1236459600101302481
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_3
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 84
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70ebfd6c5fedc9260800000000000000
+      internalID: 7105799459268705799
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_4
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 84
+        width: 71
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f8e594d2e8e0ac3a0800000000000000
+      internalID: -6644482296423817585
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_5
+      rect:
+        serializedVersion: 2
+        x: 97
+        y: 84
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: efaac54a7e3507bb0800000000000000
+      internalID: -4940356536865346818
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_6
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 84
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7008e9daff06b6b40800000000000000
+      internalID: 5434544026598408199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_7
+      rect:
+        serializedVersion: 2
+        x: 132
+        y: 83
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 55405e5d57caa2500800000000000000
+      internalID: 372299541311194197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_8
+      rect:
+        serializedVersion: 2
+        x: 144
+        y: 84
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2394a4be49b3c4010800000000000000
+      internalID: 1174379113625569586
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_9
+      rect:
+        serializedVersion: 2
+        x: 156
+        y: 83
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bb7b8ea02bd920ba0800000000000000
+      internalID: -6124159155257690181
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_10
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 84
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 384eed8a41e9ee8f0800000000000000
+      internalID: -509295896276573053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_11
+      rect:
+        serializedVersion: 2
+        x: 191
+        y: 84
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f2adca94959db1da0800000000000000
+      internalID: -5972941503265449425
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_12
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 56
+        width: 12
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 070dd736be067ceb0800000000000000
+      internalID: -4699681122035052432
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_13
+      rect:
+        serializedVersion: 2
+        x: 70
+        y: 56
+        width: 93
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7961eca7812ad8ba0800000000000000
+      internalID: -6085029295484430697
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_14
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 56
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d12a9e575f9b2e140800000000000000
+      internalID: 4747561421098295837
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_15
+      rect:
+        serializedVersion: 2
+        x: 3
+        y: 42
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 820a9c4cddff43a90800000000000000
+      internalID: -7334956565125291992
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_16
+      rect:
+        serializedVersion: 2
+        x: 15
+        y: 42
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2a86749535b740ff0800000000000000
+      internalID: -70796096220731230
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_17
+      rect:
+        serializedVersion: 2
+        x: 26
+        y: 42
+        width: 47
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1e27004e51f763e20800000000000000
+      internalID: 3329988706483335905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_18
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 42
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c21ea5e9d953a850800000000000000
+      internalID: 6387047488937661129
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_19
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 42
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be2a8e3a14235cb80800000000000000
+      internalID: -8375232674521373973
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_20
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 42
+        width: 24
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dda43be92d94261e0800000000000000
+      internalID: -2206119698503611683
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_21
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 41
+        width: 13
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32bdc32dd54d4c230800000000000000
+      internalID: 3658282296755936035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_22
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 42
+        width: 8
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cb86dd7e458a11880800000000000000
+      internalID: -8641941127326504772
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_23
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 43
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 30f33cdee9d01a0a0800000000000000
+      internalID: -6872196580145676541
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_24
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 42
+        width: 13
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed054391eeede6a00800000000000000
+      internalID: 751783302023893214
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_25
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 42
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed042ff6e1139c9b0800000000000000
+      internalID: -5059458699577114402
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_26
+      rect:
+        serializedVersion: 2
+        x: 176
+        y: 42
+        width: 35
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 716da6f107fcfb170800000000000000
+      internalID: 8196497927307974167
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_27
+      rect:
+        serializedVersion: 2
+        x: 209
+        y: 42
+        width: 14
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f6eebe1591115aa0800000000000000
+      internalID: -6174134281984612622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_28
+      rect:
+        serializedVersion: 2
+        x: 221
+        y: 41
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8261e43ff1a62ebe0800000000000000
+      internalID: -1449479444601367000
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_29
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 27
+        width: 36
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4db496c88dade7c30800000000000000
+      internalID: 4359162112944720852
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_30
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 28
+        width: 165
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2e21261d99ef4a010800000000000000
+      internalID: 1199363337383711458
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_31
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 28
+        width: 23
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c2aaa879d15b4bb90800000000000000
+      internalID: -7226952363321677268
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_32
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 14
+        width: 64
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e611c535650ce38c0800000000000000
+      internalID: -4017562340569640594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_33
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 14
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 69fc544f6a670fcb0800000000000000
+      internalID: -4832231940733677674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_34
+      rect:
+        serializedVersion: 2
+        x: 92
+        y: 14
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1f02f34a130f4c220800000000000000
+      internalID: 2505391388724502769
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_35
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 14
+        width: 35
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 022d90ee6c3c857e0800000000000000
+      internalID: -1776454793833098720
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_36
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 14
+        width: 31
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf340a43392bd05b0800000000000000
+      internalID: -5400464032834501636
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_37
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 14
+        width: 40
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 04d1ebe3fc1ac4f80800000000000000
+      internalID: -8120938116572897984
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_38
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 13
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 67167255efc513aa0800000000000000
+      internalID: -6183058565982887562
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_39
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 0
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 516c76f2790fcb590800000000000000
+      internalID: -7656980734310627819
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_40
+      rect:
+        serializedVersion: 2
+        x: 72
+        y: 0
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4a75975bf15582a50800000000000000
+      internalID: 6496536057158916004
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_41
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 0
+        width: 36
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: dc00555cb0a1098d0800000000000000
+      internalID: -2841742727013138227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_42
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 0
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0cde6286d5e8a7d10800000000000000
+      internalID: 2124166706089094592
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_43
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 0
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cdeb35a32ccc18950800000000000000
+      internalID: 6449661275945549532
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: QuestMap_Map04_44
+      rect:
+        serializedVersion: 2
+        x: 142
+        y: 0
+        width: 29
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 660e6c5d23666c910800000000000000
+      internalID: 1857284264857886822
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      QuestMap_Map04_0: -8447952032732320576
+      QuestMap_Map04_1: 6010301293974164325
+      QuestMap_Map04_10: -509295896276573053
+      QuestMap_Map04_11: -5972941503265449425
+      QuestMap_Map04_12: -4699681122035052432
+      QuestMap_Map04_13: -6085029295484430697
+      QuestMap_Map04_14: 4747561421098295837
+      QuestMap_Map04_15: -7334956565125291992
+      QuestMap_Map04_16: -70796096220731230
+      QuestMap_Map04_17: 3329988706483335905
+      QuestMap_Map04_18: 6387047488937661129
+      QuestMap_Map04_19: -8375232674521373973
+      QuestMap_Map04_2: -1236459600101302481
+      QuestMap_Map04_20: -2206119698503611683
+      QuestMap_Map04_21: 3658282296755936035
+      QuestMap_Map04_22: -8641941127326504772
+      QuestMap_Map04_23: -6872196580145676541
+      QuestMap_Map04_24: 751783302023893214
+      QuestMap_Map04_25: -5059458699577114402
+      QuestMap_Map04_26: 8196497927307974167
+      QuestMap_Map04_27: -6174134281984612622
+      QuestMap_Map04_28: -1449479444601367000
+      QuestMap_Map04_29: 4359162112944720852
+      QuestMap_Map04_3: 7105799459268705799
+      QuestMap_Map04_30: 1199363337383711458
+      QuestMap_Map04_31: -7226952363321677268
+      QuestMap_Map04_32: -4017562340569640594
+      QuestMap_Map04_33: -4832231940733677674
+      QuestMap_Map04_34: 2505391388724502769
+      QuestMap_Map04_35: -1776454793833098720
+      QuestMap_Map04_36: -5400464032834501636
+      QuestMap_Map04_37: -8120938116572897984
+      QuestMap_Map04_38: -6183058565982887562
+      QuestMap_Map04_39: -7656980734310627819
+      QuestMap_Map04_4: -6644482296423817585
+      QuestMap_Map04_40: 6496536057158916004
+      QuestMap_Map04_41: -2841742727013138227
+      QuestMap_Map04_42: 2124166706089094592
+      QuestMap_Map04_43: 6449661275945549532
+      QuestMap_Map04_44: 1857284264857886822
+      QuestMap_Map04_5: -4940356536865346818
+      QuestMap_Map04_6: 5434544026598408199
+      QuestMap_Map04_7: 372299541311194197
+      QuestMap_Map04_8: 1174379113625569586
+      QuestMap_Map04_9: -6124159155257690181
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

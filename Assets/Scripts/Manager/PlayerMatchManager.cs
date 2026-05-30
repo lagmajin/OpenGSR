@@ -6,19 +6,19 @@ using System.Collections.Generic;
 
 namespace OpenGS
 {
-public class PlayerAllData
+    public class PlayerAllData
     {
         OpenGSCore.PlayerInfo playerInfo;
-        PlayerStatus status;
+        OpenGSCore.PlayerStatus status;
 
-        public PlayerAllData(OpenGSCore.PlayerInfo playerInfo, PlayerStatus status)
+        public PlayerAllData(OpenGSCore.PlayerInfo playerInfo, OpenGSCore.PlayerStatus status)
         {
             this.playerInfo = playerInfo;
             this.status = status;
         }
 
         public OpenGSCore.PlayerInfo PlayerInfo => playerInfo;
-        public PlayerStatus Status => status;
+        public OpenGSCore.PlayerStatus Status => status;
     }
 
 
@@ -34,7 +34,7 @@ public class PlayerAllData
 
         }
 
-        public void AddPlayer(OpenGSCore.PlayerInfo info, PlayerStatus status)
+        public void AddPlayer(OpenGSCore.PlayerInfo info, OpenGSCore.PlayerStatus status)
         {
             if (info == null || status == null)
             {
