@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
-  m_Name: M16
+  m_Name: ChristmasGun
   m_EditorClassIdentifier: 
-  weaponType: 2
+  weaponType: 17
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 30
-  inGameSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-  inSelectionSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-  shilhouetteSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-
+  inGameSprite: {fileID: -4023752880262819300, guid: 7fd7b2de135e5ee4d8c3f1e5607de8b0, type: 3}
+  inSelectionSprite: {fileID: -3420690419997281000, guid: 826399a8d5cdf364d83d45e4bea306b8, type: 3}
+  shilhouetteSprite: {fileID: -6467402119639133000, guid: b8dc3104d4661f346916e41c8a059ee2, type: 3}

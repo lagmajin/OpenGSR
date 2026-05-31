@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
-  m_Name: M16
+  m_Name: FnP90
   m_EditorClassIdentifier: 
-  weaponType: 2
+  weaponType: 6
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 30
-  inGameSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-  inSelectionSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-  shilhouetteSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-
+  inGameSprite: {fileID: -593202009162973700, guid: ad8b24403c1ad9549be1f70138732a35, type: 3}
+  inSelectionSprite: {fileID: 4115959145582572000, guid: 745e7786368fc8f4093586256c91982d, type: 3}
+  shilhouetteSprite: {fileID: 5217968946021494000, guid: 58abffd425d9d0d45bfe45a4b178986d, type: 3}

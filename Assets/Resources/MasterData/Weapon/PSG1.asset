@@ -9,23 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b343cd5316c07b49a83d40ad4f0476b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
   m_Name: PSG1
   m_EditorClassIdentifier: 
-  type: 0
-  gunType: 1
-  Name: PSG1
-  maxBullet: 30
-  bulletSpeed: 0
-  bulletCount: 1
-  damage: 1
-  reloadTime: 30
-  inGameSprite: {fileID: 0}
-  inSelectionSprite: {fileID: 0}
-  shilhouetteSprite: {fileID: 0}
-  reloadStartSound: {fileID: 0}
+  weaponType: 9
   shotSound: {fileID: 0}
-  shellPrefab: {fileID: 0}
-  bulletPrefab: {fileID: 2184356627997763672, guid: a5aaf99a76ce49941910eafb74ae0720,
-    type: 3}
-  shotEffectPrefab: {fileID: 0}
+  reloadTime: 2
+  maxBullet: 30
+  inGameSprite: {fileID: 8235528489533056000, guid: d1dde71f8fb0a2a42ab6c8aede69187c, type: 3}
+  inSelectionSprite: {fileID: -2980927979688670700, guid: 02001d429490e5846ad7d5f8535f5592, type: 3}
+  shilhouetteSprite: {fileID: -1305290651372855600, guid: d5569402f0d159d4781e9d31f290cb02, type: 3}
+

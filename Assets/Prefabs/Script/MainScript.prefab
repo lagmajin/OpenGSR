@@ -1,5 +1,158 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4705674274022775811
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4325066379143231213}
+  m_Layer: 0
+  m_Name: ArmMatchMainScript
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &4325066379143231213
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4705674274022775811}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6527395882241844908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5057200307188332113
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4094352854231676928}
+  - component: {fileID: 6182392840664282910}
+  m_Layer: 0
+  m_Name: TSUVMatchMainScript
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &4094352854231676928
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5057200307188332113}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6527395882241844908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6182392840664282910
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5057200307188332113}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d3a95e9627e19494e95aceb28c33ddde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.TSUVMainScript
+  timer: {fileID: 0}
+  mainCamera: {fileID: 0}
+  BackgroundCamera: {fileID: 0}
+  vcamera: {fileID: 0}
+  playerCamera: {fileID: 0}
+  observerCamera: {fileID: 0}
+  impluseSource: {fileID: 0}
+  gotoResultSceneWaitTime: 4
+  itemSpawnPoints: {fileID: 0}
+  player: {fileID: 0}
+  overrideGameTime: 0
+  testGameTime: 1000
+  gameEndTimeScale: 0.4
+  prefabMasterData: {fileID: 0}
+  uiCanvasMasterData: {fileID: 0}
+  battleSceneMediateObject: {fileID: 0}
+  redTeamRespawnPoints: {fileID: 0}
+  blueTeamRespawnPoint: {fileID: 0}
+--- !u!1 &5223138302308593620
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4613074713140121521}
+  - component: {fileID: 387189156089869452}
+  m_Layer: 0
+  m_Name: GodModeMainScript
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &4613074713140121521
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5223138302308593620}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6527395882241844908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &387189156089869452
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5223138302308593620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1b53c810deba42247b9bf7d004cc9cb6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.GodModeMainScript
+  timer: {fileID: 0}
+  mainCamera: {fileID: 0}
+  BackgroundCamera: {fileID: 0}
+  vcamera: {fileID: 0}
+  playerCamera: {fileID: 0}
+  observerCamera: {fileID: 0}
+  impluseSource: {fileID: 0}
+  gotoResultSceneWaitTime: 4
+  itemSpawnPoints: {fileID: 0}
+  player: {fileID: 0}
+  overrideGameTime: 0
+  testGameTime: 1000
+  gameEndTimeScale: 0.4
+  prefabMasterData: {fileID: 0}
+  uiCanvasMasterData: {fileID: 0}
+  battleSceneMediateObject: {fileID: 0}
 --- !u!1 &5388693277518825453
 GameObject:
   m_ObjectHideFlags: 0
@@ -10,12 +163,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1970950655285206106}
   m_Layer: 0
-  m_Name: CTF
+  m_Name: CTFMainScript
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1970950655285206106
 Transform:
   m_ObjectHideFlags: 0
@@ -47,7 +200,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1325765419992388181
 Transform:
   m_ObjectHideFlags: 0
@@ -73,7 +226,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c2e3eac705411b543973a435b089a542, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: OpenGSR::OpenGS.DMMatchMainScript
   timer: {fileID: 0}
   mainCamera: {fileID: 0}
@@ -93,6 +246,37 @@ MonoBehaviour:
   battleSceneMediateObject: {fileID: 0}
   uiManager: {fileID: 0}
   respawnPoints: {fileID: 0}
+--- !u!1 &7938413619883870535
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1244779542123666901}
+  m_Layer: 0
+  m_Name: SUVMatchMainScript
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1244779542123666901
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7938413619883870535}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6527395882241844908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8437000161792324588
 GameObject:
   m_ObjectHideFlags: 0
@@ -125,6 +309,11 @@ Transform:
   m_Children:
   - {fileID: 1325765419992388181}
   - {fileID: 1970950655285206106}
+  - {fileID: 2639900570012866915}
+  - {fileID: 1244779542123666901}
+  - {fileID: 4094352854231676928}
+  - {fileID: 4325066379143231213}
+  - {fileID: 4613074713140121521}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &7023994030276490891
@@ -137,15 +326,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0eef7535ccca21b46a5ea49d114feda1, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: OpenGSR::OpenGS.GameModeCollection
   dmMatchMainScript: {fileID: 5530704120592160690}
-  tdmMatchMainScript: {fileID: 0}
-  suvMatchMainScript: {fileID: 0}
-  tsuvMatchMainScript: {fileID: 0}
+  tdmMatchMainScript: {fileID: 8944105249862320831}
+  suvMatchMainScript: {fileID: 7938413619883870535}
+  tsuvMatchMainScript: {fileID: 5057200307188332113}
   ctfMatchMainScript: {fileID: 5388693277518825453}
-  armMatchMainScript: {fileID: 0}
-  godModeMainScript: {fileID: 0}
+  armMatchMainScript: {fileID: 4705674274022775811}
+  godModeMainScript: {fileID: 5223138302308593620}
   scriptTest: {fileID: 0}
   matchMainScript: {fileID: 0}
   BattleUIManager: {fileID: 0}
@@ -153,3 +342,66 @@ MonoBehaviour:
   bootImmidietry: 1
   autoDeleteOthers: 1
   generalScene: {fileID: 0}
+--- !u!1 &8944105249862320831
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2639900570012866915}
+  - component: {fileID: 7469344103801967443}
+  m_Layer: 0
+  m_Name: TDMMatchMainScript
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &2639900570012866915
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8944105249862320831}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6527395882241844908}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &7469344103801967443
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8944105249862320831}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 999ce2a21c292da43953d02afff2a186, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.TDMMatchMainScript
+  timer: {fileID: 0}
+  mainCamera: {fileID: 0}
+  BackgroundCamera: {fileID: 0}
+  vcamera: {fileID: 0}
+  playerCamera: {fileID: 0}
+  observerCamera: {fileID: 0}
+  impluseSource: {fileID: 0}
+  gotoResultSceneWaitTime: 4
+  itemSpawnPoints: {fileID: 0}
+  player: {fileID: 0}
+  overrideGameTime: 0
+  testGameTime: 1000
+  gameEndTimeScale: 0.4
+  prefabMasterData: {fileID: 0}
+  uiCanvasMasterData: {fileID: 0}
+  battleSceneMediateObject: {fileID: 0}
+  scoreUIManager: {fileID: 0}
+  redTeamRespawnPoints: {fileID: 0}
+  blueTeamRespawnPoint: {fileID: 0}

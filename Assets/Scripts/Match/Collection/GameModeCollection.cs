@@ -24,15 +24,15 @@ namespace OpenGS
     {
         //[OdinSerialize][Inject] ClientSessionData data;
 
-        [Required] public GameObject dmMatchMainScript;
-        [Required] public GameObject tdmMatchMainScript;
+        [Required, AutoCreateIfMissing("DMMatchMainScript", typeof(DMMatchMainScript))] public GameObject dmMatchMainScript;
+        [Required, AutoCreateIfMissing("TDMMatchMainScript", typeof(TDMMatchMainScript))] public GameObject tdmMatchMainScript;
 
-        [Required] public GameObject suvMatchMainScript;
-        [Required] public GameObject tsuvMatchMainScript;
-        [Required] public GameObject ctfMatchMainScript;
+        [Required, AutoCreateIfMissing("SUVMatchMainScript")] public GameObject suvMatchMainScript;
+        [Required, AutoCreateIfMissing("TSUVMatchMainScript", typeof(TSUVMainScript))] public GameObject tsuvMatchMainScript;
+        [Required, AutoCreateIfMissing("CTFMatchMainScript", typeof(CTFMatchMainScript))] public GameObject ctfMatchMainScript;
 
-        [Required] public GameObject armMatchMainScript;
-        [Required] public GameObject godModeMainScript;
+        [Required, AutoCreateIfMissing("ArmMatchMainScript")] public GameObject armMatchMainScript;
+        [Required, AutoCreateIfMissing("GodModeMainScript", typeof(GodModeMainScript))] public GameObject godModeMainScript;
 
 
 

@@ -9,23 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b343cd5316c07b49a83d40ad4f0476b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
   m_Name: Scorpion
   m_EditorClassIdentifier: 
-  type: 4
-  gunType: 0
-  Name: 
+  weaponType: 5
+  shotSound: {fileID: 0}
+  reloadTime: 2
   maxBullet: 30
-  bulletSpeed: 0
-  bulletCount: 1
-  damage: 1
-  reloadTime: 30
-  inGameSprite: {fileID: 0}
-  inSelectionSprite: {fileID: 0}
-  shilhouetteSprite: {fileID: 0}
-  reloadStartSound: {fileID: 0}
-  shotSound: {fileID: 8300000, guid: bfbeaba747416c043bbdccc8635ed6f7, type: 3}
-  shotHitObjectSound: {fileID: 0}
-  shellPrefab: {fileID: 0}
-  bulletPrefab: {fileID: 0}
-  shotEffectPrefab: {fileID: 0}
+  inGameSprite: {fileID: -3472448210315315700, guid: df1631742e2361d4faebb125f379708e, type: 3}
+  inSelectionSprite: {fileID: 1317163885771122700, guid: 61647a8dc3f5ae94da766b78b34e866b, type: 3}
+  shilhouetteSprite: {fileID: 8537452585374211000, guid: 6375799b6553a44489aefbfc6c200e69, type: 3}
+

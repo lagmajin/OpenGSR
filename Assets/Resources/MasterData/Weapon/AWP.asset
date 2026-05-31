@@ -14,10 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponType: 10
   shotSound: {fileID: 0}
-  reloadTime: 30
+  reloadTime: 2
   maxBullet: 10
-  inGameSprite: {fileID: 21300000, guid: a527bd051274fb04799192c9b682b17b, type: 3}
-  inSelectionSprite: {fileID: 1702584465547899308, guid: 4e9a93ed478f8484abb208b27babf755,
-    type: 3}
-  shilhouetteSprite: {fileID: -3018283909314946460, guid: 6e5cf4c5d0454d0408d54bf54e87f0b5,
-    type: 3}
+  inGameSprite: {fileID: -3018283909314946600, guid: 6e5cf4c5d0454d0408d54bf54e87f0b5, type: 3}
+  inSelectionSprite: {fileID: 1702584465547899400, guid: 4e9a93ed478f8484abb208b27babf755, type: 3}
+  shilhouetteSprite: {fileID: -3018283909314946600, guid: 6e5cf4c5d0454d0408d54bf54e87f0b5, type: 3}
+

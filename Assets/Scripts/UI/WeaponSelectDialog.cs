@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TMPro;
@@ -45,6 +46,9 @@ namespace OpenGS
             eWeaponType.MG42,
         };
 
+        [Header("Auto Close")]
+        [SerializeField, Min(0f)] private float autoCloseDelaySeconds = 5f;
+
         public Action<IReadOnlyList<EWeaponType>> OnLeftSelectionConfirmed;
         public Action<IReadOnlyList<eWeaponType>> OnRightSelectionConfirmed;
         public Action OnDialogClosed;
@@ -56,6 +60,7 @@ namespace OpenGS
         private int selectedLeftIndex = -1;
         private int selectedRightIndex = -1;
         private bool listenersRegistered;
+        private Coroutine autoCloseCoroutine;
 
         private void Awake()
         {
@@ -69,6 +74,12 @@ namespace OpenGS
             EnsureRuntimeLayout();
             RefreshData();
             RefreshUI();
+            StartAutoCloseTimer();
+        }
+
+        private void OnDisable()
+        {
+            CancelAutoCloseTimer();
         }
 
         public void Show()
@@ -77,10 +88,41 @@ namespace OpenGS
             EnsureRuntimeLayout();
             RefreshData();
             RefreshUI();
+            StartAutoCloseTimer();
         }
 
         public void Hide()
         {
+            Close();
+        }
+
+        private void StartAutoCloseTimer()
+        {
+            CancelAutoCloseTimer();
+
+            if (autoCloseDelaySeconds <= 0f)
+            {
+                return;
+            }
+
+            autoCloseCoroutine = StartCoroutine(AutoCloseCoroutine());
+        }
+
+        private void CancelAutoCloseTimer()
+        {
+            if (autoCloseCoroutine == null)
+            {
+                return;
+            }
+
+            StopCoroutine(autoCloseCoroutine);
+            autoCloseCoroutine = null;
+        }
+
+        private IEnumerator AutoCloseCoroutine()
+        {
+            yield return new WaitForSeconds(autoCloseDelaySeconds);
+            autoCloseCoroutine = null;
             Close();
         }
 
@@ -237,6 +279,15 @@ namespace OpenGS
 
                 view.selectedMarker = CreateMarker(slotRoot, "SelectedMarker", new Color(1f, 0.9f, 0.2f, 0.12f));
                 view.bannedMarker = CreateMarker(slotRoot, "BannedMarker", new Color(0.25f, 0.25f, 0.25f, 0.4f));
+                var equippedMarker = CreateRectTransform("EquippedMarker", slotRoot);
+                ConfigureEquippedMarker(equippedMarker);
+                var equippedBackground = CreateImage(equippedMarker, "EquippedBackground", new Color(0.12f, 0.4f, 0.16f, 0.88f));
+                StretchFull(equippedBackground.rectTransform);
+                var equippedIcon = CreateImage(equippedMarker, "EquippedIcon", Color.white);
+                StretchFull(equippedIcon.rectTransform);
+                equippedIcon.preserveAspect = true;
+                view.equippedMarker = equippedMarker.gameObject;
+                view.equippedIconImage = equippedIcon;
 
                 slots[index] = view;
             }
@@ -282,6 +333,15 @@ namespace OpenGS
             slotRoot.anchorMax = new Vector2(1f, 1f - (index * 0.18f));
             slotRoot.offsetMin = new Vector2(0f, 4f);
             slotRoot.offsetMax = new Vector2(0f, -4f);
+        }
+
+        private static void ConfigureEquippedMarker(RectTransform marker)
+        {
+            marker.anchorMin = new Vector2(1f, 1f);
+            marker.anchorMax = new Vector2(1f, 1f);
+            marker.pivot = new Vector2(1f, 1f);
+            marker.sizeDelta = new Vector2(58f, 58f);
+            marker.anchoredPosition = new Vector2(-4f, -4f);
         }
 
         private static void ConfigureIcon(RectTransform icon)
@@ -500,12 +560,14 @@ namespace OpenGS
             }
 
             var isEmpty = weapon == EWeaponType.None;
-            var displayName = isEmpty ? "EMPTY" : GetDisplayName(weapon);
-            var icon = isEmpty ? null : ResolveWeaponSprite(weapon.ToString());
+            var displayName = isEmpty ? "EMPTY" : WeaponVisualResolver.GetDisplayName(weapon);
+            var icon = isEmpty ? null : WeaponVisualResolver.GetSelectionSprite(weapon);
+            var isEquipped = !isEmpty && UserSaveManager.IsFavoriteWeapon(weapon.ToString());
+            var equippedIcon = isEquipped ? WeaponVisualResolver.GetInGameSprite(weapon) : null;
             var isBanned = !isEmpty && IsBanned(weapon);
             var isSelected = index == selectedLeftIndex;
 
-            ApplySlotVisual(slot, icon, displayName, isEmpty ? string.Empty : weapon.ToString(), isEmpty, isBanned, isSelected);
+            ApplySlotVisual(slot, icon, displayName, isEmpty ? string.Empty : weapon.ToString(), isEmpty, isBanned, isSelected, isEquipped, equippedIcon);
 
             if (slot.selectButton != null)
             {
@@ -521,12 +583,14 @@ namespace OpenGS
             }
 
             var isEmpty = weapon == eWeaponType.None;
-            var displayName = isEmpty ? "EMPTY" : GetDisplayName(weapon);
-            var icon = isEmpty ? null : ResolveWeaponSprite(weapon.ToString());
+            var displayName = isEmpty ? "EMPTY" : WeaponVisualResolver.GetDisplayName(weapon);
+            var icon = isEmpty ? null : WeaponVisualResolver.GetSelectionSprite(weapon);
+            var isEquipped = false;
+            var equippedIcon = isEquipped ? WeaponVisualResolver.GetInGameSprite(weapon) : null;
             var isBanned = !isEmpty && IsBanned(weapon);
             var isSelected = index == selectedRightIndex;
 
-            ApplySlotVisual(slot, icon, displayName, isEmpty ? string.Empty : weapon.ToString(), isEmpty, isBanned, isSelected);
+            ApplySlotVisual(slot, icon, displayName, isEmpty ? string.Empty : weapon.ToString(), isEmpty, isBanned, isSelected, isEquipped, equippedIcon);
 
             if (slot.selectButton != null)
             {
@@ -541,7 +605,9 @@ namespace OpenGS
             string detail,
             bool isEmpty,
             bool isBanned,
-            bool isSelected)
+            bool isSelected,
+            bool isEquipped,
+            Sprite equippedIcon)
         {
             if (slot.iconImage != null)
             {
@@ -595,6 +661,19 @@ namespace OpenGS
             {
                 slot.bannedMarker.SetActive(isBanned);
             }
+
+            if (slot.equippedMarker != null)
+            {
+                slot.equippedMarker.SetActive(isEquipped && !isEmpty && icon != null);
+            }
+
+            if (slot.equippedIconImage != null)
+            {
+                slot.equippedIconImage.sprite = equippedIcon;
+                slot.equippedIconImage.color = isEquipped
+                    ? new Color(0.9f, 1f, 0.9f, 1f)
+                    : Color.clear;
+            }
         }
 
         private void OnLeftSlotClicked(int index)
@@ -644,6 +723,8 @@ namespace OpenGS
 
         private void Close()
         {
+            CancelAutoCloseTimer();
+
             if (group != null)
             {
                 group.alpha = 1f;
@@ -665,45 +746,6 @@ namespace OpenGS
             var leftCount = leftWeapons.Count(w => w != EWeaponType.None);
             var rightCount = rightWeapons.Count(w => w != eWeaponType.None);
             statusText.text = $"LEFT {leftCount}/{SlotCount}  RIGHT {rightCount}/{SlotCount}";
-        }
-
-        private Sprite ResolveWeaponSprite(string weaponId)
-        {
-            if (string.IsNullOrWhiteSpace(weaponId))
-            {
-                return null;
-            }
-
-            var weaponMasterSprite = WeaponSelectionSpriteResolver.Resolve(weaponId);
-            if (weaponMasterSprite != null)
-            {
-                return weaponMasterSprite;
-            }
-
-            var catalogItem = ShopCatalogFactory.GetDefaultItemById(weaponId);
-            if (catalogItem != null && catalogItem.icon != null)
-            {
-                return catalogItem.icon;
-            }
-
-            var resourceNames = GetResourceAliases(weaponId);
-            var resourcePaths = new List<string>();
-            foreach (var name in resourceNames)
-            {
-                resourcePaths.Add($"Weapons/{name}");
-                resourcePaths.Add($"UI/Weapons/{name}");
-            }
-
-            foreach (var path in resourcePaths)
-            {
-                var sprite = Resources.Load<Sprite>(path);
-                if (sprite != null)
-                {
-                    return sprite;
-                }
-            }
-
-            return null;
         }
 
         private bool IsBanned(EWeaponType weapon)
@@ -745,64 +787,6 @@ namespace OpenGS
 
             weaponMapCache[weapon] = mapped;
             return mapped;
-        }
-
-        private static string GetDisplayName(EWeaponType weapon)
-        {
-            return weapon switch
-            {
-                EWeaponType.FnP90 => "FN_P90",
-                EWeaponType.FNMinimiSaw => "FNMinimi_SAW",
-                EWeaponType.SteyrAug => "SteyrAug",
-                EWeaponType.ChristmasGun => "ChristmasGun",
-                EWeaponType.DesertEagle => "DE",
-                _ => weapon.ToString()
-            };
-        }
-
-        private static string GetDisplayName(eWeaponType weapon)
-        {
-            return weapon switch
-            {
-                eWeaponType.FN_P90 => "FN_P90",
-                eWeaponType.FNMinimi_SAW => "FNMinimi_SAW",
-                eWeaponType.SteyAug => "SteyAug",
-                eWeaponType.ChirstmasGun => "ChirstmasGun",
-                eWeaponType.DE => "DE",
-                _ => weapon.ToString()
-            };
-        }
-
-        private static string NormalizeResourceName(string weaponId)
-        {
-            return weaponId
-                .Replace("_", string.Empty)
-                .Replace(" ", string.Empty);
-        }
-
-        private static IEnumerable<string> GetResourceAliases(string weaponId)
-        {
-            yield return weaponId;
-            yield return NormalizeResourceName(weaponId);
-
-            switch (weaponId)
-            {
-                case "DesertEagle":
-                    yield return "DE";
-                    break;
-                case "FnP90":
-                    yield return "FN_P90";
-                    break;
-                case "FNMinimiSaw":
-                    yield return "FNMinimi_SAW";
-                    break;
-                case "SteyrAug":
-                    yield return "SteyAug";
-                    break;
-                case "ChristmasGun":
-                    yield return "ChirstmasGun";
-                    break;
-            }
         }
 
     }

@@ -10,13 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
-  m_Name: M16
+  m_Name: Glock
   m_EditorClassIdentifier: 
-  weaponType: 2
+  weaponType: 19
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 30
-  inGameSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-  inSelectionSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-  shilhouetteSprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
-
+  inGameSprite: {fileID: -2392854933446875000, guid: d64510b4aa1c53e4fa282c815604ed0a, type: 3}
+  inSelectionSprite: {fileID: -588767113450362000, guid: 96f453109546bd54eb313a1183cdfa44, type: 3}
+  shilhouetteSprite: {fileID: -2392854933446875000, guid: d64510b4aa1c53e4fa282c815604ed0a, type: 3}

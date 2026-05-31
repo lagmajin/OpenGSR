@@ -9,25 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b343cd5316c07b49a83d40ad4f0476b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
   m_Name: AK47
   m_EditorClassIdentifier: 
-  type: 0
-  gunType: 1
-  Name: 
+  weaponType: 1
+  shotSound: {fileID: 0}
+  reloadTime: 2
   maxBullet: 30
-  bulletSpeed: 0
-  bulletCount: 1
-  damage: 1
-  reloadTime: 30
-  inGameSprite: {fileID: 0}
-  inSelectionSprite: {fileID: 3026279083336393662, guid: f39eb58179faacf4eae25a675d5d5025,
-    type: 3}
-  shilhouetteSprite: {fileID: 3026279083336393662, guid: f39eb58179faacf4eae25a675d5d5025,
-    type: 3}
-  reloadStartSound: {fileID: 8300000, guid: 97944ba826cd83844b05e58c784fe5b5, type: 3}
-  shotSound: {fileID: 8300000, guid: b115a8365a6c3bc42b40fa38f5be082f, type: 3}
-  shotHitObjectSound: {fileID: 0}
-  shellPrefab: {fileID: 0}
-  bulletPrefab: {fileID: 0}
-  shotEffectPrefab: {fileID: 0}
+  inGameSprite: {fileID: 3026279083336393700, guid: f39eb58179faacf4eae25a675d5d5025, type: 3}
+  inSelectionSprite: {fileID: 3026279083336393700, guid: f39eb58179faacf4eae25a675d5d5025, type: 3}
+  shilhouetteSprite: {fileID: 3026279083336393700, guid: f39eb58179faacf4eae25a675d5d5025, type: 3}
+

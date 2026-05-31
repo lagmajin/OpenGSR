@@ -12,6 +12,8 @@ namespace OpenGS
         [SerializeField] public Button selectButton;
         [SerializeField] public GameObject selectedMarker;
         [SerializeField] public GameObject bannedMarker;
+        [SerializeField] public GameObject equippedMarker;
+        [SerializeField] public Image equippedIconImage;
         [SerializeField] public CanvasGroup canvasGroup;
 
         private void Reset()
@@ -33,6 +35,8 @@ namespace OpenGS
             selectButton ??= FindChild<Button>("SelectButton");
             selectedMarker ??= FindChildGameObject("SelectedMarker");
             bannedMarker ??= FindChildGameObject("BannedMarker");
+            equippedMarker ??= FindChildGameObject("EquippedMarker");
+            equippedIconImage ??= FindChild<Image>("EquippedIcon");
         }
 
         private T FindChild<T>(string childName) where T : Component

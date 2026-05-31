@@ -114,10 +114,11 @@ namespace OpenGS
 
             var item = ScriptableObject.CreateInstance<ShopItemData>();
             item.id = id;
-            item.itemName = weapon.ToString();
-            item.description = $"Weapon: {weapon}";
+            item.itemName = WeaponVisualResolver.GetDisplayName(weapon);
+            item.description = $"Weapon: {item.itemName}";
             item.price = GetWeaponPrice(weapon);
             item.category = EShopCategory.Weapon;
+            item.icon = WeaponVisualResolver.GetSelectionSprite(weapon);
             item.itemColor = Color.white;
             itemCache[id] = item;
             return item;

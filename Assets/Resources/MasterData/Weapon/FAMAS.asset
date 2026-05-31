@@ -9,22 +9,14 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4b343cd5316c07b49a83d40ad4f0476b, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f077549b0745694497105540a6456cc, type: 3}
   m_Name: FAMAS
   m_EditorClassIdentifier: 
-  type: 0
-  gunType: 1
-  Name: 
-  maxBullet: 30
-  bulletSpeed: 0
-  bulletCount: 1
-  damage: 1
-  reloadTime: 30
-  inGameSprite: {fileID: 0}
-  inSelectionSprite: {fileID: 0}
-  shilhouetteSprite: {fileID: 0}
-  reloadStartSound: {fileID: 0}
+  weaponType: 3
   shotSound: {fileID: 0}
-  shellPrefab: {fileID: 0}
-  bulletPrefab: {fileID: 0}
-  shotEffectPrefab: {fileID: 0}
+  reloadTime: 2
+  maxBullet: 30
+  inGameSprite: {fileID: 2405276132421060000, guid: 1d28109ea4125574ab331eef39bc55cb, type: 3}
+  inSelectionSprite: {fileID: 1080364153228224000, guid: b0b7435d31f6d484aac1dacbdba1936f, type: 3}
+  shilhouetteSprite: {fileID: 2405276132421060000, guid: 1d28109ea4125574ab331eef39bc55cb, type: 3}
+

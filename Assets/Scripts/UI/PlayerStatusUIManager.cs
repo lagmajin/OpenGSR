@@ -186,7 +186,15 @@ namespace OpenGS
             var currentWeaponObj = myPlayer.gameObject.GetComponentInChildren<AbstractGunController>();
             if (currentWeaponObj != null)
             {
-                UpdateWeaponDisplay(currentWeaponObj.Name, currentWeaponObj.MagazineCount(), currentWeaponObj.MagazineMaxCount(), currentWeaponObj.GunBigIcon());
+                var weaponName = currentWeaponObj.data != null
+                    ? WeaponVisualResolver.GetDisplayName(currentWeaponObj.data.weaponType)
+                    : currentWeaponObj.Name;
+                var weaponIcon = currentWeaponObj.data != null
+                    ? WeaponVisualResolver.GetInGameSprite(currentWeaponObj.data.weaponType)
+                    : null;
+                weaponIcon ??= currentWeaponObj.GunBigIcon();
+
+                UpdateWeaponDisplay(weaponName, currentWeaponObj.MagazineCount(), currentWeaponObj.MagazineMaxCount(), weaponIcon);
             }
         }
 
