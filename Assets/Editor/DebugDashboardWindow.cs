@@ -1198,7 +1198,7 @@ namespace OpenGS.EditorTools
                 return;
             }
 
-            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            var messageType = OpenGSCore.MessageType.Normalize(json["MessageType"]?.ToString());
             if (string.IsNullOrWhiteSpace(messageType))
             {
                 messageType = "(no MessageType)";

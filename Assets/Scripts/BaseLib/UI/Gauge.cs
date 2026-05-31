@@ -26,6 +26,7 @@ namespace OpenGS
         [SerializeField] private Ease animationEase = Ease.OutQuad;
 
         private Tween currentTween;
+        private float lastTargetValue = -1f;
 
         private void Reset()
         {
@@ -47,10 +48,12 @@ namespace OpenGS
         public void Init(float current, float max)
         {
             currentTween?.Kill();
+            currentTween = null;
 
             if (targetSlider == null) return;
-            
+
             float targetValue = CalculateRatio(current, max);
+            lastTargetValue = targetValue;
             targetSlider.value = targetValue;
         }
 
@@ -64,11 +67,33 @@ namespace OpenGS
 
             float targetValue = CalculateRatio(current, max);
 
+            if (currentTween != null && Mathf.Approximately(lastTargetValue, targetValue))
+            {
+                return;
+            }
+
+            if (currentTween == null && Mathf.Approximately(targetSlider.value, targetValue))
+            {
+                lastTargetValue = targetValue;
+                return;
+            }
+
             // 以前のアニメーションが動いていればキャンセル
             currentTween?.Kill();
+            currentTween = null;
+            lastTargetValue = targetValue;
+
+            if (animationDuration <= 0f)
+            {
+                targetSlider.value = targetValue;
+                return;
+            }
 
             // スライダーのValueをTweenで変化させる
-            currentTween = targetSlider.DOValue(targetValue, animationDuration).SetEase(animationEase);
+            currentTween = targetSlider.DOValue(targetValue, animationDuration)
+                .SetEase(animationEase)
+                .OnComplete(() => currentTween = null)
+                .OnKill(() => currentTween = null);
         }
 
         private float CalculateRatio(float current, float max)
@@ -80,6 +105,7 @@ namespace OpenGS
         private void OnDestroy()
         {
             currentTween?.Kill(); // GameObject破棄時にTweenが残らないように
+            currentTween = null;
         }
     }
 }

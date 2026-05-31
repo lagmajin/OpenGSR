@@ -1,4 +1,5 @@
-﻿#nullable enable
+#nullable enable
+using System;
 using System.Collections.Generic;
 using OpenGSCore;
 
@@ -45,9 +46,10 @@ namespace OpenGS
             }
 
             AddLoadingPlayer(id);
-            gaugeList[id].Gauge = gauge;
+            gaugeList[id].SetRatio(gauge);
         }
 
+        [Obsolete("UI-bound Gauge support is not implemented. Use GetLoadingGauge() for data access.")]
         public Gauge? GetGauge(in string id)
         {
             if (string.IsNullOrWhiteSpace(id))
@@ -61,7 +63,7 @@ namespace OpenGS
                 return null;
             }
 
-            UnityEngine.Debug.LogWarning($"[OnlineLoadingManager] UI Gauge is not bound for id: {id}");
+            UnityEngine.Debug.LogWarning($"[OnlineLoadingManager] UI-bound Gauge is not implemented for id: {id}. Use GetLoadingGauge() for progress data.");
             return null;
         }
 
@@ -107,7 +109,7 @@ namespace OpenGS
             }
 
             AddLoadingPlayer(id);
-            gaugeList[id].Gauge = 1f;
+            gaugeList[id].Full();
         }
     }
 }

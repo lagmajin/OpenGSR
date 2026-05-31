@@ -35,6 +35,7 @@ namespace OpenGS
             isStarted = true;
             endFlag = false;
             needKillCount = Mathf.Max(3, diffucluty * 5);
+            PlayGameStartVoice();
             Debug.Log($"[SkyFighter] GameStart diff={diffucluty} needKill={needKillCount}");
             SpawnEnemy();
         }

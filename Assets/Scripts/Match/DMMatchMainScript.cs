@@ -111,6 +111,8 @@ namespace OpenGS
 
         void GameStart()
         {
+            PlayGameStartVoice();
+
             // 自プレイヤーをランダムな位置に生成
             Vector3 spawnPos = GetRandomSpawnPoint(respawnPoints);
             CreateMyPlayer(spawnPos, ETeam.NoTeam);

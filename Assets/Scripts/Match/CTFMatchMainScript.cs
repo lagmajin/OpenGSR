@@ -72,6 +72,8 @@ namespace OpenGS
             //CreateNewMyPlayer();
             //CreateOtherPlayers();
 
+            PlayGameStartVoice();
+
             var roomManager = MatchRoomManager();
 
             //var matchRoom = roomManager.OfflineMatchRoom;

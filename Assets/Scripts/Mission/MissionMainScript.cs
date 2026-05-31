@@ -51,6 +51,7 @@ namespace OpenGS
             isStarted = true;
             endFlag = false;
             time = 0f;
+            PlayGameStartVoice();
             SpawnPlayer();
             Debug.Log("[MissionMainScript] GameStart");
         }

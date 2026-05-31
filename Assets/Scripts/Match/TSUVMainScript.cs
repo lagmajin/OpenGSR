@@ -12,6 +12,7 @@ namespace OpenGS
         {
             base.Start();
             Debug.Log("[TSUVMainScript] Start");
+            PlayGameStartVoice();
             CreateMyPlayer();
         }
 

@@ -52,6 +52,7 @@ namespace OpenGS
             isStarted = true;
             endFlag = false;
             time = 0f;
+            PlayGameStartVoice();
             SpawnPlayer();
             SpawnEnemy();
         }

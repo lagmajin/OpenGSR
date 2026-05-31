@@ -287,6 +287,7 @@ namespace OpenGS
         public void Start()
         {
             OnStart();
+            PlayStageBGM();
             BindMatchNetwork();
 
             Debug.Log("AbstracMainScript.Con");
@@ -402,6 +403,60 @@ namespace OpenGS
         public void PlayDefaultBGM()
         {
             PlayBGM(null);
+        }
+
+        protected void PlayGameStartVoice()
+        {
+            SoundManager.Instance.PlayGameSound(EMatchSound.GameStartVoice);
+        }
+
+        protected virtual void PlayStageBGM()
+        {
+            var map = ResolveCurrentStageMap();
+            Debug.Log($"[{GetType().Name}] PlayStageBGM: {map}");
+            SoundManager.Instance.PlayBGM(map);
+        }
+
+        protected virtual EMap ResolveCurrentStageMap()
+        {
+            try
+            {
+                var manager = matchRoomManager ?? MatchRoomManager();
+                if (manager?.MapInfo != null && manager.MapInfo.Map != EMap.Unknown)
+                {
+                    return manager.MapInfo.Map;
+                }
+
+                if (manager?.WaitRoom != null && manager.WaitRoom.Map != EMap.Unknown)
+                {
+                    return manager.WaitRoom.Map;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[{GetType().Name}] ResolveCurrentStageMap failed from room manager: {ex.Message}");
+            }
+
+            try
+            {
+                var offline = GameModeSelectManager.Instance?.OfflineGameSelect;
+                if (offline != null && offline.Map != EMap.Unknown)
+                {
+                    return offline.Map;
+                }
+
+                var online = GameModeSelectManager.Instance?.OnlineGameSelect;
+                if (online != null && online.Map != EMap.Unknown)
+                {
+                    return online.Map;
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[{GetType().Name}] ResolveCurrentStageMap failed from selection manager: {ex.Message}");
+            }
+
+            return EMap.DryDays;
         }
 
         public void PlayBGM(AudioClip bgm)

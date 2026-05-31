@@ -23,9 +23,9 @@ namespace OpenGS
         public SoundService(SoundMasterData soundMasterData, BGMMasterData bgmMasterData = null)
         {
             _soundMasterData = soundMasterData;
-            _bgmMasterData = bgmMasterData;
+            _bgmMasterData = bgmMasterData ?? Resources.Load<BGMMasterData>("MasterData/BGMMasterData");
             
-            Debug.Log($"[SoundService] Initialized. SoundData: {(soundMasterData != null ? "Loaded" : "Null")}, BGMData: {(bgmMasterData != null ? "Loaded" : "Null")}");
+            Debug.Log($"[SoundService] Initialized. SoundData: {(soundMasterData != null ? "Loaded" : "Null")}, BGMData: {(_bgmMasterData != null ? "Loaded" : "Null")}");
         }
 
         public void PlayBGM(EBgm bgm, float fadeTime = -1f)
@@ -47,7 +47,17 @@ namespace OpenGS
         public void PlayBGM(EMap map)
         {
             Debug.Log($"[SoundService] PlayBGM(Map): {map}");
-            SimpleAudioManager.Instance.PlayBGM(map.ToString());
+            var resolvedBgm = ResolveMapBgm(map);
+            if (_bgmMasterData != null && _bgmMasterData.TryGetBGM(resolvedBgm, out var clip))
+            {
+                Debug.Log($"[SoundService] Found map BGM clip for {map} -> {resolvedBgm}: {clip.name}");
+                SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
+                SimpleAudioManager.Instance.SetCurrentBGMName(resolvedBgm.ToString());
+                return;
+            }
+
+            Debug.Log($"[SoundService] Map BGM {resolvedBgm} not found in MasterData, falling back to named load.");
+            SimpleAudioManager.Instance.PlayBGM(resolvedBgm.ToString());
         }
 
         public void PlayBGM(string bgmName, float fadeTime = -1f)
@@ -191,6 +201,45 @@ namespace OpenGS
         {
             Debug.LogWarning($"[SoundService] No player sound mapping for {sound}.");
             return null;
+        }
+
+        private static EBgm ResolveMapBgm(EMap map)
+        {
+            return map switch
+            {
+                EMap.AuroraClassic => EBgm.AuroraClassic,
+                EMap.ArchLoadOfGunster => EBgm.BattleBase,
+                EMap.IceValley => EBgm.AuroraClassic,
+                EMap.DryDays => EBgm.DryDays,
+                EMap.GreenHillSide1 => EBgm.Green,
+                EMap.GreenHillSide2 => EBgm.Green,
+                EMap.CityOfDarkness1 => EBgm.Ruin,
+                EMap.CityOfDarkness2 => EBgm.Ruin,
+                EMap.BluffStructure1 => EBgm.BattleBase,
+                EMap.BluffStructure2 => EBgm.BattleBase,
+                EMap.DesertedJungleSide1 => EBgm.Forest,
+                EMap.DesertedJungleSide2 => EBgm.Forest,
+                EMap.BattlePort1 => EBgm.Pipe,
+                EMap.BattlePortCTF => EBgm.Pipe,
+                EMap.FullHouse => EBgm.BattleBase,
+                EMap.FactoryInGaol => EBgm.Factory,
+                EMap.RobotFactory => EBgm.Factory,
+                EMap.RedStorm1 => EBgm.Pipe,
+                EMap.RedStorm2 => EBgm.Pipe,
+                EMap.ThePark => EBgm.AmusementPark,
+                EMap.TheParkCTF => EBgm.AmusementPark,
+                EMap.RuinOfWarSide1 => EBgm.Ruin,
+                EMap.RuinOfWarSide2 => EBgm.Ruin,
+                EMap.Nocturne => EBgm.AuroraClassic,
+                EMap.Waterfall => EBgm.AuroraClassic,
+                EMap.SkyHigh => EBgm.AuroraClassic,
+                EMap.SkyHighCTF => EBgm.AuroraClassic,
+                EMap.GhostHouse => EBgm.Forest,
+                EMap.OnStudio => EBgm.AmusementPark,
+                EMap.Christmas => EBgm.Green,
+                EMap.SeaSideBase => EBgm.Pipe,
+                _ => EBgm.DryDays
+            };
         }
     }
 }

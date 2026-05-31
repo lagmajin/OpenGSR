@@ -56,8 +56,6 @@ namespace OpenGS
                 networkManager = null;
             }
 
-            PlayDefaultBGM();
-
             Debug.Log("TDM GameStart");
 
             Invoke("GameSetup", 0.1f);
@@ -65,6 +63,8 @@ namespace OpenGS
 
         private void GameSetup()
         {
+            PlayGameStartVoice();
+
             CreateMyPlayerLocally();
 
             // マッチ開始
