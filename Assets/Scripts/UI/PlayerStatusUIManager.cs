@@ -40,6 +40,8 @@ namespace OpenGS
         public TextMeshProUGUI statusText; // キル数などの追加情報用
 
         [Header("Grenade")]
+        public Image grenadeIcon;
+        public TextMeshProUGUI grenadeTypeText;
         public Gauge grenadeChargeGauge; // グレネード溜めゲージ
         public TextMeshProUGUI grenadeCountText;
     }
@@ -70,6 +72,8 @@ namespace OpenGS
         [SerializeField] private GameObject deathPanel;
 
         private AbstractPlayer myPlayer;
+        private CharaController myCharaPlayer;
+        private PlayerStatus myStatus;
         private string myPlayerId;
         private IDisposable ammoSub;
         private IDisposable weaponSub;
@@ -108,6 +112,9 @@ namespace OpenGS
                 PlayerRegistry.Instance.OnPlayerRegistered -= HandlePlayerRegistered;
             }
 
+            UnbindInstantItemEvents();
+            UnbindGrenadeSlotEvents();
+
             ammoSub?.Dispose();
             weaponSub?.Dispose();
             killSub?.Dispose();
@@ -115,6 +122,11 @@ namespace OpenGS
 
         private void Update()
         {
+            if (weaponUI == null)
+            {
+                return;
+            }
+
             // グレネードの溜め状態などは毎フレーム更新が必要な場合がある
             if (grenadeComponent != null && weaponUI.grenadeChargeGauge != null)
             {
@@ -124,6 +136,8 @@ namespace OpenGS
                 // 溜め中以外は非表示にするなどの演出も可能
                 weaponUI.grenadeChargeGauge.gameObject.SetActive(ratio > 0);
             }
+
+            UpdateGrenadeDisplay();
         }
 
         private void TryFindMyPlayer()
@@ -142,10 +156,22 @@ namespace OpenGS
 
         private void SetMyPlayer(AbstractPlayer player)
         {
+            if (player == null)
+            {
+                return;
+            }
+
+            UnbindInstantItemEvents();
+            UnbindGrenadeSlotEvents();
+
             myPlayer = player;
             myPlayerId = player.UniqueID().ToString();
             
             grenadeComponent = player.GetComponent<PlayerGrenadeComponent>();
+            myCharaPlayer = player as CharaController;
+            myStatus = player.Status;
+            BindInstantItemEvents();
+            BindGrenadeSlotEvents();
 
             // UniRx の KillCount を購読
             killSub?.Dispose();
@@ -175,6 +201,9 @@ namespace OpenGS
 
             // 武器情報（初期状態の取得はポーリング or 初期化イベント待ち）
             UpdateWeaponFromCurrentPlayer();
+            UpdateGrenadeDisplay();
+            RefreshInstantItemDisplays();
+            RefreshGrenadeSlotDisplays();
         }
 
         private void UpdateWeaponFromCurrentPlayer()
@@ -241,6 +270,18 @@ namespace OpenGS
             if (deathPanel != null) deathPanel.SetActive(false);
             UpdateHPDisplay(player.GetHP(), player.GetMaxHP());
             UpdateBoosterDisplay(player.GetBooster(), player.GetMaxBooster());
+            RefreshInstantItemDisplays();
+            RefreshGrenadeSlotDisplays();
+        }
+
+        private void HandleInstantItemsChanged()
+        {
+            RefreshInstantItemDisplays();
+        }
+
+        private void HandleGrenadeSlotsChanged()
+        {
+            RefreshGrenadeSlotDisplays();
         }
 
         private void HandleAmmoUpdate(AmmoUpdateEvent evt)
@@ -342,6 +383,131 @@ namespace OpenGS
                 weaponUI.weaponIcon.sprite = icon;
                 weaponUI.weaponIcon.gameObject.SetActive(true);
             }
+        }
+
+        private void UpdateGrenadeDisplay()
+        {
+            if (weaponUI == null || grenadeComponent == null)
+            {
+                return;
+            }
+
+            var grenadeType = grenadeComponent.CurrentGrenadeType;
+            var grenadeName = GrenadeVisualResolver.GetDisplayName(grenadeType);
+            var grenadeCount = myPlayer?.Status?.GrenadeCount ?? 0;
+            var grenadeIcon = GrenadeVisualResolver.GetPackHudSprite(grenadeType);
+
+            if (weaponUI.grenadeTypeText != null)
+            {
+                weaponUI.grenadeTypeText.text = grenadeName;
+            }
+
+            if (weaponUI.grenadeCountText != null)
+            {
+                weaponUI.grenadeCountText.text = $"x{grenadeCount}";
+            }
+
+            if (weaponUI.grenadeIcon != null && grenadeIcon != null)
+            {
+                weaponUI.grenadeIcon.sprite = grenadeIcon;
+                weaponUI.grenadeIcon.gameObject.SetActive(true);
+            }
+        }
+
+        private void RefreshInstantItemDisplays()
+        {
+            var slotImages = GetComponentsInChildren<InstantItemSlotImage>(true);
+            if (slotImages == null || slotImages.Length == 0)
+            {
+                return;
+            }
+
+            for (var index = 0; index < slotImages.Length; index++)
+            {
+                var slotImage = slotImages[index];
+                if (slotImage == null)
+                {
+                    continue;
+                }
+
+                if (myCharaPlayer == null || index >= myCharaPlayer.GetInstantItemSlotCount())
+                {
+                    slotImage.Clear();
+                    continue;
+                }
+
+                slotImage.SetInstantItemType(myCharaPlayer.GetInstantItemType(index));
+            }
+        }
+
+        private void RefreshGrenadeSlotDisplays()
+        {
+            var slotImages = GetComponentsInChildren<GrenadeSlotImage>(true);
+            if (slotImages == null || slotImages.Length == 0)
+            {
+                return;
+            }
+
+            for (var index = 0; index < slotImages.Length; index++)
+            {
+                var slotImage = slotImages[index];
+                if (slotImage == null)
+                {
+                    continue;
+                }
+
+                if (myStatus == null || index >= myStatus.GrenadeSlots.Count)
+                {
+                    slotImage.Clear();
+                    continue;
+                }
+
+                slotImage.SetGrenadeType(myStatus.GetGrenadeSlot(index));
+            }
+        }
+
+        private void BindInstantItemEvents()
+        {
+            if (myCharaPlayer == null)
+            {
+                return;
+            }
+
+            myCharaPlayer.OnInstantItemsChanged -= HandleInstantItemsChanged;
+            myCharaPlayer.OnInstantItemsChanged += HandleInstantItemsChanged;
+        }
+
+        private void UnbindInstantItemEvents()
+        {
+            if (myCharaPlayer == null)
+            {
+                return;
+            }
+
+            myCharaPlayer.OnInstantItemsChanged -= HandleInstantItemsChanged;
+            myCharaPlayer = null;
+        }
+
+        private void BindGrenadeSlotEvents()
+        {
+            if (myStatus == null)
+            {
+                return;
+            }
+
+            myStatus.GrenadeSlotsChanged -= HandleGrenadeSlotsChanged;
+            myStatus.GrenadeSlotsChanged += HandleGrenadeSlotsChanged;
+        }
+
+        private void UnbindGrenadeSlotEvents()
+        {
+            if (myStatus == null)
+            {
+                return;
+            }
+
+            myStatus.GrenadeSlotsChanged -= HandleGrenadeSlotsChanged;
+            myStatus = null;
         }
 
         #endregion

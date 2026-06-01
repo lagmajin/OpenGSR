@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using OpenGSCore;
@@ -63,6 +64,7 @@ namespace OpenGS
     public class InstantItemSlots
     {
         private readonly List<AbstractInstantItem> items = new List<AbstractInstantItem>(3);
+        public event Action Changed;
 
         public InstantItemSlots()
         {
@@ -74,20 +76,31 @@ namespace OpenGS
 
         public void InsertInstantItem(int i, EInstantItemType type)
         {
+            InsertInstantItem(i, type, true);
+        }
+
+        public void InsertInstantItem(int i, EInstantItemType type, bool notifyChanged)
+        {
             if (i < 0 || i >= items.Count)
             {
                 return;
             }
 
             items[i] = CreateItem(type);
+
+            if (notifyChanged)
+            {
+                NotifyChanged();
+            }
         }
 
         public void SetFromEquippedItems(IEnumerable<EInstantItemType> equippedItems)
         {
-            Clear();
+            Clear(false);
 
             if (equippedItems == null)
             {
+                NotifyChanged();
                 return;
             }
 
@@ -99,16 +112,28 @@ namespace OpenGS
                     break;
                 }
 
-                InsertInstantItem(index, type);
+                InsertInstantItem(index, type, false);
                 index++;
             }
+
+            NotifyChanged();
         }
 
         public void Clear()
         {
+            Clear(true);
+        }
+
+        public void Clear(bool notifyChanged)
+        {
             for (var index = 0; index < items.Count; index++)
             {
                 items[index] = null;
+            }
+
+            if (notifyChanged)
+            {
+                NotifyChanged();
             }
         }
 
@@ -129,6 +154,7 @@ namespace OpenGS
 
             type = item.Type;
             item.Use();
+            NotifyChanged();
             return true;
         }
 
@@ -195,6 +221,11 @@ namespace OpenGS
                 EInstantItemType.None => null,
                 _ => null
             };
+        }
+
+        private void NotifyChanged()
+        {
+            Changed?.Invoke();
         }
     }
 }

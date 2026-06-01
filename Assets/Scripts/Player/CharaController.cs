@@ -51,6 +51,7 @@ namespace OpenGS
 
         private List<KeyCommand> dashCommand = new List<KeyCommand>();
         private readonly InstantItemSlots instantItemSlots = new InstantItemSlots();
+        public event Action OnInstantItemsChanged;
         private MatchEventProvider matchEventProvider;
         private PlayerGrenadeComponent grenadeComponent;
 
@@ -191,6 +192,7 @@ namespace OpenGS
         public void OpenGrenade()
         {
             canOpenGranade = true;
+            TryPlayGeneralSound(EPlayerGeneralSound.OpenGrenade);
             Debug.Log("[CharaController] OpenGrenade");
         }
 
@@ -205,6 +207,7 @@ namespace OpenGS
 
             if (grenadeComponent != null)
             {
+                TryPlayGeneralSound(EPlayerGeneralSound.ThrowGrenade);
                 grenadeComponent.ThrowGrenade(1.0f);
                 canOpenGranade = false;
                 return;
@@ -372,6 +375,7 @@ namespace OpenGS
             }
 
             ApplyInstantItem(itemType);
+            TryPlayGeneralSound(EPlayerGeneralSound.TakeItem);
 
             if (matchEventProvider == null)
             {
@@ -379,6 +383,7 @@ namespace OpenGS
             }
 
             matchEventProvider?.UseInstantItem(this, itemType);
+            NotifyInstantItemsChanged();
         }
 
         GameObject CurrentWeapon()
@@ -390,6 +395,7 @@ namespace OpenGS
         private void ResetInstantItems()
         {
             instantItemSlots.SetFromEquippedItems(GetEquippedInstantItemTypes());
+            NotifyInstantItemsChanged();
         }
 
         private void EnsureInstantItemsLoaded()
@@ -397,7 +403,18 @@ namespace OpenGS
             if (instantItemSlots.Count() == 0)
             {
                 instantItemSlots.SetFromEquippedItems(GetEquippedInstantItemTypes());
+                NotifyInstantItemsChanged();
             }
+        }
+
+        public int GetInstantItemSlotCount()
+        {
+            return instantItemSlots.Count();
+        }
+
+        public EInstantItemType GetInstantItemType(int slotIndex)
+        {
+            return instantItemSlots.GetSlotType(slotIndex);
         }
 
         private void ApplyInstantItem(EInstantItemType itemType)
@@ -459,6 +476,11 @@ namespace OpenGS
             }
 
             return result;
+        }
+
+        private void NotifyInstantItemsChanged()
+        {
+            OnInstantItemsChanged?.Invoke();
         }
 
         public void FlipWeapon()

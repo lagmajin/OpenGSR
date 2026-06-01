@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System;
 using UnityEngine;
 using UniRx;
 using OpenGSCore;
@@ -23,6 +24,7 @@ namespace OpenGS
         readonly ReactiveProperty<float> maxBooster = new(DefaultMaxBooster);
         readonly ReactiveProperty<float> boosterPower = new(3.0f);
         readonly ReactiveProperty<int> grenadeCount = new(DefaultMaxGrenade);
+        public event Action GrenadeSlotsChanged;
         readonly EGrenadeType[] grenadeSlots = new EGrenadeType[DefaultMaxGrenade]
         {
             EGrenadeType.Empty,
@@ -353,6 +355,7 @@ namespace OpenGS
             }
 
             grenadeCount.Value = Mathf.Clamp(count, 0, DefaultMaxGrenade);
+            GrenadeSlotsChanged?.Invoke();
         }
 
         public void FullCombatRecovery()
