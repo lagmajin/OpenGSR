@@ -49,11 +49,13 @@ namespace OpenGS
         public void PlaySystemSound(ESystemSound sound) => _service.PlaySystemSound(sound);
         public void PlayMatchSound(EMatchSound sound) => _service.PlayMatchSound(sound);
         public void PlaySoundEffect(ESoundEffect sound, float volume = 1.0f) => _service.PlaySoundEffect(sound, volume);
+        public void PlayTakeItemSound(ETakeItemSound sound, float volume = 1.0f) => _service.PlayTakeItemSound(sound, volume);
         
         public void PlayShotSound(EWeaponType type) => _service.PlayWeaponShot(type);
         public void PlayReloadSound(EWeaponType type) => _service.PlayWeaponReload(type);
         public void PlayHitSound(EWeaponType type) => _service.PlayWeaponHit(type);
         public void PlayThrowGrenadeSound(EGrenadeType type) => _service.PlayGrenadeThrow(type);
+        public void PlayGrenadeExplosionSound(EGrenadeSound sound) => _service.PlayGrenadeExplosion(sound);
         public void PlayPlayerSound(EPlayerSound sound) => _service.PlayPlayerSound(sound);
 
         public bool ValidateSoundSetup(bool logWarnings = true) => _service.ValidateSoundSetup(logWarnings);

@@ -51,6 +51,7 @@
 - `docs/codex/playeragent-kinematic-movement.md`
 - `docs/codex/grenade-types.md`
 - `docs/codex/slot-definitions.md`
+- `docs/codex/weapon-stats.md`
 
 ## Notes
 

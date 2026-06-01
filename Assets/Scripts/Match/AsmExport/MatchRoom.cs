@@ -59,12 +59,6 @@ namespace OpenGS
             Id = id;
             RoomName = "New Match Room";
             Stage = new Stage();
-            // ClientNetworkManagerのインスタンスを検索（Awake/Start時が望ましい）
-            _networkManager = GameObject.FindFirstObjectByType<ClientNetworkManager>();
-            if (_networkManager == null)
-            {
-                Debug.LogError("[MatchRoom] ClientNetworkManager not found in scene!");
-            }
         }
 
         /// <summary>
@@ -236,6 +230,11 @@ namespace OpenGS
 
         private string ResolveLocalPlayerId()
         {
+            if (_networkManager == null)
+            {
+                _networkManager = GameObject.FindFirstObjectByType<ClientNetworkManager>();
+            }
+
             return _networkManager != null ? _networkManager.ClientPlayerId : string.Empty;
         }
     }

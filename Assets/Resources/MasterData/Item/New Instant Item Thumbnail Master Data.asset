@@ -15,18 +15,140 @@ MonoBehaviour:
   serializationData:
     SerializedFormat: 2
     SerializedBytes: 
-    ReferencedUnityObjects: []
+    ReferencedUnityObjects:
+    - {fileID: -6696367156115447763, guid: d0c4965127ddf2945aa300fac1015202, type: 3}
+    - {fileID: -871429905144235410, guid: d46a50970cda8ce48b4f08baeeb3710a, type: 3}
+    - {fileID: 5516182937319876557, guid: c6d571e3e69a1d447b1c8b07861ba845, type: 3}
+    - {fileID: -4476636999125366621, guid: ecd2b2b1bc204ea469f3dde191a5fa36, type: 3}
+    - {fileID: -8987120117987832005, guid: 0ced5a18258db014491f11baa8afb866, type: 3}
+    - {fileID: 541534666417888070, guid: 3c842aefb89f59943adadfdbc69129f0, type: 3}
+    - {fileID: 2802613891738482644, guid: 3a94ef42032f68040ab6b806fb040c90, type: 3}
     SerializedBytesString: 
     Prefab: {fileID: 0}
     PrefabModificationsReferencedUnityObjects: []
     PrefabModifications: []
     SerializationNodes:
     - Name: thumbnail
-      Entry: 6
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[OpenGSCore.EInstantItemType,
+        OpenGSCore],[UnityEngine.Sprite, UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[OpenGSCore.EInstantItemType,
+        OpenGSCore]], mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
       Data: 
-  normalGrenade: {fileID: 0}
-  powerGrenade: {fileID: 0}
-  fireGrenade: {fileID: 0}
-  mineGrenade: {fileID: 0}
-  magneticGrenade: {fileID: 0}
-  clusterGrenade: {fileID: 0}
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 7
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 3
+    - Name: $v
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 4
+    - Name: $v
+      Entry: 10
+      Data: 3
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 5
+    - Name: $v
+      Entry: 10
+      Data: 4
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 6
+    - Name: $v
+      Entry: 10
+      Data: 5
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 7
+    - Name: $v
+      Entry: 10
+      Data: 6
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  normalGrenade: {fileID: -6696367156115447763, guid: d0c4965127ddf2945aa300fac1015202,
+    type: 3}
+  powerGrenade: {fileID: -4476636999125366621, guid: ecd2b2b1bc204ea469f3dde191a5fa36,
+    type: 3}
+  fireGrenade: {fileID: -871429905144235410, guid: d46a50970cda8ce48b4f08baeeb3710a,
+    type: 3}
+  mineGrenade: {fileID: 2802613891738482644, guid: 3a94ef42032f68040ab6b806fb040c90,
+    type: 3}
+  magneticGrenade: {fileID: 541534666417888070, guid: 3c842aefb89f59943adadfdbc69129f0,
+    type: 3}
+  smokeGrenade: {fileID: 5516182937319876557, guid: c6d571e3e69a1d447b1c8b07861ba845,
+    type: 3}
+  clusterGrenade: {fileID: -8987120117987832005, guid: 0ced5a18258db014491f11baa8afb866,
+    type: 3}

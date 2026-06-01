@@ -31,6 +31,20 @@ namespace OpenGS
         }
 
         [Serializable]
+        public struct TakeItemSoundEntry
+        {
+            public ETakeItemSound sound;
+            public AudioClip clip;
+        }
+
+        [Serializable]
+        public struct PlayerSoundEntry
+        {
+            public EPlayerSound sound;
+            public AudioClip clip;
+        }
+
+        [Serializable]
         public struct WeaponSoundEntry
         {
             public EWeaponType weaponType;
@@ -46,19 +60,32 @@ namespace OpenGS
             public AudioClip throwClip;
         }
 
+        [Serializable]
+        public struct GrenadeExplosionSoundEntry
+        {
+            public EGrenadeSound sound;
+            public AudioClip clip;
+        }
+
         [SerializeField] private List<SystemSoundEntry> systemSounds = new List<SystemSoundEntry>();
         [SerializeField] private List<MatchSoundEntry> matchSounds = new List<MatchSoundEntry>();
         [SerializeField] private List<EffectSoundEntry> effectSounds = new List<EffectSoundEntry>();
+        [SerializeField] private List<TakeItemSoundEntry> takeItemSounds = new List<TakeItemSoundEntry>();
+        [SerializeField] private List<PlayerSoundEntry> playerSounds = new List<PlayerSoundEntry>();
         [SerializeField] private List<WeaponSoundEntry> weaponSounds = new List<WeaponSoundEntry>();
         [SerializeField] private List<GrenadeSoundEntry> grenadeSounds = new List<GrenadeSoundEntry>();
+        [SerializeField] private List<GrenadeExplosionSoundEntry> grenadeExplosionSounds = new List<GrenadeExplosionSoundEntry>();
 
         private static SoundMasterData instance;
 
         private readonly Dictionary<ESystemSound, AudioClip> systemMap = new Dictionary<ESystemSound, AudioClip>();
         private readonly Dictionary<EMatchSound, AudioClip> matchMap = new Dictionary<EMatchSound, AudioClip>();
         private readonly Dictionary<ESoundEffect, AudioClip> effectMap = new Dictionary<ESoundEffect, AudioClip>();
+        private readonly Dictionary<ETakeItemSound, AudioClip> takeItemMap = new Dictionary<ETakeItemSound, AudioClip>();
+        private readonly Dictionary<EPlayerSound, AudioClip> playerMap = new Dictionary<EPlayerSound, AudioClip>();
         private readonly Dictionary<EWeaponType, WeaponSoundEntry> weaponMap = new Dictionary<EWeaponType, WeaponSoundEntry>();
         private readonly Dictionary<EGrenadeType, AudioClip> grenadeThrowMap = new Dictionary<EGrenadeType, AudioClip>();
+        private readonly Dictionary<EGrenadeSound, AudioClip> grenadeExplosionMap = new Dictionary<EGrenadeSound, AudioClip>();
 
         public static SoundMasterData Instance()
         {
@@ -92,11 +119,20 @@ namespace OpenGS
             effectMap.Clear();
             foreach (var e in effectSounds) effectMap[e.sound] = e.clip;
 
+            takeItemMap.Clear();
+            foreach (var e in takeItemSounds) takeItemMap[e.sound] = e.clip;
+
+            playerMap.Clear();
+            foreach (var e in playerSounds) playerMap[e.sound] = e.clip;
+
             weaponMap.Clear();
             foreach (var e in weaponSounds) weaponMap[e.weaponType] = e;
 
             grenadeThrowMap.Clear();
             foreach (var e in grenadeSounds) grenadeThrowMap[e.grenadeType] = e.throwClip;
+
+            grenadeExplosionMap.Clear();
+            foreach (var e in grenadeExplosionSounds) grenadeExplosionMap[e.sound] = e.clip;
         }
 
         public AudioClip GetSystemSound(ESystemSound sound)
@@ -114,6 +150,18 @@ namespace OpenGS
         public AudioClip GetEffectSound(ESoundEffect sound)
         {
             TryGetEffectSound(sound, out var clip);
+            return clip;
+        }
+
+        public AudioClip GetTakeItemSound(ETakeItemSound sound)
+        {
+            TryGetTakeItemSound(sound, out var clip);
+            return clip;
+        }
+
+        public AudioClip GetPlayerSound(EPlayerSound sound)
+        {
+            TryGetPlayerSound(sound, out var clip);
             return clip;
         }
 
@@ -135,6 +183,20 @@ namespace OpenGS
         {
             if (effectMap.TryGetValue(sound, out clip) && clip != null) return true;
             clip = LoadFirst(GetEffectSoundPaths(sound));
+            return clip != null;
+        }
+
+        public bool TryGetTakeItemSound(ETakeItemSound sound, out AudioClip clip)
+        {
+            if (takeItemMap.TryGetValue(sound, out clip) && clip != null) return true;
+            clip = LoadFirst(GetTakeItemSoundPaths(sound));
+            return clip != null;
+        }
+
+        public bool TryGetPlayerSound(EPlayerSound sound, out AudioClip clip)
+        {
+            if (playerMap.TryGetValue(sound, out clip) && clip != null) return true;
+            clip = LoadFirst(GetPlayerSoundPaths(sound));
             return clip != null;
         }
 
@@ -168,6 +230,13 @@ namespace OpenGS
             return false;
         }
 
+        public bool TryGetGrenadeExplosionSound(EGrenadeSound sound, out AudioClip clip)
+        {
+            if (grenadeExplosionMap.TryGetValue(sound, out clip) && clip != null) return true;
+            clip = LoadFirst(GetGrenadeExplosionSoundPaths(sound));
+            return clip != null;
+        }
+
         public int PreloadAll()
         {
             RebuildMaps();
@@ -175,6 +244,9 @@ namespace OpenGS
             loadedCount += PreloadSystemSounds();
             loadedCount += PreloadMatchSounds();
             loadedCount += PreloadEffectSounds();
+            loadedCount += PreloadTakeItemSounds();
+            loadedCount += PreloadPlayerSounds();
+            loadedCount += PreloadGrenadeExplosionSounds();
             return loadedCount;
         }
 
@@ -208,6 +280,22 @@ namespace OpenGS
                 }
             }
 
+            foreach (ETakeItemSound sound in Enum.GetValues(typeof(ETakeItemSound)))
+            {
+                if (!TryGetTakeItemSound(sound, out var clip) || clip == null)
+                {
+                    warnings.Add($"Take item sound missing: {sound}");
+                }
+            }
+
+            foreach (EPlayerSound sound in Enum.GetValues(typeof(EPlayerSound)))
+            {
+                if (!TryGetPlayerSound(sound, out var clip) || clip == null)
+                {
+                    warnings.Add($"Player sound missing: {sound}");
+                }
+            }
+
             foreach (EWeaponType weaponType in Enum.GetValues(typeof(EWeaponType)))
             {
                 if (!TryGetWeaponShotSound(weaponType, out var shot) || shot == null)
@@ -231,6 +319,14 @@ namespace OpenGS
                 if (!TryGetGrenadeThrowSound(grenadeType, out var clip) || clip == null)
                 {
                     warnings.Add($"Grenade throw sound missing: {grenadeType}");
+                }
+            }
+
+            foreach (EGrenadeSound sound in Enum.GetValues(typeof(EGrenadeSound)))
+            {
+                if (!TryGetGrenadeExplosionSound(sound, out var clip) || clip == null)
+                {
+                    warnings.Add($"Grenade explosion sound missing: {sound}");
                 }
             }
 
@@ -344,6 +440,50 @@ namespace OpenGS
             }
         }
 
+        private static string[] GetTakeItemSoundPaths(ETakeItemSound sound)
+        {
+            switch (sound)
+            {
+                case ETakeItemSound.TakePowerUpItemSound: return new[] { "Sound/Item/sfx_take_offense" };
+                case ETakeItemSound.TakeDefenseUpItemSound: return new[] { "Sound/Item/sfx_take_defence" };
+                case ETakeItemSound.TakeSpeedUpItemSound: return new[] { "Sound/Item/sfx_take_speedup" };
+                case ETakeItemSound.TakeHealItemSound: return new[] { "Sound/Item/sfx_take_medikit", "Sound/Item/sfx_take_immortal" };
+                case ETakeItemSound.TakeRandomItemSound: return new[] { "Sound/Item/sfx_take_weapon", "Sound/Item/sfx_take_grenade" };
+                default: return Array.Empty<string>();
+            }
+        }
+
+        private static string[] GetPlayerSoundPaths(EPlayerSound sound)
+        {
+            switch (sound)
+            {
+                case EPlayerSound.DamageFemale1: return new[] { "Sound/Player/sfx_pl_hit01", "Sound/Player/sfx_pl_deathF01" };
+                case EPlayerSound.DamageMale1: return new[] { "Sound/Player/sfx_pl_hit01", "Sound/Player/sfx_pl_deathM01" };
+                case EPlayerSound.DeathFemale1: return new[] { "Sound/Player/sfx_pl_deathF01" };
+                case EPlayerSound.DeathFemale2: return new[] { "Sound/Player/sfx_pl_deathF02" };
+                case EPlayerSound.DeathFemale3: return new[] { "Sound/Player/sfx_pl_deathF03" };
+                case EPlayerSound.DeathFemale4: return new[] { "Sound/Player/sfx_pl_deathF04" };
+                case EPlayerSound.DeathMale1: return new[] { "Sound/Player/sfx_pl_deathM01" };
+                case EPlayerSound.DeathMale2: return new[] { "Sound/Player/sfx_pl_deathM02" };
+                case EPlayerSound.DeathMale3: return new[] { "Sound/Player/sfx_pl_deathM03" };
+                case EPlayerSound.DeathMale4: return new[] { "Sound/Player/sfx_pl_deathM04" };
+                default: return Array.Empty<string>();
+            }
+        }
+
+        private static string[] GetGrenadeExplosionSoundPaths(EGrenadeSound sound)
+        {
+            switch (sound)
+            {
+                case EGrenadeSound.ExplosionGrenade:
+                    return new[] { "Sound/Weapon/_grenade_explode", "Sound/Weapon/_gre_explode", "Sound/Weapon/_grenade_cluster" };
+                case EGrenadeSound.ExplosionFireGrenade:
+                    return new[] { "Sound/Item/sfx_granade_fire", "Sound/Weapon/_gre_explode" };
+                default:
+                    return Array.Empty<string>();
+            }
+        }
+
         private int PreloadSystemSounds()
         {
             var loadedCount = 0;
@@ -376,6 +516,42 @@ namespace OpenGS
                 if (effectMap.TryGetValue(sound, out var existing) && existing != null) continue;
                 var loaded = LoadFirst(GetEffectSoundPaths(sound));
                 if (loaded != null) { effectMap[sound] = loaded; loadedCount++; }
+            }
+            return loadedCount;
+        }
+
+        private int PreloadTakeItemSounds()
+        {
+            var loadedCount = 0;
+            foreach (ETakeItemSound sound in Enum.GetValues(typeof(ETakeItemSound)))
+            {
+                if (takeItemMap.TryGetValue(sound, out var existing) && existing != null) continue;
+                var loaded = LoadFirst(GetTakeItemSoundPaths(sound));
+                if (loaded != null) { takeItemMap[sound] = loaded; loadedCount++; }
+            }
+            return loadedCount;
+        }
+
+        private int PreloadPlayerSounds()
+        {
+            var loadedCount = 0;
+            foreach (EPlayerSound sound in Enum.GetValues(typeof(EPlayerSound)))
+            {
+                if (playerMap.TryGetValue(sound, out var existing) && existing != null) continue;
+                var loaded = LoadFirst(GetPlayerSoundPaths(sound));
+                if (loaded != null) { playerMap[sound] = loaded; loadedCount++; }
+            }
+            return loadedCount;
+        }
+
+        private int PreloadGrenadeExplosionSounds()
+        {
+            var loadedCount = 0;
+            foreach (EGrenadeSound sound in Enum.GetValues(typeof(EGrenadeSound)))
+            {
+                if (grenadeExplosionMap.TryGetValue(sound, out var existing) && existing != null) continue;
+                var loaded = LoadFirst(GetGrenadeExplosionSoundPaths(sound));
+                if (loaded != null) { grenadeExplosionMap[sound] = loaded; loadedCount++; }
             }
             return loadedCount;
         }

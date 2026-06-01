@@ -55,6 +55,7 @@ namespace OpenGS
 
             if (prefab != null && transform.childCount == 0)
             {
+                Debug.Log($"[ItemSpawnPoint] SpawnItem: {FieldItemVisualResolver.GetDisplayName(type)} ({type})");
                 var item = Instantiate(prefab, transform);
                 var pos = transform.position;
                 pos.y += heightOffset;

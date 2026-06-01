@@ -19,12 +19,14 @@ namespace OpenGS
         void PlaySystemSound(ESystemSound sound);
         void PlayMatchSound(EMatchSound sound);
         void PlaySoundEffect(ESoundEffect sound, float volume = 1.0f);
+        void PlayTakeItemSound(ETakeItemSound sound, float volume = 1.0f);
 
         // 戦闘・アクション音
         void PlayWeaponShot(EWeaponType type, float pitch = 1.0f);
         void PlayWeaponReload(EWeaponType type, float pitch = 1.0f);
         void PlayWeaponHit(EWeaponType type, float pitch = 1.0f);
         void PlayGrenadeThrow(EGrenadeType type, float pitch = 1.0f);
+        void PlayGrenadeExplosion(EGrenadeSound sound, float pitch = 1.0f);
         void PlayPlayerSound(EPlayerSound sound);
 
         // 汎用再生

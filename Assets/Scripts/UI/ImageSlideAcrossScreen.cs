@@ -5,7 +5,9 @@ using UnityEngine.UI;
 namespace OpenGS
 {
     /// <summary>
-    /// UI Image を左外 -> 中央 -> 右外へゆっくり移動させて消す汎用演出。
+    /// UI Image の表示演出。
+    /// - 通常モード: 左外 -> 中央 -> 右外
+    /// - 中央スタートモード: 中央表示 -> 待機 -> 右外
     /// 必要ならフェードも付けられる。
     /// </summary>
     [DisallowMultipleComponent]
@@ -19,6 +21,7 @@ namespace OpenGS
 
         [Header("Playback")]
         [SerializeField] private bool playOnEnable = false;
+        [SerializeField] private bool startAtCenter = true;
 
         [Header("Anchored Positions")]
         [SerializeField] private Vector2 centerAnchoredPosition;
@@ -91,21 +94,39 @@ namespace OpenGS
             var startAnchoredPosition = centerAnchoredPosition + startOffset;
             var endAnchoredPosition = centerAnchoredPosition + endOffset;
 
-            targetRect.anchoredPosition = startAnchoredPosition;
-            SetAlpha(useFade ? 0f : 1f);
+            currentSequence = DOTween.Sequence().SetLink(gameObject);
 
-            currentSequence = DOTween.Sequence()
-                .SetLink(gameObject)
-                .Append(MoveTo(centerAnchoredPosition, enterDuration, enterEase));
-
-            if (useFade)
+            if (startAtCenter)
             {
-                currentSequence.Join(FadeTo(1f, Mathf.Min(fadeDuration, enterDuration)));
-            }
+                targetRect.anchoredPosition = centerAnchoredPosition;
+                SetAlpha(useFade ? 0f : 1f);
 
-            currentSequence
-                .AppendInterval(holdDuration)
-                .Append(MoveTo(endAnchoredPosition, exitDuration, exitEase));
+                if (useFade)
+                {
+                    currentSequence.Append(FadeTo(1f, fadeDuration));
+                }
+
+                currentSequence
+                    .AppendInterval(holdDuration)
+                    .Append(MoveTo(endAnchoredPosition, exitDuration, exitEase));
+            }
+            else
+            {
+                targetRect.anchoredPosition = startAnchoredPosition;
+                SetAlpha(useFade ? 0f : 1f);
+
+                currentSequence
+                    .Append(MoveTo(centerAnchoredPosition, enterDuration, enterEase));
+
+                if (useFade)
+                {
+                    currentSequence.Join(FadeTo(1f, Mathf.Min(fadeDuration, enterDuration)));
+                }
+
+                currentSequence
+                    .AppendInterval(holdDuration)
+                    .Append(MoveTo(endAnchoredPosition, exitDuration, exitEase));
+            }
 
             if (useFade)
             {

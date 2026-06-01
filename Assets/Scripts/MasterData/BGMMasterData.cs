@@ -56,5 +56,61 @@ namespace OpenGS
             }
             return false;
         }
+
+        public int PreloadAll()
+        {
+            RebuildMap();
+
+            var loadedCount = 0;
+            foreach (EBgm bgm in Enum.GetValues(typeof(EBgm)))
+            {
+                if (bgm == EBgm.None)
+                {
+                    continue;
+                }
+
+                if (bgmMap.TryGetValue(bgm, out var existing) && existing != null)
+                {
+                    continue;
+                }
+
+                if (TryGetBGMByName(bgm.ToString(), out var loaded) && loaded != null)
+                {
+                    bgmMap[bgm] = loaded;
+                    loadedCount++;
+                }
+            }
+
+            return loadedCount;
+        }
+
+        public bool ValidateAllMappings(bool logWarnings = true)
+        {
+            RebuildMap();
+
+            var warnings = new List<string>();
+            foreach (EBgm bgm in Enum.GetValues(typeof(EBgm)))
+            {
+                if (bgm == EBgm.None)
+                {
+                    continue;
+                }
+
+                if (!TryGetBGM(bgm, out var clip) || clip == null)
+                {
+                    warnings.Add($"BGM missing: {bgm}");
+                }
+            }
+
+            if (logWarnings)
+            {
+                foreach (var warning in warnings)
+                {
+                    Debug.LogWarning($"[BGMMasterData] {warning}");
+                }
+            }
+
+            return warnings.Count == 0;
+        }
     }
 }

@@ -45,6 +45,7 @@ namespace OpenGS
                 nextItem = eFieldItemType.FlameThrower;
             }
 
+            Debug.Log($"[WeaponItemSpawnPoint] Initial item: {FieldItemVisualResolver.GetDisplayName(nextItem ?? eFieldItemType.None)}");
             if (startImmidietry)
             {
                 StartWorking();
@@ -59,6 +60,7 @@ namespace OpenGS
 
                 if (gameObject.transform.childCount == 0)
                 {
+                    Debug.Log("[WeaponItemSpawnPoint] SpawnItem: FlameThrower");
 
                     var obj = Instantiate(FlameThrowerPrefab, gameObject.transform.position, Quaternion.identity);
 
@@ -72,6 +74,7 @@ namespace OpenGS
             {
                 if (gameObject.transform.childCount == 0)
                 {
+                    Debug.Log("[WeaponItemSpawnPoint] SpawnItem: RocketLauncher");
 
                     var obj = Instantiate(RocketLauncherPrefab, gameObject.transform.position, Quaternion.identity);
 

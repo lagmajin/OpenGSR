@@ -119,25 +119,18 @@ namespace OpenGS
         /// </summary>
         private void LoadCharacterData()
         {
-            // Resourcesフォルダからキャラクター画像を読み込む
-            // 実際の実装では、Resources.LoadやAddressablesを使用
             foreach (var character in availableCharacters)
             {
-                // サムネイル画像
-                var thumbnailPath = $"Characters/{character}_Thumbnail";
-                var thumbnail = Resources.Load<Sprite>(thumbnailPath);
+                var thumbnail = CharacterVisualResolver.GetThumbnail(character);
                 if (thumbnail != null)
                 {
                     characterThumbnails[character] = thumbnail;
                 }
 
-                // プレビュー画像は基本的にサムネイルを拡大表示する
-                // もしサムネイルが無い場合だけ従来の大画像を使う
                 Sprite previewImage = thumbnail;
                 if (previewImage == null)
                 {
-                    var largeImagePath = $"Characters/{character}_Large";
-                    previewImage = Resources.Load<Sprite>(largeImagePath);
+                    previewImage = CharacterVisualResolver.GetPortrait(character);
                 }
 
                 if (previewImage != null)
@@ -331,23 +324,7 @@ namespace OpenGS
         /// </summary>
         private string GetCharacterName(EPlayerCharacter character)
         {
-            switch (character)
-            {
-                case EPlayerCharacter.Ami: return "アミ";
-                case EPlayerCharacter.Yumi: return "ユミ";
-                case EPlayerCharacter.Jack: return "ジャック";
-                case EPlayerCharacter.Jackle: return "ジャックル";
-                case EPlayerCharacter.Misty: return "ミスティ";
-                case EPlayerCharacter.Liu: return "リュウ";
-                case EPlayerCharacter.Mary: return "メアリー";
-                case EPlayerCharacter.Wolf: return "ウルフ";
-                case EPlayerCharacter.Wyvern: return "ワイバーン";
-                case EPlayerCharacter.Seoul: return "ソウル";
-                case EPlayerCharacter.LittleJ: return "リトルJ";
-                case EPlayerCharacter.Shue: return "シュウ";
-                case EPlayerCharacter.Swaltz: return "スワルツ";
-                default: return character.ToString();
-            }
+            return CharacterVisualResolver.GetDisplayName(character);
         }
 
         /// <summary>
@@ -355,23 +332,7 @@ namespace OpenGS
         /// </summary>
         private string GetCharacterDescription(EPlayerCharacter character)
         {
-            switch (character)
-            {
-                case EPlayerCharacter.Ami: return "バランス型のキャラクター";
-                case EPlayerCharacter.Yumi: return "スピードに優れたキャラクター";
-                case EPlayerCharacter.Jack: return "パワー型のキャラクター";
-                case EPlayerCharacter.Jackle: return "防御に優れたキャラクター";
-                case EPlayerCharacter.Misty: return "テクニック型のキャラクター";
-                case EPlayerCharacter.Liu: return "攻撃型のキャラクター";
-                case EPlayerCharacter.Mary: return "サポート型のキャラクター";
-                case EPlayerCharacter.Wolf: return "アグレッシブなキャラクター";
-                case EPlayerCharacter.Wyvern: return "エアリアル戦闘に優れたキャラクター";
-                case EPlayerCharacter.Seoul: return "バランス型のキャラクター";
-                case EPlayerCharacter.LittleJ: return "小回りの利くキャラクター";
-                case EPlayerCharacter.Shue: return "スピード型のキャラクター";
-                case EPlayerCharacter.Swaltz: return "テクニカルなキャラクター";
-                default: return "";
-            }
+            return CharacterVisualResolver.GetDescription(character);
         }
 
         /// <summary>

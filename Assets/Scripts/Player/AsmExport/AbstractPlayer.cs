@@ -369,12 +369,14 @@ namespace OpenGS
 
         public virtual void IncreaseAttack(float sec)
         {
+            PlayGeneralSound(EPlayerGeneralSound.TakeItem);
             SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakePowerUpItemEffect : null);
             StartCoroutine(IncreaseAttackCounter(sec));
         }
 
         public virtual void IncreaseDefense(float sec)
         {
+            PlayGeneralSound(EPlayerGeneralSound.TakeItem);
             SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakeDefenseUpItemEffect : null);
             StartCoroutine(IncreaseDefenseCounter(sec));
         }
@@ -386,12 +388,14 @@ namespace OpenGS
 
         public virtual void SpeedUp(float sec)
         {
+            PlayGeneralSound(EPlayerGeneralSound.TakeItem);
             SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakeSpeedUpItemEffect : null);
             StartCoroutine(SpeedUpCounter(sec));
         }
 
         public virtual void RefillGrenade()
         {
+            PlayGeneralSound(EPlayerGeneralSound.TakeGrenade);
             Status?.RefillGrenade();
         }
 
@@ -402,6 +406,7 @@ namespace OpenGS
                 return;
             }
 
+            PlayGeneralSound(EPlayerGeneralSound.TakeGrenade);
             Status.RefillGrenade(type, amount);
         }
 
@@ -426,6 +431,7 @@ namespace OpenGS
 
             isJump = true;
             rigidbody2D.AddForce(Vector2.up * jumpCurve.Evaluate(1.0f) * 10f, ForceMode2D.Impulse);
+            PlayGeneralSound(EPlayerGeneralSound.JumpStart);
         }
 
         public bool Sitting() => isSitting;
@@ -481,6 +487,7 @@ namespace OpenGS
             {
                 if (Status.UseGrenade())
                 {
+                    PlayGeneralSound(EPlayerGeneralSound.TakeGrenade);
                     Debug.Log($"[{GetType().Name}] Grenade used via base UseItem");
                     return;
                 }
@@ -495,6 +502,7 @@ namespace OpenGS
 
         public virtual void OnDropWeapon()
         {
+            PlayGeneralSound(EPlayerGeneralSound.DropItem);
             weaponSlots?.DropCurrentWeapon();
         }
 
@@ -524,6 +532,38 @@ namespace OpenGS
         public void AddDamageAndForce2Helper(float damage, Vector2 point)
         {
             AddDamageAndForce(damage, point, 1.0f);
+        }
+
+        protected void PlayGeneralSound(EPlayerGeneralSound sound, float volume = 1.0f, float pitch = 1.0f)
+        {
+            TryPlayGeneralSound(sound, volume, pitch);
+        }
+
+        public bool TryPlayGeneralSound(EPlayerGeneralSound sound, float volume = 1.0f, float pitch = 1.0f)
+        {
+            var masterData = ResolveGeneralSoundMasterData();
+            if (masterData == null)
+            {
+                return false;
+            }
+
+            if (!masterData.TryGetSound(sound, out var clip) || clip == null)
+            {
+                return false;
+            }
+
+            OpenGS.SoundManager.Instance.PlayOneShotSafe(clip, volume, pitch, $"{GetType().Name}:{sound}");
+            return true;
+        }
+
+        protected PlayerGeneralSoundMasterData ResolveGeneralSoundMasterData()
+        {
+            if (GeneralSoundMasterData != null)
+            {
+                return GeneralSoundMasterData;
+            }
+
+            return Resources.Load<PlayerGeneralSoundMasterData>("MasterData/Sound/Players/PlayerGeneralSound");
         }
 
         // ─── コルーチン ──────────────────────────────────────────────

@@ -17,5 +17,5 @@ MonoBehaviour:
   explosionTime: 2
   GrenadePrefab: {fileID: 7579011111111111111, guid: 7f3c2e8e9b2f4d6f8e5b7b1b3b2f9a02,
     type: 3}
-  slotImage: {fileID: 0}
+  slotImage: {fileID: -6592128352937486937, guid: f9871f42c6bc63240a40989d6d615bdd, type: 3}
   ChildClusterGrenade: {fileID: 0}

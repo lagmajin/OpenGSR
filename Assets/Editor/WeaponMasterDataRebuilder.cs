@@ -11,6 +11,7 @@ namespace OpenGS.EditorTools
     public static class WeaponMasterDataRebuilder
     {
         private const string WeaponDataFolder = "Assets/Resources/MasterData/Weapon";
+        private const string WeaponThumbnailPath = "Assets/Resources/MasterData/Weapon/WeaponThumbnail.asset";
         private static readonly string[] SelectionFolders = { "WeaponSelect", "Weapon", "Archive/Weapon" };
         private static readonly string[] GameFolders = { "Weapon/MiniWeapon", "Weapon", "Archive/Weapon", "WeaponSelect" };
         private static readonly string[] SilhouetteFolders = { "Archive/Weapon", "Weapon/MiniWeapon", "Weapon", "WeaponSelect" };
@@ -83,12 +84,63 @@ namespace OpenGS.EditorTools
                 updatedCount++;
             }
 
+            RebuildWeaponThumbnail(spriteIndex);
+
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
 
             Debug.Log(
                 $"[WeaponMasterDataRebuilder] Rebuilt {updatedCount} weapon master data assets. " +
                 $"Created {createdCount}, missing-sprite entries {missingSpriteCount}.");
+        }
+
+        private static void RebuildWeaponThumbnail(Dictionary<string, List<SpriteRecord>> spriteIndex)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<UnityEngine.Object>(WeaponThumbnailPath);
+            if (asset == null)
+            {
+                Debug.LogWarning($"[WeaponMasterDataRebuilder] WeaponThumbnail asset not found at {WeaponThumbnailPath}.");
+                return;
+            }
+
+            var serializedObject = new SerializedObject(asset);
+            var assignments = new (string fieldName, Sprite sprite)[]
+            {
+                ("noneThumbnail", ResolveSprite(new[] { "UI_W_None", "Weapon_Empty", "None" }, new[] { "Weapon", "Archive/Weapon", "WeaponSelect" }, spriteIndex)),
+                ("ak47Thumbnail", ResolveSprite(new[] { "AK47", "UI_W_ak47", "Weapon_ak47" }, SelectionFolders, spriteIndex)),
+                ("awpThumbnail", ResolveSprite(new[] { "AWP", "UI_W_AWP", "Weapon_AWP" }, SelectionFolders, spriteIndex)),
+                ("m16Thumbnail", ResolveSprite(new[] { "M16", "M16A1", "M16A2", "UI_W_M16A1", "UI_W_M16A2" }, SelectionFolders, spriteIndex)),
+                ("psg1Thumbnail", ResolveSprite(new[] { "PSG1", "PSG-1", "UI_W_PSG-1", "UI_W_PSG1" }, SelectionFolders, spriteIndex)),
+                ("bubbleGunThumbnail", ResolveSprite(new[] { "BubbleGun", "Bubble", "UI_W_Bubble_Gun", "UI_W_Bubble" }, SelectionFolders, spriteIndex)),
+                ("f2000Thumbnail", ResolveSprite(new[] { "F2000", "UI_W_F2000", "Weapon_F2000" }, SelectionFolders, spriteIndex)),
+                ("chirstmasGunThumbnail", ResolveSprite(new[] { "ChristmasGun", "ChirstmasGun", "xmas", "UI_W_xmas", "UI_W_XMas" }, SelectionFolders, spriteIndex)),
+                ("fnp90Thumbnail", ResolveSprite(new[] { "FnP90", "FNP90", "FN_P90", "P-90", "P90", "UI_W_P-90" }, SelectionFolders, spriteIndex)),
+            };
+
+            var updated = 0;
+            foreach (var (fieldName, sprite) in assignments)
+            {
+                var property = serializedObject.FindProperty(fieldName);
+                if (property == null || property.propertyType != SerializedPropertyType.ObjectReference)
+                {
+                    continue;
+                }
+
+                if (property.objectReferenceValue == sprite)
+                {
+                    continue;
+                }
+
+                property.objectReferenceValue = sprite;
+                updated++;
+            }
+
+            if (updated > 0)
+            {
+                serializedObject.ApplyModifiedPropertiesWithoutUndo();
+                EditorUtility.SetDirty(asset);
+                Debug.Log($"[WeaponMasterDataRebuilder] Updated {updated} fields on WeaponThumbnail.");
+            }
         }
 
         private static Dictionary<string, List<SpriteRecord>> BuildSpriteIndex()

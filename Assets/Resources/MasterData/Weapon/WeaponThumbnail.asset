@@ -24,12 +24,12 @@ MonoBehaviour:
     - Name: thumbnail
       Entry: 6
       Data: 
-  noneThumbnail: {fileID: 0}
-  ak47Thumbnail: {fileID: 0}
-  awpThumbnail: {fileID: 0}
-  m16Thumbnail: {fileID: 0}
-  psg1Thumbnail: {fileID: 0}
-  bubbleGunThumbnail: {fileID: 0}
-  f2000Thumbnail: {fileID: 0}
-  chirstmasGunThumbnail: {fileID: 0}
-  fnp90Thumbnail: {fileID: 0}
+  noneThumbnail: {fileID: 2568099927076960159, guid: 9902e266527f3c7478db6e9972876ab6, type: 3}
+  ak47Thumbnail: {fileID: 3026279083336393700, guid: f39eb58179faacf4eae25a675d5d5025, type: 3}
+  awpThumbnail: {fileID: -3018283909314946600, guid: 6e5cf4c5d0454d0408d54bf54e87f0b5, type: 3}
+  m16Thumbnail: {fileID: 679663307156755100, guid: 859de79218a80a24fa19894e0a7267bb, type: 3}
+  psg1Thumbnail: {fileID: 8235528489533056000, guid: d1dde71f8fb0a2a42ab6c8aede69187c, type: 3}
+  bubbleGunThumbnail: {fileID: 2300499169559602200, guid: 04ee32ec5c7f6d04d9c174f9c24eb496, type: 3}
+  f2000Thumbnail: {fileID: 2300499169559602200, guid: 04ee32ec5c7f6d04d9c174f9c24eb496, type: 3}
+  chirstmasGunThumbnail: {fileID: -6973286838389805000, guid: f2b1d33c7cf57d24fa1af4e30d2f92b3, type: 3}
+  fnp90Thumbnail: {fileID: -593202009162973700, guid: ad8b24403c1ad9549be1f70138732a35, type: 3}

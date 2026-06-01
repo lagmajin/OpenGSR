@@ -102,6 +102,20 @@ namespace OpenGS
 
     }
 
+    public enum EPlayerGeneralSound
+    {
+        JumpStart = 0,
+        JumpEnd,
+        BoosterStart,
+        BoosterLoop,
+        BoosterEnd,
+        TakeItem,
+        TakeGrenade,
+        DropItem,
+        OpenGrenade,
+        ThrowGrenade
+    }
+
     public enum EGrenadeSound
     {
         ExplosionGrenade,

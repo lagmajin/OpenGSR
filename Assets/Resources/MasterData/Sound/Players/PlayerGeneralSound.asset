@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: PlayerGeneralSound
   m_EditorClassIdentifier: 
   jumpStartSound: {fileID: 8300000, guid: 51aa5eabfb386bf44a9944c1c0bafcb3, type: 3}
-  jumpEndSound: {fileID: 0}
-  boosterStartSound: {fileID: 0}
-  boosterSound: {fileID: 0}
-  boosterEndSound: {fileID: 0}
-  takeItemSound: {fileID: 0}
-  takeGrenadeSound: {fileID: 0}
-  dropItemSound: {fileID: 0}
-  openGrenadeSound: {fileID: 0}
-  throwGrenadeSound: {fileID: 0}
+  jumpEndSound: {fileID: 8300000, guid: 9717f6f8a2b70f54ea857a366b218a35, type: 3}
+  boosterStartSound: {fileID: 8300000, guid: 795375d4587a63d43ad23171b2d4acc0, type: 3}
+  boosterSound: {fileID: 8300000, guid: 6b2e9e4fddebfa94298c51bc01e89731, type: 3}
+  boosterEndSound: {fileID: 8300000, guid: 58962b837379bab47b83e7601788c41b, type: 3}
+  takeItemSound: {fileID: 8300000, guid: c4b2c897450feca429f002d8c7d1f3f1, type: 3}
+  takeGrenadeSound: {fileID: 8300000, guid: 6418113f157533447b4e1015ae70ab5a, type: 3}
+  dropItemSound: {fileID: 8300000, guid: c4b2c897450feca429f002d8c7d1f3f1, type: 3}
+  openGrenadeSound: {fileID: 8300000, guid: 594683bebc921fc4da286a70fe3c1aaf, type: 3}
+  throwGrenadeSound: {fileID: 8300000, guid: 70354214a645e5743a757546f98f8b3a, type: 3}

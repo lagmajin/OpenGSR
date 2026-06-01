@@ -134,10 +134,11 @@ namespace OpenGS
 
             var item = ScriptableObject.CreateInstance<ShopItemData>();
             item.id = id;
-            item.itemName = instantItem.ToString();
-            item.description = $"Instant item: {instantItem}";
+            item.itemName = InstantItemVisualResolver.GetDisplayName(instantItem);
+            item.description = $"Instant item: {item.itemName}";
             item.price = GetInstantItemPrice(instantItem);
             item.category = EShopCategory.InstantItem;
+            item.icon = InstantItemVisualResolver.GetIcon(instantItem);
             item.itemColor = Color.white;
             itemCache[id] = item;
             return item;
@@ -171,10 +172,11 @@ namespace OpenGS
 
             var item = ScriptableObject.CreateInstance<ShopItemData>();
             item.id = id;
-            item.itemName = GetCharacterDisplayName(character);
-            item.description = $"Playable character: {character}";
+            item.itemName = CharacterVisualResolver.GetDisplayName(character);
+            item.description = CharacterVisualResolver.GetDescription(character);
             item.price = character == EPlayerCharacter.Misty ? 0 : GetCharacterPrice(character);
             item.category = EShopCategory.Character;
+            item.icon = CharacterVisualResolver.GetShopIcon(character);
             item.itemColor = Color.white;
             itemCache[id] = item;
             return item;
@@ -217,25 +219,5 @@ namespace OpenGS
             };
         }
 
-        private static string GetCharacterDisplayName(EPlayerCharacter character)
-        {
-            return character switch
-            {
-                EPlayerCharacter.Ami => "アミ",
-                EPlayerCharacter.Yumi => "ユミ",
-                EPlayerCharacter.Jack => "ジャック",
-                EPlayerCharacter.Jackle => "ジャックル",
-                EPlayerCharacter.Misty => "ミスティ",
-                EPlayerCharacter.Liu => "リュウ",
-                EPlayerCharacter.Mary => "メアリー",
-                EPlayerCharacter.Wolf => "ウルフ",
-                EPlayerCharacter.Wyvern => "ワイバーン",
-                EPlayerCharacter.Seoul => "ソウル",
-                EPlayerCharacter.LittleJ => "リトルJ",
-                EPlayerCharacter.Shue => "シュウ",
-                EPlayerCharacter.Swaltz => "スワルツ",
-                _ => character.ToString()
-            };
-        }
     }
 }

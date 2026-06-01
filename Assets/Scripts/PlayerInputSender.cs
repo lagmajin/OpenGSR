@@ -17,7 +17,7 @@ namespace OpenGS
             _networkManager = FindFirstObjectByType<ClientNetworkManager>();
             if (_networkManager == null)
             {
-                Debug.LogError("[PlayerInputSender] ClientNetworkManager not found in scene!");
+                Debug.LogWarning("[PlayerInputSender] ClientNetworkManager not found in scene. Input sending is disabled in this scene.");
                 enabled = false;
                 return;
             }

@@ -176,23 +176,7 @@ namespace OpenGS
         /// </summary>
         private string GetCharacterName(EPlayerCharacter character)
         {
-            switch (character)
-            {
-                case EPlayerCharacter.Ami: return "アミ";
-                case EPlayerCharacter.Yumi: return "ユミ";
-                case EPlayerCharacter.Jack: return "ジャック";
-                case EPlayerCharacter.Jackle: return "ジャックル";
-                case EPlayerCharacter.Misty: return "ミスティ";
-                case EPlayerCharacter.Liu: return "リュウ";
-                case EPlayerCharacter.Mary: return "メアリー";
-                case EPlayerCharacter.Wolf: return "ウルフ";
-                case EPlayerCharacter.Wyvern: return "ワイバーン";
-                case EPlayerCharacter.Seoul: return "ソウル";
-                case EPlayerCharacter.LittleJ: return "リトルJ";
-                case EPlayerCharacter.Shue: return "シュウ";
-                case EPlayerCharacter.Swaltz: return "スワルツ";
-                default: return character.ToString();
-            }
+            return CharacterVisualResolver.GetDisplayName(character);
         }
     }
 }

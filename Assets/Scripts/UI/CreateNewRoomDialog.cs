@@ -97,7 +97,7 @@ namespace OpenGS
             {
                 gameModeDropdown.ClearOptions();
                 var gameModes = OpenGSCore.GameMode.AllGameMode();
-                var modeOptions = gameModes.Select(m => GetGameModeDisplayName(m)).ToList();
+                var modeOptions = gameModes.Select(GameModeVisualResolver.GetDisplayName).ToList();
                 gameModeDropdown.AddOptions(modeOptions);
                 
                 // デフォルトでTeamDeathMatchを選択
@@ -313,7 +313,7 @@ namespace OpenGS
         {
             var summary = new List<string>
             {
-                $"Mode: {GetGameModeDisplayName(selectedGameMode)}",
+                $"Mode: {GameModeVisualResolver.GetDisplayName(selectedGameMode)}",
                 $"Players: {maxPlayer}",
                 $"Password: {(isPasswordEnabled && !string.IsNullOrEmpty(password) ? "Enabled" : "None")}",
                 $"Team Balance: {(teamBalance ? "On" : "Off")}"
@@ -565,37 +565,6 @@ namespace OpenGS
         /// <summary>
         /// ゲームモードの表示名を取得する
         /// </summary>
-        private string GetGameModeDisplayName(EGameMode mode)
-        {
-            switch (mode)
-            {
-                case EGameMode.DeathMatch:
-                    return "デスマッチ (DM)";
-                case EGameMode.TeamDeathMatch:
-                    return "チームデスマッチ (TDM)";
-                case EGameMode.Survival:
-                    return "サバイバル (SUV)";
-                case EGameMode.TeamSurvival:
-                    return "チームサバイバル (TSUV)";
-                case EGameMode.CaptureTheFlag:
-                    return "キャプチャー・ザ・フラッグ (CTF)";
-                case EGameMode.OneShotKill:
-                    return "ワンショットキル";
-                case EGameMode.ArmsRace:
-                    return "アームズレース";
-                case EGameMode.Sniper:
-                    return "スナイパー";
-                case EGameMode.TowerMatch:
-                    return "タワーマッチ";
-                case EGameMode.Practice:
-                    return "プラクティス";
-                case EGameMode.FreeStyle:
-                    return "フリースタイル";
-                default:
-                    return mode.ToString();
-            }
-        }
-
         /// <summary>
         /// 現在の設定をJSON形式で取得する（デバッグ用）
         /// </summary>

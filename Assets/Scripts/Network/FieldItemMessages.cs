@@ -100,9 +100,9 @@ namespace OpenGS
                 string itemId = json["ItemId"]?.ToString() ?? "";
                 string itemTypeStr = json["ItemType"]?.ToString() ?? "PowerUp";
 
-                if (!System.Enum.TryParse<eFieldItemType>(itemTypeStr, out var itemType))
+                if (!FieldItemVisualResolver.TryParseLegacy(itemTypeStr, out var itemType))
                 {
-                    itemType = eFieldItemType.PowerUp;
+                    itemType = eFieldItemType.PowerUpItem;
                 }
 
                 float x = json["PositionX"]?.Value<float>() ?? 0;
@@ -146,7 +146,7 @@ namespace OpenGS
     {
         [Header("Field Item Info")]
         [SerializeField] private string _itemId = "";
-        [SerializeField] private eFieldItemType _itemType = eFieldItemType.PowerUp;
+        [SerializeField] private eFieldItemType _itemType = eFieldItemType.PowerUpItem;
 
         private FieldItemNetworkManager _manager;
         private bool _isInitialized = false;

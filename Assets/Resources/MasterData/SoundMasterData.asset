@@ -37,6 +37,38 @@ MonoBehaviour:
     clip: {fileID: 8300000, guid: 6e4e1c61df6572646a1a7f5e4b4a9a88, type: 3}
   - sound: 1
     clip: {fileID: 8300000, guid: 12463d8b9b200ce458d288afd2a6bc3f, type: 3}
+  takeItemSounds:
+  - sound: 0
+    clip: {fileID: 8300000, guid: d23c66f66944711429bd71a18636a967, type: 3}
+  - sound: 1
+    clip: {fileID: 8300000, guid: e056d1c0d00af9c4bb3f17996bf2236b, type: 3}
+  - sound: 2
+    clip: {fileID: 8300000, guid: 75dece321111bfc459696d0c7a7624b2, type: 3}
+  - sound: 3
+    clip: {fileID: 8300000, guid: 8b1a2e5417304b64f92c130c15aae4b6, type: 3}
+  - sound: 4
+    clip: {fileID: 8300000, guid: f75819301274ad14b8297833602fb971, type: 3}
+  playerSounds:
+  - sound: 0
+    clip: {fileID: 8300000, guid: 65bb0443522f10442b489e4e47654848, type: 3}
+  - sound: 1
+    clip: {fileID: 8300000, guid: 99ff1d2008d90a346829a90d49a6ba98, type: 3}
+  - sound: 2
+    clip: {fileID: 8300000, guid: 65bb0443522f10442b489e4e47654848, type: 3}
+  - sound: 3
+    clip: {fileID: 8300000, guid: 368162caf85a8e94da8baa5e806cd3cc, type: 3}
+  - sound: 4
+    clip: {fileID: 8300000, guid: bb9d07fd6e28310449ab753b226deee6, type: 3}
+  - sound: 5
+    clip: {fileID: 8300000, guid: a5882f7976c5be54a91c68b1174169f2, type: 3}
+  - sound: 6
+    clip: {fileID: 8300000, guid: 99ff1d2008d90a346829a90d49a6ba98, type: 3}
+  - sound: 7
+    clip: {fileID: 8300000, guid: 1d46880f5622596449f19de3de18dd08, type: 3}
+  - sound: 8
+    clip: {fileID: 8300000, guid: a29a9a130da1dbe41bee6320ee752d2c, type: 3}
+  - sound: 9
+    clip: {fileID: 8300000, guid: 49494f433762dd543be98867547a3e6c, type: 3}
   weaponSounds:
   - weaponType: 10
     shotClip: {fileID: 8300000, guid: 57245394c8a4ecf49acb803f28dd7ed8, type: 3}
@@ -49,3 +81,8 @@ MonoBehaviour:
   grenadeSounds:
   - grenadeType: 1
     throwClip: {fileID: 8300000, guid: 70354214a645e5743a757546f98f8b3a, type: 3}
+  grenadeExplosionSounds:
+  - sound: 0
+    clip: {fileID: 8300000, guid: 62b7787fa0f608e43bf2178aa1c31ee4, type: 3}
+  - sound: 1
+    clip: {fileID: 8300000, guid: 6b767d0ac1bc9ab4eb342956be309110, type: 3}

@@ -3,5 +3,10 @@
         "command": "python",
         "args": ["-u", "mcp_bridge.py"],
         "env": {}
+    },
+    "unity-http": {
+        "command": "python",
+        "args": ["-u", "mcp_http_bridge.py", "--base-url", "http://127.0.0.1:27186"],
+        "env": {}
     }
 }

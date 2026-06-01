@@ -789,42 +789,7 @@ namespace OpenGS
 
         private static bool TryResolveMap(string value, out EMap map)
         {
-            if (Enum.TryParse(value, true, out map))
-            {
-                return true;
-            }
-
-            switch (value)
-            {
-                case "DrayDays":
-                case "DryDays":
-                    map = EMap.DryDays;
-                    return true;
-                case "GreenHill1":
-                    map = EMap.GreenHillSide1;
-                    return true;
-                case "GreenHill2":
-                    map = EMap.GreenHillSide2;
-                    return true;
-                case "Jungle1":
-                    map = EMap.DesertedJungleSide1;
-                    return true;
-                case "Jungle2":
-                    map = EMap.DesertedJungleSide2;
-                    return true;
-                case "Ruin":
-                    map = EMap.RuinOfWarSide1;
-                    return true;
-                case "House":
-                    map = EMap.GhostHouse;
-                    return true;
-                case "SecretFactory":
-                    map = EMap.RobotFactory;
-                    return true;
-                default:
-                    map = EMap.Unknown;
-                    return false;
-            }
+            return MapVisualResolver.TryParseMap(value, out map);
         }
 
         private static bool IsMapCompatible(EGameMode mode, EMap map)

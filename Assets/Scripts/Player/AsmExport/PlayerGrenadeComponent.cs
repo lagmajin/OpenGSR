@@ -27,6 +27,7 @@ namespace OpenGS
         
         // UI 用に現在のパワー (0.0 ~ 1.0) を公開する場合に使う
         public float CurrentChargeRatio => isCharging ? Mathf.Clamp01(currentChargeTime / maxChargeTime) : 0f;
+        public EGrenadeType CurrentGrenadeType => grenadeType;
 
         void Start()
         {
@@ -43,6 +44,7 @@ namespace OpenGS
             {
                 isCharging = true;
                 currentChargeTime = 0f;
+                GetComponent<AbstractPlayer>()?.TryPlayGeneralSound(EPlayerGeneralSound.OpenGrenade);
             }
 
             // スペースキー長押し中（パワーを溜める）
@@ -61,6 +63,7 @@ namespace OpenGS
                 float ratio = currentChargeTime / maxChargeTime;
                 float powerMultiplier = Mathf.Lerp(minPower, maxPower, ratio);
                 
+                GetComponent<AbstractPlayer>()?.TryPlayGeneralSound(EPlayerGeneralSound.ThrowGrenade);
                 ThrowGrenade(powerMultiplier);
             }
         }
@@ -84,67 +87,31 @@ namespace OpenGS
 
         private GrenadeEntry ResolveGrenadeEntry()
         {
-            if (grenadeListMasterData == null || grenadeListMasterData.dataList == null)
+            var prefab = GrenadeVisualResolver.GetProjectilePrefab(grenadeType, grenadeListMasterData);
+            if (prefab == null)
             {
-                if (grenadeType == EGrenadeType.Smoke)
-                {
-                    return LoadSmokeGrenadeEntry();
-                }
-
-                return null;
-            }
-
-            var targetNames = new[]
-            {
-                grenadeType.ToString(),
-                $"{grenadeType}Grenade",
-                $"{grenadeType}Bomb"
-            };
-
-            foreach (var entry in grenadeListMasterData.dataList)
-            {
-                if (entry == null || entry.GrenadePrefab == null || string.IsNullOrWhiteSpace(entry.Name))
-                {
-                    continue;
-                }
-
-                foreach (var candidate in targetNames)
-                {
-                    if (string.Equals(entry.Name, candidate, System.StringComparison.OrdinalIgnoreCase))
-                    {
-                        return entry;
-                    }
-                }
-            }
-
-            if (grenadeType == EGrenadeType.Smoke)
-            {
-                return LoadSmokeGrenadeEntry();
-            }
-
-            foreach (var entry in grenadeListMasterData.dataList)
-            {
-                if (entry != null && entry.GrenadePrefab != null)
-                {
-                    return entry;
-                }
-            }
-
-            return null;
-        }
-
-        private GrenadeEntry LoadSmokeGrenadeEntry()
-        {
-            var smokePrefab = Resources.Load<GameObject>("Prefabs/Weapon/Projectile/SmokeGrenade");
-            if (smokePrefab == null)
-            {
-                Debug.LogWarning("[PlayerGrenadeComponent] Smoke grenade prefab was not found in Resources/Prefabs/Weapon/Projectile/SmokeGrenade.");
                 return null;
             }
 
             return new GrenadeEntry
             {
-                Name = "SmokeGrenade",
+                Name = GrenadeVisualResolver.GetInternalName(grenadeType),
+                GrenadePrefab = prefab
+            };
+        }
+
+        private GrenadeEntry LoadSmokeGrenadeEntry()
+        {
+            var smokePrefab = GrenadeVisualResolver.GetProjectilePrefab(EGrenadeType.Smoke, grenadeListMasterData);
+            if (smokePrefab == null)
+            {
+                Debug.LogWarning("[PlayerGrenadeComponent] Smoke grenade prefab was not found.");
+                return null;
+            }
+
+            return new GrenadeEntry
+            {
+                Name = GrenadeVisualResolver.GetInternalName(EGrenadeType.Smoke),
                 GrenadePrefab = smokePrefab
             };
         }
@@ -167,12 +134,6 @@ namespace OpenGS
                 }
             }
 
-            if (grenadeListMasterData == null || grenadeListMasterData.dataList == null || grenadeListMasterData.dataList.Count == 0)
-            {
-                Debug.LogWarning("グレネードのマスターデータが設定されていません");
-                return;
-            }
-
             var grenadeData = ResolveGrenadeEntry();
             if (grenadeData == null || grenadeData.GrenadePrefab == null) return;
 
@@ -190,7 +151,8 @@ namespace OpenGS
                     owner != null ? owner.UniqueID().ToString() : string.Empty,
                     grenadeData.Name,
                     owner != null ? owner.Team() : ETeam.NoTeam,
-                    owner != null ? owner.transform : transform);
+                    owner != null ? owner.transform : transform,
+                    grenadeType);
             }
             else
             {

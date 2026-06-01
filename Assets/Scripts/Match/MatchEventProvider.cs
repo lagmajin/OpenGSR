@@ -47,7 +47,7 @@ namespace OpenGS
         public void UseInstantItem(AbstractPlayer player, EInstantItemType type)
         {
             var resolvedPlayerId = ResolvePlayerId(player);
-            var effect = ResolveEffectName(type);
+            var effect = InstantItemVisualResolver.GetEffectName(type);
             var itemId = type.ToString();
 
             if (string.IsNullOrWhiteSpace(resolvedPlayerId))
@@ -99,19 +99,5 @@ namespace OpenGS
             return string.IsNullOrWhiteSpace(profileId) ? "local_player" : profileId;
         }
 
-        private static string ResolveEffectName(EInstantItemType type)
-        {
-            return type switch
-            {
-                EInstantItemType.HealthKit => "heal",
-                EInstantItemType.FireBullet => "fire_bullet",
-                EInstantItemType.PoisonBullet => "poison_bullet",
-                EInstantItemType.PowerGrenadePack => "power_grenade_pack",
-                EInstantItemType.ClusterGrenadePack => "cluster_grenade_pack",
-                EInstantItemType.MagnetGrenadePack => "magnet_grenade_pack",
-                EInstantItemType.MineGrenadePack => "mine_grenade_pack",
-                _ => "unknown"
-            };
-        }
     }
 }

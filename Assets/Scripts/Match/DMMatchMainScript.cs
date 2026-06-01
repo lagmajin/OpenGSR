@@ -65,7 +65,14 @@ namespace OpenGS
             Debug.Log("DeathMatch: GameStart");
             Invoke(nameof(GameStart), 0.1f);
 
-            battleSceneMediateObject.mainscript = this;
+            if (battleSceneMediateObject != null)
+            {
+                battleSceneMediateObject.mainscript = this;
+            }
+            else
+            {
+                Debug.LogWarning("[DMMatchMainScript] battleSceneMediateObject is not assigned.");
+            }
             ShakeCamera();
         }
         // Update is called once per frame
@@ -91,7 +98,10 @@ namespace OpenGS
             //await UniTask.Delay()
 
             Invoke(nameof(HandleMyPlayerRespawn), 3f);
-            battleSceneMediateObject.uiManager.ShowRespawnGauge(3.0f);
+            if (battleSceneMediateObject != null && battleSceneMediateObject.uiManager != null)
+            {
+                battleSceneMediateObject.uiManager.ShowRespawnGauge(3.0f);
+            }
 
 
         }
@@ -115,7 +125,12 @@ namespace OpenGS
 
             // 自プレイヤーをランダムな位置に生成
             Vector3 spawnPos = GetRandomSpawnPoint(respawnPoints);
-            CreateMyPlayer(spawnPos, ETeam.NoTeam);
+            var myPlayer = CreateMyPlayer(spawnPos, ETeam.NoTeam);
+            if (myPlayer == null)
+            {
+                Debug.LogError("[DMMatchMainScript] Failed to create my player.");
+                return;
+            }
 
             SetUpUI();
         }
@@ -136,7 +151,7 @@ namespace OpenGS
         {
             endFlag = true;
 
-            var canvasIf = uiManager.GetComponent(typeof(IBattleSceneUIManager)) as IBattleSceneUIManager;
+            var canvasIf = uiManager != null ? uiManager.GetComponent(typeof(IBattleSceneUIManager)) as IBattleSceneUIManager : null;
             var result = StoreOfflineMatchResult();
             var winningTeam = result?["WinningTeam"]?.ToString() ?? "Draw";
             var myTeam = result?["MyTeam"]?.ToString() ?? "Draw";

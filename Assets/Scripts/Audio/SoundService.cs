@@ -19,6 +19,7 @@ namespace OpenGS
         private readonly Dictionary<string, AudioClip> _weaponHitClipCache = new();
         private readonly Dictionary<string, AudioClip> _grenadeThrowClipCache = new();
         private readonly Dictionary<string, AudioClip> _playerSoundClipCache = new();
+        private readonly Dictionary<string, AudioClip> _takeItemSoundClipCache = new();
 
         public SoundService(SoundMasterData soundMasterData, BGMMasterData bgmMasterData = null)
         {
@@ -30,16 +31,16 @@ namespace OpenGS
 
         public void PlayBGM(EBgm bgm, float fadeTime = -1f)
         {
-            Debug.Log($"[SoundService] PlayBGM(Enum): {bgm}");
+            Debug.Log($"[SoundService] PlayBGM(Enum): {BGMVisualResolver.GetDisplayName(bgm)} ({bgm})");
             if (_bgmMasterData != null && _bgmMasterData.TryGetBGM(bgm, out var clip))
             {
-                Debug.Log($"[SoundService] Found BGM clip for {bgm}: {clip.name}");
+                Debug.Log($"[SoundService] Found BGM clip for {BGMVisualResolver.GetDisplayName(bgm)}: {clip.name}");
                 SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
                 SimpleAudioManager.Instance.SetCurrentBGMName(bgm.ToString());
             }
             else
             {
-                Debug.Log($"[SoundService] BGM {bgm} not found in MasterData, falling back to named load.");
+                Debug.Log($"[SoundService] BGM {BGMVisualResolver.GetDisplayName(bgm)} not found in MasterData, falling back to named load.");
                 SimpleAudioManager.Instance.PlayBGM(bgm.ToString(), fadeTime);
             }
         }
@@ -50,13 +51,13 @@ namespace OpenGS
             var resolvedBgm = ResolveMapBgm(map);
             if (_bgmMasterData != null && _bgmMasterData.TryGetBGM(resolvedBgm, out var clip))
             {
-                Debug.Log($"[SoundService] Found map BGM clip for {map} -> {resolvedBgm}: {clip.name}");
+                Debug.Log($"[SoundService] Found map BGM clip for {map} -> {BGMVisualResolver.GetDisplayName(resolvedBgm)}: {clip.name}");
                 SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
                 SimpleAudioManager.Instance.SetCurrentBGMName(resolvedBgm.ToString());
                 return;
             }
 
-            Debug.Log($"[SoundService] Map BGM {resolvedBgm} not found in MasterData, falling back to named load.");
+            Debug.Log($"[SoundService] Map BGM {BGMVisualResolver.GetDisplayName(resolvedBgm)} not found in MasterData, falling back to named load.");
             SimpleAudioManager.Instance.PlayBGM(resolvedBgm.ToString());
         }
 
@@ -106,10 +107,16 @@ namespace OpenGS
             PlayOneShot(clip, volume);
         }
 
+        public void PlayTakeItemSound(ETakeItemSound sound, float volume = 1.0f)
+        {
+            PlayOneShot(GetTakeItemSoundClip(sound), volume);
+        }
+
         public void PlayWeaponShot(EWeaponType type, float pitch = 1.0f) => PlayOneShot(GetWeaponClip(type, "shot", _weaponShotClipCache), 1.0f, pitch);
         public void PlayWeaponReload(EWeaponType type, float pitch = 1.0f) => PlayOneShot(GetWeaponClip(type, "reload", _weaponReloadClipCache), 1.0f, pitch);
         public void PlayWeaponHit(EWeaponType type, float pitch = 1.0f) => PlayOneShot(GetWeaponClip(type, "hit", _weaponHitClipCache), 1.0f, pitch);
         public void PlayGrenadeThrow(EGrenadeType type, float pitch = 1.0f) => PlayOneShot(GetGrenadeThrowClip(type), 1.0f, pitch);
+        public void PlayGrenadeExplosion(EGrenadeSound sound, float pitch = 1.0f) => PlayOneShot(GetGrenadeExplosionClip(sound), 1.0f, pitch);
         public void PlayPlayerSound(EPlayerSound sound) => PlayOneShot(GetPlayerSoundClip(sound), 1.0f, 1.0f);
 
         public void PlayOneShot(AudioClip clip, float volume = 1.0f, float pitch = 1.0f)
@@ -120,8 +127,9 @@ namespace OpenGS
 
         public bool ValidateSoundSetup(bool logWarnings = true)
         {
-            if (_soundMasterData == null) return false;
-            return _soundMasterData.ValidateAllMappings(logWarnings);
+            var soundOk = _soundMasterData != null && _soundMasterData.ValidateAllMappings(logWarnings);
+            var bgmOk = _bgmMasterData != null && _bgmMasterData.ValidateAllMappings(logWarnings);
+            return soundOk && bgmOk;
         }
 
         private AudioClip GetWeaponClip(EWeaponType type, string category, Dictionary<string, AudioClip> cache)
@@ -157,6 +165,27 @@ namespace OpenGS
             return loaded;
         }
 
+        private AudioClip GetGrenadeExplosionClip(EGrenadeSound sound)
+        {
+            string key = sound.ToString();
+            if (_grenadeThrowClipCache.TryGetValue($"explosion:{key}", out var cached))
+            {
+                return cached;
+            }
+
+            AudioClip loaded = _soundMasterData != null && _soundMasterData.TryGetGrenadeExplosionSound(sound, out var masterClip)
+                ? masterClip
+                : sound switch
+                {
+                    EGrenadeSound.ExplosionGrenade => LoadFirst("Sound/Weapon/_grenade_explode", "Sound/Weapon/_gre_explode", "Sound/Weapon/_grenade_cluster"),
+                    EGrenadeSound.ExplosionFireGrenade => LoadFirst("Sound/Item/sfx_granade_fire", "Sound/Weapon/_gre_explode"),
+                    _ => NoGrenadeExplosionClip(sound)
+                };
+
+            _grenadeThrowClipCache[$"explosion:{key}"] = loaded;
+            return loaded;
+        }
+
         private AudioClip GetPlayerSoundClip(EPlayerSound sound)
         {
             string key = sound.ToString();
@@ -165,22 +194,45 @@ namespace OpenGS
                 return cached;
             }
 
-            AudioClip loaded = sound switch
-            {
-                EPlayerSound.DamageFemale1 => LoadFirst("Sound/Player/sfx_pl_hit01", "Sound/Player/sfx_pl_deathF01"),
-                EPlayerSound.DamageMale1 => LoadFirst("Sound/Player/sfx_pl_hit01", "Sound/Player/sfx_pl_deathM01"),
-                EPlayerSound.DeathFemale1 => LoadFirst("Sound/Player/sfx_pl_deathF01"),
-                EPlayerSound.DeathFemale2 => LoadFirst("Sound/Player/sfx_pl_deathF02"),
-                EPlayerSound.DeathFemale3 => LoadFirst("Sound/Player/sfx_pl_deathF03"),
-                EPlayerSound.DeathFemale4 => LoadFirst("Sound/Player/sfx_pl_deathF04"),
-                EPlayerSound.DeathMale1 => LoadFirst("Sound/Player/sfx_pl_deathM01"),
-                EPlayerSound.DeathMale2 => LoadFirst("Sound/Player/sfx_pl_deathM02"),
-                EPlayerSound.DeathMale3 => LoadFirst("Sound/Player/sfx_pl_deathM03"),
-                EPlayerSound.DeathMale4 => LoadFirst("Sound/Player/sfx_pl_deathM04"),
-                _ => NoPlayerSoundClip(sound)
-            };
+            AudioClip loaded = _soundMasterData != null && _soundMasterData.TryGetPlayerSound(sound, out var masterClip)
+                ? masterClip
+                : sound switch
+                {
+                    EPlayerSound.DamageFemale1 => LoadFirst("Sound/Player/sfx_pl_hit01", "Sound/Player/sfx_pl_deathF01"),
+                    EPlayerSound.DamageMale1 => LoadFirst("Sound/Player/sfx_pl_hit01", "Sound/Player/sfx_pl_deathM01"),
+                    EPlayerSound.DeathFemale1 => LoadFirst("Sound/Player/sfx_pl_deathF01"),
+                    EPlayerSound.DeathFemale2 => LoadFirst("Sound/Player/sfx_pl_deathF02"),
+                    EPlayerSound.DeathFemale3 => LoadFirst("Sound/Player/sfx_pl_deathF03"),
+                    EPlayerSound.DeathFemale4 => LoadFirst("Sound/Player/sfx_pl_deathF04"),
+                    EPlayerSound.DeathMale1 => LoadFirst("Sound/Player/sfx_pl_deathM01"),
+                    EPlayerSound.DeathMale2 => LoadFirst("Sound/Player/sfx_pl_deathM02"),
+                    EPlayerSound.DeathMale3 => LoadFirst("Sound/Player/sfx_pl_deathM03"),
+                    EPlayerSound.DeathMale4 => LoadFirst("Sound/Player/sfx_pl_deathM04"),
+                    _ => NoPlayerSoundClip(sound)
+                };
 
             _playerSoundClipCache[key] = loaded;
+            return loaded;
+        }
+
+        private AudioClip GetTakeItemSoundClip(ETakeItemSound sound)
+        {
+            string key = sound.ToString();
+            if (_takeItemSoundClipCache.TryGetValue(key, out var cached))
+            {
+                return cached;
+            }
+
+            var loaded = _soundMasterData != null && _soundMasterData.TryGetTakeItemSound(sound, out var masterClip)
+                ? masterClip
+                : null;
+
+            if (loaded == null)
+            {
+                loaded = SoundVisualResolver.GetTakeItemClip(sound);
+            }
+
+            _takeItemSoundClipCache[key] = loaded;
             return loaded;
         }
 
@@ -200,6 +252,12 @@ namespace OpenGS
         private static AudioClip NoPlayerSoundClip(EPlayerSound sound)
         {
             Debug.LogWarning($"[SoundService] No player sound mapping for {sound}.");
+            return null;
+        }
+
+        private static AudioClip NoGrenadeExplosionClip(EGrenadeSound sound)
+        {
+            Debug.LogWarning($"[SoundService] No grenade explosion sound mapping for {sound}.");
             return null;
         }
 

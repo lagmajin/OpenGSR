@@ -269,23 +269,7 @@ namespace OpenGS
 
         private static string GetCharacterDisplayName(EPlayerCharacter character)
         {
-            return character switch
-            {
-                EPlayerCharacter.Ami => "アミ",
-                EPlayerCharacter.Yumi => "ユミ",
-                EPlayerCharacter.Jack => "ジャック",
-                EPlayerCharacter.Jackle => "ジャックル",
-                EPlayerCharacter.Misty => "ミスティ",
-                EPlayerCharacter.Liu => "リュウ",
-                EPlayerCharacter.Mary => "メアリー",
-                EPlayerCharacter.Wolf => "ウルフ",
-                EPlayerCharacter.Wyvern => "ワイバーン",
-                EPlayerCharacter.Seoul => "ソウル",
-                EPlayerCharacter.LittleJ => "リトルJ",
-                EPlayerCharacter.Shue => "シュウ",
-                EPlayerCharacter.Swaltz => "スワルツ",
-                _ => character.ToString()
-            };
+            return CharacterVisualResolver.GetDisplayName(character);
         }
     }
 }

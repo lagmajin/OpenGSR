@@ -16,7 +16,9 @@ MonoBehaviour:
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 17
-  inGameSprite: {fileID: -6973286838389805000, guid: f2b1d33c7cf57d24fa1af4e30d2f92b3, type: 3}
-  inSelectionSprite: {fileID: -2787005228189998000, guid: 0076493d5c0d0e241a82e95d90e0b749, type: 3}
-  shilhouetteSprite: {fileID: -6973286838389805000, guid: f2b1d33c7cf57d24fa1af4e30d2f92b3, type: 3}
-
+  inGameSprite: {fileID: -6973286838389805000, guid: f2b1d33c7cf57d24fa1af4e30d2f92b3,
+    type: 3}
+  inSelectionSprite: {fileID: -2787005228189997866, guid: 0076493d5c0d0e241a82e95d90e0b749,
+    type: 3}
+  shilhouetteSprite: {fileID: -6973286838389805000, guid: f2b1d33c7cf57d24fa1af4e30d2f92b3,
+    type: 3}

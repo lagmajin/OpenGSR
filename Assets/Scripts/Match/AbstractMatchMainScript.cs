@@ -226,6 +226,12 @@ namespace OpenGS
         /// </summary>
         protected virtual GameObject CreateMyPlayer(Vector3 position, ETeam team = ETeam.NoTeam)
         {
+            if (prefabMasterData == null)
+            {
+                Debug.LogError($"[{GetType().Name}] prefabMasterData is not assigned. Cannot create player.");
+                return null;
+            }
+
             // 装備データからキャラクターIDを取得（未設定ならMisty）
             string charId = UserSaveManager.GetEquippedId(EShopCategory.Character);
             if (string.IsNullOrEmpty(charId)) charId = EPlayerCharacter.Misty.ToString();

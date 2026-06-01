@@ -212,7 +212,9 @@ namespace OpenGS
 
                 var data = new FieldItemData(
                     item["ItemId"]?.ToString() ?? "",
-                    Enum.Parse<eFieldItemType>(item["ItemType"]?.ToString() ?? "PowerUp"),
+                    FieldItemVisualResolver.TryParseLegacy(item["ItemType"]?.ToString() ?? "PowerUp", out var parsedType)
+                        ? parsedType
+                        : eFieldItemType.PowerUpItem,
                     new Vector3(
                         item["PositionX"]?.Value<float>() ?? 0,
                         item["PositionY"]?.Value<float>() ?? 0,

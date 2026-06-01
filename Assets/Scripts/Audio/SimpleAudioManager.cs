@@ -66,11 +66,9 @@ namespace OpenGSR.Audio
             _bgmSource1.playOnAwake = false;
             _bgmSource2.playOnAwake = false;
             _currentBgmSource = _bgmSource1;
+            // AudioReverbFilter は環境によって初期化時に警告や例外を出すことがあるため、
+            // 既に付いている場合だけ制御し、新規追加はしない。
             _reverbFilter = gameObject.GetComponent<AudioReverbFilter>();
-            if (_reverbFilter == null)
-            {
-                _reverbFilter = gameObject.AddComponent<AudioReverbFilter>();
-            }
             ApplyReverbEnabled(_reverbEnabled);
 
             if (_audioConfig == null)

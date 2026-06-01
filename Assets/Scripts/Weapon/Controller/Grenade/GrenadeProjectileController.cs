@@ -40,6 +40,7 @@ namespace OpenGS
         private string ownerPlayerId = string.Empty;
         private string weaponName = "Grenade";
         private ETeam ownerTeam = ETeam.NoTeam;
+        private EGrenadeType grenadeType = EGrenadeType.Normal;
         private SpriteRenderer spriteRenderer;
         private IEffectService effectService;
 
@@ -62,10 +63,23 @@ namespace OpenGS
             ETeam team,
             Transform owner = null)
         {
+            Launch(direction, speed, ownerId, weapon, team, owner, EGrenadeType.Normal);
+        }
+
+        public void Launch(
+            Vector2 direction,
+            float speed,
+            string ownerId,
+            string weapon,
+            ETeam team,
+            Transform owner,
+            EGrenadeType type)
+        {
             ownerTransform = owner;
             ownerPlayerId = ownerId ?? string.Empty;
             weaponName = string.IsNullOrWhiteSpace(weapon) ? "Grenade" : weapon;
             ownerTeam = team;
+            grenadeType = type;
             velocity = (direction.sqrMagnitude > 0f ? direction.normalized : Vector2.right) * Mathf.Max(0f, speed);
             lifeTime = 0f;
             launched = true;
@@ -86,6 +100,11 @@ namespace OpenGS
         public void SetExplosionEffect(GameObject effect)
         {
             explosionEffect = effect;
+        }
+
+        public void SetGrenadeType(EGrenadeType type)
+        {
+            grenadeType = type;
         }
 
         public void ConfigureChildProjectiles(
@@ -226,6 +245,16 @@ namespace OpenGS
             }
 
             exploded = true;
+
+            var explosionSound = grenadeType == EGrenadeType.Fire
+                ? EGrenadeSound.ExplosionFireGrenade
+                : EGrenadeSound.ExplosionGrenade;
+            SoundManager.Instance.PlayGrenadeExplosionSound(explosionSound);
+
+            if (explosionEffect == null)
+            {
+                explosionEffect = GrenadeVisualResolver.GetExplosionEffect(grenadeType);
+            }
 
             if (explosionEffect != null)
             {

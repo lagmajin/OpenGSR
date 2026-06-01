@@ -24,6 +24,9 @@ namespace OpenGS
         private IInputService inputService;
         private ISoundService soundService;
         private IEffectService effectService;
+        private bool wasBoosting;
+        private bool wasGrounded;
+        private float boosterLoopTimer;
 
         [Inject]
         public void Construct(IInputService inputService, ISoundService soundService, IEffectService effectService)
@@ -37,6 +40,7 @@ namespace OpenGS
         {
             if (rigidbody2D == null) rigidbody2D = GetComponent<Rigidbody2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
+            wasGrounded = IsGround();
             
             Status.FullRecovery();
         }
@@ -87,8 +91,23 @@ namespace OpenGS
 
         private void HandleBooster()
         {
-            if (inputService.IsBoosterPressed() && Status.Booster > 0)
+            bool boostingNow = inputService.IsBoosterPressed() && Status.Booster > 0;
+
+            if (boostingNow)
             {
+                if (!wasBoosting)
+                {
+                    PlayGeneralSound(EPlayerGeneralSound.BoosterStart);
+                    boosterLoopTimer = 0f;
+                }
+
+                boosterLoopTimer -= Time.fixedDeltaTime;
+                if (boosterLoopTimer <= 0f)
+                {
+                    PlayGeneralSound(EPlayerGeneralSound.BoosterLoop);
+                    boosterLoopTimer = 0.35f;
+                }
+
                 Vector2 velocity = rigidbody2D.linearVelocity;
                 velocity.y += boosterAcceleration * Time.fixedDeltaTime;
                 velocity.y = Mathf.Min(velocity.y, maxBoosterSpeed);
@@ -96,6 +115,29 @@ namespace OpenGS
 
                 Status.ConsumeBooster(boosterConsumption * Time.fixedDeltaTime);
             }
+            else if (wasBoosting)
+            {
+                PlayGeneralSound(EPlayerGeneralSound.BoosterEnd);
+            }
+
+            wasBoosting = boostingNow;
+        }
+
+        protected virtual void LateUpdate()
+        {
+            if (isDead)
+            {
+                wasGrounded = IsGround();
+                return;
+            }
+
+            bool groundedNow = IsGround();
+            if (groundedNow && !wasGrounded)
+            {
+                PlayGeneralSound(EPlayerGeneralSound.JumpEnd);
+            }
+
+            wasGrounded = groundedNow;
         }
 
         private void HandleActions()
@@ -162,6 +204,7 @@ namespace OpenGS
             if (IsGround())
             {
                 rigidbody2D.AddForce(Vector2.up * jumpCurve.Evaluate(1.0f) * 10f, ForceMode2D.Impulse);
+                PlayGeneralSound(EPlayerGeneralSound.JumpStart);
             }
         }
 
@@ -178,6 +221,11 @@ namespace OpenGS
         public override void OnDead()
         {
             base.OnDead();
+            if (wasBoosting)
+            {
+                PlayGeneralSound(EPlayerGeneralSound.BoosterEnd);
+                wasBoosting = false;
+            }
             rigidbody2D.AddForce(Vector2.up * 10f, ForceMode2D.Impulse);
             rigidbody2D.angularVelocity = Random.Range(-360f, 360f);
         }
