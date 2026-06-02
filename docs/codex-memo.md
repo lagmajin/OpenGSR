@@ -48,6 +48,9 @@
 - `Logs/Editor.log`
 - `docs/codex/main-branch-development.md`
 - `docs/codex/workstream-organization.md`
+- `docs/codex/class-function-dictionary.md`
+- `docs/codex/class-index.md`
+- `docs/codex/generate-class-index.ps1`
 - `docs/codex/playeragent-kinematic-movement.md`
 - `docs/codex/grenade-types.md`
 - `docs/codex/slot-definitions.md`
@@ -66,6 +69,9 @@
 - Sprite auto-slice menu: `OpenGSR/Tools/Sprite Sheet Auto Slice`
 - Direct main-branch development notes: `docs/codex/main-branch-development.md`
 - Workstream organization notes: `docs/codex/workstream-organization.md`
+- Class / function dictionary: `docs/codex/class-function-dictionary.md`
+- Class index: `docs/codex/class-index.md`
+- Class index generator: `docs/codex/generate-class-index.ps1`
 - PlayerAgent scripted movement notes: `docs/codex/playeragent-kinematic-movement.md`
 - Grenade type notes: `docs/codex/grenade-types.md`
 - Slot definition notes: `docs/codex/slot-definitions.md`

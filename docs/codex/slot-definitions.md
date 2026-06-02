@@ -62,5 +62,5 @@ This project uses two different slot systems that are easy to mix up.
 ## Current Spawn Behavior
 
 - Spawn / respawn loads equipped instant items into the instant item slots
-- In `CharaController`, grenade slots are not yet auto-refilled from those equipped instant items
-- If you want spawn-time grenade refill based on equipped instant items, that needs a dedicated hook and should be added explicitly
+- Spawn / respawn now also restores grenade slots from the saved equip data
+- `CharaController` applies the saved loadout on start, spawn, and respawn so the HUD and runtime state stay aligned
