@@ -95,7 +95,11 @@ namespace OpenGS
         {
             Debug.Log("MyPlayerDead");
 
-            //await UniTask.Delay()
+            if (!MatchModeResolver.CanRespawnCurrentMatch())
+            {
+                Debug.Log("[DMMatchMainScript] Survival mode detected, switching to spectator flow.");
+                return;
+            }
 
             Invoke(nameof(HandleMyPlayerRespawn), 3f);
             if (battleSceneMediateObject != null && battleSceneMediateObject.uiManager != null)
@@ -383,6 +387,11 @@ namespace OpenGS
             if (room == null)
             {
                 return;
+            }
+
+            if (room.GameMode == EGameMode.Unknown)
+            {
+                room.GameMode = MatchModeResolver.ResolveCurrentGameMode();
             }
 
             var playerInfo = BuildEditorPlayerInfo();

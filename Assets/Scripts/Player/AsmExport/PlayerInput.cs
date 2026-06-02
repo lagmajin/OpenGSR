@@ -77,6 +77,11 @@ namespace OpenGS
 
         private void Update()
         {
+            if (player != null && player.IsDead())
+            {
+                return;
+            }
+
             if (dash.frame >0)
             {
                 dash.frame--;

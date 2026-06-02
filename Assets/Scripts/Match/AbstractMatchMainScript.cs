@@ -279,6 +279,75 @@ namespace OpenGS
             {
                 vcamera.Priority = 0;
             }
+            if (observerCamera != null)
+            {
+                observerCamera.Priority = 0;
+            }
+        }
+
+        public void EnterSpectatorMode(Transform excluded = null)
+        {
+            var target = ResolveSpectatorTarget(excluded);
+            if (observerCamera != null)
+            {
+                observerCamera.Follow = target;
+                observerCamera.Priority = 10;
+            }
+
+            if (playerCamera != null)
+            {
+                playerCamera.Priority = 0;
+            }
+
+            if (vcamera != null)
+            {
+                vcamera.Priority = 0;
+            }
+        }
+
+        public void ExitSpectatorMode(Transform target)
+        {
+            if (target != null)
+            {
+                SetupPlayerCamera(target);
+            }
+            else if (playerCamera != null)
+            {
+                playerCamera.Priority = 10;
+            }
+
+            if (observerCamera != null)
+            {
+                observerCamera.Priority = 0;
+            }
+        }
+
+        protected Transform ResolveSpectatorTarget(Transform excluded = null)
+        {
+            if (PlayerRegistry.Instance == null)
+            {
+                return null;
+            }
+
+            foreach (var player in PlayerRegistry.Instance.GetAllPlayers())
+            {
+                if (player == null || player.transform == null)
+                {
+                    continue;
+                }
+
+                if (excluded != null && player.transform == excluded)
+                {
+                    continue;
+                }
+
+                if (!player.IsDead())
+                {
+                    return player.transform;
+                }
+            }
+
+            return null;
         }
 
         /// <summary>
@@ -293,6 +362,7 @@ namespace OpenGS
         public void Start()
         {
             OnStart();
+            gameMode = MatchModeResolver.ResolveCurrentGameMode();
             PlayStageBGM();
             BindMatchNetwork();
 
@@ -497,7 +567,7 @@ namespace OpenGS
 
         public EGameMode GameMode()
         {
-            return gameMode;
+            return gameMode != EGameMode.Unknown ? gameMode : MatchModeResolver.ResolveCurrentGameMode();
         }
 
         public void AddNewFieldItemInTheScene()

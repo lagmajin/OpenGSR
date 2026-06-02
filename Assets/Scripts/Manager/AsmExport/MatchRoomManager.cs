@@ -54,12 +54,16 @@ namespace OpenGS
                 var capacity = OnlineWaitRoom != null && OnlineWaitRoom.Capacity > 0
                     ? OnlineWaitRoom.Capacity
                     : 8;
+                var gameMode = OnlineWaitRoom != null && OnlineWaitRoom.GameMode != EGameMode.Unknown
+                    ? OnlineWaitRoom.GameMode
+                    : GameModeSelectManager.Instance?.OnlineGameSelect?.GameMode ?? EGameMode.Unknown;
 
                 Debug.Log($"OnlineMatchRoom created... id={roomId}, name={roomName}, capacity={capacity}");
                 OnlineMatchRoom = new MatchRoom(roomId)
                 {
                     RoomName = roomName,
-                    Capacity = capacity
+                    Capacity = capacity,
+                    GameMode = gameMode
                 };
             }
         }
@@ -147,10 +151,13 @@ namespace OpenGS
                     CreateNewOfflineWaitRoom("OfflineRoom");
                 }
 
+                var gameMode = GameModeSelectManager.Instance?.OfflineGameSelect?.GameMode ?? WaitRoom?.GameMode ?? EGameMode.Unknown;
+
                 OfflineMatchRoom = new MatchRoom(Guid.NewGuid().ToString())
                 {
                     RoomName = "Offline Match",
-                    Capacity = WaitRoom != null ? WaitRoom.Capacity : 8
+                    Capacity = WaitRoom != null ? WaitRoom.Capacity : 8,
+                    GameMode = gameMode
                 };
 
                 LastOfflineMatchResult = null;

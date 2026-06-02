@@ -43,6 +43,7 @@ namespace OpenGS
         public string Id { get; set; }
         public string RoomName { get; set; }
         public int Capacity { get; set; } = 0;
+        public EGameMode GameMode { get; set; } = EGameMode.Unknown;
 
         public bool IsStarted { get; private set; } = false;
         public bool Playing { get; private set; } = false;
@@ -185,6 +186,8 @@ namespace OpenGS
                     Booster = 100f
                 };
 
+                ApplyModeScaling(info, coreStatus);
+
                 var playerData = new PlayerData(info, coreStatus);
                 database.AddPlayer(playerData);
                 PlayerManager.AddPlayer(info, coreStatus);
@@ -236,6 +239,26 @@ namespace OpenGS
             }
 
             return _networkManager != null ? _networkManager.ClientPlayerId : string.Empty;
+        }
+
+        private void ApplyModeScaling(OpenGSCore.PlayerInfo info, OpenGSCore.PlayerStatus status)
+        {
+            if (info == null || status == null)
+            {
+                return;
+            }
+
+            if (!MatchModeResolver.IsSurvivalLike(GameMode))
+            {
+                return;
+            }
+
+            var multiplier = MatchModeResolver.ResolveHealthMultiplier(GameMode);
+            var maxHp = Mathf.Max(1, Mathf.RoundToInt(info.MaxHealth * multiplier));
+            info.MaxHealth = maxHp;
+            info.Health = maxHp;
+            status.MaxHp = maxHp;
+            status.Hp = maxHp;
         }
     }
 }
