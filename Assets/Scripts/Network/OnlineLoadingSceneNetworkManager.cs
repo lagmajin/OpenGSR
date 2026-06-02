@@ -17,6 +17,8 @@ namespace OpenGS
         private readonly SerialDisposable subscription = new SerialDisposable();
         private readonly HashSet<string> completedPlayerIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private bool enterMapAllowedReceived;
+        private int expectedPlayerCount = 1;
+        private bool loadingSessionStarted;
 
         private void Awake()
         {
@@ -37,6 +39,7 @@ namespace OpenGS
 
         public void SendLoadingSceneEntered()
         {
+            loadingSessionStarted = true;
             var json = new JObject
             {
                 ["MessageType"] = MessageType.ClientLoadingSceneEntered,
@@ -49,6 +52,7 @@ namespace OpenGS
 
         public void SendMatchServerInfoRequest()
         {
+            RefreshExpectedPlayerCount();
             var json = new JObject
             {
                 ["MessageType"] = MessageType.MatchServerInfoRequest,
@@ -71,7 +75,15 @@ namespace OpenGS
 
         public void SendLoadingComplete()
         {
+            loadingSessionStarted = true;
             SendLoadingState(MessageType.LoadingCompleted, 1f, "loading-complete");
+        }
+
+        public void BeginLoadingSession(int expectedPlayers)
+        {
+            ResetState();
+            expectedPlayerCount = Mathf.Max(1, expectedPlayers);
+            loadingSessionStarted = true;
         }
 
         public void SendLoadingMessage(string message)
@@ -184,6 +196,7 @@ namespace OpenGS
                     concreteScene.OnMatchServerConnected();
                 }
 
+                RefreshExpectedPlayerCount();
                 return;
             }
 
@@ -191,6 +204,7 @@ namespace OpenGS
             {
                 ResolveDependencies();
                 onlineLoadingManager?.SetLoadingMessage(json["Message"]?.ToString() ?? MessageType.LoadingFailed);
+                ResetState();
                 onlineLoadingScene?.OnLoadingFailed();
                 return;
             }
@@ -204,6 +218,8 @@ namespace OpenGS
                     onlineLoadingManager?.AddLoadingPlayer(playerId);
                     onlineLoadingManager?.UpdateLoading(playerId, 0f);
                 }
+
+                RefreshExpectedPlayerCount();
 
                 onlineLoadingManager?.SetLoadingMessage(MessageType.LoadingStarted);
                 return;
@@ -233,6 +249,8 @@ namespace OpenGS
                     onlineLoadingManager?.MarkPlayerLoaded(playerId);
                 }
 
+                RefreshExpectedPlayerCount();
+
                 if (onlineLoadingScene is OnlineLoadingScene concreteScene)
                 {
                     concreteScene.OnMatchLoadingCompleted(playerId);
@@ -248,16 +266,17 @@ namespace OpenGS
 
         private void TryAllowEnterMap()
         {
-            if (!enterMapAllowedReceived)
+            if (!loadingSessionStarted || !enterMapAllowedReceived)
             {
                 return;
             }
 
             ResolveDependencies();
-            var expectedPlayers = Mathf.Max(1, waitRoomManager?.WaitRoom?.PlayerCount ?? 1);
-            if (completedPlayerIds.Count < expectedPlayers)
+            RefreshExpectedPlayerCount();
+
+            if (completedPlayerIds.Count < expectedPlayerCount)
             {
-                Debug.Log($"[OnlineLoadingSceneNetworkManager] Waiting loading completed notifications: {completedPlayerIds.Count}/{expectedPlayers}");
+                Debug.Log($"[OnlineLoadingSceneNetworkManager] Waiting loading completed notifications: {completedPlayerIds.Count}/{expectedPlayerCount}");
                 return;
             }
 
@@ -298,7 +317,15 @@ namespace OpenGS
         {
             completedPlayerIds.Clear();
             enterMapAllowedReceived = false;
+            loadingSessionStarted = false;
+            expectedPlayerCount = 1;
             onlineLoadingManager?.Clear();
+        }
+
+        private void RefreshExpectedPlayerCount()
+        {
+            ResolveDependencies();
+            expectedPlayerCount = Mathf.Max(1, waitRoomManager?.WaitRoom?.PlayerCount ?? expectedPlayerCount);
         }
 
         private static string ResolveLocalPlayerId()

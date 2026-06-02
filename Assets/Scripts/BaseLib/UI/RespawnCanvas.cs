@@ -71,6 +71,13 @@ namespace OpenGS
         private void HandlePlayerDied(AbstractPlayer player)
         {
             if (player == null || player.PlayerType() != EPlayerType.MyPlayer) return;
+
+            if (!MatchModeResolver.CanRespawnCurrentMatch())
+            {
+                HideCanvas();
+                return;
+            }
+
             StartCountdown();
         }
 

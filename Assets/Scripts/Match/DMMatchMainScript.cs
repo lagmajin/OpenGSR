@@ -95,7 +95,11 @@ namespace OpenGS
         {
             Debug.Log("MyPlayerDead");
 
-            //await UniTask.Delay()
+            if (!MatchModeResolver.CanRespawnCurrentMatch())
+            {
+                Debug.Log("[DMMatchMainScript] Survival mode detected, switching to spectator flow.");
+                return;
+            }
 
             Invoke(nameof(HandleMyPlayerRespawn), 3f);
             if (battleSceneMediateObject != null && battleSceneMediateObject.uiManager != null)
@@ -153,16 +157,15 @@ namespace OpenGS
 
             var canvasIf = uiManager != null ? uiManager.GetComponent(typeof(IBattleSceneUIManager)) as IBattleSceneUIManager : null;
             var result = StoreOfflineMatchResult();
-            var winningTeam = result?["WinningTeam"]?.ToString() ?? "Draw";
-            var myTeam = result?["MyTeam"]?.ToString() ?? "Draw";
+            var (winningLabel, myLabel) = ResolveMatchOutcome(result);
 
             if (canvasIf != null)
             {
-                if (string.IsNullOrWhiteSpace(winningTeam) || winningTeam == "Draw" || winningTeam == "None")
+                if (string.IsNullOrWhiteSpace(winningLabel) || winningLabel == "Draw" || winningLabel == "None" || winningLabel == "NoPlayers")
                 {
                     canvasIf.ShowGameDefatead();
                 }
-                else if (winningTeam == myTeam)
+                else if (string.Equals(winningLabel, myLabel, StringComparison.OrdinalIgnoreCase))
                 {
                     canvasIf.ShowGameWin();
                 }
@@ -315,35 +318,187 @@ namespace OpenGS
         {
             endFlag = true;
 
-            var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
-            var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
+            var (winningLabel, myLabel) = ResolveMatchOutcome(json);
 
-            Debug.Log($"[DM] Match ended: winner={winningTeam}, myTeam={myTeam}");
+            Debug.Log($"[DM] Match ended: winner={winningLabel}, myTeam={myLabel}");
             GoToResult();
         }
 
         public override void OnStartUnityEditor()
         {
-            //throw new NotImplementedException();
+            AutoSet();
+            EnsureEditorMatchRoom();
+            SetupGame();
+            Debug.Log("[DMMatchMainScript] Editor start initialized.");
         }
 
         protected override void OnQuitUnityEditor()
         {
-            //throw new NotImplementedException();
+            CancelInvoke();
+            endFlag = true;
+
+            if (matchRoomManager != null)
+            {
+                matchRoomManager.RemoveOnlineMatchRoom();
+            }
+
+            Debug.Log("[DMMatchMainScript] Editor cleanup completed.");
         }
 
         protected override void OnStartFromEditorDirectly()
         {
-            //throw new NotImplementedException();
+            AutoSet();
+            EnsureEditorMatchRoom();
 
-            var room=matchRoomManager.OnlineMatchRoom;
+            if (GameManager != null)
+            {
+                GameManager.IsOnlineGameMode = false;
+            }
 
-            //var pm=room.playerma
+            Debug.Log("[DMMatchMainScript] Direct editor play initialized.");
+        }
 
-            var playerInfo = new OpenGSCore.PlayerInfo();
+        private void EnsureEditorMatchRoom()
+        {
+            if (matchRoomManager == null)
+            {
+                try
+                {
+                    matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[DMMatchMainScript] Failed to resolve MatchRoomManager: {ex.Message}");
+                    return;
+                }
+            }
 
-            //room.PlayerManager.AddPlayer()
+            if (matchRoomManager == null)
+            {
+                return;
+            }
 
+            if (!matchRoomManager.IsValidOnlineMatchRoom())
+            {
+                matchRoomManager.CreateNewOnlineMatchRoom("editor-match");
+            }
+
+            var room = matchRoomManager.OnlineMatchRoom;
+            if (room == null)
+            {
+                return;
+            }
+
+            if (room.GameMode == EGameMode.Unknown)
+            {
+                room.GameMode = MatchModeResolver.ResolveCurrentGameMode();
+            }
+
+            var playerInfo = BuildEditorPlayerInfo();
+            if (room.database.TryGetPlayer(playerInfo.Id, out _))
+            {
+                return;
+            }
+
+            room.AddPlayer(playerInfo);
+        }
+
+        private static OpenGSCore.PlayerInfo BuildEditorPlayerInfo()
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            var playerId = string.IsNullOrWhiteSpace(profile?.GlobalUserId)
+                ? "editor-player"
+                : profile.GlobalUserId;
+            var displayName = string.IsNullOrWhiteSpace(profile?.DisplayName)
+                ? "EditorPlayer"
+                : profile.DisplayName;
+
+            return new OpenGSCore.PlayerInfo(playerId, displayName)
+            {
+                playerCharacter = GamePlayerManager.Instance != null
+                    ? GamePlayerManager.Instance.SelectedPlayerCharacter()
+                    : OpenGSCore.EPlayerCharacter.Misty
+            };
+
+        }
+
+        private static (string winningLabel, string myLabel) ResolveMatchOutcome(JObject json)
+        {
+            if (json == null)
+            {
+                return ("Draw", "Spectator");
+            }
+
+            var winningTeam = ReadResultString(json, "WinningTeam", "WinnerTeam", "WinningSide", "Winner", "ResultTeam", "Team");
+            if (string.IsNullOrWhiteSpace(winningTeam))
+            {
+                winningTeam = "Draw";
+            }
+
+            var myTeam = ReadResultString(json, "MyTeam", "PlayerTeam", "SelfTeam");
+            if (string.IsNullOrWhiteSpace(myTeam))
+            {
+                myTeam = "Spectator";
+            }
+
+            var winningPlayerId = ReadResultString(json, "WinningPlayerId", "WinningPlayerID", "WinnerPlayerId");
+            if (!IsTeamResultToken(winningTeam) && IsPlayerResultToken(winningPlayerId))
+            {
+                return (winningPlayerId, ResolveLocalPlayerId());
+            }
+
+            return (winningTeam, myTeam);
+        }
+
+        private static string ReadResultString(JObject json, params string[] keys)
+        {
+            if (json == null)
+            {
+                return string.Empty;
+            }
+
+            foreach (var key in keys)
+            {
+                var value = json[key]?.ToString();
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    return value;
+                }
+            }
+
+            return string.Empty;
+        }
+
+        private static string ResolveLocalPlayerId()
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            return string.IsNullOrWhiteSpace(profile?.GlobalUserId) ? "Spectator" : profile.GlobalUserId;
+        }
+
+        private static bool IsPlayerResultToken(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            return !string.Equals(value, "Draw", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(value, "None", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(value, "NoPlayers", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(value, "Spectator", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsTeamResultToken(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            return string.Equals(value, "Red", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(value, "Blue", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(value, "Green", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(value, "Yellow", StringComparison.OrdinalIgnoreCase);
         }
     }
 

@@ -96,7 +96,24 @@ namespace OpenGS
                 myTeam = "Spectator";
             }
 
+            var winningPlayerId = ReadString(json, "WinningPlayerId", "WinningPlayerID", "WinnerPlayerId", "Winner");
+            var winnerName = ReadString(json, "WinnerName", "WinningPlayerName", "WinnerDisplayName");
+            var localPlayerId = ResolveLocalPlayerId();
+            var isTeamResult = IsTeamResultToken(winningTeam);
+
+            if (!isTeamResult && IsPlayerResultToken(winningPlayerId))
+            {
+                // DeathMatch 系の個人戦は、勝者プレイヤー ID を比較対象にする。
+                winningTeam = winningPlayerId;
+                myTeam = localPlayerId;
+            }
+
             ShowResult(winningTeam, myTeam);
+
+            if (!string.IsNullOrWhiteSpace(winnerName))
+            {
+                Debug.Log($"[OnlineResultScene] Winner={winnerName} ({winningPlayerId}), LocalPlayer={localPlayerId}");
+            }
 
             if (resultUIManager == null)
             {
@@ -235,6 +252,43 @@ namespace OpenGS
 
             Debug.LogWarning("[OnlineResultScene] Could not resolve players array from json.");
             return null;
+        }
+
+        private static string ResolveLocalPlayerId()
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            if (profile != null && !string.IsNullOrWhiteSpace(profile.GlobalUserId))
+            {
+                return profile.GlobalUserId;
+            }
+
+            return "Spectator";
+        }
+
+        private static bool IsPlayerResultToken(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            return !string.Equals(value, "Draw", System.StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(value, "None", System.StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(value, "NoPlayers", System.StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(value, "Spectator", System.StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsTeamResultToken(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return false;
+            }
+
+            return string.Equals(value, "Red", System.StringComparison.OrdinalIgnoreCase)
+                || string.Equals(value, "Blue", System.StringComparison.OrdinalIgnoreCase)
+                || string.Equals(value, "Green", System.StringComparison.OrdinalIgnoreCase)
+                || string.Equals(value, "Yellow", System.StringComparison.OrdinalIgnoreCase);
         }
     }
 }

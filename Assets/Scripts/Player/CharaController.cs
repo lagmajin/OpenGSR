@@ -121,6 +121,11 @@ namespace OpenGS
 
         public void Update()
         {
+            if (isDead)
+            {
+                return;
+            }
+
             var screenPos = Camera.main.WorldToScreenPoint(transform.position);
 
 
@@ -199,6 +204,11 @@ namespace OpenGS
         [Button("グレネードテスト")]
         public void ThrowGrenade()
         {
+            if (isDead)
+            {
+                return;
+            }
+
             if (!canOpenGranade)
             {
                 Debug.Log("[CharaController] ThrowGrenade ignored because grenade is locked.");
@@ -225,6 +235,11 @@ namespace OpenGS
         [Button("Shot")]
         void Shot()
         {
+            if (isDead)
+            {
+                return;
+            }
+
             var weapon = weaponSlots.mainWeaponSlot;
 
             var cont = weapon.transform.GetComponentInChildren<AbstractGunController>();

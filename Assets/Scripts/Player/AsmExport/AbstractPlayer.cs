@@ -85,6 +85,8 @@ namespace OpenGS
         private ETeam myTeam;
         private bool canWarp;
         private bool canJump;
+        private bool isSpectatorMode;
+        private float cachedBaseMaxHp = -1f;
         private MultipleTags myTags;
         private IEffectService effectService;
 
@@ -109,6 +111,11 @@ namespace OpenGS
                 hasEnemyFlag = false;
                 CTFMatchMainScript.Instance?.PlayerFlagLost(myTeam == ETeam.Red ? ETeam.Blue : ETeam.Red);
             }
+
+            if (PlayerType() == EPlayerType.MyPlayer && MatchModeResolver.CanRespawnCurrentMatch() == false)
+            {
+                EnterSpectatorMode();
+            }
         }
 
         public virtual void OnBurst()
@@ -122,9 +129,12 @@ namespace OpenGS
 
         public virtual void OnSpawn()
         {
+            isDead = false;
             ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
             Status?.FullCombatRecovery();
+            ApplyMatchModeInitialStats();
+            ExitSpectatorMode();
             canJump = true;
             canWarp = true;
             isSitting = false;
@@ -137,9 +147,18 @@ namespace OpenGS
 
         public virtual void OnReSpawn()
         {
+            if (!MatchModeResolver.CanRespawnCurrentMatch())
+            {
+                EnterSpectatorMode();
+                return;
+            }
+
+            isDead = false;
             ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
             Status?.FullCombatRecovery();
+            ApplyMatchModeInitialStats();
+            ExitSpectatorMode();
             canJump = true;
             canWarp = true;
             isSitting = false;
@@ -152,6 +171,12 @@ namespace OpenGS
 
         public virtual void ReserveReSpawn(float delay)
         {
+            if (!MatchModeResolver.CanRespawnCurrentMatch())
+            {
+                EnterSpectatorMode();
+                return;
+            }
+
             if (reSpawnCoroutine != null)
             {
                 StopCoroutine(reSpawnCoroutine);
@@ -632,6 +657,83 @@ namespace OpenGS
         protected IEnumerator ReSpawnCounter(float time = 5.0f)
         {
             yield return new WaitForSecondsRealtime(time);
+        }
+
+        protected void ApplyMatchModeInitialStats()
+        {
+            if (Status == null)
+            {
+                return;
+            }
+
+            if (cachedBaseMaxHp <= 0f)
+            {
+                cachedBaseMaxHp = Status.MaxHp;
+            }
+
+            var multiplier = MatchModeResolver.ResolveHealthMultiplier(MatchModeResolver.ResolveCurrentGameMode());
+            if (multiplier <= 1f)
+            {
+                return;
+            }
+
+            var targetMaxHp = Mathf.Max(1f, cachedBaseMaxHp * multiplier);
+            Status.MaxHp = targetMaxHp;
+            Status.Hp = targetMaxHp;
+        }
+
+        protected void EnterSpectatorMode()
+        {
+            if (PlayerType() != EPlayerType.MyPlayer)
+            {
+                return;
+            }
+
+            if (isSpectatorMode)
+            {
+                return;
+            }
+
+            isSpectatorMode = true;
+
+            if (input != null)
+            {
+                input.enabled = false;
+            }
+
+            var matchScene = FindFirstObjectByType<AbstractMatchMainScript>();
+            matchScene?.EnterSpectatorMode(transform);
+
+            GameEventBroker.Publish(new PlayerSpectatingEvent(UniqueID().ToString(), true));
+        }
+
+        protected void ExitSpectatorMode()
+        {
+            if (PlayerType() != EPlayerType.MyPlayer)
+            {
+                return;
+            }
+
+            if (!isSpectatorMode)
+            {
+                if (input != null)
+                {
+                    input.enabled = true;
+                }
+                return;
+            }
+
+            isSpectatorMode = false;
+
+            if (input != null)
+            {
+                input.enabled = true;
+            }
+
+            var matchScene = FindFirstObjectByType<AbstractMatchMainScript>();
+            matchScene?.ExitSpectatorMode(transform);
+
+            GameEventBroker.Publish(new PlayerSpectatingEvent(UniqueID().ToString(), false));
         }
 
         private IEnumerator ReserveReSpawnRoutine(float delay)

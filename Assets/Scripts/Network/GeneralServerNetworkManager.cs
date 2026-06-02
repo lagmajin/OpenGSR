@@ -114,6 +114,7 @@ namespace OpenGS
             _ = port;
             _ = pass;
 
+            ResetTransientSessionState();
             Online = true;
             var resolvedAccountName = string.IsNullOrWhiteSpace(AccountManager.Instance.CurrentProfile.DisplayName)
                 ? "Player"
@@ -138,10 +139,24 @@ namespace OpenGS
 
         public void Disconnect()
         {
+            ClearCurrentRoom();
             SaveLocalServerState();
             Online = false;
             AccountManager.Instance.Logout();
             disconnectedSubject.OnNext(Unit.Default);
+        }
+
+        public void ResetTransientSessionState()
+        {
+            loadingCompletedPlayers.Clear();
+            LastMatchResult = null;
+            currentRoomId = string.Empty;
+        }
+
+        public void ClearCurrentRoom()
+        {
+            currentRoomId = string.Empty;
+            loadingCompletedPlayers.Clear();
         }
 
         private string LocalServerStatePath => Path.Combine(Application.persistentDataPath, LocalServerStateFileName);
