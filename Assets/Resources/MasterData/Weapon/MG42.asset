@@ -18,7 +18,7 @@ MonoBehaviour:
   maxBullet: 30
   inGameSprite: {fileID: -2743653234557479000, guid: e44d02555b8778042b9256598ead19a5,
     type: 3}
-  inSelectionSprite: {fileID: -2743653234557478794, guid: e44d02555b8778042b9256598ead19a5,
+  inSelectionSprite: {fileID: -4871723874074965161, guid: 08d4952e73b3a5e44a66bf6893ca7a8b,
     type: 3}
   shilhouetteSprite: {fileID: 7061020420969460000, guid: 082f1d3e83b728241a0c3b163de94882,
     type: 3}

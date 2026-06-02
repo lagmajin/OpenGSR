@@ -12,7 +12,6 @@ namespace OpenGS.EditorTools
     {
         private const string WeaponDataFolder = "Assets/Resources/MasterData/Weapon";
         private const string WeaponSelectSpriteFolder = "Assets/Sprites/WeaponSelect";
-        private const string WeaponSpriteFolder = "Assets/Sprites/Weapon";
 
         [MenuItem("OpenGSR/Tools/Assign Weapon Selection Sprites")]
         public static void AssignWeaponSelectionSprites()
@@ -47,14 +46,14 @@ namespace OpenGS.EditorTools
                     continue;
                 }
 
-                if (selectionSprite.objectReferenceValue != null)
-                {
-                    continue;
-                }
-
                 if (!TryResolveSprite(asset.name, spriteLookup, out var resolvedSprite))
                 {
                     skippedCount++;
+                    continue;
+                }
+
+                if (selectionSprite.objectReferenceValue == resolvedSprite)
+                {
                     continue;
                 }
 
@@ -74,7 +73,6 @@ namespace OpenGS.EditorTools
         {
             var lookup = new Dictionary<string, Sprite>(StringComparer.OrdinalIgnoreCase);
             AddSpritesFromFolder(lookup, WeaponSelectSpriteFolder);
-            AddSpritesFromFolder(lookup, WeaponSpriteFolder);
             return lookup;
         }
 

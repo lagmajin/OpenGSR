@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,6 +16,8 @@ namespace OpenGS
         [SerializeField] public GameObject equippedMarker;
         [SerializeField] public Image equippedIconImage;
         [SerializeField] public CanvasGroup canvasGroup;
+
+        private Enum weaponType;
 
         private void Reset()
         {
@@ -37,6 +40,131 @@ namespace OpenGS
             bannedMarker ??= FindChildGameObject("BannedMarker");
             equippedMarker ??= FindChildGameObject("EquippedMarker");
             equippedIconImage ??= FindChild<Image>("EquippedIcon");
+        }
+
+        public void SetWeaponType(Enum type)
+        {
+            weaponType = type;
+            RefreshWeaponVisual();
+        }
+
+        public void SetDetailText(string detail)
+        {
+            if (detailText != null)
+            {
+                detailText.text = detail ?? string.Empty;
+            }
+        }
+
+        public void SetVisualState(bool isEmpty, bool isBanned, bool isSelected, bool isEquipped, Sprite equippedIcon,
+            Color emptyColor, Color bannedColor, Color selectedColor, Color normalColor)
+        {
+            if (iconImage != null)
+            {
+                iconImage.color = isEmpty
+                    ? emptyColor
+                    : isBanned
+                        ? bannedColor
+                        : isSelected
+                            ? selectedColor
+                            : normalColor;
+
+                if (iconImage.sprite == null)
+                {
+                    iconImage.color = Color.clear;
+                }
+            }
+
+            if (nameText != null)
+            {
+                nameText.color = isEmpty
+                    ? emptyColor
+                    : isBanned
+                        ? bannedColor
+                        : isSelected
+                            ? selectedColor
+                            : normalColor;
+            }
+
+            if (detailText != null)
+            {
+                detailText.color = isEmpty
+                    ? emptyColor
+                    : isBanned
+                        ? bannedColor
+                        : isSelected
+                            ? selectedColor
+                            : normalColor;
+            }
+
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = isEmpty ? 0.35f : 1f;
+                canvasGroup.interactable = !isEmpty && !isBanned;
+                canvasGroup.blocksRaycasts = !isEmpty && !isBanned;
+            }
+
+            if (selectedMarker != null)
+            {
+                selectedMarker.SetActive(isSelected && !isEmpty);
+            }
+
+            if (bannedMarker != null)
+            {
+                bannedMarker.SetActive(isBanned);
+            }
+
+            if (equippedMarker != null)
+            {
+                equippedMarker.SetActive(isEquipped && !isEmpty && iconImage != null);
+            }
+
+            if (equippedIconImage != null)
+            {
+                equippedIconImage.sprite = equippedIcon;
+                equippedIconImage.color = isEquipped
+                    ? new Color(0.9f, 1f, 0.9f, 1f)
+                    : Color.clear;
+
+                if (equippedIconImage.sprite == null)
+                {
+                    equippedIconImage.color = Color.clear;
+                }
+            }
+        }
+
+        private void RefreshWeaponVisual()
+        {
+            if (iconImage == null)
+            {
+                return;
+            }
+
+            var weaponKey = weaponType?.ToString();
+            if (string.IsNullOrWhiteSpace(weaponKey) || string.Equals(weaponKey, "None", StringComparison.OrdinalIgnoreCase))
+            {
+                iconImage.sprite = null;
+                if (nameText != null)
+                {
+                    nameText.text = string.Empty;
+                }
+                return;
+            }
+
+            iconImage.sprite = WeaponVisualResolver.GetSelectionSprite(weaponType);
+            if (iconImage.sprite == null)
+            {
+                iconImage.color = Color.clear;
+            }
+            if (nameText != null)
+            {
+                nameText.text = WeaponVisualResolver.GetDisplayName(weaponType);
+            }
+
+            if (detailText != null && string.IsNullOrWhiteSpace(detailText.text))
+            {
+                detailText.text = WeaponVisualResolver.GetDisplayName(weaponType);
+            }
         }
 
         private T FindChild<T>(string childName) where T : Component

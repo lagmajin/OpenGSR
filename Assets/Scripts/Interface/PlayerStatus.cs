@@ -137,6 +137,44 @@ namespace OpenGS
             RefillGrenade();
         }
 
+        public void LoadGrenadeSlots(IEnumerable<EGrenadeType> equippedGrenades)
+        {
+            var hasEquippedGrenade = false;
+
+            for (var index = 0; index < grenadeSlots.Length; index++)
+            {
+                grenadeSlots[index] = EGrenadeType.Empty;
+            }
+
+            if (equippedGrenades != null)
+            {
+                var slotIndex = 0;
+                foreach (var grenadeType in equippedGrenades)
+                {
+                    if (slotIndex >= grenadeSlots.Length)
+                    {
+                        break;
+                    }
+
+                    grenadeSlots[slotIndex] = grenadeType;
+                    if (grenadeType != EGrenadeType.Empty)
+                    {
+                        hasEquippedGrenade = true;
+                    }
+
+                    slotIndex++;
+                }
+            }
+
+            if (!hasEquippedGrenade)
+            {
+                RefillGrenade();
+                return;
+            }
+
+            SyncGrenadeCount();
+        }
+
         public void RefillBooster(float amount)
         {
             Booster = Booster + amount;

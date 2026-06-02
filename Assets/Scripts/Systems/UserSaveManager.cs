@@ -12,12 +12,18 @@ namespace OpenGS
         public string equippedCharacter = "";
         public string equippedBooster = "";
         public string[] equippedInstantItems = new string[3];
+        public string[] equippedGrenadeSlots = new string[3];
 
         public UserSaveData()
         {
             for (int i = 0; i < equippedInstantItems.Length; i++)
             {
                 equippedInstantItems[i] = "";
+            }
+
+            for (int i = 0; i < equippedGrenadeSlots.Length; i++)
+            {
+                equippedGrenadeSlots[i] = "";
             }
         }
     }
@@ -29,7 +35,8 @@ namespace OpenGS
     public static class UserSaveManager
     {
         private const int InstantItemSlotCount = 3;
-        private const int SAVE_VERSION = 2;
+        private const int GrenadeSlotCount = 3;
+        private const int SAVE_VERSION = 3;
         private const string SAVE_FILE = "UserData.json";
         private static UserSaveData data;
 
@@ -43,11 +50,18 @@ namespace OpenGS
                     Migrate,
                     null);
 
+                if (data != null)
+                {
+                    NormalizeInstantItemSlots(data);
+                    NormalizeGrenadeSlots(data);
+                }
+
                 if (data == null)
                 {
                     // Backward compatibility for non-versioned legacy files.
                     data = JsonStorage.Load<UserSaveData>(SAVE_FILE, new UserSaveData());
                     NormalizeInstantItemSlots(data);
+                    NormalizeGrenadeSlots(data);
                     JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
                 }
             }
@@ -68,6 +82,7 @@ namespace OpenGS
             }
 
             NormalizeInstantItemSlots(migrated);
+            NormalizeGrenadeSlots(migrated);
             return migrated;
         }
 
@@ -102,6 +117,41 @@ namespace OpenGS
                 for (var index = 0; index < saveData.equippedInstantItems.Length; index++)
                 {
                     saveData.equippedInstantItems[index] = saveData.equippedInstantItems[index] ?? string.Empty;
+                }
+            }
+        }
+
+        private static void NormalizeGrenadeSlots(UserSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            if (saveData.equippedGrenadeSlots == null || saveData.equippedGrenadeSlots.Length != GrenadeSlotCount)
+            {
+                var normalized = new string[GrenadeSlotCount];
+                for (var index = 0; index < normalized.Length; index++)
+                {
+                    normalized[index] = string.Empty;
+                }
+
+                if (saveData.equippedGrenadeSlots != null)
+                {
+                    var copyLength = Mathf.Min(saveData.equippedGrenadeSlots.Length, normalized.Length);
+                    for (var index = 0; index < copyLength; index++)
+                    {
+                        normalized[index] = saveData.equippedGrenadeSlots[index] ?? string.Empty;
+                    }
+                }
+
+                saveData.equippedGrenadeSlots = normalized;
+            }
+            else
+            {
+                for (var index = 0; index < saveData.equippedGrenadeSlots.Length; index++)
+                {
+                    saveData.equippedGrenadeSlots[index] = saveData.equippedGrenadeSlots[index] ?? string.Empty;
                 }
             }
         }
@@ -151,6 +201,7 @@ namespace OpenGS
 
             LoadData();
             NormalizeInstantItemSlots(data);
+            NormalizeGrenadeSlots(data);
 
             if (category == EShopCategory.Character)
             {
@@ -184,6 +235,7 @@ namespace OpenGS
         {
             LoadData();
             NormalizeInstantItemSlots(data);
+            NormalizeGrenadeSlots(data);
 
             if (category == EShopCategory.Character)
             {
@@ -221,6 +273,7 @@ namespace OpenGS
             {
                 LoadData();
                 NormalizeInstantItemSlots(data);
+                NormalizeGrenadeSlots(data);
                 foreach (var eq in data.equippedInstantItems)
                 {
                     if (eq == itemId) return true;
@@ -243,6 +296,49 @@ namespace OpenGS
             }
 
             return copy;
+        }
+
+        public static void EquipGrenadeToSlot(string grenadeType, int slotIndex)
+        {
+            LoadData();
+            NormalizeGrenadeSlots(data);
+
+            if (slotIndex < 0 || slotIndex >= data.equippedGrenadeSlots.Length)
+            {
+                Debug.LogWarning($"[UserSaveManager] Grenade slot index out of range: {slotIndex}");
+                return;
+            }
+
+            data.equippedGrenadeSlots[slotIndex] = grenadeType ?? string.Empty;
+            SaveData();
+            Debug.Log($"Equipped Grenade (Slot {slotIndex}): {grenadeType}");
+        }
+
+        public static string[] GetEquippedGrenadeSlots()
+        {
+            LoadData();
+            NormalizeGrenadeSlots(data);
+
+            var copy = new string[data.equippedGrenadeSlots.Length];
+            for (var index = 0; index < copy.Length; index++)
+            {
+                copy[index] = data.equippedGrenadeSlots[index] ?? string.Empty;
+            }
+
+            return copy;
+        }
+
+        public static string GetEquippedGrenadeInSlot(int slotIndex)
+        {
+            LoadData();
+            NormalizeGrenadeSlots(data);
+
+            if (slotIndex < 0 || slotIndex >= data.equippedGrenadeSlots.Length)
+            {
+                return string.Empty;
+            }
+
+            return data.equippedGrenadeSlots[slotIndex] ?? string.Empty;
         }
 
         // --- Favorite Weapon Integration ---

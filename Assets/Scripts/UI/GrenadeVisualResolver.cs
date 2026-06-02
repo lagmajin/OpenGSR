@@ -15,6 +15,7 @@ namespace OpenGS
     {
         private static readonly Dictionary<EGrenadeType, ScriptableObject> legacyDataCache = new Dictionary<EGrenadeType, ScriptableObject>();
         private static readonly Dictionary<string, Sprite> hudSpriteCache = new Dictionary<string, Sprite>(StringComparer.OrdinalIgnoreCase);
+        private static GrenadeHudMasterData masterData;
         private static bool initialized;
 
         public static string GetDisplayName(EGrenadeType type)
@@ -52,6 +53,12 @@ namespace OpenGS
         public static Sprite GetHudSprite(EGrenadeType type)
         {
             EnsureInitialized();
+
+            var masterDataSprite = GetMasterDataSprite(type);
+            if (masterDataSprite != null)
+            {
+                return masterDataSprite;
+            }
 
             var legacySprite = GetLegacySprite(type);
             if (legacySprite != null)
@@ -219,6 +226,27 @@ namespace OpenGS
             }
 
             hudSpriteCache[Normalize(key)] = sprite;
+        }
+
+        private static Sprite GetMasterDataSprite(EGrenadeType type)
+        {
+            masterData ??= Resources.Load<GrenadeHudMasterData>("MasterData/Grenade/GrenadeHudMasterData");
+            if (masterData == null)
+            {
+                return null;
+            }
+
+            return type switch
+            {
+                EGrenadeType.Normal => masterData.normal,
+                EGrenadeType.Power => masterData.power,
+                EGrenadeType.Magnetic => masterData.magnetic,
+                EGrenadeType.Mine => masterData.mine,
+                EGrenadeType.Cluster => masterData.cluster,
+                EGrenadeType.Fire => masterData.fire,
+                EGrenadeType.Smoke => masterData.fire,
+                _ => null
+            };
         }
 
         private static string Normalize(string value)

@@ -226,6 +226,8 @@ namespace OpenGS
         /// </summary>
         protected virtual GameObject CreateMyPlayer(Vector3 position, ETeam team = ETeam.NoTeam)
         {
+            EnsureMasterDataReferences();
+
             if (prefabMasterData == null)
             {
                 Debug.LogError($"[{GetType().Name}] prefabMasterData is not assigned. Cannot create player.");
@@ -292,6 +294,7 @@ namespace OpenGS
 
         public void Start()
         {
+            EnsureMasterDataReferences();
             OnStart();
             PlayStageBGM();
             BindMatchNetwork();
@@ -716,6 +719,27 @@ namespace OpenGS
             }
         }
 
+        private void EnsureMasterDataReferences()
+        {
+            if (prefabMasterData == null)
+            {
+                prefabMasterData = FindFirstObjectByType<PlayerPrefabMasterData>();
+                if (prefabMasterData == null)
+                {
+                    prefabMasterData = Resources.Load<PlayerPrefabMasterData>("MasterData/Player/PlayerPrefabMasterData");
+                }
+            }
+
+            if (uiCanvasMasterData == null)
+            {
+                uiCanvasMasterData = FindFirstObjectByType<CanvasMasterData>();
+                if (uiCanvasMasterData == null)
+                {
+                    uiCanvasMasterData = Resources.Load<CanvasMasterData>("MasterData/UI/CanvasMasterData");
+                }
+            }
+        }
+
 
         [Button("リザルトテスト")]
         public void GoToResult()
@@ -797,6 +821,13 @@ namespace OpenGS
         [Button("リスポーンUI表示")]
         public void ShowReSpawnUI(float time = 5.0f)
         {
+            EnsureMasterDataReferences();
+            if (uiCanvasMasterData == null || uiCanvasMasterData.ReSpawnUICanvas == null)
+            {
+                Debug.LogWarning($"[{GetType().Name}] uiCanvasMasterData is not assigned. Cannot show respawn UI.");
+                return;
+            }
+
             Instantiate(uiCanvasMasterData.ReSpawnUICanvas);
 
 

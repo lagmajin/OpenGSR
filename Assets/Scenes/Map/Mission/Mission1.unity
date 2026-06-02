@@ -165,8 +165,8 @@ MonoBehaviour:
   overrideGameTime: 0
   testGameTime: 1000
   gameEndTimeScale: 0.4
-  prefabMasterData: {fileID: 0}
-  uiCanvasMasterData: {fileID: 0}
+  prefabMasterData: {fileID: 11400000, guid: d3277f2c2eec6ee488d9ebb84877265c, type: 2}
+  uiCanvasMasterData: {fileID: 11400000, guid: db5431252919e0d49adc915439830155, type: 2}
   respawnPoints: {fileID: 0}
   points: {fileID: 0}
   mediateObject: {fileID: 0}

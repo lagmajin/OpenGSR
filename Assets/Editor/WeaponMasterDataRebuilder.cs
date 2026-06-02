@@ -12,7 +12,7 @@ namespace OpenGS.EditorTools
     {
         private const string WeaponDataFolder = "Assets/Resources/MasterData/Weapon";
         private const string WeaponThumbnailPath = "Assets/Resources/MasterData/Weapon/WeaponThumbnail.asset";
-        private static readonly string[] SelectionFolders = { "WeaponSelect", "Weapon", "Archive/Weapon" };
+        private static readonly string[] SelectionFolders = { "WeaponSelect" };
         private static readonly string[] GameFolders = { "Weapon/MiniWeapon", "Weapon", "Archive/Weapon", "WeaponSelect" };
         private static readonly string[] SilhouetteFolders = { "Archive/Weapon", "Weapon/MiniWeapon", "Weapon", "WeaponSelect" };
 

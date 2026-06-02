@@ -524,7 +524,8 @@ namespace OpenGS.Network
             {
                 ["MessageType"] = MessageType.PlayerEquipInfo,
                 ["PlayerCharacter"] = "Ami",
-                ["InstantItemSlot"] = new JArray()
+                ["InstantItemSlot"] = new JArray(),
+                ["GrenadeSlot"] = new JArray { "Normal", "Normal", "Normal" }
             };
             sender(resp);
         }

@@ -75,6 +75,7 @@ namespace OpenGS
         private CharaController myCharaPlayer;
         private PlayerStatus myStatus;
         private string myPlayerId;
+        private GrenadeSlotImage[] grenadeSlotImages;
         private IDisposable ammoSub;
         private IDisposable weaponSub;
         private IDisposable killSub;
@@ -122,22 +123,22 @@ namespace OpenGS
 
         private void Update()
         {
-            if (weaponUI == null)
+            if (weaponUI != null)
             {
-                return;
+                // グレネードの溜め状態などは毎フレーム更新が必要な場合がある
+                if (grenadeComponent != null && weaponUI.grenadeChargeGauge != null)
+                {
+                    float ratio = grenadeComponent.CurrentChargeRatio;
+                    weaponUI.grenadeChargeGauge.UpdateGauge(ratio, 1.0f);
+
+                    // 溜め中以外は非表示にするなどの演出も可能
+                    weaponUI.grenadeChargeGauge.gameObject.SetActive(ratio > 0);
+                }
+
+                UpdateGrenadeDisplay();
             }
 
-            // グレネードの溜め状態などは毎フレーム更新が必要な場合がある
-            if (grenadeComponent != null && weaponUI.grenadeChargeGauge != null)
-            {
-                float ratio = grenadeComponent.CurrentChargeRatio;
-                weaponUI.grenadeChargeGauge.UpdateGauge(ratio, 1.0f);
-                
-                // 溜め中以外は非表示にするなどの演出も可能
-                weaponUI.grenadeChargeGauge.gameObject.SetActive(ratio > 0);
-            }
-
-            UpdateGrenadeDisplay();
+            RefreshGrenadeSlotDisplays();
         }
 
         private void TryFindMyPlayer()
@@ -170,6 +171,7 @@ namespace OpenGS
             grenadeComponent = player.GetComponent<PlayerGrenadeComponent>();
             myCharaPlayer = player as CharaController;
             myStatus = player.Status;
+            CacheGrenadeSlotImages();
             BindInstantItemEvents();
             BindGrenadeSlotEvents();
 
@@ -442,15 +444,16 @@ namespace OpenGS
 
         private void RefreshGrenadeSlotDisplays()
         {
-            var slotImages = GetComponentsInChildren<GrenadeSlotImage>(true);
-            if (slotImages == null || slotImages.Length == 0)
+            CacheGrenadeSlotImages();
+
+            if (grenadeSlotImages == null || grenadeSlotImages.Length == 0)
             {
                 return;
             }
 
-            for (var index = 0; index < slotImages.Length; index++)
+            for (var index = 0; index < grenadeSlotImages.Length; index++)
             {
-                var slotImage = slotImages[index];
+                var slotImage = grenadeSlotImages[index];
                 if (slotImage == null)
                 {
                     continue;
@@ -464,6 +467,16 @@ namespace OpenGS
 
                 slotImage.SetGrenadeType(myStatus.GetGrenadeSlot(index));
             }
+        }
+
+        private void CacheGrenadeSlotImages()
+        {
+            if (grenadeSlotImages != null && grenadeSlotImages.Length > 0)
+            {
+                return;
+            }
+
+            grenadeSlotImages = GetComponentsInChildren<GrenadeSlotImage>(true);
         }
 
         private void BindInstantItemEvents()

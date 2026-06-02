@@ -307,6 +307,16 @@ namespace OpenGS
                         }
                         resp["InstantItemSlot"] = slots;
 
+                        var grenadeSlots = new JArray();
+                        if (equip?.GrenadeSlots != null)
+                        {
+                            foreach (var s in equip.GrenadeSlots)
+                            {
+                                grenadeSlots.Add(s.ToString());
+                            }
+                        }
+                        resp["GrenadeSlot"] = grenadeSlots;
+
                         SendJsonToClient(resp);
                         PrettyLogger.Bold("LocalServer", $"Sent PlayerEquipInfo to client: {resp.ToString(Newtonsoft.Json.Formatting.None)}");
                     }

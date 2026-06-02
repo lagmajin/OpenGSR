@@ -71,7 +71,7 @@ namespace OpenGS
         private void OnEnable()
         {
             ResolveDependencies();
-            EnsureRuntimeLayout();
+            ValidateSlotConfiguration();
             RefreshData();
             RefreshUI();
             StartAutoCloseTimer();
@@ -85,7 +85,7 @@ namespace OpenGS
         public void Show()
         {
             gameObject.SetActive(true);
-            EnsureRuntimeLayout();
+            ValidateSlotConfiguration();
             RefreshData();
             RefreshUI();
             StartAutoCloseTimer();
@@ -175,274 +175,36 @@ namespace OpenGS
             group ??= GetComponent<CanvasGroup>();
         }
 
-        private void EnsureRuntimeLayout()
+        private void ValidateSlotConfiguration()
         {
             if (group == null)
             {
                 group = GetComponent<CanvasGroup>();
                 if (group == null)
                 {
-                    group = gameObject.AddComponent<CanvasGroup>();
+                    Debug.LogWarning("[WeaponSelectDialog] CanvasGroup is missing.");
                 }
             }
 
-            if (leftSlots != null && leftSlots.Length == SlotCount && rightSlots != null && rightSlots.Length == SlotCount)
+            if (leftSlots == null || leftSlots.Length != SlotCount)
             {
-                if (leftSlots.All(slot => slot != null && slot.iconImage != null) &&
-                    rightSlots.All(slot => slot != null && slot.iconImage != null))
-                {
-                    return;
-                }
+                Debug.LogWarning($"[WeaponSelectDialog] leftSlots should contain {SlotCount} slots.");
             }
 
-            BuildRuntimeLayout();
-        }
-
-        private void BuildRuntimeLayout()
-        {
-            var root = FindChild("RuntimeLayout");
-            if (root == null)
+            if (rightSlots == null || rightSlots.Length != SlotCount)
             {
-                root = CreateRectTransform("RuntimeLayout", transform as RectTransform ?? GetComponent<RectTransform>());
-                StretchFull(root);
+                Debug.LogWarning($"[WeaponSelectDialog] rightSlots should contain {SlotCount} slots.");
             }
 
-            var header = FindChild("Header");
-            if (header == null)
+            if (leftSlots != null && leftSlots.Any(slot => slot == null))
             {
-                header = CreateRectTransform("Header", root);
-                ConfigureHeader(header);
+                Debug.LogWarning("[WeaponSelectDialog] leftSlots contains null entries.");
             }
 
-            var content = FindChild("Content");
-            if (content == null)
+            if (rightSlots != null && rightSlots.Any(slot => slot == null))
             {
-                content = CreateRectTransform("Content", root);
-                ConfigureContent(content);
+                Debug.LogWarning("[WeaponSelectDialog] rightSlots contains null entries.");
             }
-
-            var leftPanel = FindChild("LeftPanel");
-            if (leftPanel == null)
-            {
-                leftPanel = CreateRectTransform("LeftPanel", content);
-                ConfigureSidePanel(leftPanel, true);
-            }
-
-            var rightPanel = FindChild("RightPanel");
-            if (rightPanel == null)
-            {
-                rightPanel = CreateRectTransform("RightPanel", content);
-                ConfigureSidePanel(rightPanel, false);
-            }
-
-            var bottom = FindChild("BottomBar");
-            if (bottom == null)
-            {
-                bottom = CreateRectTransform("BottomBar", root);
-                ConfigureBottomBar(bottom);
-            }
-
-            statusText ??= CreateText(bottom, "StatusText", "LEFT 0/5  RIGHT 0/5", 24, TextAlignmentOptions.Left);
-
-            leftSlots = BuildRuntimeSlots(leftPanel, "LeftSlot", true);
-            rightSlots = BuildRuntimeSlots(rightPanel, "RightSlot", false);
-        }
-
-        private WeaponSelectDialogSlot[] BuildRuntimeSlots(RectTransform parent, string prefix, bool isLeft)
-        {
-            var slots = new WeaponSelectDialogSlot[SlotCount];
-            for (var index = 0; index < SlotCount; index++)
-            {
-                var slotRoot = CreateRectTransform($"{prefix}{index + 1}", parent);
-                ConfigureSlotRoot(slotRoot, index);
-
-                var view = slotRoot.gameObject.AddComponent<WeaponSelectDialogSlot>();
-                view.canvasGroup = slotRoot.gameObject.GetComponent<CanvasGroup>() ?? slotRoot.gameObject.AddComponent<CanvasGroup>();
-                view.CacheReferences();
-
-                var background = CreateImage(slotRoot, "Background", new Color(0.12f, 0.12f, 0.12f, 0.92f));
-                StretchFull(background.rectTransform);
-
-                var icon = CreateImage(slotRoot, "Icon", Color.white);
-                ConfigureIcon(icon.rectTransform);
-                view.iconImage = icon;
-
-                view.nameText = CreateText(slotRoot, "NameText", isLeft ? $"LEFT {index + 1}" : $"RIGHT {index + 1}", 22, TextAlignmentOptions.Left);
-                view.detailText = CreateText(slotRoot, "DetailText", string.Empty, 16, TextAlignmentOptions.Left);
-
-                var selectButton = CreateButton(slotRoot, "SelectButton", string.Empty, Vector2.zero, Vector2.zero);
-                StretchFull(selectButton.GetComponent<RectTransform>());
-                selectButton.targetGraphic = background;
-                selectButton.transition = Selectable.Transition.ColorTint;
-                selectButton.colors = GetButtonColors(isLeft);
-                view.selectButton = selectButton;
-
-                view.selectedMarker = CreateMarker(slotRoot, "SelectedMarker", new Color(1f, 0.9f, 0.2f, 0.12f));
-                view.bannedMarker = CreateMarker(slotRoot, "BannedMarker", new Color(0.25f, 0.25f, 0.25f, 0.4f));
-                var equippedMarker = CreateRectTransform("EquippedMarker", slotRoot);
-                ConfigureEquippedMarker(equippedMarker);
-                var equippedBackground = CreateImage(equippedMarker, "EquippedBackground", new Color(0.12f, 0.4f, 0.16f, 0.88f));
-                StretchFull(equippedBackground.rectTransform);
-                var equippedIcon = CreateImage(equippedMarker, "EquippedIcon", Color.white);
-                StretchFull(equippedIcon.rectTransform);
-                equippedIcon.preserveAspect = true;
-                view.equippedMarker = equippedMarker.gameObject;
-                view.equippedIconImage = equippedIcon;
-
-                slots[index] = view;
-            }
-
-            return slots;
-        }
-
-        private static void ConfigureHeader(RectTransform header)
-        {
-            header.anchorMin = new Vector2(0.05f, 0.88f);
-            header.anchorMax = new Vector2(0.95f, 0.98f);
-            header.offsetMin = Vector2.zero;
-            header.offsetMax = Vector2.zero;
-        }
-
-        private static void ConfigureContent(RectTransform content)
-        {
-            content.anchorMin = new Vector2(0.05f, 0.18f);
-            content.anchorMax = new Vector2(0.95f, 0.84f);
-            content.offsetMin = Vector2.zero;
-            content.offsetMax = Vector2.zero;
-        }
-
-        private static void ConfigureSidePanel(RectTransform panel, bool isLeft)
-        {
-            panel.anchorMin = isLeft ? new Vector2(0f, 0f) : new Vector2(0.52f, 0f);
-            panel.anchorMax = isLeft ? new Vector2(0.48f, 1f) : new Vector2(1f, 1f);
-            panel.offsetMin = new Vector2(10f, 10f);
-            panel.offsetMax = new Vector2(-10f, -10f);
-        }
-
-        private static void ConfigureBottomBar(RectTransform bottom)
-        {
-            bottom.anchorMin = new Vector2(0.05f, 0.03f);
-            bottom.anchorMax = new Vector2(0.95f, 0.14f);
-            bottom.offsetMin = Vector2.zero;
-            bottom.offsetMax = Vector2.zero;
-        }
-
-        private static void ConfigureSlotRoot(RectTransform slotRoot, int index)
-        {
-            slotRoot.anchorMin = new Vector2(0f, 1f - ((index + 1) * 0.18f));
-            slotRoot.anchorMax = new Vector2(1f, 1f - (index * 0.18f));
-            slotRoot.offsetMin = new Vector2(0f, 4f);
-            slotRoot.offsetMax = new Vector2(0f, -4f);
-        }
-
-        private static void ConfigureEquippedMarker(RectTransform marker)
-        {
-            marker.anchorMin = new Vector2(1f, 1f);
-            marker.anchorMax = new Vector2(1f, 1f);
-            marker.pivot = new Vector2(1f, 1f);
-            marker.sizeDelta = new Vector2(58f, 58f);
-            marker.anchoredPosition = new Vector2(-4f, -4f);
-        }
-
-        private static void ConfigureIcon(RectTransform icon)
-        {
-            icon.anchorMin = new Vector2(0.02f, 0.15f);
-            icon.anchorMax = new Vector2(0.18f, 0.85f);
-            icon.offsetMin = Vector2.zero;
-            icon.offsetMax = Vector2.zero;
-        }
-
-        private static void StretchFull(RectTransform rect)
-        {
-            rect.anchorMin = Vector2.zero;
-            rect.anchorMax = Vector2.one;
-            rect.offsetMin = Vector2.zero;
-            rect.offsetMax = Vector2.zero;
-        }
-
-        private RectTransform CreateRectTransform(string objectName, RectTransform parent)
-        {
-            var go = new GameObject(objectName, typeof(RectTransform));
-            go.transform.SetParent(parent, false);
-            var rect = go.GetComponent<RectTransform>();
-            rect.localScale = Vector3.one;
-            return rect;
-        }
-
-        private Image CreateImage(RectTransform parent, string objectName, Color color)
-        {
-            var go = new GameObject(objectName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-            go.transform.SetParent(parent, false);
-            var image = go.GetComponent<Image>();
-            image.color = color;
-            return image;
-        }
-
-        private TextMeshProUGUI CreateText(RectTransform parent, string objectName, string text, float fontSize, TextAlignmentOptions alignment)
-        {
-            var go = new GameObject(objectName, typeof(RectTransform), typeof(CanvasRenderer), typeof(TextMeshProUGUI));
-            go.transform.SetParent(parent, false);
-            var tmp = go.GetComponent<TextMeshProUGUI>();
-            tmp.text = text;
-            tmp.fontSize = fontSize;
-            tmp.alignment = alignment;
-            tmp.color = Color.white;
-            if (TMP_Settings.defaultFontAsset != null)
-            {
-                tmp.font = TMP_Settings.defaultFontAsset;
-            }
-            return tmp;
-        }
-
-        private Button CreateButton(RectTransform parent, string objectName, string label, Vector2 size, Vector2 anchoredPosition)
-        {
-            var go = new GameObject(objectName, typeof(RectTransform), typeof(CanvasRenderer), typeof(Image), typeof(Button));
-            go.transform.SetParent(parent, false);
-
-            var rect = go.GetComponent<RectTransform>();
-            rect.sizeDelta = size;
-            rect.anchoredPosition = anchoredPosition;
-
-            var image = go.GetComponent<Image>();
-            image.color = new Color(0.18f, 0.18f, 0.18f, 0.95f);
-
-            var button = go.GetComponent<Button>();
-            var labelText = CreateText(rect, "Label", label, 22, TextAlignmentOptions.Center);
-            StretchFull(labelText.rectTransform);
-            labelText.raycastTarget = false;
-
-            return button;
-        }
-
-        private GameObject CreateMarker(RectTransform parent, string objectName, Color color)
-        {
-            var marker = CreateImage(parent, objectName, color);
-            StretchFull(marker.rectTransform);
-            return marker.gameObject;
-        }
-
-        private ColorBlock GetButtonColors(bool isLeft)
-        {
-            var colors = ColorBlock.defaultColorBlock;
-            colors.normalColor = isLeft ? new Color(0.22f, 0.28f, 0.38f, 1f) : new Color(0.34f, 0.22f, 0.22f, 1f);
-            colors.highlightedColor = colors.normalColor + new Color(0.08f, 0.08f, 0.08f, 0f);
-            colors.selectedColor = selectedColor;
-            colors.pressedColor = colors.normalColor * 0.85f;
-            colors.disabledColor = bannedColor;
-            return colors;
-        }
-
-        private RectTransform FindChild(string objectName)
-        {
-            foreach (Transform child in transform)
-            {
-                if (child != null && child.name == objectName)
-                {
-                    return child as RectTransform;
-                }
-            }
-
-            return null;
         }
 
         private void SetupListeners()
@@ -561,13 +323,14 @@ namespace OpenGS
 
             var isEmpty = weapon == EWeaponType.None;
             var displayName = isEmpty ? "EMPTY" : WeaponVisualResolver.GetDisplayName(weapon);
-            var icon = isEmpty ? null : WeaponVisualResolver.GetSelectionSprite(weapon);
             var isEquipped = !isEmpty && UserSaveManager.IsFavoriteWeapon(weapon.ToString());
-            var equippedIcon = isEquipped ? WeaponVisualResolver.GetInGameSprite(weapon) : null;
+            var equippedIcon = isEquipped ? WeaponVisualResolver.GetSelectionSprite(weapon) : null;
             var isBanned = !isEmpty && IsBanned(weapon);
             var isSelected = index == selectedLeftIndex;
 
-            ApplySlotVisual(slot, icon, displayName, isEmpty ? string.Empty : weapon.ToString(), isEmpty, isBanned, isSelected, isEquipped, equippedIcon);
+            slot.SetWeaponType(weapon);
+            slot.SetDetailText(displayName);
+            slot.SetVisualState(isEmpty, isBanned, isSelected, isEquipped, equippedIcon, emptyColor, bannedColor, selectedColor, normalColor);
 
             if (slot.selectButton != null)
             {
@@ -584,95 +347,18 @@ namespace OpenGS
 
             var isEmpty = weapon == eWeaponType.None;
             var displayName = isEmpty ? "EMPTY" : WeaponVisualResolver.GetDisplayName(weapon);
-            var icon = isEmpty ? null : WeaponVisualResolver.GetSelectionSprite(weapon);
             var isEquipped = false;
-            var equippedIcon = isEquipped ? WeaponVisualResolver.GetInGameSprite(weapon) : null;
+            var equippedIcon = isEquipped ? WeaponVisualResolver.GetSelectionSprite(weapon) : null;
             var isBanned = !isEmpty && IsBanned(weapon);
             var isSelected = index == selectedRightIndex;
 
-            ApplySlotVisual(slot, icon, displayName, isEmpty ? string.Empty : weapon.ToString(), isEmpty, isBanned, isSelected, isEquipped, equippedIcon);
+            slot.SetWeaponType(weapon);
+            slot.SetDetailText(displayName);
+            slot.SetVisualState(isEmpty, isBanned, isSelected, isEquipped, equippedIcon, emptyColor, bannedColor, selectedColor, normalColor);
 
             if (slot.selectButton != null)
             {
                 slot.selectButton.interactable = allowRightSideBanToggle && !isEmpty;
-            }
-        }
-
-        private void ApplySlotVisual(
-            WeaponSelectDialogSlot slot,
-            Sprite icon,
-            string displayName,
-            string detail,
-            bool isEmpty,
-            bool isBanned,
-            bool isSelected,
-            bool isEquipped,
-            Sprite equippedIcon)
-        {
-            if (slot.iconImage != null)
-            {
-                slot.iconImage.sprite = icon;
-                slot.iconImage.color = isEmpty
-                    ? emptyColor
-                    : isBanned
-                        ? bannedColor
-                        : isSelected
-                            ? selectedColor
-                            : normalColor;
-            }
-
-            if (slot.nameText != null)
-            {
-                slot.nameText.text = displayName;
-                slot.nameText.color = isEmpty
-                    ? emptyColor
-                    : isBanned
-                        ? bannedColor
-                        : isSelected
-                            ? selectedColor
-                            : normalColor;
-            }
-
-            if (slot.detailText != null)
-            {
-                slot.detailText.text = detail;
-                slot.detailText.color = isEmpty
-                    ? emptyColor
-                    : isBanned
-                        ? bannedColor
-                        : isSelected
-                            ? selectedColor
-                            : normalColor;
-            }
-
-            if (slot.canvasGroup != null)
-            {
-                slot.canvasGroup.alpha = isEmpty ? 0.35f : 1f;
-                slot.canvasGroup.interactable = !isEmpty && !isBanned;
-                slot.canvasGroup.blocksRaycasts = !isEmpty && !isBanned;
-            }
-
-            if (slot.selectedMarker != null)
-            {
-                slot.selectedMarker.SetActive(isSelected && !isEmpty);
-            }
-
-            if (slot.bannedMarker != null)
-            {
-                slot.bannedMarker.SetActive(isBanned);
-            }
-
-            if (slot.equippedMarker != null)
-            {
-                slot.equippedMarker.SetActive(isEquipped && !isEmpty && icon != null);
-            }
-
-            if (slot.equippedIconImage != null)
-            {
-                slot.equippedIconImage.sprite = equippedIcon;
-                slot.equippedIconImage.color = isEquipped
-                    ? new Color(0.9f, 1f, 0.9f, 1f)
-                    : Color.clear;
             }
         }
 

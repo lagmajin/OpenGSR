@@ -55,9 +55,13 @@ namespace OpenGS
                 return;
             }
 
-            slotImage.sprite = currentType == EGrenadeType.Empty
-                ? null
-                : GrenadeVisualResolver.GetPackHudSprite(currentType);
+            var isEmpty = currentType == EGrenadeType.Empty;
+            var sprite = isEmpty ? null : GrenadeVisualResolver.GetPackHudSprite(currentType);
+            slotImage.sprite = sprite;
+
+            var color = slotImage.color;
+            color.a = (isEmpty || sprite == null) ? 0f : 1f;
+            slotImage.color = color;
         }
     }
 }

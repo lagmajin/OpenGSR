@@ -17,6 +17,9 @@ namespace OpenGS
                 Container.BindInstance(effectPrefabs).AsSingle();
             }
             Container.Bind<IEffectService>().To<EffectService>().AsSingle();
+            Container.Bind<ISoundService>().To<SoundService>().AsSingle().WithArguments(
+                Resources.Load<SoundMasterData>("MasterData/SoundMasterData"),
+                Resources.Load<BGMMasterData>("MasterData/BGMMasterData"));
             Container.Bind<OnlineLoadingSceneNetworkManager>()
  .FromComponentInHierarchy()
  .AsSingle();

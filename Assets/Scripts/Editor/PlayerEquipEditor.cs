@@ -13,6 +13,9 @@ namespace OpenGS
         private EInstantItemType itemSlot1;
         private EInstantItemType itemSlot2;
         private EInstantItemType itemSlot3;
+        private EGrenadeType grenadeSlot1 = EGrenadeType.Normal;
+        private EGrenadeType grenadeSlot2 = EGrenadeType.Normal;
+        private EGrenadeType grenadeSlot3 = EGrenadeType.Normal;
 
         private string fileName = "PlayerEquip.json";
         private string FilePath => Path.Combine(Application.persistentDataPath, fileName);
@@ -31,6 +34,13 @@ namespace OpenGS
             itemSlot2 = (EInstantItemType)EditorGUILayout.EnumPopup("Slot 2", itemSlot2);
             itemSlot3 = (EInstantItemType)EditorGUILayout.EnumPopup("Slot 3", itemSlot3);
 
+            GUILayout.Space(8);
+            GUILayout.Label("Grenade Slots", EditorStyles.boldLabel);
+
+            grenadeSlot1 = (EGrenadeType)EditorGUILayout.EnumPopup("Grenade 1", grenadeSlot1);
+            grenadeSlot2 = (EGrenadeType)EditorGUILayout.EnumPopup("Grenade 2", grenadeSlot2);
+            grenadeSlot3 = (EGrenadeType)EditorGUILayout.EnumPopup("Grenade 3", grenadeSlot3);
+
             if (GUILayout.Button("Save"))
             {
                 SaveFile();
@@ -46,10 +56,12 @@ namespace OpenGS
         private void SaveFile()
         {
             var slots = new EInstantItemType[] { itemSlot1, itemSlot2, itemSlot3 };
+            var grenadeSlots = new EGrenadeType[] { grenadeSlot1, grenadeSlot2, grenadeSlot3 };
             var jObj = new JObject
             {
                 ["PlayerCharacter"] = playerCharacter.ToString(),
-                ["InstantItemSlot"] = new JArray(slots)
+                ["InstantItemSlot"] = new JArray(slots),
+                ["GrenadeSlot"] = new JArray(grenadeSlots)
             };
 
             File.WriteAllText(FilePath, jObj.ToString());

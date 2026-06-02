@@ -55,9 +55,13 @@ namespace OpenGS
                 return;
             }
 
-            slotImage.sprite = currentType == EInstantItemType.None
-                ? null
-                : InstantItemVisualResolver.GetIcon(currentType);
+            var isEmpty = currentType == EInstantItemType.None;
+            var sprite = isEmpty ? null : InstantItemVisualResolver.GetIcon(currentType);
+            slotImage.sprite = sprite;
+
+            var color = slotImage.color;
+            color.a = (isEmpty || sprite == null) ? 0f : 1f;
+            slotImage.color = color;
         }
     }
 }

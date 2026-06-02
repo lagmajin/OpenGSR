@@ -57,17 +57,13 @@ namespace OpenGS
         public static Sprite GetSelectionSprite(Enum weaponType)
         {
             var data = Resolve(weaponType);
-            return data != null
-                ? data.inSelectionSprite ?? data.inGameSprite ?? data.shilhouetteSprite
-                : null;
+            return data?.inSelectionSprite;
         }
 
         public static Sprite GetSelectionSprite(string weaponId)
         {
             var data = Resolve(weaponId);
-            return data != null
-                ? data.inSelectionSprite ?? data.inGameSprite ?? data.shilhouetteSprite
-                : null;
+            return data?.inSelectionSprite;
         }
 
         public static Sprite GetInGameSprite(Enum weaponType)

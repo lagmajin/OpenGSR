@@ -82,8 +82,8 @@ namespace OpenGS
 
         public override void OnSpawn()
         {
-            ResetInstantItems();
             grenadeComponent = GetComponent<PlayerGrenadeComponent>();
+            InitializeSpawnLoadout();
             canOpenGranade = true;
             onDamage = false;
             isBlink = false;
@@ -91,8 +91,8 @@ namespace OpenGS
 
         public override void OnReSpawn()
         {
-            ResetInstantItems();
             grenadeComponent = GetComponent<PlayerGrenadeComponent>();
+            InitializeSpawnLoadout();
             canOpenGranade = true;
             onDamage = false;
             isBlink = false;
@@ -116,7 +116,7 @@ namespace OpenGS
             spriteRenderer = GetComponent<SpriteRenderer>();
             rigidbody2D = GetComponent<Rigidbody2D>();
             grenadeComponent = GetComponent<PlayerGrenadeComponent>();
-            ResetInstantItems();
+            InitializeSpawnLoadout();
         }
 
         public void Update()
@@ -398,6 +398,14 @@ namespace OpenGS
             NotifyInstantItemsChanged();
         }
 
+        private void InitializeSpawnLoadout()
+        {
+            Status?.FullRecovery();
+            Status?.LoadGrenadeSlots(GetEquippedGrenadeTypes());
+            ResetInstantItems();
+            SyncGrenadeComponentTypeFromStatus();
+        }
+
         private void EnsureInstantItemsLoaded()
         {
             if (instantItemSlots.Count() == 0)
@@ -476,6 +484,54 @@ namespace OpenGS
             }
 
             return result;
+        }
+
+        private static IEnumerable<EGrenadeType> GetEquippedGrenadeTypes()
+        {
+            var equippedGrenades = UserSaveManager.GetEquippedGrenadeSlots();
+            if (equippedGrenades == null || equippedGrenades.Length == 0)
+            {
+                return Array.Empty<EGrenadeType>();
+            }
+
+            var result = new List<EGrenadeType>(equippedGrenades.Length);
+            foreach (var grenadeId in equippedGrenades)
+            {
+                if (string.IsNullOrWhiteSpace(grenadeId) || !Enum.TryParse(grenadeId, true, out EGrenadeType grenadeType))
+                {
+                    result.Add(EGrenadeType.Empty);
+                    continue;
+                }
+
+                result.Add(grenadeType);
+            }
+
+            return result;
+        }
+
+        private void SyncGrenadeComponentTypeFromStatus()
+        {
+            if (grenadeComponent == null || Status == null)
+            {
+                return;
+            }
+
+            var selectedGrenadeType = EGrenadeType.Empty;
+            for (var index = 0; index < Status.GrenadeSlots.Count; index++)
+            {
+                var grenadeType = Status.GetGrenadeSlot(index);
+                if (grenadeType == EGrenadeType.Empty)
+                {
+                    continue;
+                }
+
+                selectedGrenadeType = grenadeType;
+                break;
+            }
+
+            grenadeComponent.SetGrenadeType(selectedGrenadeType == EGrenadeType.Empty
+                ? EGrenadeType.Normal
+                : selectedGrenadeType);
         }
 
         private void NotifyInstantItemsChanged()
