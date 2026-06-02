@@ -324,25 +324,94 @@ namespace OpenGS
 
         public override void OnStartUnityEditor()
         {
-            //throw new NotImplementedException();
+            AutoSet();
+            EnsureEditorMatchRoom();
+            SetupGame();
+            Debug.Log("[DMMatchMainScript] Editor start initialized.");
         }
 
         protected override void OnQuitUnityEditor()
         {
-            //throw new NotImplementedException();
+            CancelInvoke();
+            endFlag = true;
+
+            if (matchRoomManager != null)
+            {
+                matchRoomManager.RemoveOnlineMatchRoom();
+            }
+
+            Debug.Log("[DMMatchMainScript] Editor cleanup completed.");
         }
 
         protected override void OnStartFromEditorDirectly()
         {
-            //throw new NotImplementedException();
+            AutoSet();
+            EnsureEditorMatchRoom();
 
-            var room=matchRoomManager.OnlineMatchRoom;
+            if (GameManager != null)
+            {
+                GameManager.IsOnlineGameMode = false;
+            }
 
-            //var pm=room.playerma
+            Debug.Log("[DMMatchMainScript] Direct editor play initialized.");
+        }
 
-            var playerInfo = new OpenGSCore.PlayerInfo();
+        private void EnsureEditorMatchRoom()
+        {
+            if (matchRoomManager == null)
+            {
+                try
+                {
+                    matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[DMMatchMainScript] Failed to resolve MatchRoomManager: {ex.Message}");
+                    return;
+                }
+            }
 
-            //room.PlayerManager.AddPlayer()
+            if (matchRoomManager == null)
+            {
+                return;
+            }
+
+            if (!matchRoomManager.IsValidOnlineMatchRoom())
+            {
+                matchRoomManager.CreateNewOnlineMatchRoom("editor-match");
+            }
+
+            var room = matchRoomManager.OnlineMatchRoom;
+            if (room == null)
+            {
+                return;
+            }
+
+            var playerInfo = BuildEditorPlayerInfo();
+            if (room.database.TryGetPlayer(playerInfo.Id, out _))
+            {
+                return;
+            }
+
+            room.AddPlayer(playerInfo);
+        }
+
+        private static OpenGSCore.PlayerInfo BuildEditorPlayerInfo()
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            var playerId = string.IsNullOrWhiteSpace(profile?.GlobalUserId)
+                ? "editor-player"
+                : profile.GlobalUserId;
+            var displayName = string.IsNullOrWhiteSpace(profile?.DisplayName)
+                ? "EditorPlayer"
+                : profile.DisplayName;
+
+            return new OpenGSCore.PlayerInfo(playerId, displayName)
+            {
+                playerCharacter = GamePlayerManager.Instance != null
+                    ? GamePlayerManager.Instance.SelectedPlayerCharacter()
+                    : OpenGSCore.EPlayerCharacter.Misty
+            };
 
         }
     }

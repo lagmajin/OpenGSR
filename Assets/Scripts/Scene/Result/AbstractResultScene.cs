@@ -25,6 +25,8 @@ namespace OpenGS
         public float timeOut = 5.0f;
 
         protected bool isResultSet = false;
+        private float resultElapsedTime = 0f;
+        private bool hasReturnedFromResult = false;
 
         protected override void OnStartUnityEditor() { }
         protected override void OnStartFromEditorDirectly() { }
@@ -41,10 +43,24 @@ namespace OpenGS
             base.Update();
             if (!isResultSet) return;
 
+            if (!hasReturnedFromResult && timeOut > 0f)
+            {
+                resultElapsedTime += Time.deltaTime;
+                if (resultElapsedTime >= timeOut)
+                {
+                    GoToNextScene();
+                    hasReturnedFromResult = true;
+                    isResultSet = false;
+                    return;
+                }
+            }
+
             // クリックやエンターキーで次の画面へ
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0))
             {
                 GoToNextScene();
+                hasReturnedFromResult = true;
+                isResultSet = false;
             }
         }
 
@@ -54,6 +70,8 @@ namespace OpenGS
         protected void ShowResult(string winningTeam, string myTeam)
         {
             Invoke(nameof(PlayFanfare), fanfareDelay);
+            resultElapsedTime = 0f;
+            hasReturnedFromResult = false;
 
             if (winImage != null) winImage.gameObject.SetActive(false);
             if (loseImage != null) loseImage.gameObject.SetActive(false);

@@ -281,7 +281,6 @@ namespace OpenGS
         void LoadGameScene()
         {
             Debug.Log("Go to loading Scene...");
-            CacheOnlineSelectionForLoading();
             GameFlagsManager.GetInstance().BeforeSceneName = generalSceneMasterData.OnlineWaitRoomScene();
             RequestSceneTransition(generalSceneMasterData.OnlineLoadingScene(), "GameStart");
         }

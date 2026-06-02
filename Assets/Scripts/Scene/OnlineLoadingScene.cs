@@ -53,6 +53,7 @@ namespace OpenGS
             count = 0f;
             EnsureLoadingBgm();
 
+            networkManager?.BeginLoadingSession(GetExpectedPlayerCount());
             networkManager?.SendLoadingSceneEntered();
             TryConnectToMatchServer();
 
@@ -104,8 +105,9 @@ namespace OpenGS
             MatchRoomManager().CreateNewOnlineMatchRoom();
             yield return new WaitForSecondsRealtime(1);
 
-            var selectedMap = ResolveSelectedMap();
-            var selectedMode = ResolveSelectedGameMode();
+            var onlineSelection = ResolveOnlineSelection();
+            var selectedMap = ResolveSelectedMap(onlineSelection);
+            var selectedMode = ResolveSelectedGameMode(onlineSelection);
             var mapInfo = ResolveMapInfo(selectedMap);
             if (mapInfo == null)
             {
@@ -116,6 +118,15 @@ namespace OpenGS
 
             onlineLoadingManager.LoadingInfo.MapName = mapInfo.MapScene();
             onlineLoadingManager.LoadingInfo.GameMode = selectedMode;
+            if (GameModeSelectManager.Instance != null)
+            {
+                GameModeSelectManager.Instance.OnlineGameSelect = new OnlineGameModeSelect
+                {
+                    GameMode = selectedMode,
+                    Map = selectedMap,
+                    TeamBalance = onlineSelection?.TeamBalance ?? true
+                };
+            }
 
             _sceneLoadOp = SceneManager.LoadSceneAsync(mapInfo.MapScene(), LoadSceneMode.Single);
             if (_sceneLoadOp == null)
@@ -314,26 +325,72 @@ namespace OpenGS
             }
         }
 
-        private EMap ResolveSelectedMap()
+        private OnlineGameModeSelect ResolveOnlineSelection()
         {
-            var selected = GameModeSelectManager.Instance?.OnlineGameSelect;
+            try
+            {
+                var waitRoom = DependencyInjectionConfig.Resolve<WaitRoomManager>()?.WaitRoom;
+                if (waitRoom != null)
+                {
+                    return new OnlineGameModeSelect
+                    {
+                        GameMode = waitRoom.GameMode,
+                        Map = waitRoom.Map,
+                        TeamBalance = waitRoom.TeamBalance
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[OnlineLoadingScene] Failed to resolve online selection from wait room: {ex.Message}");
+            }
+
+            return GameModeSelectManager.Instance?.OnlineGameSelect;
+        }
+
+        private EMap ResolveSelectedMap(OnlineGameModeSelect selected = null)
+        {
             if (selected != null && selected.Map != EMap.Unknown)
             {
                 return selected.Map;
             }
 
+            var room = ResolveWaitRoom();
+            if (room != null && room.Map != EMap.Unknown)
+            {
+                return room.Map;
+            }
+
             return EMap.DryDays;
         }
 
-        private EGameMode ResolveSelectedGameMode()
+        private EGameMode ResolveSelectedGameMode(OnlineGameModeSelect selected = null)
         {
-            var selected = GameModeSelectManager.Instance?.OnlineGameSelect;
             if (selected != null && selected.GameMode != EGameMode.Unknown)
             {
                 return selected.GameMode;
             }
 
+            var room = ResolveWaitRoom();
+            if (room != null && room.GameMode != EGameMode.Unknown)
+            {
+                return room.GameMode;
+            }
+
             return EGameMode.DeathMatch;
+        }
+
+        private ClientWaitRoom ResolveWaitRoom()
+        {
+            try
+            {
+                return DependencyInjectionConfig.Resolve<WaitRoomManager>()?.WaitRoom;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[OnlineLoadingScene] Failed to resolve wait room: {ex.Message}");
+                return null;
+            }
         }
 
         private MapInfoMasterData ResolveMapInfo(EMap map)

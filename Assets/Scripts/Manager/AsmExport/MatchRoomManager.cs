@@ -45,29 +45,28 @@ namespace OpenGS
                     RemoveOnlineMatchRoom();
                 }
 
-                if (OnlineWaitRoom != null)
+                var roomId = string.IsNullOrWhiteSpace(id)
+                    ? Guid.NewGuid().ToString("N")
+                    : id;
+                var roomName = OnlineWaitRoom != null && !string.IsNullOrWhiteSpace(OnlineWaitRoom.RoomName)
+                    ? OnlineWaitRoom.RoomName
+                    : "Online Match";
+                var capacity = OnlineWaitRoom != null && OnlineWaitRoom.Capacity > 0
+                    ? OnlineWaitRoom.Capacity
+                    : 8;
+
+                Debug.Log($"OnlineMatchRoom created... id={roomId}, name={roomName}, capacity={capacity}");
+                OnlineMatchRoom = new MatchRoom(roomId)
                 {
-                    Debug.Log("OnlineMatchRoom created...");
-                    OnlineMatchRoom = new MatchRoom("");
-                }
+                    RoomName = roomName,
+                    Capacity = capacity
+                };
             }
         }
 
         public void CreateNewOnlineMatchRoom()
         {
-            lock (_lockObj)
-            {
-                if (OnlineMatchRoom != null)
-                {
-                    RemoveOnlineMatchRoom();
-                }
-
-                if (OnlineWaitRoom != null)
-                {
-                    Debug.Log("OnlineMatchRoom created...");
-                    OnlineMatchRoom = new MatchRoom("");
-                }
-            }
+            CreateNewOnlineMatchRoom(Guid.NewGuid().ToString("N"));
         }
 
         public void RemoveOnlineMatchRoom()
