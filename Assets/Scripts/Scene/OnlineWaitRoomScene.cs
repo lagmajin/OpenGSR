@@ -391,6 +391,13 @@ namespace OpenGS
                 return;
             }
 
+            var dialog = weaponLimitDialog.GetComponent<WeaponLimitDialog>();
+            if (dialog != null)
+            {
+                dialog.Open(roomOwner);
+                return;
+            }
+
             weaponLimitDialog.SetActive(true);
         }
 
@@ -505,7 +512,8 @@ namespace OpenGS
         {
             if (!weaponLimitDialog)
             {
-                weaponLimitDialog = FindInactiveGameObject("WeaponLimitDialog");
+                var dialogComponent = FindInactiveComponentByType<WeaponLimitDialog>();
+                weaponLimitDialog = dialogComponent != null ? dialogComponent.gameObject : FindInactiveGameObject("WeaponLimitDialog");
             }
 
             if (!weaponLimitButton)
@@ -1130,6 +1138,27 @@ namespace OpenGS
         {
             var gameObject = FindInactiveGameObject(objectName);
             return gameObject != null ? gameObject.GetComponent<T>() : null;
+        }
+
+        private static T FindInactiveComponentByType<T>() where T : Component
+        {
+            foreach (var candidate in Resources.FindObjectsOfTypeAll<T>())
+            {
+                if (candidate == null)
+                {
+                    continue;
+                }
+
+                var gameObject = candidate.gameObject;
+                if (gameObject == null || !gameObject.scene.IsValid())
+                {
+                    continue;
+                }
+
+                return candidate;
+            }
+
+            return null;
         }
 
         private static string ResolveLocalPlayerId()

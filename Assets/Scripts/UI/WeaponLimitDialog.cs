@@ -20,6 +20,7 @@ namespace OpenGS
 
         private MatchRoomManager matchRoomManager;
         private bool listenersRegistered;
+        private bool isEditable = true;
         private static readonly eWeaponType[] AssaultRifleWeapons =
         {
             eWeaponType.AK47,
@@ -73,6 +74,16 @@ namespace OpenGS
             SyncUiFromState();
         }
 
+        private void Reset()
+        {
+            AutoBindIfNeeded();
+        }
+
+        private void OnValidate()
+        {
+            AutoBindIfNeeded();
+        }
+
         private void OnEnable()
         {
             if (matchRoomManager == null)
@@ -90,11 +101,28 @@ namespace OpenGS
             AutoBindIfNeeded();
             SetupListeners();
             SyncUiFromState();
+            ApplyInteractableState();
         }
 
         public void Open()
         {
+            Open(true);
+        }
+
+        public void Open(bool editable)
+        {
+            isEditable = editable;
             gameObject.SetActive(true);
+        }
+
+        public void OpenDialog()
+        {
+            Open();
+        }
+
+        public void OpenDialog(bool editable)
+        {
+            Open(editable);
         }
 
         public void OnOK()
@@ -104,6 +132,11 @@ namespace OpenGS
         }
 
         public void OnOk()
+        {
+            OnOK();
+        }
+
+        public void ApplyAndClose()
         {
             OnOK();
         }
@@ -119,9 +152,14 @@ namespace OpenGS
             onCancel();
         }
 
+        public void CancelAndClose()
+        {
+            onCancel();
+        }
+
         private void ApplySelection()
         {
-            if (matchRoomManager == null)
+            if (matchRoomManager == null || !isEditable)
             {
                 return;
             }
@@ -172,6 +210,21 @@ namespace OpenGS
             SetToggleState(mg, MachineGunWeapons);
         }
 
+        private void ApplyInteractableState()
+        {
+            if (okButton != null)
+            {
+                okButton.interactable = isEditable;
+            }
+
+            SetToggleInteractable(ar);
+            SetToggleInteractable(smg);
+            SetToggleInteractable(sr);
+            SetToggleInteractable(sg);
+            SetToggleInteractable(gr);
+            SetToggleInteractable(mg);
+        }
+
         private void SetToggleState(Toggle toggle, IReadOnlyList<eWeaponType> weapons)
         {
             if (toggle == null)
@@ -180,6 +233,16 @@ namespace OpenGS
             }
 
             toggle.isOn = !IsAnyBanned(weapons);
+        }
+
+        private void SetToggleInteractable(Toggle toggle)
+        {
+            if (toggle == null)
+            {
+                return;
+            }
+
+            toggle.interactable = isEditable;
         }
 
         private bool IsAnyBanned(IReadOnlyList<eWeaponType> weapons)
@@ -205,8 +268,8 @@ namespace OpenGS
             if (group != null)
             {
                 group.alpha = 1f;
-                group.interactable = false;
                 group.blocksRaycasts = false;
+                group.interactable = false;
             }
 
             gameObject.SetActive(false);
@@ -214,9 +277,9 @@ namespace OpenGS
 
         private void AutoBindIfNeeded()
         {
-            group ??= GetComponent<CanvasGroup>();
-            okButton ??= FindButton("Ok") ?? FindButton("OKButton");
-            cancelButton ??= FindButton("Cancel") ?? FindButton("CancelButtn");
+            group ??= GetComponent<CanvasGroup>() ?? GetComponentInChildren<CanvasGroup>(true);
+            okButton ??= FindButton("Ok", "OK", "OKButton", "OkButton");
+            cancelButton ??= FindButton("Cancel", "CancelButtn", "CancelButton", "CancelBtn");
             ar ??= FindToggle("AR");
             smg ??= FindToggle("SMG");
             sr ??= FindToggle("SR");
@@ -245,45 +308,74 @@ namespace OpenGS
             listenersRegistered = true;
         }
 
-        private Button FindButton(string objectName)
+        private void LateUpdate()
         {
-            if (string.IsNullOrWhiteSpace(objectName))
+            ApplyInteractableState();
+        }
+
+        private Button FindButton(params string[] objectNames)
+        {
+            if (objectNames == null || objectNames.Length == 0)
             {
-                Debug.LogWarning("[WeaponLimitDialog] Button name is empty.");
                 return null;
             }
 
             var buttons = GetComponentsInChildren<Button>(true);
             foreach (var candidate in buttons)
             {
-                if (candidate != null && candidate.gameObject.name == objectName)
+                if (candidate == null)
                 {
-                    return candidate;
+                    continue;
+                }
+
+                foreach (var objectName in objectNames)
+                {
+                    if (string.IsNullOrWhiteSpace(objectName))
+                    {
+                        continue;
+                    }
+
+                    if (candidate.gameObject.name == objectName)
+                    {
+                        return candidate;
+                    }
                 }
             }
 
-            Debug.LogWarning($"[WeaponLimitDialog] Button not found: {objectName}");
+            Debug.LogWarning($"[WeaponLimitDialog] Button not found: {string.Join(", ", objectNames)}");
             return null;
         }
 
-        private Toggle FindToggle(string objectName)
+        private Toggle FindToggle(params string[] objectNames)
         {
-            if (string.IsNullOrWhiteSpace(objectName))
+            if (objectNames == null || objectNames.Length == 0)
             {
-                Debug.LogWarning("[WeaponLimitDialog] Toggle name is empty.");
                 return null;
             }
 
             var toggles = GetComponentsInChildren<Toggle>(true);
             foreach (var candidate in toggles)
             {
-                if (candidate != null && candidate.gameObject.name == objectName)
+                if (candidate == null)
                 {
-                    return candidate;
+                    continue;
+                }
+
+                foreach (var objectName in objectNames)
+                {
+                    if (string.IsNullOrWhiteSpace(objectName))
+                    {
+                        continue;
+                    }
+
+                    if (candidate.gameObject.name == objectName)
+                    {
+                        return candidate;
+                    }
                 }
             }
 
-            Debug.LogWarning($"[WeaponLimitDialog] Toggle not found: {objectName}");
+            Debug.LogWarning($"[WeaponLimitDialog] Toggle not found: {string.Join(", ", objectNames)}");
             return null;
         }
     }

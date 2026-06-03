@@ -220,6 +220,13 @@ namespace OpenGS
             HideAllDialog();
             if (weaponLimitDialog)
             {
+                var dialog = weaponLimitDialog.GetComponent<WeaponLimitDialog>();
+                if (dialog != null)
+                {
+                    dialog.Open(true);
+                    return;
+                }
+
                 weaponLimitDialog.SetActive(true);
             }
         }
