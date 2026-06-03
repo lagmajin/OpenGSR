@@ -64,6 +64,8 @@ namespace OpenGS
         private int redScore = 0;
         private int blueScore = 0;
         private int captureLimit = 5;
+        private int previousRedScore = 0;
+        private int previousBlueScore = 0;
         private float remainingTime;
         private bool isMatchActive = false;
 
@@ -128,6 +130,8 @@ namespace OpenGS
             isMatchActive = true;
             redScore = 0;
             blueScore = 0;
+            previousRedScore = 0;
+            previousBlueScore = 0;
             remainingTime = matchDuration;
             redFlagState = FlagState.AtBase;
             blueFlagState = FlagState.AtBase;
@@ -179,37 +183,14 @@ namespace OpenGS
 
         private void HandleFlagCaptured(ETeam capturingTeam)
         {
-            if (capturingTeam == ETeam.Red)
-            {
-                redScore++;
-                AnimateScorePop(redScoreText);
-            }
-            else if (capturingTeam == ETeam.Blue)
-            {
-                blueScore++;
-                AnimateScorePop(blueScoreText);
-            }
-
-            UpdateScoreDisplay();
-            CheckVictoryCondition();
+            UpdateFlagStatusDisplay();
         }
 
         private void HandleFlagReturned(ETeam returningTeam)
         {
-            // 味方のフラッグが帰還（リターン）also gives a point per CTFRule.md
-            if (returningTeam == ETeam.Red)
-            {
-                redScore++;
-                AnimateScorePop(redScoreText);
-            }
-            else if (returningTeam == ETeam.Blue)
-            {
-                blueScore++;
-                AnimateScorePop(blueScoreText);
-            }
-
-            UpdateScoreDisplay();
-            CheckVictoryCondition();
+            // フラッグが自陣に戻っただけでは得点しない。
+            // スタンド側の状態更新で表示は同期される。
+            UpdateFlagStatusDisplay();
         }
 
         private void HandleFlagLost(ETeam flagTeam)
@@ -249,9 +230,25 @@ namespace OpenGS
         /// </summary>
         public void UpdateScoreFromServer(int redScore, int blueScore)
         {
+            var redChanged = redScore != this.redScore;
+            var blueChanged = blueScore != this.blueScore;
+
             this.redScore = redScore;
             this.blueScore = blueScore;
+
+            if (redChanged && redScore > previousRedScore)
+            {
+                AnimateScorePop(redScoreText);
+            }
+            if (blueChanged && blueScore > previousBlueScore)
+            {
+                AnimateScorePop(blueScoreText);
+            }
+
+            previousRedScore = redScore;
+            previousBlueScore = blueScore;
             UpdateScoreDisplay();
+            CheckVictoryCondition();
         }
 
         // Legacy compatibility

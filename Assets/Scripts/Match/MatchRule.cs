@@ -55,6 +55,9 @@ namespace OpenGS
             return mode.ToString();
         }
 
+        public int TimeLimitSeconds => time;
+        public bool TimeLimitEnabled => timelimit;
+
         public bool CanRespwn { get => canRespwn; set => canRespwn = value; }
         internal EGameMode Mode { get => mode; set => mode = value; }
 
@@ -179,12 +182,14 @@ namespace OpenGS
     [JsonObject]
     public class CTFMatchRule : AbstractMatchRule
     {
-        private static int defaultFlagCount = 3;
+        private static int defaultFlagCount = 5;
         private static int defaultMaxFlagCount = 5;
 
-        private int flagReturnCount = defaultFlagCount;
+        private int flagCaptureCount = defaultFlagCount;
         private int flagUpCount = 1;
-        public int FlagReturnCount { get => flagReturnCount; set => flagReturnCount = value; }
+        [System.Obsolete("Use FlagCaptureCount instead.")]
+        public int FlagReturnCount { get => flagCaptureCount; set => flagCaptureCount = value; }
+        public int FlagCaptureCount { get => flagCaptureCount; set => flagCaptureCount = value; }
 
         public CTFMatchRule()
         {
@@ -194,17 +199,17 @@ namespace OpenGS
 
         public override void Up()
         {
-            flagReturnCount = Mathf.Min(flagReturnCount + flagUpCount, defaultMaxFlagCount);
+            flagCaptureCount = Mathf.Min(flagCaptureCount + flagUpCount, defaultMaxFlagCount);
         }
 
         public override void Down()
         {
-            flagReturnCount = Mathf.Max(flagReturnCount - flagUpCount, 1);
+            flagCaptureCount = Mathf.Max(flagCaptureCount - flagUpCount, 1);
         }
 
         public override bool D(in MatchData d)
         {
-            return d != null && Mathf.Max(d.RedTeamFlagReturn, d.BlueTeamFlagReturn) >= flagReturnCount;
+            return d != null && Mathf.Max(d.RedTeamFlagScore, d.BlueTeamFlagScore) >= flagCaptureCount;
         }
     }
 

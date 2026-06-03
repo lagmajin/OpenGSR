@@ -103,13 +103,15 @@ namespace OpenGS
 
         // ─── IPlayer: ライフサイクル ─────────────────────────────────
         private bool hasEnemyFlag = false;
+        private FlagController carriedEnemyFlag = null;
 
         public virtual void OnDead()
         {
             if (hasEnemyFlag)
             {
                 hasEnemyFlag = false;
-                CTFMatchMainScript.Instance?.PlayerFlagLost(myTeam == ETeam.Red ? ETeam.Blue : ETeam.Red);
+                carriedEnemyFlag?.OnDropped();
+                carriedEnemyFlag = null;
             }
 
             if (PlayerType() == EPlayerType.MyPlayer && MatchModeResolver.CanRespawnCurrentMatch() == false)
@@ -123,7 +125,8 @@ namespace OpenGS
             if (hasEnemyFlag)
             {
                 hasEnemyFlag = false;
-                CTFMatchMainScript.Instance?.PlayerFlagLost(myTeam == ETeam.Red ? ETeam.Blue : ETeam.Red);
+                carriedEnemyFlag?.OnDropped();
+                carriedEnemyFlag = null;
             }
         }
 
@@ -223,9 +226,16 @@ namespace OpenGS
 #endif
         }
 
+        public void BindEnemyFlag(FlagController flag)
+        {
+            carriedEnemyFlag = flag;
+        }
+
         public void EnemyFlagReturnedToBase()
         {
             hasEnemyFlag = false;
+            carriedEnemyFlag?.ReturnToBase();
+            carriedEnemyFlag = null;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log($"{character} delivered enemy flag to base!");
 #endif

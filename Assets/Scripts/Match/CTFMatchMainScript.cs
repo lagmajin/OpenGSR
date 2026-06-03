@@ -31,6 +31,9 @@ namespace OpenGS
 
         //[SerializeField][OdinSerialize][Inject] ClientSessionData data;
         private MatchRoom matchRoom;
+        private readonly HashSet<string> processedFlagEventKeys = new HashSet<string>();
+        private readonly Queue<string> recentFlagEventKeys = new Queue<string>();
+        private const int MaxRecentFlagEventKeys = 128;
 
         //public AudioClip captureFlagSound;
         //public AudioClip returnFlagSound;
@@ -85,6 +88,7 @@ namespace OpenGS
             SubscribeEvent();
 
             SetUpUI();
+            ApplyRuleSettings();
 
             redTeamFlagStand.SetFlag();
             blueTeamFlagStand.SetFlag();
@@ -98,6 +102,18 @@ namespace OpenGS
             {
                 CTFScoreUIManager.Instance.UpdateScore(0, 0);
             }
+        }
+
+        private void ApplyRuleSettings()
+        {
+            var room = ResolveCurrentMatchRoom();
+            if (room?.Rule is CTFMatchRule rule && CTFScoreUIManager.Instance != null)
+            {
+                CTFScoreUIManager.Instance.SetCaptureLimit(rule.FlagCaptureCount);
+                CTFScoreUIManager.Instance.SetMatchDuration(rule.TimeLimitSeconds);
+            }
+
+            room?.ResetCaptureTheFlagState();
         }
 
         private void CreateNewMyPlayer()
@@ -169,9 +185,7 @@ namespace OpenGS
 
         void FlagCaptured(in TeamEventPlayerInfo capturedPlayerInfo)
         {
-            // var myPlayerInfo = GameManager.MyPlayerInfo
-            //var playerStatus = GameManager.PlayerStatus
-            //if(playerStatus.Team=capturedPlayerInfo.tea) 
+            // capture is finalized by the stand/player flow; the network event path is handled separately
         }
 
         void FlagReturn(in TeamEventPlayerInfo flagReturnInfo)
@@ -226,11 +240,11 @@ namespace OpenGS
         {
             var eventName = e.EventName;
 
-            if ("FlagReturnEvent" == eventName)
+            if (RUDPMessageTypes.FlagReturn == eventName)
             {
             }
 
-            if ("FlagLostEvent" == eventName)
+            if (RUDPMessageTypes.FlagLost == eventName)
             {
                 //PlaySound.PlayBGM()
             }
@@ -257,22 +271,25 @@ namespace OpenGS
 
             if (e is FlagEvent flagEvent)
             {
+                var room = ResolveCurrentMatchRoom();
                 var teamStr = flagEvent.Team().ToString();
                 var playerId = flagEvent.PlayerID();
                 var pos = flagEvent.Position();
+                var eventKey = CreateFlagEventKey(flagEvent.FlagEventType().ToString(), teamStr, playerId, pos.x, pos.y);
 
                 JObject json = flagEvent.FlagEventType() switch
                 {
-                    EFlagEventType.Captured => RUDPMessageBuilder.CreateFlagCaptured(playerId, teamStr, pos),
-                    EFlagEventType.Lost => RUDPMessageBuilder.CreateFlagLost(playerId, teamStr, pos),
-                    EFlagEventType.Returned => RUDPMessageBuilder.CreateFlagReturn(teamStr, playerId),
-                    EFlagEventType.Burst => RUDPMessageBuilder.CreateFlagBurst(teamStr, pos, playerId),
-                    EFlagEventType.Pickup => RUDPMessageBuilder.CreateFlagPickup(playerId, teamStr, pos),
+                    EFlagEventType.Captured => RUDPMessageBuilder.CreateFlagCaptured(playerId, teamStr, pos, eventKey),
+                    EFlagEventType.Lost => RUDPMessageBuilder.CreateFlagLost(playerId, teamStr, pos, eventKey),
+                    EFlagEventType.Returned => RUDPMessageBuilder.CreateFlagReturn(teamStr, playerId, eventKey),
+                    EFlagEventType.Burst => RUDPMessageBuilder.CreateFlagBurst(teamStr, pos, playerId, eventKey),
+                    EFlagEventType.Pickup => RUDPMessageBuilder.CreateFlagPickup(playerId, teamStr, pos, eventKey),
                     _ => null
                 };
 
                 if (json != null)
                 {
+                    AttachRoomIdentifiers(json, room);
                     networkManager.SendToServer(json);
                     Debug.Log($"[CTF] Sent flag event to server: {flagEvent.FlagEventType()}");
                 }
@@ -320,28 +337,35 @@ namespace OpenGS
         /// </summary>
         private void HandleFlagEvent(JObject json, EFlagEventType eventType)
         {
-            var playerId = json["PlayerId"]?.ToString() ?? "";
+            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? "";
             var teamStr = json["Team"]?.ToString() ?? "Red";
             Enum.TryParse<ETeam>(teamStr, out var team);
+            var eventKey = ResolveFlagEventKey(json, eventType, team, playerId);
+
+            if (!TryRememberFlagEvent(eventKey))
+            {
+                Debug.Log($"[CTF] Ignored duplicate flag event: {eventType} key={eventKey}");
+                return;
+            }
 
             // UIイベントを発火
             switch (eventType)
             {
                 case EFlagEventType.Captured:
-                    PlayerFlagCaptured(team);
+                    PlayerFlagCaptured(team, true);
                     break;
                 case EFlagEventType.Lost:
-                    PlayerFlagLost(team);
+                    PlayerFlagLost(team, true);
                     break;
                 case EFlagEventType.Returned:
-                    PlayerFlagReturned(team);
+                    PlayerFlagReturned(team, true);
                     break;
                 case EFlagEventType.Pickup:
-                    PlayerFlagPickedUp(team, playerId);
+                    PlayerFlagPickedUp(team, playerId, true);
                     break;
             }
 
-            Debug.Log($"[CTF] Received flag event from server: {eventType} for team {team}");
+            Debug.Log($"[CTF] Received flag event from server: {eventType} for team {team}, key={eventKey}");
         }
 
         /// <summary>
@@ -349,13 +373,37 @@ namespace OpenGS
         /// </summary>
         private void HandleFlagScoreUpdate(JObject json)
         {
-            var redScore = json["RedTeamScore"]?.ToObject<int>() ?? 0;
-            var blueScore = json["BlueTeamScore"]?.ToObject<int>() ?? 0;
+            var eventKey = json["EventKey"]?.ToString();
+            if (!TryRememberFlagEvent(string.IsNullOrWhiteSpace(eventKey)
+                ? $"FlagScoreUpdate|{ReadScore(json, "RedTeamScore", "RedTeamFlagScore")}|{ReadScore(json, "BlueTeamScore", "BlueTeamFlagScore")}"
+                : $"FlagScoreUpdate|{eventKey}"))
+            {
+                Debug.Log($"[CTF] Ignored duplicate flag score update: {eventKey}");
+                return;
+            }
+
+            var redScore = ReadScore(json, "RedTeamScore", "RedTeamFlagScore");
+            var blueScore = ReadScore(json, "BlueTeamScore", "BlueTeamFlagScore");
+
+            var room = ResolveCurrentMatchRoom();
+            if (room?.MatchData != null)
+            {
+                var redDelta = redScore - room.MatchData.RedTeamFlagScore;
+                var blueDelta = blueScore - room.MatchData.BlueTeamFlagScore;
+                if (redDelta != 0) room.MatchData.AddFlagScore(ETeam.Red, redDelta);
+                if (blueDelta != 0) room.MatchData.AddFlagScore(ETeam.Blue, blueDelta);
+            }
 
             // CTFScoreUIManagerにスコアを通知
             if (CTFScoreUIManager.Instance != null)
             {
                 CTFScoreUIManager.Instance.UpdateScore(redScore, blueScore);
+            }
+
+            if (!endFlag && room?.Rule is CTFMatchRule rule && room.MatchData != null && rule.D(room.MatchData))
+            {
+                endFlag = true;
+                HandleMatchEndFromScores(redScore, blueScore);
             }
 
             Debug.Log($"[CTF] Score update: Red={redScore}, Blue={blueScore}");
@@ -381,29 +429,190 @@ namespace OpenGS
         [Button("フラッグキャプチャーテスト")]
         public void PlayerFlagCaptured(ETeam team)
         {
+            PlayerFlagCaptured(team, false);
+        }
+
+        [Button("フラッグキャプチャーテスト")]
+        public void PlayerFlagCaptured(ETeam team, bool fromNetwork = false)
+        {
             Debug.Log("FlagCaptured: " + team);
             OnFlagCaptured?.Invoke(team);
+            if (!fromNetwork)
+            {
+                RegisterFlagCapture(team);
+            }
         }
 
         [Button("フラッグロストテスト")]
         public void PlayerFlagLost(ETeam team)
+        {
+            PlayerFlagLost(team, false);
+        }
+
+        [Button("フラッグロストテスト")]
+        public void PlayerFlagLost(ETeam team, bool fromNetwork = false)
         {
             Debug.Log("FlagLost: " + team);
             OnFlagLost?.Invoke(team);
         }
 
         [Button("フラッグ帰還テスト")]
-        public void PlayerFlagReturned(ETeam team)
+        public void PlayerFlagReturned(ETeam team, bool fromNetwork = false)
         {
             Debug.Log("FlagReturned: " + team);
             OnFlagReturned?.Invoke(team);
         }
 
         [Button("フラッグピックテスト")]
-        public void PlayerFlagPickedUp(ETeam team, string playerName)
+        public void PlayerFlagPickedUp(ETeam team, string playerName, bool fromNetwork = false)
         {
             Debug.Log("FlagPickedUp: " + team + " by " + playerName);
             OnFlagPickedUp?.Invoke(team, playerName);
+        }
+
+        private void RegisterFlagCapture(ETeam scoringTeam)
+        {
+            var room = ResolveCurrentMatchRoom();
+            if (room?.MatchData == null)
+            {
+                PushFlagScoreUpdate(scoringTeam == ETeam.Red ? 1 : 0, scoringTeam == ETeam.Blue ? 1 : 0);
+                return;
+            }
+
+            var scores = room.AddFlagScore(scoringTeam, 1);
+            PushFlagScoreUpdate(scores.RedScore, scores.BlueScore);
+
+            if (!endFlag && room.Rule is CTFMatchRule rule && rule.D(room.MatchData))
+            {
+                endFlag = true;
+                HandleMatchEndFromScores(scores.RedScore, scores.BlueScore);
+            }
+        }
+
+        private void PushFlagScoreUpdate(int redScore, int blueScore)
+        {
+            var room = ResolveCurrentMatchRoom();
+            var scoreUpdate = RUDPMessageBuilder.CreateFlagScoreUpdate(redScore, blueScore, 0, 0, CreateFlagEventKey("score", string.Empty, string.Empty));
+            AttachRoomIdentifiers(scoreUpdate, room);
+
+            if (networkManager != null && networkManager.IsConnected())
+            {
+                if (CTFScoreUIManager.Instance != null)
+                {
+                    CTFScoreUIManager.Instance.UpdateScoreFromServer(redScore, blueScore);
+                }
+
+                networkManager.SendToServer(scoreUpdate);
+                return;
+            }
+
+            if (CTFScoreUIManager.Instance != null)
+            {
+                CTFScoreUIManager.Instance.UpdateScoreFromServer(redScore, blueScore);
+            }
+        }
+
+        private void HandleMatchEndFromScores(int redScore, int blueScore)
+        {
+            var winningTeam = redScore == blueScore
+                ? "Draw"
+                : (redScore > blueScore ? ETeam.Red.ToString() : ETeam.Blue.ToString());
+
+            var myTeam = ResolveLocalTeamName();
+            HandleMatchEnd(new JObject
+            {
+                ["WinningTeam"] = winningTeam,
+                ["MyTeam"] = myTeam
+            });
+        }
+
+        private MatchRoom ResolveCurrentMatchRoom()
+        {
+            var manager = MatchRoomManager();
+            if (manager == null)
+            {
+                return null;
+            }
+
+            if (IsOnlineMatch() && manager.OnlineMatchRoom != null)
+            {
+                return manager.OnlineMatchRoom;
+            }
+
+            if (manager.OfflineMatchRoom != null)
+            {
+                return manager.OfflineMatchRoom;
+            }
+
+            return manager.OnlineMatchRoom ?? manager.OfflineMatchRoom;
+        }
+
+        private static string ResolveFlagEventKey(JObject json, EFlagEventType eventType, ETeam team, string playerId)
+        {
+            var jsonKey = json?["EventKey"]?.ToString();
+            if (!string.IsNullOrWhiteSpace(jsonKey))
+            {
+                return jsonKey;
+            }
+
+            var posX = json?["PosX"]?.ToObject<float>() ?? 0f;
+            var posY = json?["PosY"]?.ToObject<float>() ?? 0f;
+            return $"{eventType}|{team}|{playerId}|{posX:0.###}|{posY:0.###}";
+        }
+
+        private string CreateFlagEventKey(string eventType, string team, string playerId, float posX = 0f, float posY = 0f)
+        {
+            return $"{eventType}|{team}|{playerId}|{posX:0.###}|{posY:0.###}|{Guid.NewGuid():N}";
+        }
+
+        private static int ReadScore(JObject json, params string[] keys)
+        {
+            foreach (var key in keys)
+            {
+                var token = json?[key];
+                if (token != null && int.TryParse(token.ToString(), out var value))
+                {
+                    return value;
+                }
+            }
+
+            return 0;
+        }
+
+        private static void AttachRoomIdentifiers(JObject json, MatchRoom room)
+        {
+            if (json == null || room == null)
+            {
+                return;
+            }
+
+            json["RoomID"] = room.Id;
+            json["RoomId"] = room.Id;
+        }
+
+        private bool TryRememberFlagEvent(string eventKey)
+        {
+            if (string.IsNullOrWhiteSpace(eventKey))
+            {
+                return true;
+            }
+
+            lock (processedFlagEventKeys)
+            {
+                if (!processedFlagEventKeys.Add(eventKey))
+                {
+                    return false;
+                }
+
+                recentFlagEventKeys.Enqueue(eventKey);
+                while (recentFlagEventKeys.Count > MaxRecentFlagEventKeys)
+                {
+                    var oldest = recentFlagEventKeys.Dequeue();
+                    processedFlagEventKeys.Remove(oldest);
+                }
+            }
+
+            return true;
         }
 
         private void HandleMatchEnd(JObject json)
@@ -422,13 +631,18 @@ namespace OpenGS
         private void StoreOfflineMatchResult(string winningTeam, string myTeam)
         {
             var players = ResolveLocalPlayers();
+            var room = ResolveCurrentMatchRoom();
+            var redScore = room?.MatchData?.RedTeamFlagScore ?? 0;
+            var blueScore = room?.MatchData?.BlueTeamFlagScore ?? 0;
             var result = new JObject
             {
                 ["MessageType"] = MessageType.MatchEndNotification,
                 ["WinningTeam"] = winningTeam,
                 ["MyTeam"] = string.IsNullOrWhiteSpace(myTeam) ? ResolveLocalTeamName() : myTeam,
-                ["RedTeamScore"] = 0,
-                ["BlueTeamScore"] = 0,
+                ["RedTeamScore"] = redScore,
+                ["BlueTeamScore"] = blueScore,
+                ["RedTeamFlagScore"] = redScore,
+                ["BlueTeamFlagScore"] = blueScore,
                 ["RedTeamKills"] = 0,
                 ["BlueTeamKills"] = 0,
                 ["Players"] = new JArray(players.ConvertAll(p => p?.ToJson()))

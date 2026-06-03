@@ -237,12 +237,15 @@ namespace OpenGS
         /// <param name="playerId">キャプチャしたプレイヤーID</param>
         /// <param name="team">キャプチャしたチームのフラッグ</param>
         /// <param name="capturedAtPosition">キャプチャ位置</param>
-        public static JObject CreateFlagCaptured(string playerId, string team, Vector2 capturedAtPosition)
+        public static JObject CreateFlagCaptured(string playerId, string team, Vector2 capturedAtPosition, string eventKey = null)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagCaptured;
+            json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
             json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["Team"] = team;
+            json["CapturingTeam"] = team;
             json["PosX"] = capturedAtPosition.x;
             json["PosY"] = capturedAtPosition.y;
             return json;
@@ -254,11 +257,13 @@ namespace OpenGS
         /// <param name="playerId">ロストしたプレイヤーID</param>
         /// <param name="team">ロストしたフラッグのチーム</param>
         /// <param name="position">ロストした位置</param>
-        public static JObject CreateFlagLost(string playerId, string team, Vector2 position)
+        public static JObject CreateFlagLost(string playerId, string team, Vector2 position, string eventKey = null)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagLost;
+            json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
             json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["Team"] = team;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
@@ -270,14 +275,18 @@ namespace OpenGS
         /// </summary>
         /// <param name="team">帰還したフラッグのチーム</param>
         /// <param name="returnedByPlayerId">帰還させたプレイヤーID（-null の場合は自動帰還）</param>
-        public static JObject CreateFlagReturn(string team, string returnedByPlayerId = null)
+        public static JObject CreateFlagReturn(string team, string returnedByPlayerId = null, string eventKey = null)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagReturn;
+            json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
             json["Team"] = team;
             if (returnedByPlayerId != null)
             {
                 json["ReturnedByPlayerId"] = returnedByPlayerId;
+                json["ReturnedByPlayerID"] = returnedByPlayerId;
+                json["PlayerId"] = returnedByPlayerId;
+                json["PlayerID"] = returnedByPlayerId;
             }
             return json;
         }
@@ -288,16 +297,20 @@ namespace OpenGS
         /// <param name="team">バーストしたフラッグのチーム</param>
         /// <param name="position">バースト位置</param>
         /// <param name="burstByPlayerId">爆破したプレイヤーID</param>
-        public static JObject CreateFlagBurst(string team, Vector2 position, string burstByPlayerId = null)
+        public static JObject CreateFlagBurst(string team, Vector2 position, string burstByPlayerId = null, string eventKey = null)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagBurst;
+            json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
             json["Team"] = team;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
             if (burstByPlayerId != null)
             {
                 json["BurstByPlayerId"] = burstByPlayerId;
+                json["BurstByPlayerID"] = burstByPlayerId;
+                json["PlayerId"] = burstByPlayerId;
+                json["PlayerID"] = burstByPlayerId;
             }
             return json;
         }
@@ -308,11 +321,13 @@ namespace OpenGS
         /// <param name="playerId">フラッグを拾ったプレイヤーID</param>
         /// <param name="team">拾ったフラッグのチーム</param>
         /// <param name="position">ピックアップ位置</param>
-        public static JObject CreateFlagPickup(string playerId, string team, Vector2 position)
+        public static JObject CreateFlagPickup(string playerId, string team, Vector2 position, string eventKey = null)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagPickup;
+            json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
             json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["Team"] = team;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
@@ -326,12 +341,15 @@ namespace OpenGS
         /// <param name="blueTeamScore">ブルーチームスコア</param>
         /// <param name="redTeamFlags">レッドチームフラッグ数</param>
         /// <param name="blueTeamFlags">ブルーチームフラッグ数</param>
-        public static JObject CreateFlagScoreUpdate(int redTeamScore, int blueTeamScore, int redTeamFlags = 0, int blueTeamFlags = 0)
+        public static JObject CreateFlagScoreUpdate(int redTeamScore, int blueTeamScore, int redTeamFlags = 0, int blueTeamFlags = 0, string eventKey = null)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagScoreUpdate;
+            json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
             json["RedTeamScore"] = redTeamScore;
             json["BlueTeamScore"] = blueTeamScore;
+            json["RedTeamFlagScore"] = redTeamScore;
+            json["BlueTeamFlagScore"] = blueTeamScore;
             json["RedTeamFlags"] = redTeamFlags;
             json["BlueTeamFlags"] = blueTeamFlags;
             return json;

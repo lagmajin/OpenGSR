@@ -201,8 +201,18 @@ namespace OpenGS
                 case RUDPMessageTypes.KillScoreUpdate:
                     HandleKillScoreUpdate(json);
                     break;
+                case RUDPMessageTypes.FlagScoreUpdate:
+                    HandleFlagScoreUpdate(json);
+                    break;
                 case RUDPMessageTypes.PlayerRespawn:
                     HandlePlayerRespawn(json);
+                    break;
+                case RUDPMessageTypes.FlagCaptured:
+                case RUDPMessageTypes.FlagLost:
+                case RUDPMessageTypes.FlagReturn:
+                case RUDPMessageTypes.FlagBurst:
+                case RUDPMessageTypes.FlagPickup:
+                    HandleFlagEvent(json);
                     break;
                 default:
                     PrettyLogger.Bold("RUDP Server", $"Unknown message: {messageType}");
@@ -353,6 +363,39 @@ namespace OpenGS
                 ["Score"] = score,
                 ["Team"] = team
             });
+        }
+
+        private void HandleFlagScoreUpdate(JObject json)
+        {
+            var redScore = json["RedTeamScore"]?.ToObject<int>() ?? 0;
+            var blueScore = json["BlueTeamScore"]?.ToObject<int>() ?? 0;
+            var eventKey = json["EventKey"]?.ToString();
+
+            PrettyLogger.Bold("RUDP Server", $"FlagScoreUpdate: Red={redScore}, Blue={blueScore}");
+
+            SendJson(new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.FlagScoreUpdate,
+                ["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey,
+                ["RedTeamScore"] = redScore,
+                ["BlueTeamScore"] = blueScore,
+                ["RedTeamFlags"] = json["RedTeamFlags"]?.ToObject<int>() ?? 0,
+                ["BlueTeamFlags"] = json["BlueTeamFlags"]?.ToObject<int>() ?? 0
+            });
+        }
+
+        private void HandleFlagEvent(JObject json)
+        {
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            var eventKey = json["EventKey"]?.ToString();
+
+            if (string.IsNullOrWhiteSpace(eventKey))
+            {
+                json["EventKey"] = Guid.NewGuid().ToString("N");
+            }
+
+            PrettyLogger.Bold("RUDP Server", $"FlagEvent: {messageType} {json}");
+            SendJson(json);
         }
 
         private void HandlePlayerRespawn(JObject json)

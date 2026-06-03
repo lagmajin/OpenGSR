@@ -90,6 +90,7 @@ namespace OpenGS
                 currentState = EFlagState.Carried;
                 carrier = player.transform;
                 player.EnemyFlagCaptured();
+                player.BindEnemyFlag(this);
                 CTFMatchMainScript.Instance?.PlayerFlagPickedUp(team, player.gameObject.name);
             }
         }

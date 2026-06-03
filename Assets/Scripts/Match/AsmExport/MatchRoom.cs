@@ -44,6 +44,7 @@ namespace OpenGS
         public string RoomName { get; set; }
         public int Capacity { get; set; } = 0;
         public EGameMode GameMode { get; set; } = EGameMode.Unknown;
+        public IMatchRule Rule { get; set; }
 
         public bool IsStarted { get; private set; } = false;
         public bool Playing { get; private set; } = false;
@@ -92,6 +93,26 @@ namespace OpenGS
         {
             Playing = false;
             Debug.Log("[MatchRoom] Match finished!");
+        }
+
+        public void ResetCaptureTheFlagState()
+        {
+            MatchData?.ResetCaptureTheFlagState();
+        }
+
+        public bool TryRegisterFlagEvent(string eventKey)
+        {
+            return MatchData?.TryRegisterFlagEvent(eventKey) ?? true;
+        }
+
+        public (int RedScore, int BlueScore) AddFlagScore(ETeam scoringTeam, int delta = 1)
+        {
+            if (MatchData == null)
+            {
+                return (0, 0);
+            }
+
+            return MatchData.AddFlagScoreAndGet(scoringTeam, delta);
         }
 
         /// <summary>

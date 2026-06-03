@@ -5513,12 +5513,12 @@ GameObject:
   - component: {fileID: 1388977427}
   - component: {fileID: 1388977426}
   m_Layer: 5
-  m_Name: WeaponLimitDialogCanvas
+  m_Name: WeaponLimitDialog
   m_TagString: Ui
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1388977426
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7009,7 +7009,7 @@ GameObject:
   - component: {fileID: 1769806800}
   - component: {fileID: 1769806799}
   m_Layer: 5
-  m_Name: MapSelectDialog
+  m_Name: MapSelectDialogButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -8783,8 +8783,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   position: {x: 0, y: 0}
   group: {fileID: 1100515050390128904}
-  okButton: {fileID: 0}
-  cancelButton: {fileID: 0}
+  okButton: {fileID: 1100515050790620917}
+  cancelButton: {fileID: 1100515050732444141}
   ar: {fileID: 1100515050405173183}
   smg: {fileID: 1100515051171277508}
   sr: {fileID: 1100515050258308355}
@@ -12125,7 +12125,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -6115341189219805112, guid: cabc76eeccbbf584cb81b1566d5a8be4,
+  m_Sprite: {fileID: -6115341189219805112, guid: 76d34abc2d4dae64992d5c538f340003,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -12875,7 +12875,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 7410914753130057542, guid: 8e818ab0205d42447bfa7f79c6a744a4,
+  m_Sprite: {fileID: 7410914753130057542, guid: d1c72cfd8335e9246b64609e3f647091,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -13098,7 +13098,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 6739470759829731169, guid: a1a87feaf3e7d544f8c934859358d4a6,
+  m_Sprite: {fileID: 6739470759829731169, guid: 442a84912fffb904fb72925d41e6e66d,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -13140,7 +13140,7 @@ GameObject:
   - component: {fileID: 1100515050859755018}
   - component: {fileID: 1100515050859755019}
   m_Layer: 5
-  m_Name: AR
+  m_Name: ARImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13345,7 +13345,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 20367614586103619, guid: 09cb93a1d40336940a1817e416cae8ae, type: 3}
+  m_Sprite: {fileID: 20367614586103619, guid: 0aeacf488c2018a428a22b20bf143a7d, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -14213,7 +14213,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2274258678251183488, guid: 2decbaec945392a49a9e4fb1c9aa1f50,
+  m_Sprite: {fileID: 2274258678251183488, guid: ade675fedc9ff4c44af1020cd27384cc,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -14255,7 +14255,7 @@ GameObject:
   - component: {fileID: 1100515050944530762}
   - component: {fileID: 1100515050944530763}
   m_Layer: 5
-  m_Name: SR
+  m_Name: SRImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -17644,18 +17644,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1100515051314136245
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100515051314136250}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4315cea7c5b38443895219e55136dbc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!224 &1100515051314136246
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17672,8 +17660,8 @@ RectTransform:
   - {fileID: 1100515050658752780}
   - {fileID: 1100515051636371413}
   - {fileID: 1100515051838678920}
-  - {fileID: 1100515050773836352}
   - {fileID: 1100515051804378052}
+  - {fileID: 1100515050773836352}
   - {fileID: 1100515050891284942}
   - {fileID: 1100515050539717125}
   - {fileID: 1100515050854277998}
@@ -17775,7 +17763,7 @@ GameObject:
   - component: {fileID: 1100515051314136247}
   - component: {fileID: 1100515051314136248}
   - component: {fileID: 1100515051314136249}
-  - component: {fileID: 1100515051314136245}
+  - component: {fileID: 1100515051314136251}
   m_Layer: 5
   m_Name: OnlineWaitRoomCanvas
   m_TagString: Untagged
@@ -17783,6 +17771,24 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1100515051314136251
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100515051314136250}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 96351d5366df2804d9547247bac34d94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.WaitRoomQuickAccessController
+  characterButton: {fileID: 1100515051636371412}
+  mapButton: {fileID: 0}
+  characterPanel: {fileID: 0}
+  mapPanel: {fileID: 0}
+  hideOtherPanels: 1
+  panelsToHide: []
 --- !u!222 &1100515051316193232
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19680,7 +19686,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 5786685257045785231, guid: 9d4eb7aad3059c8449656992a6d69330,
+  m_Sprite: {fileID: 5786685257045785231, guid: f13f812c9704fef4f9b5ea5171b1cbe1,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -19722,7 +19728,7 @@ GameObject:
   - component: {fileID: 1100515051502156128}
   - component: {fileID: 1100515051502156129}
   m_Layer: 5
-  m_Name: SMG
+  m_Name: SMGImage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20821,18 +20827,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1100515051636371409
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100515051636371414}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 58a79eb6f23bf344b9829e78638c3231, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &1100515051636371410
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -20959,7 +20953,7 @@ GameObject:
   - component: {fileID: 1100515051636371410}
   - component: {fileID: 1100515051636371411}
   - component: {fileID: 1100515051636371412}
-  - component: {fileID: 1100515051636371409}
+  - component: {fileID: 1100515051636371415}
   m_Layer: 5
   m_Name: CharacterShowButton
   m_TagString: Ui
@@ -20967,6 +20961,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
+--- !u!114 &1100515051636371415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100515051636371414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c41b3938dd2c84faa4d21dab048a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.WaitRoomQuickAccessButton
+  accessType: 0
+  controller: {fileID: 0}
 --- !u!114 &1100515051641934710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21620,7 +21628,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -8421012570460753797, guid: fe6648a8a9c009e4b9eb6dfe2efd880a,
+  m_Sprite: {fileID: -8421012570460753797, guid: 45173b8facaf62543b69a5353824038b,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -22426,18 +22434,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bc163b8103351ac4082c2b5397498eed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1100515051804378048
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100515051804378053}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d9c59cda6e6ee488ea00871506ff71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &1100515051804378049
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -22533,7 +22529,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1100515051804378048}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CommonButton, Assembly-CSharp
         m_MethodName: PlaySound
         m_Mode: 2
@@ -22577,7 +22573,7 @@ GameObject:
   - component: {fileID: 1100515051804378049}
   - component: {fileID: 1100515051804378050}
   - component: {fileID: 1100515051804378051}
-  - component: {fileID: 1100515051804378048}
+  - component: {fileID: 1100515051804378054}
   m_Layer: 5
   m_Name: MapSelectButton
   m_TagString: Ui
@@ -22585,6 +22581,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
+--- !u!114 &1100515051804378054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100515051804378053}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c41b3938dd2c84faa4d21dab048a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.WaitRoomQuickAccessButton
+  accessType: 1
+  controller: {fileID: 1100515051314136251}
 --- !u!222 &1100515051821815206
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -22758,7 +22768,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 156733858977fb24589c3788f2deb538, type: 3}
+  m_Sprite: {fileID: 1368489090042012214, guid: 31f26d8a6fced2d4296304196ad63da2,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -23352,18 +23363,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1100515051838678916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100515051838678921}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65d9c59cda6e6ee488ea00871506ff71, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!222 &1100515051838678917
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -23459,7 +23458,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1100515051838678916}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CommonButton, Assembly-CSharp
         m_MethodName: PlaySound
         m_Mode: 2
@@ -23503,7 +23502,7 @@ GameObject:
   - component: {fileID: 1100515051838678917}
   - component: {fileID: 1100515051838678918}
   - component: {fileID: 1100515051838678919}
-  - component: {fileID: 1100515051838678916}
+  - component: {fileID: 1100515051838678922}
   m_Layer: 5
   m_Name: CharacterSelectButton
   m_TagString: Ui
@@ -23511,6 +23510,20 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 2147483647
   m_IsActive: 1
+--- !u!114 &1100515051838678922
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1100515051838678921}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60c41b3938dd2c84faa4d21dab048a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.WaitRoomQuickAccessButton
+  accessType: 0
+  controller: {fileID: 1100515051314136251}
 --- !u!222 &1100515051842168856
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -24835,7 +24848,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  m_Sprite: {fileID: 0}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -25969,7 +25982,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 156733858977fb24589c3788f2deb538, type: 3}
+  m_Sprite: {fileID: 1368489090042012214, guid: 31f26d8a6fced2d4296304196ad63da2,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -26351,7 +26365,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 156733858977fb24589c3788f2deb538, type: 3}
+  m_Sprite: {fileID: 1368489090042012214, guid: 31f26d8a6fced2d4296304196ad63da2,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -27311,7 +27326,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 330359658493454147, guid: 34b01a5e1b320b147a9d2ed9aeb62088, type: 3}
+  m_Sprite: {fileID: 330359658493454147, guid: 0484fde663ea873468f4bcd74c2bf49a, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -27833,18 +27848,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1100515052283165498
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1100515052283165501}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fa55d4c774888e4428a80a6c0f49e8e6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1100515052283165499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -27892,7 +27895,7 @@ MonoBehaviour:
   onValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1100515052283165498}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: CommonCheckbox, Assembly-CSharp
         m_MethodName: PlaySound
         m_Mode: 2
@@ -27948,7 +27951,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1100515052283165500}
   - component: {fileID: 1100515052283165499}
-  - component: {fileID: 1100515052283165498}
   m_Layer: 5
   m_Name: SG
   m_TagString: Untagged
@@ -28392,7 +28394,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 156733858977fb24589c3788f2deb538, type: 3}
+  m_Sprite: {fileID: 1368489090042012214, guid: 31f26d8a6fced2d4296304196ad63da2,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

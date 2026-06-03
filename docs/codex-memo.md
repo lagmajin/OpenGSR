@@ -48,6 +48,7 @@
 - `Logs/Editor.log`
 - `docs/codex/main-branch-development.md`
 - `docs/codex/workstream-organization.md`
+- `docs/CTFRule.md`
 - `docs/codex/class-function-dictionary.md`
 - `docs/codex/class-index.md`
 - `docs/codex/generate-class-index.ps1`
@@ -55,6 +56,7 @@
 - `docs/codex/grenade-types.md`
 - `docs/codex/slot-definitions.md`
 - `docs/codex/weapon-stats.md`
+- `docs/CTFRule.md` - CTF: `FlagReturn` is state recovery, not scoring
 
 ## Notes
 

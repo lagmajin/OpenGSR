@@ -23,7 +23,10 @@ namespace OpenGS
         public int BlueTeamKill { get; private set; } = 0;
         public int RedTeamFlagReturn { get; private set; } = 0;
         public int BlueTeamFlagReturn { get; private set; } = 0;
+        public int RedTeamFlagScore { get; private set; } = 0;
+        public int BlueTeamFlagScore { get; private set; } = 0;
         public int MaxPlayerKillCount { get; private set; } = 0;
+        private readonly HashSet<string> processedFlagEventKeys = new HashSet<string>();
         
         // Cache for my player ID to avoid repeated LINQ searches
         private string _myPlayerId = null;
@@ -165,6 +168,61 @@ namespace OpenGS
             AllDeath += 1;
             
             Debug.Log($"[MatchData] Death Update - Player: {playerId}, Team: {team}");
+        }
+
+        public void AddFlagScore(ETeam team, int delta = 1)
+        {
+            if (delta == 0)
+            {
+                return;
+            }
+
+            switch (team)
+            {
+                case ETeam.Red:
+                    RedTeamFlagScore = Mathf.Max(0, RedTeamFlagScore + delta);
+                    break;
+                case ETeam.Blue:
+                    BlueTeamFlagScore = Mathf.Max(0, BlueTeamFlagScore + delta);
+                    break;
+            }
+        }
+
+        public bool TryRegisterFlagEvent(string eventKey)
+        {
+            if (string.IsNullOrWhiteSpace(eventKey))
+            {
+                return true;
+            }
+
+            lock (processedFlagEventKeys)
+            {
+                return processedFlagEventKeys.Add(eventKey);
+            }
+        }
+
+        public void ResetCaptureTheFlagState()
+        {
+            RedTeamFlagReturn = 0;
+            BlueTeamFlagReturn = 0;
+            RedTeamFlagScore = 0;
+            BlueTeamFlagScore = 0;
+
+            lock (processedFlagEventKeys)
+            {
+                processedFlagEventKeys.Clear();
+            }
+        }
+
+        public (int RedScore, int BlueScore) AddFlagScoreAndGet(ETeam team, int delta = 1)
+        {
+            AddFlagScore(team, delta);
+            return (RedTeamFlagScore, BlueTeamFlagScore);
+        }
+
+        public int GetFlagScore(ETeam team)
+        {
+            return team == ETeam.Red ? RedTeamFlagScore : BlueTeamFlagScore;
         }
     }
 }

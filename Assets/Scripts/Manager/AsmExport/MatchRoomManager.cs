@@ -63,8 +63,10 @@ namespace OpenGS
                 {
                     RoomName = roomName,
                     Capacity = capacity,
-                    GameMode = gameMode
+                    GameMode = gameMode,
+                    Rule = CreateRule(gameMode)
                 };
+                OnlineMatchRoom.ResetCaptureTheFlagState();
             }
         }
 
@@ -157,8 +159,10 @@ namespace OpenGS
                 {
                     RoomName = "Offline Match",
                     Capacity = WaitRoom != null ? WaitRoom.Capacity : 8,
-                    GameMode = gameMode
+                    GameMode = gameMode,
+                    Rule = CreateRule(gameMode)
                 };
+                OfflineMatchRoom.ResetCaptureTheFlagState();
 
                 LastOfflineMatchResult = null;
             }
@@ -194,6 +198,20 @@ namespace OpenGS
         public void StoreOfflineMatchResult(JObject result)
         {
             LastOfflineMatchResult = result;
+        }
+
+        private static IMatchRule CreateRule(EGameMode gameMode)
+        {
+            return gameMode switch
+            {
+                EGameMode.DeathMatch => new DeathMatchRule(),
+                EGameMode.TeamDeathMatch => new TeamDeathMatchRule(),
+                EGameMode.CaptureTheFlag => new CTFMatchRule(),
+                EGameMode.Survival => new SurvivalMatchRule(),
+                EGameMode.TeamSurvival => new TeamSurvivalMatchRule(),
+                EGameMode.ArmsRace => new ArmsMatchRaceRule(),
+                _ => new AbstractMatchRule(gameMode)
+            };
         }
     }
 }
