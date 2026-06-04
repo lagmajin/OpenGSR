@@ -46,6 +46,7 @@ namespace OpenGS
                         Name,
                         ownerTeam
                     );
+                    bullet.EnableGravity();
                 }
 
                 var shotgunBullet = pellet.GetComponent<ShotgunBulletController>();

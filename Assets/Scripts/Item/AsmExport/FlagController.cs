@@ -1,5 +1,5 @@
 using DG.Tweening;
-//using ICSharpCode.SharpZipLib.Zip;
+using System;
 using UnityEngine;
 
 
@@ -32,6 +32,17 @@ namespace OpenGS
         [SerializeField] private CTFGameSoundMasterData ctfSoundMasterData;
         [SerializeField] private FlagStand myFlagStand;
         [SerializeField] private SpriteRenderer spriteRenderer;
+
+        public enum EFlagReturnReason
+        {
+            AutoReturn,
+            FriendlyRecovered,
+            CapturedAtBase
+        }
+
+        public event Action<FlagController, AbstractPlayer> EnemyPickedUp;
+        public event Action<FlagController, AbstractPlayer, EFlagReturnReason> ReturnedToBase;
+        public event Action<FlagController> Dropped;
 
         private EFlagState currentState = EFlagState.AtBase;
         private float returnTimer = 0f;
@@ -73,16 +84,25 @@ namespace OpenGS
         public void SetInitialBase(FlagStand stand)
         {
             myFlagStand = stand;
-            currentState = EFlagState.AtBase;
         }
 
         public void OnPickedUp(AbstractPlayer player)
         {
+            if (player == null)
+            {
+                return;
+            }
+
             if (player.Team() == team)
             {
+                // ベース上の味方フラッグには反応しない。
+                if (currentState == EFlagState.AtBase)
+                {
+                    return;
+                }
+
                 // 味方のフラッグを拾った（リターン）
-                ReturnToBase();
-                CTFMatchMainScript.Instance?.PlayerFlagReturned(team);
+                ReturnToBase(player, EFlagReturnReason.FriendlyRecovered);
             }
             else
             {
@@ -91,20 +111,30 @@ namespace OpenGS
                 carrier = player.transform;
                 player.EnemyFlagCaptured();
                 player.BindEnemyFlag(this);
-                CTFMatchMainScript.Instance?.PlayerFlagPickedUp(team, player.gameObject.name);
+                EnemyPickedUp?.Invoke(this, player);
             }
         }
 
         public void OnDropped()
         {
+            if (currentState != EFlagState.Carried)
+            {
+                return;
+            }
+
             currentState = EFlagState.Dropped;
             carrier = null;
             returnTimer = autoReturnTime;
-            CTFMatchMainScript.Instance?.PlayerFlagLost(team);
+            Dropped?.Invoke(this);
         }
 
-        public void ReturnToBase()
+        public void ReturnToBase(AbstractPlayer player = null, EFlagReturnReason reason = EFlagReturnReason.AutoReturn)
         {
+            currentState = EFlagState.AtBase;
+            carrier = null;
+            returnTimer = 0f;
+
+            ReturnedToBase?.Invoke(this, player, reason);
             if (myFlagStand != null)
             {
                 myFlagStand.SetFlag();
@@ -116,10 +146,13 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (currentState == EFlagState.Carried) return;
-
             if (other.TryGetComponent(out AbstractPlayer player))
             {
+                if (currentState == EFlagState.Carried)
+                {
+                    return;
+                }
+
                 OnPickedUp(player);
             }
         }

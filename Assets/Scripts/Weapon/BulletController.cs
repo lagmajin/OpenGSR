@@ -16,6 +16,7 @@ namespace OpenGS
         [SerializeField] private float lifetime = 3.0f;
         [SerializeField] public float speed = 10.0f;
         [SerializeField] public bool enableGravity = false;
+        [SerializeField] private float gravityStrength = 18.0f;
         [SerializeField] public AudioClip hitSound;
         [SerializeField] public Rigidbody2D body;
 
@@ -23,6 +24,8 @@ namespace OpenGS
         public int   Damage { get; set; } = 50;
         public string OwnerPlayerId { get; private set; } = string.Empty;
         public string WeaponName { get; private set; } = "Unknown";
+
+        private readonly ProjectileBallistics2D ballistics = new ProjectileBallistics2D();
 
         public void Init(Vector2 direction, float speed, float damage)
         {
@@ -36,6 +39,7 @@ namespace OpenGS
             OwnerPlayerId = ownerPlayerId ?? string.Empty;
             WeaponName = string.IsNullOrWhiteSpace(weaponName) ? "Unknown" : weaponName;
             Team = team;
+            ballistics.Configure(direction, this.speed, enableGravity, gravityStrength, true, 0f);
             float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0, 0, angle);
         }
@@ -50,8 +54,12 @@ namespace OpenGS
 
         private void Update()
         {
-            Vector3 velocity = gameObject.transform.rotation * new Vector3(speed, 0, 0);
-            gameObject.transform.position += velocity * Time.deltaTime;
+            var step = ballistics.Step(Time.deltaTime);
+            gameObject.transform.position += (Vector3)step;
+            if (enableGravity)
+            {
+                transform.rotation = ballistics.GetRotation();
+            }
         }
 
         // ─── 衝突処理 ────────────────────────────────────────────────
@@ -108,11 +116,13 @@ namespace OpenGS
         public void EnableGravity()
         {
             enableGravity = true;
+            ballistics.SetGravityEnabled(true);
         }
 
         public void Speed(float f)
         {
             speed = f;
+            ballistics.SetSpeed(speed);
         }
 
         // ─── プライベートユーティリティ ──────────────────────────────

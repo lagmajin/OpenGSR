@@ -9,10 +9,6 @@ namespace OpenGS
     /// </summary>
     public class GrenadeLauncherController : AbstractGunController
     {
-        [Header("Grenade Settings")]
-        [SerializeField] private float launchForce = 15f;
-        [SerializeField] private bool usePhysics = true;
-
         protected override void CreateBullet(OpenGSCore.EBulletType type = OpenGSCore.EBulletType.Normal)
         {
             if (bulletPrefab == null || muzzle == null) return;
@@ -27,24 +23,28 @@ namespace OpenGS
             var playerId = GetPlayerID(owner);
             var effectiveDamage = GetEffectiveDamage(owner);
 
+            var projectile = grenadeObj.GetComponent<GrenadeProjectileController>();
+            if (projectile != null)
+            {
+                projectile.SetDamage(effectiveDamage);
+                projectile.SetGrenadeType(EGrenadeType.Normal);
+                projectile.Launch(shotDir, bulletSpeed, playerId, Name, ownerTeam, owner != null ? owner.transform : null);
+                return;
+            }
+
             var bullet = grenadeObj.GetComponent<BulletController>();
             if (bullet != null)
             {
                 bullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam);
-                bullet.EnableGravity(); // 重力を有効化
+                bullet.EnableGravity();
+                return;
             }
 
             var grenadeBullet = grenadeObj.GetComponent<GrenadeLauncherBulletController>();
             if (grenadeBullet != null)
             {
                 grenadeBullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam);
-            }
-
-            // Rigidbody2D があれば初速を与える（物理ベースの場合）
-            var rb = grenadeObj.GetComponent<Rigidbody2D>();
-            if (rb != null && usePhysics)
-            {
-                rb.linearVelocity = shotDir * launchForce;
+                grenadeBullet.EnableGravity();
             }
         }
     }

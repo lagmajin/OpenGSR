@@ -1,20 +1,18 @@
-﻿using DG.Tweening;
+using DG.Tweening;
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace OpenGS
 {
-
-
-
-
-
-
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MultipleTags))]
     public class FlagStand : MonoBehaviour, IFlagStand
     {
+        public event Action<FlagStand, FlagController> FlagSpawned;
+        public event Action<FlagStand, AbstractPlayer> FlagCaptured;
+
         [SerializeField]
         bool showFlagNavigator = true;
         [SerializeField]
@@ -23,20 +21,17 @@ namespace OpenGS
         [SerializeField] public GameObject flagSlot;
         public GameObject flagNavigator;
 
-
         private bool hasFlag = false;
-
-        //[SerializeField]private AbstractBattleSceneMediateObject object;
-
+        private FlagController currentFlagController;
 
         [SerializeField] public FlagMasterData flagMasterData;
 
         [SerializeField] private SystemSoundMasterData systemSoundMasterData;
         [SerializeField] private CTFGameSoundMasterData ctfSoundMasterData;
         [SerializeField] private EffectPrefabMasterData effectPrefabMasterData;
-        //[SerializeField] private AbstractBattleSceneMediateObject mediateObject;
         [SerializeField] private CTFMediateObject ctfMediateObject;
         [SerializeField] [Required] private GameObject particleSlot;
+
         private void Start()
         {
             if (!flagSlot)
@@ -48,8 +43,8 @@ namespace OpenGS
             {
                 flagNavigator.SetActive(showFlagNavigator);
             }
-            UpdateUIState();
 
+            UpdateUIState();
         }
 
         void Reset()
@@ -64,7 +59,6 @@ namespace OpenGS
             {
                 SoundManager.Instance.PlaySystemSound(ESystemSound.Fanfare);
             }
-
         }
 
         public void FlagReady()
@@ -73,7 +67,6 @@ namespace OpenGS
             UpdateUIState();
         }
 
-
         [Button("ナビゲーター表示")]
         public void SetActiveFlagNavigator(bool active = true)
         {
@@ -81,11 +74,7 @@ namespace OpenGS
             {
                 flagNavigator.SetActive(active);
             }
-
-
         }
-
-
 
         private void Update()
         {
@@ -94,6 +83,8 @@ namespace OpenGS
                 flagNavigator.SetActive(showFlagNavigator);
             }
         }
+
+        public ETeam Team => team;
 
         public string FlagStandName()
         {
@@ -107,14 +98,13 @@ namespace OpenGS
 
         public bool HasFlag()
         {
-
             return hasFlag;
         }
 
         [Button("フラッグセット")]
         public void SetFlag()
         {
-            RemoveFlag(); // 念のため既存を削除
+            RemoveFlag();
 
             hasFlag = true;
             GameObject flagObj = null;
@@ -131,28 +121,28 @@ namespace OpenGS
             if (flagObj != null)
             {
                 flagObj.transform.localPosition = Vector3.zero;
-                
-                // FlagController があればベース情報をセット
+
                 if (flagObj.TryGetComponent(out FlagController fc))
                 {
                     fc.SetInitialBase(this);
+                    BindFlagController(fc);
                 }
             }
 
-            // UI更新
             UpdateUIState();
         }
 
         [Button("フラッグ削除")]
         public void RemoveFlag()
         {
+            UnbindCurrentFlagController();
+
             foreach (Transform c in flagSlot.transform)
             {
                 Destroy(c.gameObject);
             }
+
             hasFlag = false;
-            
-            // UI更新
             UpdateUIState();
         }
 
@@ -165,6 +155,25 @@ namespace OpenGS
             }
         }
 
+        private void BindFlagController(FlagController flagController)
+        {
+            if (flagController == null)
+            {
+                return;
+            }
+
+            currentFlagController = flagController;
+            FlagSpawned?.Invoke(this, currentFlagController);
+        }
+
+        private void UnbindCurrentFlagController()
+        {
+            if (currentFlagController != null)
+            {
+                currentFlagController = null;
+            }
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (other.TryGetComponent(out IPlayer pl))
@@ -173,38 +182,28 @@ namespace OpenGS
 
                 if (playerTeam == team)
                 {
-                    // 自チームのプレイヤーがベースに来た
                     if (pl.HasEnemyFlag() && HasFlag())
                     {
-                        // キャプチャ成功！(自軍フラッグがベースにあり、かつ敵フラッグを持っている)
                         Debug.Log("Capture Success: " + team);
-                        CTFMatchMainScript.Instance?.PlayerFlagCaptured(team);
-                        
-                        // プレイヤーのフラッグ状態をクリア（実際には持っているフラッグをDestroyするなどの処理が必要）
-                        // ここではPlayer側の実装に合わせて呼び出す
-                        pl.EnemyFlagReturnedToBase(); 
+                        if (pl is AbstractPlayer ap)
+                        {
+                            FlagCaptured?.Invoke(this, ap);
+                        }
                     }
                 }
                 else
                 {
-                    // 敵チームのプレイヤーがベースに来た
                     if (HasFlag())
                     {
-                        // 敵に奪われた
                         Debug.Log("Flag Taken by: " + playerTeam);
-                        
-                        // スタンドからフラッグを消し、物理フラッグアイテム（FlagController）を生成するか、
-                        // あるいはプレイヤーに直接持たせる。
-                        // ここでは FlagController の OnPickedUp に相当する挙動を作る。
-                        
+
                         RemoveFlag();
-                        
-                        // 物理的なフラッグアイテムを生成してプレイヤーに持たせる
+
                         GameObject flagPrefab = (team == ETeam.Red) ? flagMasterData.redFlag : flagMasterData.blueFlag;
                         var droppedFlag = Instantiate(flagPrefab, transform.position, Quaternion.identity);
                         if (droppedFlag.TryGetComponent(out FlagController fc))
                         {
-                            fc.SetInitialBase(this);
+                            BindFlagController(fc);
                             if (other.TryGetComponent(out AbstractPlayer ap))
                             {
                                 fc.OnPickedUp(ap);

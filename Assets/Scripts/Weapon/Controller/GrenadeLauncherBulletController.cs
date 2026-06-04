@@ -14,10 +14,15 @@ namespace OpenGS
 
         [SerializeField] public int damage = 120;
         [SerializeField] public float speed = 15.0f;
+        [SerializeField] public bool enableGravity = false;
+        [SerializeField] private float gravityStrength = 18f;
+        [SerializeField] private bool alignToVelocity = true;
+        [SerializeField] private float spriteAngleOffset = 0f;
 
 
         [SerializeField] private GameObject explosion;
         private IEffectService effectService;
+        private readonly ProjectileBallistics2D ballistics = new ProjectileBallistics2D();
 
         [Inject]
         private void Construct([InjectOptional] IEffectService effectService)
@@ -32,14 +37,15 @@ namespace OpenGS
             OwnerPlayerId = ownerPlayerId ?? string.Empty;
             WeaponName = string.IsNullOrWhiteSpace(weaponName) ? "Unknown" : weaponName;
             Team = team;
-
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, 0, angle);
+            ballistics.Configure(direction, speed, enableGravity, gravityStrength, alignToVelocity, spriteAngleOffset);
+            transform.rotation = ballistics.GetRotation();
         }
 
         private void Update()
         {
-            transform.position += transform.rotation * Vector3.right * (speed * Time.deltaTime);
+            var step = ballistics.Step(Time.deltaTime);
+            transform.position += (Vector3)step;
+            transform.rotation = ballistics.GetRotation();
         }
 
         private void Explosion()
@@ -75,6 +81,12 @@ namespace OpenGS
         private void ApplyExplosionDamage()
         {
             GrenadeExplosionDamageUtility.ApplyCircularDamage((Vector2)transform.position, OwnerPlayerId, WeaponName, Team, damage / 100f);
+        }
+
+        public void EnableGravity()
+        {
+            enableGravity = true;
+            ballistics.SetGravityEnabled(true);
         }
 
 

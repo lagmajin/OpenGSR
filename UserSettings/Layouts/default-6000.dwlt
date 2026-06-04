@@ -659,11 +659,9 @@ MonoBehaviour:
       m_Data: 60762
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 63850
-    - m_Data: 71350
-    - m_Data: 71352
-    - m_Data: 71354
-    - m_Data: 71356
+    - m_Data: 66464
+    - m_Data: 1000000000
+    - m_Data: 2147483647
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -696,11 +694,9 @@ MonoBehaviour:
       m_Data: 0
     m_ExpandedIDs:
     - m_Data: 0
-    - m_Data: 63850
-    - m_Data: 71350
-    - m_Data: 71352
-    - m_Data: 71354
-    - m_Data: 71356
+    - m_Data: 66464
+    - m_Data: 1000000000
+    - m_Data: 2147483647
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -1427,9 +1423,9 @@ MonoBehaviour:
   m_AudioPlay: 0
   m_DebugDrawModesUseInteractiveLightBakingData: 0
   m_Position:
-    m_Target: {x: 450.11185, y: 33.853153, z: -4.334027}
+    m_Target: {x: 1032.7192, y: 1025.6586, z: -5.4960093}
     speed: 2
-    m_Value: {x: -12.60155, y: -7.2486386, z: -0.4100139}
+    m_Value: {x: 450.11185, y: 33.853153, z: -4.334027}
   m_RenderMode: 0
   m_CameraMode:
     drawMode: 0
@@ -1479,9 +1475,9 @@ MonoBehaviour:
     speed: 2
     m_Value: {x: 0, y: 0, z: 0, w: 1}
   m_Size:
-    m_Target: 507.6857
+    m_Target: 623.8814
     speed: 2
-    m_Value: 43.000523
+    m_Value: 507.6857
   m_Ortho:
     m_Target: 1
     speed: 2
@@ -1612,7 +1608,7 @@ MonoBehaviour:
       height: 1221.3156
     m_MinimalGUI: 1
   m_defaultScale: 0.41152343
-  m_LastWindowPixelSize: {x: 842.8, y: 523.6}
+  m_LastWindowPixelSize: {x: 1053.5, y: 654.5}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000100000100

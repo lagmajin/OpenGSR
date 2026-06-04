@@ -233,8 +233,19 @@ namespace OpenGS
 
         public void EnemyFlagReturnedToBase()
         {
+            EnemyFlagReturnedToBase(false);
+        }
+
+        public void EnemyFlagReturnedToBase(bool fromCapture)
+        {
             hasEnemyFlag = false;
-            carriedEnemyFlag?.ReturnToBase();
+            if (carriedEnemyFlag != null)
+            {
+                var reason = fromCapture
+                    ? FlagController.EFlagReturnReason.CapturedAtBase
+                    : FlagController.EFlagReturnReason.FriendlyRecovered;
+                carriedEnemyFlag.ReturnToBase(null, reason);
+            }
             carriedEnemyFlag = null;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             Debug.Log($"{character} delivered enemy flag to base!");

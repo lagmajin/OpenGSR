@@ -44,6 +44,7 @@ namespace OpenGS
         public GameObject RedTeamReSpawnPoints;
 
         [SerializeField] [Required] public FlagStand redTeamFlagStand, blueTeamFlagStand;
+        private readonly Dictionary<FlagStand, FlagController> boundFlagControllers = new Dictionary<FlagStand, FlagController>();
 
         public new void Start()
         {
@@ -86,6 +87,8 @@ namespace OpenGS
             //NetworkManagerMainScript
 
             SubscribeEvent();
+            BindFlagStand(redTeamFlagStand);
+            BindFlagStand(blueTeamFlagStand);
 
             SetUpUI();
             ApplyRuleSettings();
@@ -102,6 +105,141 @@ namespace OpenGS
             {
                 CTFScoreUIManager.Instance.UpdateScore(0, 0);
             }
+        }
+
+        private void BindFlagStand(FlagStand stand)
+        {
+            if (stand == null)
+            {
+                return;
+            }
+
+            stand.FlagSpawned -= HandleFlagSpawned;
+            stand.FlagCaptured -= HandleFlagCapturedFromStand;
+            stand.FlagSpawned += HandleFlagSpawned;
+            stand.FlagCaptured += HandleFlagCapturedFromStand;
+        }
+
+        private void UnbindFlagStand(FlagStand stand)
+        {
+            if (stand == null)
+            {
+                return;
+            }
+
+            stand.FlagSpawned -= HandleFlagSpawned;
+            stand.FlagCaptured -= HandleFlagCapturedFromStand;
+
+            if (boundFlagControllers.TryGetValue(stand, out var controller))
+            {
+                UnbindFlagController(controller);
+                boundFlagControllers.Remove(stand);
+            }
+        }
+
+        private void HandleFlagSpawned(FlagStand stand, FlagController controller)
+        {
+            if (stand == null || controller == null)
+            {
+                return;
+            }
+
+            if (boundFlagControllers.TryGetValue(stand, out var previousController) && previousController != null && previousController != controller)
+            {
+                UnbindFlagController(previousController);
+            }
+
+            boundFlagControllers[stand] = controller;
+            BindFlagController(controller);
+        }
+
+        private void BindFlagController(FlagController controller)
+        {
+            if (controller == null)
+            {
+                return;
+            }
+
+            controller.EnemyPickedUp -= HandleFlagEnemyPickedUp;
+            controller.ReturnedToBase -= HandleFlagReturnedToBase;
+            controller.Dropped -= HandleFlagDropped;
+
+            controller.EnemyPickedUp += HandleFlagEnemyPickedUp;
+            controller.ReturnedToBase += HandleFlagReturnedToBase;
+            controller.Dropped += HandleFlagDropped;
+        }
+
+        private void UnbindFlagController(FlagController controller)
+        {
+            if (controller == null)
+            {
+                return;
+            }
+
+            controller.EnemyPickedUp -= HandleFlagEnemyPickedUp;
+            controller.ReturnedToBase -= HandleFlagReturnedToBase;
+            controller.Dropped -= HandleFlagDropped;
+        }
+
+        private void HandleFlagEnemyPickedUp(FlagController flagController, AbstractPlayer player)
+        {
+            if (flagController == null)
+            {
+                return;
+            }
+
+            PlayerFlagPickedUp(flagController.team, player != null ? player.gameObject.name : string.Empty, false);
+        }
+
+        private void HandleFlagReturnedToBase(FlagController flagController, AbstractPlayer player, FlagController.EFlagReturnReason reason)
+        {
+            if (flagController == null)
+            {
+                return;
+            }
+
+            if (reason == FlagController.EFlagReturnReason.CapturedAtBase)
+            {
+                return;
+            }
+
+            PlayerFlagReturned(flagController.team, false);
+        }
+
+        private void HandleFlagDropped(FlagController flagController)
+        {
+            if (flagController == null)
+            {
+                return;
+            }
+
+            PlayerFlagLost(flagController.team, false);
+        }
+
+        private void HandleFlagCapturedFromStand(FlagStand stand, AbstractPlayer player)
+        {
+            if (stand == null)
+            {
+                return;
+            }
+
+            PlayerFlagCaptured(stand.Team, false);
+            if (player != null)
+            {
+                player.EnemyFlagReturnedToBase(true);
+            }
+        }
+
+        private static bool TryResolveTeam(in TeamEventPlayerInfo info, out ETeam team)
+        {
+            team = ETeam.NoTeam;
+            if (info == null)
+            {
+                return false;
+            }
+
+            var teamText = info.Team?.ToString();
+            return !string.IsNullOrWhiteSpace(teamText) && Enum.TryParse(teamText, out team);
         }
 
         private void ApplyRuleSettings()
@@ -163,6 +301,8 @@ namespace OpenGS
 
         void OnDestroy()
         {
+            UnbindFlagStand(redTeamFlagStand);
+            UnbindFlagStand(blueTeamFlagStand);
             UnSubscribeEvent();
             if (Instance == this) Instance = null;
         }
@@ -185,31 +325,31 @@ namespace OpenGS
 
         void FlagCaptured(in TeamEventPlayerInfo capturedPlayerInfo)
         {
-            // capture is finalized by the stand/player flow; the network event path is handled separately
+            if (TryResolveTeam(capturedPlayerInfo, out var team))
+            {
+                PlayerFlagCaptured(team);
+            }
         }
 
         void FlagReturn(in TeamEventPlayerInfo flagReturnInfo)
         {
-            if (GameManager.IsOnlineGameMode)
+            if (TryResolveTeam(flagReturnInfo, out var team))
             {
-            }
-            else
-            {
+                PlayerFlagReturned(team);
             }
         }
 
         void FlagLost(in TeamEventPlayerInfo team)
         {
-            if (GameManager.IsOnlineGameMode)
+            if (TryResolveTeam(team, out var resolvedTeam))
             {
-            }
-            else
-            {
+                PlayerFlagLost(resolvedTeam);
             }
         }
 
         void FlagBurst(ETeam team)
         {
+            Debug.Log($"[CTF] FlagBurst: {team}");
         }
 
         void RecoveryRedFlag()

@@ -32,7 +32,6 @@ namespace OpenGS
         [SerializeField] private float childDamageMultiplier = 0.35f;
         [SerializeField] private float childFuseTime = 1.25f;
 
-        private Vector2 velocity;
         private float lifeTime;
         private bool launched;
         private bool exploded;
@@ -43,6 +42,7 @@ namespace OpenGS
         private EGrenadeType grenadeType = EGrenadeType.Normal;
         private SpriteRenderer spriteRenderer;
         private IEffectService effectService;
+        private readonly ProjectileBallistics2D ballistics = new ProjectileBallistics2D();
 
         [Inject]
         private void Construct([InjectOptional] IEffectService effectService)
@@ -80,7 +80,7 @@ namespace OpenGS
             weaponName = string.IsNullOrWhiteSpace(weapon) ? "Grenade" : weapon;
             ownerTeam = team;
             grenadeType = type;
-            velocity = (direction.sqrMagnitude > 0f ? direction.normalized : Vector2.right) * Mathf.Max(0f, speed);
+            ballistics.Configure(direction, speed, true, gravity, alignToVelocity, spriteAngleOffset);
             lifeTime = 0f;
             launched = true;
             exploded = false;
@@ -140,9 +140,8 @@ namespace OpenGS
                 return;
             }
 
-            velocity.y -= gravity * dt;
             var currentPosition = (Vector2)transform.position;
-            var step = velocity * dt;
+            var step = ballistics.Step(dt);
             if (step.sqrMagnitude <= Mathf.Epsilon)
             {
                 UpdateRotation();
@@ -228,13 +227,7 @@ namespace OpenGS
 
         private void UpdateRotation()
         {
-            if (!alignToVelocity || velocity.sqrMagnitude <= Mathf.Epsilon)
-            {
-                return;
-            }
-
-            var angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg + spriteAngleOffset;
-            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+            transform.rotation = ballistics.GetRotation();
         }
 
         private void Explode(Vector2 position)
