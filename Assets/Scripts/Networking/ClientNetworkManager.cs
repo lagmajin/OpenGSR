@@ -25,6 +25,8 @@ namespace OpenGS
         [Header("Client State")]
         public string ClientPlayerId { get; private set; } = Guid.NewGuid().ToString("N");
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
+        [Tooltip("Enable detailed UDP receive logs for match traffic. Non-verbose match warnings still remain visible.")]
+        [SerializeField] private bool verboseUdpLogs = false;
 
         // LiteNetLib UDP Client
         private NetManager _netClient;
@@ -557,13 +559,55 @@ namespace OpenGS
                     break;
                 case RUDPMessageTypes.MatchJoined:
                     CurrentMatchRoomId = message.GetStringOrNull("RoomID");
-                    Debug.Log($"[ClientNetwork] Joined Match Room: {CurrentMatchRoomId}");
+                    Debug.Log($"[ClientNetwork] Joined Match Room [{FormatRoomTag(CurrentMatchRoomId)}]");
+                    break;
+                case RUDPMessageTypes.PlayerShot:
+                    LogUdpEvent("PlayerShot", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("ObjectId"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.GrenadeThrow:
+                    LogUdpEvent("GrenadeThrow", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("ObjectId"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.ObjectSpawned:
+                    LogUdpEvent("ObjectSpawned", message.GetStringOrNull("RoomID"), message.GetStringOrNull("ObjectType"), message.GetStringOrNull("ObjectId"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.ObjectDestroyed:
+                    LogUdpEvent("ObjectDestroyed", message.GetStringOrNull("RoomID"), message.GetStringOrNull("ObjectType"), message.GetStringOrNull("ObjectId"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
                 // 他のUDPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown UDP message: {message}");
                     break;
             }
+        }
+
+        private static void PublishGameEvent(AbstractGameEvent gameEvent)
+        {
+            if (gameEvent == null)
+            {
+                return;
+            }
+
+            GameEventBroker.Publish(gameEvent);
+        }
+
+        private void LogUdpEvent(string eventType, string roomId, string primary, string secondary)
+        {
+            if (!verboseUdpLogs)
+            {
+                return;
+            }
+
+            var roomTag = FormatRoomTag(roomId);
+            Debug.Log($"[ClientNetwork] UDP {eventType} [{roomTag}]: {primary} / {secondary}");
+        }
+
+        private static string FormatRoomTag(string roomId)
+        {
+            return string.IsNullOrWhiteSpace(roomId) ? "no-room" : roomId;
         }
 
         public void SendUdpInput(JObject input, DeliveryMethod method = DeliveryMethod.Unreliable)
@@ -582,6 +626,46 @@ namespace OpenGS
             {
                 Debug.LogWarning("[ClientNetwork] Not connected to UDP server. Input not sent.");
             }
+        }
+
+        public void SendShootRequest(Vector2 position, Vector2 direction, string weaponType)
+        {
+            SendUdpInput(new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.ShootRequest,
+                ["PlayerID"] = ClientPlayerId,
+                ["Position"] = new JObject
+                {
+                    ["X"] = position.x,
+                    ["Y"] = position.y
+                },
+                ["Direction"] = new JObject
+                {
+                    ["X"] = direction.x,
+                    ["Y"] = direction.y
+                },
+                ["WeaponType"] = string.IsNullOrWhiteSpace(weaponType) ? "Unknown" : weaponType
+            }, DeliveryMethod.Unreliable);
+        }
+
+        public void SendGrenadeThrow(Vector2 position, Vector2 direction, string grenadeType)
+        {
+            SendUdpInput(new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.GrenadeThrow,
+                ["PlayerID"] = ClientPlayerId,
+                ["Position"] = new JObject
+                {
+                    ["X"] = position.x,
+                    ["Y"] = position.y
+                },
+                ["Direction"] = new JObject
+                {
+                    ["X"] = direction.x,
+                    ["Y"] = direction.y
+                },
+                ["GrenadeType"] = string.IsNullOrWhiteSpace(grenadeType) ? "Normal" : grenadeType
+            }, DeliveryMethod.Unreliable);
         }
 
         #endregion

@@ -114,6 +114,8 @@ namespace OpenGS
                 carriedEnemyFlag = null;
             }
 
+            PlayDeathAnimation();
+
             if (PlayerType() == EPlayerType.MyPlayer && MatchModeResolver.CanRespawnCurrentMatch() == false)
             {
                 EnterSpectatorMode();
@@ -128,6 +130,8 @@ namespace OpenGS
                 carriedEnemyFlag?.OnDropped();
                 carriedEnemyFlag = null;
             }
+
+            PlayDeathAnimation();
         }
 
         public virtual void OnSpawn()
@@ -873,6 +877,15 @@ namespace OpenGS
 
             var effect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
             effect.transform.SetParent(transform, true);
+        }
+
+        protected void PlayDeathAnimation()
+        {
+            var deathAnimation = GetComponentInChildren<DeathAnimation>();
+            if (deathAnimation != null)
+            {
+                deathAnimation.Play();
+            }
         }
 
         [Inject]

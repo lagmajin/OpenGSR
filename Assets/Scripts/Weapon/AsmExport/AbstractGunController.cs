@@ -3,6 +3,7 @@ using OpenGSCore;
 using Sirenix.OdinInspector;
 using DG.Tweening;
 using Zenject;
+using System;
 
 namespace OpenGS
 {
@@ -170,21 +171,21 @@ namespace OpenGS
         {
             if (!shellCasingPrefab) return;
 
-            float angleOffset = Random.Range(-19f, 19f);
+            float angleOffset = UnityEngine.Random.Range(-19f, 19f);
             Quaternion spawnRot = transform.rotation * Quaternion.Euler(0, 0, angleOffset);
             var shell = Instantiate(shellCasingPrefab, transform.position, spawnRot);
 
             var rb = shell.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
-                bool isWildShell = Random.value < 0.05f;
-                float fx = isWildShell ? Random.Range(3f, 4f) : Random.Range(1.4f, 1.4f);
-                float fy = isWildShell ? Random.Range(6f, 8f) : Random.Range(3.0f, 4.0f);
+                bool isWildShell = UnityEngine.Random.value < 0.05f;
+                float fx = isWildShell ? UnityEngine.Random.Range(3f, 4f) : UnityEngine.Random.Range(1.4f, 1.4f);
+                float fy = isWildShell ? UnityEngine.Random.Range(6f, 8f) : UnityEngine.Random.Range(3.0f, 4.0f);
 
                 Vector2 force = transform.right * fx + transform.up * fy;
                 rb.AddForce(force, ForceMode2D.Impulse);
 
-                float torque = isWildShell ? Random.Range(-40f, 40f) : Random.Range(-10f, 10f);
+                float torque = isWildShell ? UnityEngine.Random.Range(-40f, 40f) : UnityEngine.Random.Range(-10f, 10f);
                 rb.AddTorque(torque, ForceMode2D.Impulse);
             }
         }
@@ -266,7 +267,10 @@ namespace OpenGS
                 remains--;
                 shotTimer = shotDelay;
                 
-                CreateBullet();
+                if (!TrySendServerShot())
+                {
+                    CreateBullet();
+                }
                 CreateMuzzulleFlash();
                 CreateEmptyShellCasing();
                 PlayShotSound();
@@ -285,6 +289,35 @@ namespace OpenGS
         public virtual bool CanShot() => shotTimer <= 0 && remains > 0 && !reloadingNow;
 
         public bool CanReload() => magazine > remains;
+
+        protected virtual bool TrySendServerShot()
+        {
+            try
+            {
+                var networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+                if (networkManager == null || !networkManager.IsConnected())
+                {
+                    return false;
+                }
+
+                var owner = GetOwnerPlayer();
+                var weaponType = data != null ? data.weaponType.ToString() : Name;
+                var position = muzzle != null ? (Vector2)muzzle.position : (Vector2)transform.position;
+                var direction = GetShotDirection();
+
+                NetworkEventSerializer.SerializeAndSend(new PlayerShotEvent(
+                    GetPlayerID(owner),
+                    position,
+                    direction,
+                    weaponType));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[AbstractGunController] Failed to send server shot: {ex.Message}");
+                return false;
+            }
+        }
 
         public int gunDirection() => transform.localScale.x > 0 ? 1 : -1;
 
@@ -307,7 +340,7 @@ namespace OpenGS
         {
             if (data != null && soundService != null)
             {
-                float randomPitch = Random.Range(0.95f, 1.05f);
+                float randomPitch = UnityEngine.Random.Range(0.95f, 1.05f);
                 soundService.PlayWeaponShot(data.weaponType, randomPitch);
             }
         }

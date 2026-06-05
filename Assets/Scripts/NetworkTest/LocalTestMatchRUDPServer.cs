@@ -179,6 +179,9 @@ namespace OpenGS
                 case "ShootRequest":
                     HandleShootRequest(json);
                     break;
+                case RUDPMessageTypes.GrenadeThrow:
+                    HandleGrenadeThrow(json);
+                    break;
                 case RUDPMessageTypes.PlayerShot:
                     HandlePlayerShot(json);
                     break;
@@ -229,12 +232,56 @@ namespace OpenGS
         private void HandleShootRequest(JObject json)
         {
             // 射撃リクエストを受け取ったら、射撃イベントを全クライアントに通知
-            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? "unknown";
+            var posX = json["PosX"]?.ToObject<float>() ?? 0f;
+            var posY = json["PosY"]?.ToObject<float>() ?? 0f;
+            var dirX = json["DirX"]?.ToObject<float>() ?? 1f;
+            var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
+            var weaponType = json["WeaponType"]?.ToString() ?? "Pistol";
             PrettyLogger.Bold("RUDP Server", $"ShootRequest from {playerId}");
 
-            // テスト：射撃イベントを返す
-            var shotMsg = RUDPMessageBuilder.CreatePlayerShot(playerId, new Vector2(0, 0), new Vector2(1, 0), "Pistol");
+            var shotMsg = RUDPMessageBuilder.CreatePlayerShot(playerId, new Vector2(posX, posY), new Vector2(dirX, dirY), weaponType);
             SendJson(shotMsg);
+
+            SendJson(RUDPMessageBuilder.CreateObjectSpawned(
+                $"{playerId}_bullet_{DateTime.UtcNow.Ticks}",
+                "Bullet",
+                new Vector2(posX, posY),
+                Mathf.Atan2(dirY, dirX) * Mathf.Rad2Deg));
+        }
+
+        private void HandleGrenadeThrow(JObject json)
+        {
+            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? "unknown";
+            var posX = json["PosX"]?.ToObject<float>() ?? 0f;
+            var posY = json["PosY"]?.ToObject<float>() ?? 0f;
+            var dirX = json["DirX"]?.ToObject<float>() ?? 1f;
+            var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
+            var grenadeType = json["GrenadeType"]?.ToString() ?? "Normal";
+
+            PrettyLogger.Bold("RUDP Server", $"GrenadeThrow from {playerId}: {grenadeType}");
+
+            var broadcastMsg = RUDPMessageBuilder.CreateGrenadeThrow(
+                playerId,
+                new Vector2(posX, posY),
+                new Vector2(dirX, dirY),
+                grenadeType);
+            SendJson(broadcastMsg);
+
+            SendJson(RUDPMessageBuilder.CreateObjectSpawned(
+                $"{playerId}_grenade_{DateTime.UtcNow.Ticks}",
+                grenadeType switch
+                {
+                    "Power" => "PowerGrenade",
+                    "Magnetic" => "MagneticGrenade",
+                    "Mine" => "MineGrenade",
+                    "Cluster" => "ClusterGrenade",
+                    "Fire" => "FireGrenade",
+                    "Smoke" => "SmokeGrenade",
+                    _ => "NormalGrenade"
+                },
+                new Vector2(posX, posY),
+                Mathf.Atan2(dirY, dirX) * Mathf.Rad2Deg));
         }
 
         /// <summary>
@@ -242,7 +289,7 @@ namespace OpenGS
         /// </summary>
         private void HandlePlayerShot(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? "unknown";
             var posX = json["PosX"]?.ToObject<float>() ?? 0f;
             var posY = json["PosY"]?.ToObject<float>() ?? 0f;
             var dirX = json["DirX"]?.ToObject<float>() ?? 0f;

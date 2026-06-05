@@ -219,6 +219,7 @@ namespace OpenGS
             {
                 TryPlayGeneralSound(EPlayerGeneralSound.ThrowGrenade);
                 grenadeComponent.ThrowGrenade(1.0f);
+                SendGrenadeNotificationToServer();
                 canOpenGranade = false;
                 return;
             }
@@ -281,6 +282,28 @@ namespace OpenGS
             catch (Exception ex)
             {
                 Debug.LogWarning($"[Network] Failed to send shot notification: {ex.Message}");
+            }
+        }
+
+        private void SendGrenadeNotificationToServer()
+        {
+            try
+            {
+                if (matchEventProvider == null)
+                {
+                    matchEventProvider = FindFirstObjectByType<MatchEventProvider>();
+                }
+
+                if (matchEventProvider == null)
+                {
+                    return;
+                }
+
+                matchEventProvider.UseGrenade(this, grenadeComponent != null ? grenadeComponent.CurrentGrenadeType : EGrenadeType.Normal);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[Network] Failed to send grenade notification: {ex.Message}");
             }
         }
 

@@ -27,7 +27,6 @@ namespace OpenGS
         public const string PositionUpdateAck = "PositionUpdateAck";
         public const string PlayerKilled = "PlayerKilled";
         public const string PlayerDamaged = "PlayerDamaged";
-        public const string GrenadeThrown = "GrenadeThrown";
 
         // CTF (Flag) 関連 - サーバー → クライアント
         public const string FlagCaptured = "FlagCaptured";        // フラッグキャプチャ

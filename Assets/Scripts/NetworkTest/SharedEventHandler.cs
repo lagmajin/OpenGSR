@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using OpenGSCore;
+using UnityEngine;
 
 namespace OpenGS.Network
 {
@@ -89,7 +90,8 @@ namespace OpenGS.Network
             Register(RUDPMessageTypes.PlayerShot, HandlePlayerShot);
             Register(RUDPMessageTypes.PlayerKilled, HandlePlayerKilled);
             Register(RUDPMessageTypes.PlayerDamaged, HandlePlayerDamaged);
-            Register(RUDPMessageTypes.GrenadeThrown, HandleGrenadeThrown);
+            Register(RUDPMessageTypes.ShootRequest, HandleShootRequest);
+            Register(RUDPMessageTypes.GrenadeThrow, HandleGrenadeThrow);
             Register(RUDPMessageTypes.PlayerPositionUpdate, HandlePlayerPositionUpdate);
             Register(RUDPMessageTypes.PlayerRespawn, HandlePlayerRespawn);
 
@@ -447,6 +449,28 @@ namespace OpenGS.Network
             sender(broadcast);
         }
 
+        private void HandleShootRequest(JObject json, Action<JObject> sender)
+        {
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "";
+            var posX = json["PosX"]?.ToObject<float>() ?? 0f;
+            var posY = json["PosY"]?.ToObject<float>() ?? 0f;
+            var dirX = json["DirX"]?.ToObject<float>() ?? 1f;
+            var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
+            var weaponType = json["WeaponType"]?.ToString() ?? "Unknown";
+
+            sender(RUDPMessageBuilder.CreatePlayerShot(
+                playerId,
+                new Vector2(posX, posY),
+                new Vector2(dirX, dirY),
+                weaponType));
+
+            sender(RUDPMessageBuilder.CreateObjectSpawned(
+                $"{playerId}_bullet_{DateTime.UtcNow.Ticks}",
+                "Bullet",
+                new Vector2(posX, posY),
+                Mathf.Atan2(dirY, dirX) * Mathf.Rad2Deg));
+        }
+
         private void HandlePlayerKilled(JObject json, Action<JObject> sender)
         {
             var killerId = json["KillerID"]?.ToString() ?? "";
@@ -477,16 +501,35 @@ namespace OpenGS.Network
             sender(broadcast);
         }
 
-        private void HandleGrenadeThrown(JObject json, Action<JObject> sender)
+        private void HandleGrenadeThrow(JObject json, Action<JObject> sender)
         {
-            var playerId = json["PlayerID"]?.ToString() ?? "";
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "";
+            var posX = json["PosX"]?.ToObject<float>() ?? 0f;
+            var posY = json["PosY"]?.ToObject<float>() ?? 0f;
+            var dirX = json["DirX"]?.ToObject<float>() ?? 1f;
+            var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
+            var grenadeType = json["GrenadeType"]?.ToString() ?? "Normal";
 
-            var broadcast = new JObject
-            {
-                ["MessageType"] = RUDPMessageTypes.GrenadeThrown,
-                ["PlayerID"] = playerId
-            };
-            sender(broadcast);
+            sender(RUDPMessageBuilder.CreateGrenadeThrow(
+                playerId,
+                new Vector2(posX, posY),
+                new Vector2(dirX, dirY),
+                grenadeType));
+
+            sender(RUDPMessageBuilder.CreateObjectSpawned(
+                $"{playerId}_grenade_{DateTime.UtcNow.Ticks}",
+                grenadeType switch
+                {
+                    "Power" => "PowerGrenade",
+                    "Magnetic" => "MagneticGrenade",
+                    "Mine" => "MineGrenade",
+                    "Cluster" => "ClusterGrenade",
+                    "Fire" => "FireGrenade",
+                    "Smoke" => "SmokeGrenade",
+                    _ => "NormalGrenade"
+                },
+                new Vector2(posX, posY),
+                Mathf.Atan2(dirY, dirX) * Mathf.Rad2Deg));
         }
 
         private void HandlePlayerPositionUpdate(JObject json, Action<JObject> sender)

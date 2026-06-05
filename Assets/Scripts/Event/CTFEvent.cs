@@ -6,18 +6,28 @@ namespace OpenGS
 
     internal class FlagDropEvent : AbstractGameEvent
     {
-        private string playerName;
-        private ETeam team;
+        private readonly string playerName;
+        private readonly ETeam team;
+
+        public FlagDropEvent(string playerName, ETeam team)
+        {
+            this.playerName = playerName;
+            this.team = team;
+        }
+
+        public string PlayerName() => playerName;
+        public ETeam Team() => team;
     }
     internal class FlagBurstEvent : AbstractGameEvent
     {
-        private ETeam team;
+        private readonly ETeam team;
 
-        FlagBurstEvent(ETeam team)
+        public FlagBurstEvent(ETeam team)
         {
-
-
+            this.team = team;
         }
+
+        public ETeam Team() => team;
     }
 
     class FlagRecoveryRequestEvent : AbstractGameEvent

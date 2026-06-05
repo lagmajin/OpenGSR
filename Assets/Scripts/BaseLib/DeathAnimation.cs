@@ -13,7 +13,7 @@ namespace OpenGS
 
 
     [DisallowMultipleComponent]
-    public class DeathAnimation : MonoBehaviour
+    public class DeathAnimation : MonoBehaviour, IDeathAnimation
     {
         public bool playImmediately = false;
         public Rigidbody2D body;
@@ -29,6 +29,7 @@ namespace OpenGS
         public float peakHeight = 2f;
 
         private bool isFalling = false;
+        private bool isPlaying = false;
         private Vector2 startPos;
 
         [SerializeField] private new Transform transform;
@@ -36,11 +37,9 @@ namespace OpenGS
         private void Start()
         {
             startPos = transform.position;
-
-
             if (playImmediately)
             {
-                StartCoroutine(AnimateFloat());
+                Play();
             }
         }
 
@@ -48,8 +47,21 @@ namespace OpenGS
         {
             //body = gameObject.GetComponent<Rigidbody2D>();
         }
-        IEnumerator AnimateFloat()
+        public void Play()
         {
+            if (isPlaying)
+            {
+                return;
+            }
+
+            startPos = transform.position;
+            StopAllCoroutines();
+            StartCoroutine(AnimateFloat());
+        }
+
+        private IEnumerator AnimateFloat()
+        {
+            isPlaying = true;
             isFalling = false;
             // 上昇フェーズ
             while (!isFalling && transform.position.y < startPos.y + peakHeight)
@@ -60,11 +72,14 @@ namespace OpenGS
 
             isFalling = true;
             // 落下フェーズ
-            while (isFalling)
+            while (isFalling && transform.position.y > startPos.y)
             {
                 transform.position += Vector3.down * fallSpeed * Time.deltaTime;
                 yield return null;
             }
+
+            transform.position = new Vector3(transform.position.x, startPos.y, transform.position.z);
+            isPlaying = false;
         }
     }
 }

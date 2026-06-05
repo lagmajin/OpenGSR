@@ -8,6 +8,7 @@ namespace OpenGS
     [CreateAssetMenu(menuName = "Effect/EffectPrefabMasterData")]
     public class EffectPrefabMasterData : ScriptableObject
     {
+        [SerializeField][Required] public GameObject flagBurstEffect;
         [SerializeField][Required] public GameObject flagReturnEffect;
         [SerializeField][Required] public GameObject HitEffect;
 

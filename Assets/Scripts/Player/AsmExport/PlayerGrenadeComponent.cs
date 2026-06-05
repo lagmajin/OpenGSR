@@ -1,6 +1,7 @@
 using Sirenix.OdinInspector;
 using OpenGSCore;
 using UnityEngine;
+using System;
 
 
 
@@ -140,6 +141,12 @@ namespace OpenGS
             var facingDir = transform.localScale.x < 0f ? Vector2.left : Vector2.right;
             var throwDir = (facingDir + Vector2.up * 0.5f).normalized;
             var throwSpeed = baseThrowForce * powerMultiplier;
+            if (TrySendServerGrenadeThrow(throwDir))
+            {
+                Debug.Log($"[PlayerGrenadeComponent] Server-authoritative grenade throw sent: {grenadeData.Name}");
+                return;
+            }
+
             var grenadeObj = Instantiate(grenadeData.GrenadePrefab, throwPoint.position, Quaternion.identity);
             var grenadeProjectile = grenadeObj.GetComponent<GrenadeProjectileController>();
 
@@ -170,6 +177,34 @@ namespace OpenGS
             // 必要に応じて GameEventBroker に投擲イベントを Publish してネットワークに同期させる
             // var evt = new GrenadeThrowEvent(GetComponent<AbstractPlayer>()?.UniqueID(), throwPoint.position, throwDir, grenadeData.name);
             // GameEventBroker.Publish(evt);
+        }
+
+        private bool TrySendServerGrenadeThrow(Vector2 direction)
+        {
+            try
+            {
+                var networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+                if (networkManager == null || !networkManager.IsConnected())
+                {
+                    return false;
+                }
+
+                var owner = GetComponent<AbstractPlayer>();
+                var playerId = owner != null ? owner.UniqueID().ToString() : string.Empty;
+                var position = throwPoint != null ? (Vector2)throwPoint.position : (Vector2)transform.position;
+
+                NetworkEventSerializer.SerializeAndSend(new GrenadeThrowEvent(
+                    playerId,
+                    position,
+                    direction,
+                    grenadeType.ToString()));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[PlayerGrenadeComponent] Failed to send server grenade throw: {ex.Message}");
+                return false;
+            }
         }
     }
 }

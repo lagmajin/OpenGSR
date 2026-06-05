@@ -8,6 +8,7 @@ namespace OpenGS
     {
         private ClientNetworkManager _networkManager;
         private string _playerId;
+        [SerializeField] private KeyCode grenadeKey = KeyCode.G;
 
         private float _lastMoveSendTime;
         [SerializeField] private float moveSendInterval = 0.05f; // 20回/秒
@@ -66,19 +67,47 @@ namespace OpenGS
         {
             if (Input.GetButtonDown("Fire1")) // マウス左クリックまたはCtrlキー
             {
-                JObject fireInput = new JObject
-                {
-                    ["MessageType"] = "PlayerAction",
-                    ["ActionType"] = "Shoot",
-                    ["PlayerID"] = _playerId,
-                    ["WeaponType"] = 0, // 武器の種類など (例として0)
-                    ["PosX"] = transform.position.x,
-                    ["PosY"] = transform.position.y,
-                    ["Angle"] = transform.rotation.eulerAngles.z, // 2Dゲームを想定
-                    ["Timestamp"] = System.DateTime.UtcNow.Ticks
-                };
-                _networkManager.SendUdpInput(fireInput, DeliveryMethod.Unreliable);
+                var aimDirection = GetAimDirection();
+                _networkManager.SendShootRequest(transform.position, aimDirection, ResolveWeaponType());
             }
+
+            if (Input.GetKeyDown(grenadeKey))
+            {
+                var aimDirection = GetAimDirection();
+                _networkManager.SendGrenadeThrow(transform.position, aimDirection, ResolveGrenadeType());
+            }
+        }
+
+        private Vector2 GetAimDirection()
+        {
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                return transform.localScale.x < 0f ? Vector2.left : Vector2.right;
+            }
+
+            var screenPos = camera.WorldToScreenPoint(transform.position);
+            var worldMouse = camera.ScreenToWorldPoint(Input.mousePosition);
+            var dir = (Vector2)(worldMouse - transform.position);
+            if (dir.sqrMagnitude <= Mathf.Epsilon)
+            {
+                dir = transform.localScale.x < 0f ? Vector2.left : Vector2.right;
+            }
+
+            return dir.normalized;
+        }
+
+        private string ResolveWeaponType()
+        {
+            var weaponSlots = GetComponentInChildren<WeaponSlots>();
+            var currentGun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
+            return currentGun != null ? currentGun.Name : "Unknown";
+        }
+
+        private string ResolveGrenadeType()
+        {
+            var grenadeComponent = GetComponent<PlayerGrenadeComponent>();
+            return grenadeComponent != null ? grenadeComponent.CurrentGrenadeType.ToString() : "Normal";
         }
     }
 }

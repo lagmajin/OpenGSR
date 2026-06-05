@@ -26,6 +26,9 @@ namespace OpenGS
         public event Action<ETeam> OnFlagLost;
         public event Action<ETeam, string> OnFlagPickedUp; // team, playerName
 
+        [InjectOptional] private IEffectService effectService;
+        [InjectOptional] private EffectPrefabMasterData effectPrefabMasterData;
+
         // ネットワークマネージャー
         private MatchRUDPServerNetworkManager networkManager;
 
@@ -203,6 +206,7 @@ namespace OpenGS
                 return;
             }
 
+            PlayFlagEffect(effectPrefabMasterData != null ? effectPrefabMasterData.flagReturnEffect : null, flagController.transform.position);
             PlayerFlagReturned(flagController.team, false);
         }
 
@@ -213,6 +217,7 @@ namespace OpenGS
                 return;
             }
 
+            PlayFlagEffect(effectPrefabMasterData != null ? effectPrefabMasterData.HitEffect : null, flagController.transform.position);
             PlayerFlagLost(flagController.team, false);
         }
 
@@ -223,6 +228,7 @@ namespace OpenGS
                 return;
             }
 
+            PlayFlagEffect(effectPrefabMasterData != null ? effectPrefabMasterData.flagReturnEffect : null, stand.transform.position);
             PlayerFlagCaptured(stand.Team, false);
             if (player != null)
             {
@@ -240,6 +246,27 @@ namespace OpenGS
 
             var teamText = info.Team?.ToString();
             return !string.IsNullOrWhiteSpace(teamText) && Enum.TryParse(teamText, out team);
+        }
+
+        private FlagStand GetFlagStand(ETeam team)
+        {
+            return team == ETeam.Red ? redTeamFlagStand : blueTeamFlagStand;
+        }
+
+        private void PlayFlagEffect(GameObject effectPrefab, Vector3 position)
+        {
+            if (effectPrefab == null)
+            {
+                return;
+            }
+
+            if (effectService != null)
+            {
+                effectService.PlayOneShotEffect(effectPrefab, position, Quaternion.identity);
+                return;
+            }
+
+            Instantiate(effectPrefab, position, Quaternion.identity);
         }
 
         private void ApplyRuleSettings()
@@ -349,6 +376,17 @@ namespace OpenGS
 
         void FlagBurst(ETeam team)
         {
+            var stand = GetFlagStand(team);
+            var position = stand != null ? stand.transform.position : Vector3.zero;
+            var effect = effectPrefabMasterData != null
+                ? (effectPrefabMasterData.flagBurstEffect != null
+                    ? effectPrefabMasterData.flagBurstEffect
+                    : (effectPrefabMasterData.flagReturnEffect != null
+                        ? effectPrefabMasterData.flagReturnEffect
+                        : effectPrefabMasterData.HitEffect))
+                : null;
+
+            PlayFlagEffect(effect, position);
             Debug.Log($"[CTF] FlagBurst: {team}");
         }
 
@@ -502,6 +540,9 @@ namespace OpenGS
                     break;
                 case EFlagEventType.Pickup:
                     PlayerFlagPickedUp(team, playerId, true);
+                    break;
+                case EFlagEventType.Burst:
+                    FlagBurst(team);
                     break;
             }
 
