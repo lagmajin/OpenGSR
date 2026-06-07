@@ -46,12 +46,12 @@ namespace OpenGS
             var resolvedTeam = owner != null ? owner.Team() : ETeam.NoTeam;
             GrenadeExplosionDamageUtility.ApplyCircularDamage((Vector2)transform.position, resolvedOwnerId, weaponName, resolvedTeam);
 
-            SpawnChildGrenades(resolvedOwnerId);
+            SpawnChildGrenades(resolvedOwnerId, resolvedTeam);
 
             Destroy(this.gameObject,0.1f);
         }
 
-        private void SpawnChildGrenades(string resolvedOwnerId)
+        private void SpawnChildGrenades(string resolvedOwnerId, ETeam resolvedTeam)
         {
             if (childGrenadePrefab == null || childGrenadeCount <= 0)
             {
@@ -73,7 +73,7 @@ namespace OpenGS
                 var childController = child.GetComponent<ChildClusterGrenadeController>();
                 if (childController != null)
                 {
-                    childController.Init(direction, childLaunchSpeed, damagePerChild, resolvedOwnerId, weaponName);
+                    childController.Init(direction, childLaunchSpeed, damagePerChild, resolvedOwnerId, weaponName, resolvedTeam);
                 }
 
                 var childRigidbody = child.GetComponent<Rigidbody2D>();
@@ -87,9 +87,30 @@ namespace OpenGS
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            //StopCoroutine(c);
+            if (collision.collider == null)
+            {
+                return;
+            }
 
-            Explosion();
+            if (ProjectileHitUtility.IsStageHit(collision.collider.gameObject) ||
+                ProjectileHitUtility.IsPlayerHit(collision.collider.gameObject))
+            {
+                Explosion();
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision == null)
+            {
+                return;
+            }
+
+            if (ProjectileHitUtility.IsStageHit(collision.gameObject) ||
+                ProjectileHitUtility.IsPlayerHit(collision.gameObject))
+            {
+                Explosion();
+            }
         }
 
     }

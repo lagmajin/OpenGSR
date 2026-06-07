@@ -35,6 +35,14 @@ namespace OpenGS
 
         private void Start()
         {
+            if (body != null)
+            {
+                body.gravityScale = 0f;
+                body.freezeRotation = true;
+                body.linearVelocity = Vector2.zero;
+                body.angularVelocity = 0f;
+            }
+
             pickupCollider = GetComponent<Collider2D>();
             if (pickupCollider)
             {

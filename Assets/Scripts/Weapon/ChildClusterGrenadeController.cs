@@ -10,16 +10,18 @@ namespace OpenGS
        public float defaultDamage = 30.0f;
        private bool exploded;
        [SerializeField] private string ownerPlayerId = "";
+       [SerializeField] private ETeam ownerTeam = ETeam.NoTeam;
        [SerializeField] private string weaponName = "ChildClusterGrenade";
        [SerializeField] private Rigidbody2D childBody;
        [SerializeField] private float launchSpeed = 8.0f;
 
-        public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerId, string weapon)
+        public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerId, string weapon, ETeam team)
         {
             var launchDirection = direction.sqrMagnitude > 0f ? direction.normalized : Vector2.right;
             launchSpeed = initSpeed;
             defaultDamage = initDamage;
             ownerPlayerId = ownerId ?? string.Empty;
+            ownerTeam = team;
             weaponName = string.IsNullOrWhiteSpace(weapon) ? "ChildClusterGrenade" : weapon;
 
             var body = childBody != null ? childBody : GetComponent<Rigidbody2D>();
@@ -32,8 +34,31 @@ namespace OpenGS
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            Explosion();
+            if (collision.collider == null)
+            {
+                return;
+            }
 
+            if (ProjectileHitUtility.IsStageHit(collision.collider.gameObject) ||
+                ProjectileHitUtility.IsPlayerHit(collision.collider.gameObject))
+            {
+                Explosion();
+            }
+
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision == null)
+            {
+                return;
+            }
+
+            if (ProjectileHitUtility.IsStageHit(collision.gameObject) ||
+                ProjectileHitUtility.IsPlayerHit(collision.gameObject))
+            {
+                Explosion();
+            }
         }
 
         private void Explosion()
@@ -56,7 +81,7 @@ namespace OpenGS
             var resolvedOwnerId = !string.IsNullOrWhiteSpace(ownerPlayerId)
                 ? ownerPlayerId
                 : owner != null ? owner.UniqueID().ToString() : string.Empty;
-            var resolvedTeam = owner != null ? owner.Team() : ETeam.NoTeam;
+            var resolvedTeam = owner != null ? owner.Team() : ownerTeam;
             GrenadeExplosionDamageUtility.ApplyCircularDamage((Vector2)transform.position, resolvedOwnerId, weaponName, resolvedTeam, defaultDamage / 100f);
 
             Destroy(this.gameObject, 0.1f);
