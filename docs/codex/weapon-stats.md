@@ -2,6 +2,9 @@
 
 Captured weapon/item balance data from the current project notes.
 
+For the current gameplay rules that govern pickup, drop, magazine preservation,
+and special weapon handling, see [CTFRule.md](/X:/Dev/OpenGSR/docs/CTFRule.md).
+
 ## Raw List
 
 ```text
