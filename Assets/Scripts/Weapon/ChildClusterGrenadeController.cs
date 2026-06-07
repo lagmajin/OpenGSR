@@ -9,6 +9,7 @@ namespace OpenGS
     {
        public float defaultDamage = 30.0f;
        private bool exploded;
+       // Child cluster grenades are projectiles only; they are never pickup items.
        [SerializeField] private string ownerPlayerId = "";
        [SerializeField] private ETeam ownerTeam = ETeam.NoTeam;
        [SerializeField] private string weaponName = "ChildClusterGrenade";

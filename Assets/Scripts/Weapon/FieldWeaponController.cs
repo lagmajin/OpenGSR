@@ -35,6 +35,11 @@ namespace OpenGS
 
         private void Start()
         {
+            if (body == null)
+            {
+                body = GetComponent<Rigidbody2D>();
+            }
+
             if (body != null)
             {
                 body.gravityScale = 0f;
