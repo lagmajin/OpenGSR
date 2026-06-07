@@ -26,6 +26,7 @@ namespace OpenGS
         private Collider2D pickupCollider;
 
         [SerializeField] [Required] public GameObject weaponPrefab;
+        [SerializeField] private int storedMagazine = -1;
 
         //public Sound
 
@@ -115,12 +116,22 @@ namespace OpenGS
             if (p.CanEquip())
             {
                 p.EquipWeapon(weaponPrefab);
+
+                if (storedMagazine >= 0 && p is AbstractPlayer player)
+                {
+                    player.SetCurrentWeaponMagazine(storedMagazine);
+                }
             }
             else
             {
                 return;
             }
             Destroy(gameObject);
+        }
+
+        public void SetStoredMagazine(int magazine)
+        {
+            storedMagazine = magazine;
         }
 
         private void TryAutoPickup(AbstractPlayer player)

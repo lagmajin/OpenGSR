@@ -278,6 +278,12 @@ namespace OpenGS
             weaponSlots?.EquipWeapon(weaponPrefab);
         }
 
+        public void SetCurrentWeaponMagazine(int magazine)
+        {
+            var gun = weaponSlots?.GetCurrentGun();
+            gun?.SetMagazineCount(magazine);
+        }
+
         public void DropCurrentWeapon()
         {
             weaponSlots?.DropCurrentWeapon();

@@ -217,6 +217,14 @@ namespace OpenGS
             PublishAmmoUpdate();
         }
 
+        public int CurrentMagazineCount() => remains;
+
+        public virtual void SetMagazineCount(int value)
+        {
+            remains = Mathf.Clamp(value, 0, MagazineMaxCount());
+            PublishAmmoUpdate();
+        }
+
         protected void PublishAmmoUpdate()
         {
             var pid = GetPlayerID(GetOwnerPlayer());
@@ -378,6 +386,11 @@ namespace OpenGS
         public void RemoveThis() => Destroy(gameObject);
 
         public GameObject FieldPrefab() => fieldWeaponPrefab;
+
+        public virtual void OnSwappedIn()
+        {
+            ReloadComplete();
+        }
 
         protected Vector2 CalculateSpreadDirection(Transform muzzle, float spreadAngle)
         {

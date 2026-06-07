@@ -126,6 +126,18 @@ namespace OpenGS
         {
             if (currentWeaponObject != null)
             {
+                var gun = currentWeaponObject.GetComponent<AbstractGunController>();
+                var dropPrefab = gun != null ? gun.FieldPrefab() : null;
+                if (gun != null && dropPrefab != null)
+                {
+                    var dropped = Instantiate(dropPrefab, currentWeaponObject.transform.position, currentWeaponObject.transform.rotation);
+                    var fieldController = dropped.GetComponent<FieldWeaponController>();
+                    if (fieldController != null)
+                    {
+                        fieldController.SetStoredMagazine(gun.CurrentMagazineCount());
+                    }
+                }
+
                 Destroy(currentWeaponObject);
                 currentWeaponObject = null;
                 RefreshWeaponVisibility();
@@ -149,6 +161,9 @@ namespace OpenGS
                 : EPlayerEquipWeapon.MainWeapon;
 
             RefreshWeaponVisibility();
+
+            var gun = GetCurrentGun();
+            gun?.OnSwappedIn();
         }
 
         private void RefreshWeaponVisibility()
