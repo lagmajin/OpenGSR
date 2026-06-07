@@ -27,8 +27,9 @@
 - A dropped normal weapon can be picked up again and will restore its saved magazine count.
 - Special weapons are use-limited and are handled separately from normal weapons.
 - Special weapon field pickups can be taken even if the player is already holding a normal weapon.
-- Special weapons are effectively disposable field items: once picked up, they stay in the special slot until their ammo runs out or the player dies, depending on the weapon behavior.
+- Special weapons are effectively disposable field items: once picked up, they stay in the special slot until their ammo runs out.
 - Special weapon ammo is still tracked per weapon, and the special slot consumes it on use.
+- Special weapons are cleared on player death.
 - Cluster grenades explode immediately on contact with stage objects or players.
 - Field weapon pickups do not use gravity in the world and keep their rotation frozen.
 

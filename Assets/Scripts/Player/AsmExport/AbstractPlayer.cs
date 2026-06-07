@@ -114,6 +114,8 @@ namespace OpenGS
                 carriedEnemyFlag = null;
             }
 
+            weaponSlots?.ClearSpecialWeapon();
+
             PlayDeathAnimation();
 
             if (PlayerType() == EPlayerType.MyPlayer && MatchModeResolver.CanRespawnCurrentMatch() == false)

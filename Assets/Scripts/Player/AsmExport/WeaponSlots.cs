@@ -76,6 +76,24 @@ namespace OpenGS
             }
         }
 
+        public void ClearSpecialWeapon()
+        {
+            if (specialWeaponSlot == null)
+            {
+                return;
+            }
+
+            RemoveWeaponFromSlot(specialWeaponSlot);
+            specialWeaponAmmo = 0;
+
+            if (currentEquipType == EPlayerEquipWeapon.SpecialWeapon)
+            {
+                currentEquipType = lastRegularWeapon;
+            }
+
+            RefreshWeaponVisibility();
+        }
+
         public bool CanEquip()
         {
             // 特殊武器装備中は通常武器の拾得不可
