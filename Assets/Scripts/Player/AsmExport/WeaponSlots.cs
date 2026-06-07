@@ -90,6 +90,12 @@ namespace OpenGS
             return targetSlot.transform.childCount == 0;
         }
 
+        public bool HasAnyRegularWeapon()
+        {
+            return (mainWeaponSlot != null && mainWeaponSlot.transform.childCount > 0)
+                || (secondaryWeaponSlot != null && secondaryWeaponSlot.transform.childCount > 0);
+        }
+
         public void EquipWeapon(GameObject weaponPrefab)
         {
             if (weaponPrefab == null)

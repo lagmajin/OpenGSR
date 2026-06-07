@@ -123,6 +123,21 @@ namespace OpenGS
             Destroy(gameObject);
         }
 
+        private void TryAutoPickup(AbstractPlayer player)
+        {
+            if (player == null)
+            {
+                return;
+            }
+
+            if (player.HasAnyWeapon())
+            {
+                return;
+            }
+
+            EquipPlayer(player);
+        }
+
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
@@ -141,15 +156,15 @@ namespace OpenGS
                 {
                     if (tags.HasPlayerTag())
                     {
-                        if (parent.TryGetComponent<IPlayer>(out var player))
+                        if (parent.TryGetComponent<AbstractPlayer>(out var player))
                         {
-                            EquipPlayer(player);
+                            TryAutoPickup(player);
                         }
                     }
 
-                    if (tags.HasMyPlayerTag() && parent.TryGetComponent<IPlayer>(out var myPlayer))
+                    if (tags.HasMyPlayerTag() && parent.TryGetComponent<AbstractPlayer>(out var myPlayer))
                     {
-                        EquipPlayer(myPlayer);
+                        TryAutoPickup(myPlayer);
                     }
 
                 }
@@ -162,15 +177,15 @@ namespace OpenGS
                 {
                     if (tags.HasPlayerTag())
                     {
-                        if (collision.gameObject.TryGetComponent<IPlayer>(out var player))
+                        if (collision.gameObject.TryGetComponent<AbstractPlayer>(out var player))
                         {
-                            EquipPlayer(player);
+                            TryAutoPickup(player);
                         }
                     }
 
-                    if (tags.HasMyPlayerTag() && collision.gameObject.TryGetComponent<IPlayer>(out var myPlayer))
+                    if (tags.HasMyPlayerTag() && collision.gameObject.TryGetComponent<AbstractPlayer>(out var myPlayer))
                     {
-                        EquipPlayer(myPlayer);
+                        TryAutoPickup(myPlayer);
                     }
 
                 }

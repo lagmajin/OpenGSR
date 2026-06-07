@@ -260,6 +260,8 @@ namespace OpenGS
 
         public bool CanEquip() => weaponSlots != null && weaponSlots.CanEquip();
 
+        public bool HasAnyWeapon() => weaponSlots != null && weaponSlots.HasAnyRegularWeapon();
+
         public bool CanWarp() => canWarp;
 
         public void EquipWeapon()
