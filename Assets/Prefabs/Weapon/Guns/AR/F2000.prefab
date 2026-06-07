@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8400000000000000000
+GameObject:
+  m_Component:
+  - component: {fileID: 8400000000000000001}
+  - component: {fileID: 8400000000000000002}
+  - component: {fileID: 8400000000000000003}
+  m_Name: F2000
+  m_IsActive: 1
+--- !u!4 &8400000000000000001
+Transform:
+  m_GameObject: {fileID: 8400000000000000000}
+  m_Children:
+  - {fileID: 8400000000000000004}
+--- !u!212 &8400000000000000002
+SpriteRenderer:
+  m_GameObject: {fileID: 8400000000000000000}
+  m_Enabled: 1
+  m_Sprite: {fileID: -6973286838389805000, guid: f2b1d33c7cf57d24fa1af4e30d2f92b3, type: 3}
+--- !u!114 &8400000000000000003
+MonoBehaviour:
+  m_GameObject: {fileID: 8400000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: a41b5e8f9f055214cb91c68efdcaf7d8, type: 3}
+--- !u!114 &8400000000000000004
+MonoBehaviour:
+  m_GameObject: {fileID: 8400000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: fe0540dad6c08e4468731eb64a93330b, type: 3}
+  Name: F2000
+  fireMode: 1
+  damage: 27
+  magazine: 17
+  reloadTime: 2.1
+  bulletSpeed: 98
+  shotDelay: 0.08
+  bulletPrefab: {fileID: 1000000000000000000, guid: 7a6d43e6f8f84d7c97c3a55d4b0c9f2a, type: 3}
+  muzzle: {fileID: 8400000000000000005}
+  fieldWeaponPrefab: {fileID: 9260000000000000000, guid: 92600000000000000000000000000001, type: 3}
+--- !u!4 &8400000000000000005
+Transform:
+  m_GameObject: {fileID: 8400000000000000000}
+  m_LocalPosition: {x: 0.27, y: 0, z: 0}

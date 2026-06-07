@@ -53,6 +53,11 @@ namespace OpenGS
             eWeaponType.ChirstmasGun,
         };
 
+        private static readonly eWeaponType[] ShotgunWeapons =
+        {
+            eWeaponType.Shotgun,
+        };
+
         private static readonly eWeaponType[] GunnerWeapons =
         {
             eWeaponType.Glock,
@@ -168,6 +173,7 @@ namespace OpenGS
             ApplyCategory(smg, SmgWeapons);
             ApplyCategory(sr, SniperWeapons);
             ApplyCategory(sg, SpecialGunWeapons);
+            ApplyCategory(sg, ShotgunWeapons);
             ApplyCategory(gr, GunnerWeapons);
             ApplyCategory(mg, MachineGunWeapons);
         }
@@ -206,6 +212,7 @@ namespace OpenGS
             SetToggleState(smg, SmgWeapons);
             SetToggleState(sr, SniperWeapons);
             SetToggleState(sg, SpecialGunWeapons);
+            SetToggleState(sg, ShotgunWeapons);
             SetToggleState(gr, GunnerWeapons);
             SetToggleState(mg, MachineGunWeapons);
         }

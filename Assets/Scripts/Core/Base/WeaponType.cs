@@ -11,6 +11,7 @@ namespace OpenGS
             { "AK47", eWeaponType.AK47 },
             { "ak47", eWeaponType.AK47 },
             { "UI_W_ak47", eWeaponType.AK47 },
+            { "Ak47", eWeaponType.AK47 },
 
             { "M16", eWeaponType.M16 },
             { "m16", eWeaponType.M16 },

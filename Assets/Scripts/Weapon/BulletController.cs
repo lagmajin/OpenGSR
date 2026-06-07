@@ -66,49 +66,29 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.CompareTag("StageObject") || collision.CompareTag("BurstArea"))
+            if (ProjectileHitUtility.IsStageHit(collision.gameObject))
             {
                 HitStageObject();
                 return;
             }
 
-            var targetPlayer = collision.GetComponentInParent<AbstractPlayer>();
-            if (targetPlayer != null)
+            if (ProjectileHitUtility.TryGetTargetPlayer(collision, out var targetPlayer))
             {
-                bool shouldDestroy = true;
-
-                if (!string.IsNullOrWhiteSpace(OwnerPlayerId) && targetPlayer.UniqueID().ToString() == OwnerPlayerId)
-                {
-                    Destroy(gameObject);
-                    return;
-                }
-
-                if (Team != ETeam.NoTeam && targetPlayer.Team() != ETeam.NoTeam && targetPlayer.Team() == Team)
-                {
-                    Destroy(gameObject);
-                    return;
-                }
-
-                var registry = PlayerRegistry.Instance;
-                if (registry != null)
-                {
-                    var source = (Vector2)(targetPlayer.transform.position - transform.position);
-                    registry.ApplyDamage(
-                        targetPlayer.UniqueID(),
-                        source,
+                if (ProjectileHitUtility.ApplyPlayerDamage(
+                        targetPlayer,
+                        transform.position,
                         Damage,
                         eDamageType.Bullet,
                         OwnerPlayerId,
                         WeaponName,
-                        false
-                    );
-                }
-
-                if (shouldDestroy)
+                        Team))
                 {
                     Destroy(gameObject);
+                    return;
                 }
             }
+
+            Destroy(gameObject);
         }
 
         // ─── IBulletController の実装 ────────────────────────────────

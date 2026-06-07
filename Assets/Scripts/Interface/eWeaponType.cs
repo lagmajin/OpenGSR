@@ -26,6 +26,7 @@ namespace OpenGS
 
         Glock,
         DE,
-        MP5
+        MP5,
+        Shotgun
     }
 }

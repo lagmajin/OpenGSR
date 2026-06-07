@@ -1,0 +1,51 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8000000000000000000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8000000000000000001}
+  - component: {fileID: 8000000000000000002}
+  - component: {fileID: 8000000000000000003}
+  m_Layer: 0
+  m_Name: M16
+  m_TagString: Untagged
+  m_IsActive: 1
+--- !u!4 &8000000000000000001
+Transform:
+  m_GameObject: {fileID: 8000000000000000000}
+  m_Children:
+  - {fileID: 8000000000000000004}
+--- !u!212 &8000000000000000002
+SpriteRenderer:
+  m_GameObject: {fileID: 8000000000000000000}
+  m_Enabled: 1
+  m_Sprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
+--- !u!114 &8000000000000000003
+MonoBehaviour:
+  m_GameObject: {fileID: 8000000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: a41b5e8f9f055214cb91c68efdcaf7d8, type: 3}
+--- !u!114 &8000000000000000004
+MonoBehaviour:
+  m_GameObject: {fileID: 8000000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: fe0540dad6c08e4468731eb64a93330b, type: 3}
+  Name: M16
+  fireMode: 1
+  damage: 28
+  magazine: 30
+  reloadTime: 2
+  bulletSpeed: 102
+  shotDelay: 0.085
+  bulletPrefab: {fileID: 1000000000000000000, guid: 7a6d43e6f8f84d7c97c3a55d4b0c9f2a, type: 3}
+  muzzle: {fileID: 8000000000000000005}
+  fieldWeaponPrefab: {fileID: 9130000000000000000, guid: f4f5e6d7c8b94aa1d23e4f5061728394, type: 3}
+--- !u!4 &8000000000000000005
+Transform:
+  m_GameObject: {fileID: 8000000000000000000}
+  m_LocalPosition: {x: 0.25, y: 0, z: 0}

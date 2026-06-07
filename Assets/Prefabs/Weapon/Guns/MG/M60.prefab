@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7400000000000000000
+GameObject:
+  m_Component:
+  - component: {fileID: 7400000000000000001}
+  - component: {fileID: 7400000000000000002}
+  - component: {fileID: 7400000000000000003}
+  m_Name: M60
+  m_IsActive: 1
+--- !u!4 &7400000000000000001
+Transform:
+  m_GameObject: {fileID: 7400000000000000000}
+  m_Children:
+  - {fileID: 7400000000000000004}
+--- !u!212 &7400000000000000002
+SpriteRenderer:
+  m_GameObject: {fileID: 7400000000000000000}
+  m_Enabled: 1
+  m_Sprite: {fileID: 7309560912338312000, guid: 9a12408457f9b6d4e99123d00d767c4b, type: 3}
+--- !u!114 &7400000000000000003
+MonoBehaviour:
+  m_GameObject: {fileID: 7400000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: bc1190e931fb83842849222327cc3fa0, type: 3}
+  Name: M60
+  fireMode: 1
+  damage: 36
+  magazine: 30
+  reloadTime: 2.6
+  bulletSpeed: 92
+  shotDelay: 0.06
+  bulletPrefab: {fileID: 1000000000000000000, guid: 7a6d43e6f8f84d7c97c3a55d4b0c9f2a, type: 3}
+  muzzle: {fileID: 7400000000000000004}
+--- !u!4 &7400000000000000004
+Transform:
+  m_GameObject: {fileID: 7400000000000000000}
+  m_LocalPosition: {x: 0.28, y: 0, z: 0}

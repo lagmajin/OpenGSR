@@ -28,33 +28,20 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var player = collision.GetComponentInParent<AbstractPlayer>();
-            if (player != null)
+            if (ProjectileHitUtility.TryGetTargetPlayer(collision, out var player))
             {
-                var playerId = player.UniqueID().ToString();
-                var playerTeam = player.Team();
-
-                if (!string.IsNullOrWhiteSpace(ownerPlayerId) && playerId == ownerPlayerId)
+                if (ProjectileHitUtility.ApplyPlayerDamage(
+                        player,
+                        transform.position,
+                        damage,
+                        eDamageType.Bullet,
+                        ownerPlayerId,
+                        weaponName,
+                        Team))
                 {
                     Destroy(gameObject);
                     return;
                 }
-
-                if (Team != ETeam.NoTeam && playerTeam != ETeam.NoTeam && playerTeam == Team)
-                {
-                    Destroy(gameObject);
-                    return;
-                }
-
-                PlayerRegistry.Instance?.ApplyDamage(
-                    player.UniqueID(),
-                    player.transform.position - transform.position,
-                    damage,
-                    eDamageType.Bullet,
-                    ownerPlayerId,
-                    weaponName,
-                    false
-                );
             }
 
             Destroy(gameObject);

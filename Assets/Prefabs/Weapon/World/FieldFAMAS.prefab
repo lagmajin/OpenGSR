@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &9240000000000000000
+GameObject:
+  m_Component:
+  - component: {fileID: 9240000000000000001}
+  - component: {fileID: 9240000000000000002}
+  - component: {fileID: 9240000000000000003}
+  - component: {fileID: 9240000000000000004}
+  - component: {fileID: 9240000000000000005}
+  m_Name: FieldFAMAS
+  m_IsActive: 1
+--- !u!4 &9240000000000000001
+Transform:
+  m_GameObject: {fileID: 9240000000000000000}
+--- !u!212 &9240000000000000002
+SpriteRenderer:
+  m_GameObject: {fileID: 9240000000000000000}
+  m_Enabled: 1
+  m_Sprite: {fileID: 1886094829510761000, guid: 6d254457d65d9d24b88a685dd19d154b, type: 3}
+--- !u!61 &9240000000000000003
+BoxCollider2D:
+  m_GameObject: {fileID: 9240000000000000000}
+  m_IsTrigger: 1
+--- !u!50 &9240000000000000004
+Rigidbody2D:
+  m_GameObject: {fileID: 9240000000000000000}
+  m_BodyType: 2
+--- !u!114 &9240000000000000005
+MonoBehaviour:
+  m_GameObject: {fileID: 9240000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: 471b259c66c157b4cb835d52c0ee2cca, type: 3}
+  weaponPrefab: {fileID: 9250000000000000000, guid: a1b2c3d4e5f6470890a1b2c3d4e5f610, type: 3}

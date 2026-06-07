@@ -18,12 +18,12 @@ MonoBehaviour:
   mineGrenade: {fileID: 0}
   clusterGrenade: {fileID: 0}
   Ak47: {fileID: 11400000, guid: 80de7b2ec81894449b2617f35f16e0ab, type: 2}
-  M4: {fileID: 0}
+  M4: {fileID: 11400000, guid: fa8b008182feeac4a9098c445d7e1034, type: 2}
   Uzi: {fileID: 11400000, guid: 0fcbee97249c63b40a01ce2ebc11a7ac, type: 2}
   scorpion: {fileID: 11400000, guid: f48b10b621bc47c42b4bb6dafaf864f2, type: 2}
   mp5: {fileID: 0}
   Spas: {fileID: 0}
-  Usa: {fileID: 0}
+  Usa: {fileID: 11400000, guid: 0fcbee97249c63b40a01ce2ebc11a7ac, type: 2}
   AWP: {fileID: 11400000, guid: 1fb0a0a54f990594cb32129b99afa54e, type: 2}
   PSG: {fileID: 11400000, guid: 4d728046192e39343ba09eecb1d35de8, type: 2}
   Scout: {fileID: 11400000, guid: a82bec4749f7213489675c9285fc967f, type: 2}

@@ -1,0 +1,39 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &8200000000000000000
+GameObject:
+  m_Component:
+  - component: {fileID: 8200000000000000001}
+  - component: {fileID: 8200000000000000002}
+  - component: {fileID: 8200000000000000003}
+  m_Name: Scout
+  m_IsActive: 1
+--- !u!4 &8200000000000000001
+Transform:
+  m_GameObject: {fileID: 8200000000000000000}
+  m_Children:
+  - {fileID: 8200000000000000004}
+--- !u!212 &8200000000000000002
+SpriteRenderer:
+  m_GameObject: {fileID: 8200000000000000000}
+  m_Enabled: 1
+  m_Sprite: {fileID: 8315206962920337000, guid: b9ecefb67986f79489f35ac9cdd028bf, type: 3}
+--- !u!114 &8200000000000000003
+MonoBehaviour:
+  m_GameObject: {fileID: 8200000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: d74724e9c8a29b3418b34cfe0d62737d, type: 3}
+  Name: Scout
+  fireMode: 0
+  damage: 36
+  magazine: 10
+  reloadTime: 2.2
+  bulletSpeed: 155
+  shotDelay: 0.85
+  bulletPrefab: {fileID: 1000000000000000000, guid: 7a6d43e6f8f84d7c97c3a55d4b0c9f2a, type: 3}
+  muzzle: {fileID: 8200000000000000004}
+  fieldWeaponPrefab: {fileID: 9160000000000000000, guid: f72839a0f1ec4dd4055061728394a5c7, type: 3}
+--- !u!4 &8200000000000000004
+Transform:
+  m_GameObject: {fileID: 8200000000000000000}
+  m_LocalPosition: {x: 0.33, y: 0, z: 0}

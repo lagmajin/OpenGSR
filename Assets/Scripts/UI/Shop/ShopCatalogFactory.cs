@@ -192,6 +192,7 @@ namespace OpenGS
                 EWeaponType.Scout or EWeaponType.Dragunov or EWeaponType.PSG1 or EWeaponType.AWP => 650,
                 EWeaponType.MG42 or EWeaponType.M60 or EWeaponType.FNMinimiSaw => 800,
                 EWeaponType.LaserGun or EWeaponType.BubbleGun or EWeaponType.ChristmasGun => 900,
+                EWeaponType.Shotgun => 550,
                 _ => 300
             };
         }

@@ -196,17 +196,12 @@ namespace OpenGS
                 return false;
             }
 
-            if (collider.gameObject.layer == LayerMask.NameToLayer("Platforms"))
+            if (ProjectileHitUtility.IsStageHit(collider.gameObject))
             {
                 return true;
             }
 
-            if (collider.gameObject.TryGetComponent<IMultipleTags>(out var tags))
-            {
-                return tags.HasPlayerTag() || tags.HasStageObjectTag();
-            }
-
-            return false;
+            return collider.gameObject.TryGetComponent<IMultipleTags>(out var tags) && tags.HasPlayerTag();
         }
 
         private float GetCollisionRadius()

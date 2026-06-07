@@ -1,0 +1,38 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &7500000000000000000
+GameObject:
+  m_Component:
+  - component: {fileID: 7500000000000000001}
+  - component: {fileID: 7500000000000000002}
+  - component: {fileID: 7500000000000000003}
+  m_Name: MG42
+  m_IsActive: 1
+--- !u!4 &7500000000000000001
+Transform:
+  m_GameObject: {fileID: 7500000000000000000}
+  m_Children:
+  - {fileID: 7500000000000000004}
+--- !u!212 &7500000000000000002
+SpriteRenderer:
+  m_GameObject: {fileID: 7500000000000000000}
+  m_Enabled: 1
+  m_Sprite: {fileID: -2743653234557479000, guid: e44d02555b8778042b9256598ead19a5, type: 3}
+--- !u!114 &7500000000000000003
+MonoBehaviour:
+  m_GameObject: {fileID: 7500000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: bc1190e931fb83842849222327cc3fa0, type: 3}
+  Name: MG42
+  fireMode: 1
+  damage: 40
+  magazine: 30
+  reloadTime: 2.4
+  bulletSpeed: 96
+  shotDelay: 0.05
+  bulletPrefab: {fileID: 1000000000000000000, guid: 7a6d43e6f8f84d7c97c3a55d4b0c9f2a, type: 3}
+  muzzle: {fileID: 7500000000000000004}
+--- !u!4 &7500000000000000004
+Transform:
+  m_GameObject: {fileID: 7500000000000000000}
+  m_LocalPosition: {x: 0.28, y: 0, z: 0}

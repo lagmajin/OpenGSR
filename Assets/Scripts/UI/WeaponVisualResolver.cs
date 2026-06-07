@@ -210,16 +210,23 @@ namespace OpenGS
                 case "Glock":
                 case "Glock18c":
                     return "Glock";
+                case "Shotgun":
+                    return "Spas";
                 case "M60":
                 case "M60E4":
                     return "M60";
                 case "M16":
                 case "M16A1":
                 case "M16A2":
+                case "M4":
+                case "M4A1":
                     return "M16";
                 case "Uzi":
                 case "IMIUzi":
                     return "Uzi";
+                case "PSG":
+                case "PSG-1":
+                    return "PSG1";
                 default:
                     return weaponId;
             }
@@ -269,6 +276,9 @@ namespace OpenGS
                 case "Glock18c":
                     yield return "Glock18c";
                     break;
+                case "Shotgun":
+                    yield return "Spas";
+                    break;
                 case "M60":
                 case "M60E4":
                     yield return "M60E4";
@@ -276,12 +286,18 @@ namespace OpenGS
                 case "M16":
                 case "M16A1":
                 case "M16A2":
+                case "M4":
+                case "M4A1":
                     yield return "M16A1";
                     yield return "M16A2";
                     break;
                 case "Uzi":
                 case "IMIUzi":
                     yield return "IMIUzi";
+                    break;
+                case "PSG":
+                case "PSG-1":
+                    yield return "PSG1";
                     break;
                 case "AK47":
                 case "UI_W_ak47":

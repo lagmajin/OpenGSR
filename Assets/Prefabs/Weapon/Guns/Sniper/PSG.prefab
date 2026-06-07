@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5000000000000000000
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5000000000000000001}
+  - component: {fileID: 5000000000000000002}
+  - component: {fileID: 5000000000000000003}
+  - component: {fileID: 5000000000000000004}
+  m_Layer: 0
+  m_Name: PSG
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5000000000000000001
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5000000000000000000}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 5000000000000000005}
+  m_Father: {fileID: 0}
+--- !u!212 &5000000000000000002
+SpriteRenderer:
+  serializedVersion: 2
+  m_GameObject: {fileID: 5000000000000000000}
+  m_Enabled: 1
+  m_Sprite: {fileID: 8315206962920337000, guid: b9ecefb67986f79489f35ac9cdd028bf, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+--- !u!114 &5000000000000000003
+MonoBehaviour:
+  m_GameObject: {fileID: 5000000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: 0c0d57c6206df2242909293ba91a8e20, type: 3}
+--- !u!114 &5000000000000000004
+MonoBehaviour:
+  m_GameObject: {fileID: 5000000000000000000}
+  m_Enabled: 1
+  m_Script: {fileID: 11500000, guid: d74724e9c8a29b3418b34cfe0d62737d, type: 3}
+  autoDelete: 0
+  Name: PSG
+  fireMode: 0
+  damage: 48
+  magazine: 10
+  canZooming: 1
+  reloadTime: 2.4
+  bulletSpeed: 140
+  shotDelay: 0.9
+  baseSpread: 0
+  recoilPerShot: 0.1
+  recoilRecovery: 1
+  bulletGravity: 0
+  gravity: 0
+  bulletPrefab: {fileID: 1000000000000000000, guid: 7a6d43e6f8f84d7c97c3a55d4b0c9f2a, type: 3}
+  muzzle: {fileID: 5000000000000000005}
+  gunBigIcon: {fileID: 0}
+  gunSilhouette: {fileID: 0}
+--- !u!4 &5000000000000000005
+Transform:
+  m_GameObject: {fileID: 5000000000000000000}
+  m_LocalPosition: {x: 0.3, y: 0, z: 0}
+  m_Father: {fileID: 5000000000000000001}
