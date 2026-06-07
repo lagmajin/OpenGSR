@@ -278,6 +278,16 @@ namespace OpenGS
             weaponSlots?.EquipWeapon(weaponPrefab);
         }
 
+        public void EquipSpecialWeapon(GameObject weaponPrefab, int ammo)
+        {
+            if (weaponPrefab == null)
+            {
+                return;
+            }
+
+            weaponSlots?.EquipSpecialWeapon(weaponPrefab, ammo);
+        }
+
         public void SetCurrentWeaponMagazine(int magazine)
         {
             var gun = weaponSlots?.GetCurrentGun();

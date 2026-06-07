@@ -37,6 +37,7 @@ namespace OpenGS
 
         void EquipWeapon();
         void EquipWeapon(GameObject weaponPrefab);
+        void EquipSpecialWeapon(GameObject weaponPrefab, int ammo);
 
         void DropCurrentWeapon();
         void SwapWeapon();

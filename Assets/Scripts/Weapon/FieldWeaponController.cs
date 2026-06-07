@@ -27,6 +27,8 @@ namespace OpenGS
 
         [SerializeField] [Required] public GameObject weaponPrefab;
         [SerializeField] private int storedMagazine = -1;
+        [SerializeField] private bool isSpecialWeapon = false;
+        [SerializeField] private int specialAmmo = 0;
 
         //public Sound
 
@@ -113,7 +115,11 @@ namespace OpenGS
                 return;
             }
 
-            if (p.CanEquip())
+            if (isSpecialWeapon)
+            {
+                p.EquipSpecialWeapon(weaponPrefab, specialAmmo > 0 ? specialAmmo : storedMagazine);
+            }
+            else if (p.CanEquip())
             {
                 p.EquipWeapon(weaponPrefab);
 
@@ -134,10 +140,21 @@ namespace OpenGS
             storedMagazine = magazine;
         }
 
+        public void SetSpecialWeaponAmmo(int ammo)
+        {
+            specialAmmo = ammo;
+        }
+
         private void TryAutoPickup(AbstractPlayer player)
         {
             if (player == null)
             {
+                return;
+            }
+
+            if (isSpecialWeapon)
+            {
+                EquipPlayer(player);
                 return;
             }
 
