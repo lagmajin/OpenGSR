@@ -32,6 +32,7 @@ MonoBehaviour:
   shotDelay: 0.07
   bulletPrefab: {fileID: 1000000000000000000, guid: 7a6d43e6f8f84d7c97c3a55d4b0c9f2a, type: 3}
   muzzle: {fileID: 7200000000000000004}
+  fieldWeaponPrefab: {fileID: 9300000000000000000, guid: 93000000000000000000000000000001, type: 3}
 --- !u!4 &7200000000000000004
 Transform:
   m_GameObject: {fileID: 7200000000000000000}

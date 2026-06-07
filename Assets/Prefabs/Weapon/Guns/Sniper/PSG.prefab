@@ -66,6 +66,7 @@ MonoBehaviour:
   gravity: 0
   bulletPrefab: {fileID: 1000000000000000000, guid: 7a6d43e6f8f84d7c97c3a55d4b0c9f2a, type: 3}
   muzzle: {fileID: 5000000000000000005}
+  fieldWeaponPrefab: {fileID: 9320000000000000000, guid: 93200000000000000000000000000001, type: 3}
   gunBigIcon: {fileID: 0}
   gunSilhouette: {fileID: 0}
 --- !u!4 &5000000000000000005
