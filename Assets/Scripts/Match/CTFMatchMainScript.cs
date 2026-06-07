@@ -76,23 +76,14 @@ namespace OpenGS
 
         void GameSetup()
         {
-            //CreateNewMyPlayer();
-            //CreateOtherPlayers();
-
             PlayGameStartVoice();
-
-            var roomManager = MatchRoomManager();
-
-            //var matchRoom = roomManager.OfflineMatchRoom;
-
-            //matchRoom.StartMatch();
-
-            //NetworkManagerMainScript
 
             SubscribeEvent();
             BindFlagStand(redTeamFlagStand);
             BindFlagStand(blueTeamFlagStand);
 
+            CreateNewMyPlayer();
+            CreateOtherPlayers();
             SetUpUI();
             ApplyRuleSettings();
 
@@ -283,31 +274,170 @@ namespace OpenGS
 
         private void CreateNewMyPlayer()
         {
-            GameObject myPlayerPrefab = null;
+            var spawnTeam = ResolveLocalTeam();
+            var spawnSource = spawnTeam == ETeam.Red ? RedTeamReSpawnPoints : BlueTeamReSpawnPoints;
+            var spawnPos = ResolveSpawnPoint(spawnTeam);
+            var prefab = GetCharacterPrefabForLocalPlayer();
 
-            if (myPlayerPrefab)
+            if (prefab == null)
             {
-                var prefab = prefabMasterData.mistyPrefab;
-
-                var player = Instantiate(prefab);
-
-                var iPlayer = player.GetComponent<IPlayer>();
-
-                iPlayer.SetTeam(ETeam.Blue);
-                iPlayer.CreatePlayerLink(EPlayerType.MyPlayer, "");
-
-                //playerCamera.LookAt = player.transform;
-
-                playerCamera.Follow = player.transform;
-
-                vcamera.Priority = 0;
-                playerCamera.Priority = 10;
+                Debug.LogWarning("[CTF] Local player prefab could not be resolved.");
+                return;
             }
+
+            var player = Instantiate(prefab, spawnPos, Quaternion.identity);
+            player.name = "MyPlayer";
+
+            var iPlayer = player.GetComponent<AbstractPlayer>();
+            if (iPlayer != null)
+            {
+                iPlayer.SetPlayerType(EPlayerType.MyPlayer);
+                iPlayer.SetTeam(spawnTeam);
+                AttachPlayerLink(player, ResolveLocalPlayerId());
+                iPlayer.OnSpawn();
+            }
+
+            playerCamera.Follow = player.transform;
+            vcamera.Priority = 0;
+            playerCamera.Priority = 10;
+
+            this.player = player;
         }
 
         private void CreateOtherPlayers()
         {
-            Debug.Log("[CTF] CreateOtherPlayers");
+            var room = ResolveCurrentMatchRoom()?.WaitRoom;
+            if (room == null)
+            {
+                Debug.Log("[CTF] No wait room found. Skipping other player spawn.");
+                return;
+            }
+
+            var players = room.AllPlayers();
+            if (players == null || players.Count == 0)
+            {
+                Debug.Log("[CTF] Wait room has no players to spawn.");
+                return;
+            }
+
+            var localId = ResolveLocalPlayerId();
+            var localTeam = ResolveLocalTeam();
+            var spawned = 0;
+
+            foreach (var info in players)
+            {
+                if (info == null || string.IsNullOrWhiteSpace(info.Id))
+                {
+                    continue;
+                }
+
+                if (string.Equals(info.Id, localId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var team = info.Team == ETeam.NoTeam ? (spawned % 2 == 0 ? ETeam.Red : ETeam.Blue) : info.Team;
+                var spawnSource = team == ETeam.Red ? RedTeamReSpawnPoints : BlueTeamReSpawnPoints;
+                var spawnPos = ResolveSpawnPoint(team);
+                var prefab = prefabMasterData != null ? prefabMasterData.SearchPlayerPrefab(info.playerCharacter) : null;
+
+                if (prefab == null)
+                {
+                    prefab = GetCharacterPrefabForLocalPlayer();
+                }
+
+                if (prefab == null)
+                {
+                    continue;
+                }
+
+                var playerObj = Instantiate(prefab, spawnPos, Quaternion.identity);
+                playerObj.name = $"OtherPlayer_{info.Name}";
+
+                var playerComponent = playerObj.GetComponent<AbstractPlayer>();
+                if (playerComponent != null)
+                {
+                    playerComponent.SetPlayerType(EPlayerType.OtherPlayer);
+                    playerComponent.SetTeam(team);
+                    AttachPlayerLink(playerObj, info.Id);
+                    playerComponent.OnSpawn();
+                }
+
+                spawned++;
+            }
+
+            Debug.Log($"[CTF] Spawned {spawned} other players.");
+        }
+
+        private GameObject GetCharacterPrefabForLocalPlayer()
+        {
+            var localId = ResolveLocalPlayerId();
+            var room = ResolveCurrentMatchRoom()?.WaitRoom;
+            if (room != null)
+            {
+                var me = room.AllPlayers()?.Find(p => p != null && string.Equals(p.Id, localId, StringComparison.OrdinalIgnoreCase));
+                if (me != null && prefabMasterData != null)
+                {
+                    var prefab = prefabMasterData.SearchPlayerPrefab(me.playerCharacter);
+                    if (prefab != null)
+                    {
+                        return prefab;
+                    }
+                }
+            }
+
+            return prefabMasterData != null ? prefabMasterData.SearchPlayerPrefab(OpenGSCore.EPlayerCharacter.Misty) : null;
+        }
+
+        private ETeam ResolveLocalTeam()
+        {
+            var room = ResolveCurrentMatchRoom()?.WaitRoom;
+            var localId = ResolveLocalPlayerId();
+            if (room == null || string.IsNullOrWhiteSpace(localId))
+            {
+                return ETeam.Blue;
+            }
+
+            var local = room.AllPlayers()?.Find(p => p != null && string.Equals(p.Id, localId, StringComparison.OrdinalIgnoreCase));
+            return local != null && local.Team != ETeam.NoTeam ? local.Team : ETeam.Blue;
+        }
+
+        private Vector3 ResolveSpawnPoint(ETeam team)
+        {
+            var spawnPoints = team == ETeam.Red ? RedTeamReSpawnPoints : BlueTeamReSpawnPoints;
+            if (spawnPoints == null)
+            {
+                return Vector3.zero;
+            }
+
+            if (spawnPoints.transform.childCount > 0)
+            {
+                return spawnPoints.transform.GetChild(0).position;
+            }
+
+            return spawnPoints.transform.position;
+        }
+
+        private static string ResolveLocalPlayerId()
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            return string.IsNullOrWhiteSpace(profile?.GlobalUserId) ? string.Empty : profile.GlobalUserId;
+        }
+
+        private static void AttachPlayerLink(GameObject playerObj, string playerId)
+        {
+            if (playerObj == null)
+            {
+                return;
+            }
+
+            var linker = playerObj.GetComponent<PlayerDataLinker>();
+            if (linker == null)
+            {
+                linker = playerObj.AddComponent<PlayerDataLinker>();
+            }
+
+            linker.SetPlayerId(playerId ?? string.Empty);
         }
 
         void OnEnable()

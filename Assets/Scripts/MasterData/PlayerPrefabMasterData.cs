@@ -1,4 +1,6 @@
 using OpenGSCore;
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace OpenGS
@@ -6,7 +8,16 @@ namespace OpenGS
     [CreateAssetMenu(menuName = "MasterData/Player/PlayerPrefabMasterData")]
     public class PlayerPrefabMasterData : ScriptableObject
     {
+        [Serializable]
+        public class CharacterPrefabEntry
+        {
+            public EPlayerCharacter character;
+            public GameObject prefab;
+        }
+
+        [SerializeField] private GameObject defaultPrefab;
         public GameObject mistyPrefab;
+        [SerializeField] private List<CharacterPrefabEntry> characterPrefabs = new List<CharacterPrefabEntry>();
 
         public GameObject SearchPlayerPrefab(string charId)
         {
@@ -21,8 +32,35 @@ namespace OpenGS
                 return mistyPrefab;
             }
 
+            if (Enum.TryParse(charId, true, out EPlayerCharacter character))
+            {
+                var prefab = SearchPlayerPrefab(character);
+                if (prefab != null)
+                {
+                    return prefab;
+                }
+            }
+
             Debug.LogWarning($"[PlayerPrefabMasterData] Unknown character id: {charId}");
-            return null;
+            return defaultPrefab != null ? defaultPrefab : mistyPrefab;
+        }
+
+        public GameObject SearchPlayerPrefab(EPlayerCharacter character)
+        {
+            if (character == EPlayerCharacter.Misty && mistyPrefab != null)
+            {
+                return mistyPrefab;
+            }
+
+            foreach (var entry in characterPrefabs)
+            {
+                if (entry != null && entry.character == character && entry.prefab != null)
+                {
+                    return entry.prefab;
+                }
+            }
+
+            return defaultPrefab != null ? defaultPrefab : mistyPrefab;
         }
     }
 }

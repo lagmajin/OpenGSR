@@ -31,11 +31,8 @@ namespace OpenGS
 
         private void CreateMyPlayer()
         {
-            var spawnPoint = blueTeamRespawnPoint != null
-                ? blueTeamRespawnPoint.RandomBlueTeam()
-                : Vector2.zero;
-
-            CreateMyPlayer(new Vector3(spawnPoint.x, spawnPoint.y, 0), ETeam.Blue);
+            Vector3 spawnPoint = GetRandomSpawnPoint(blueTeamRespawnPoint, ETeam.Blue);
+            CreateMyPlayer(spawnPoint, ETeam.Blue);
         }
 
         private void GameEnd()

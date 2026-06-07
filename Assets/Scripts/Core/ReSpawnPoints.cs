@@ -18,26 +18,33 @@ namespace OpenGS
         //public GameObject blutTeamPoints;
         //public GameObject redTeamPoints;
 
+        public Vector2 GetRandomSpawnPoint(ETeam team = ETeam.NoTeam)
+        {
+            return random();
+        }
+
+        public int Count(ETeam team = ETeam.NoTeam)
+        {
+            return Count();
+        }
+
         public Vector2 random()
         {
-            var count = Points.Count;
+            var count = Points != null ? Points.Count : 0;
 
             if (count == 0)
             {
                 return new Vector2();
             }
 
-
-
             var rand = Random.Range(0, count);
-
-
-            return Points[0].transform.position;
+            var point = Points[rand];
+            return point != null ? (Vector2)point.transform.position : Vector2.zero;
         }
 
         public int Count()
         {
-            return Points.Count;
+            return Points != null ? Points.Count : 0;
         }
 
         public void PrintInfo()

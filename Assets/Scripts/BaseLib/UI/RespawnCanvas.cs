@@ -24,7 +24,7 @@ namespace OpenGS
         [SerializeField] private TextMeshProUGUI messageText;
 
         [Header("Settings")]
-        [SerializeField] private float respawnTime = 3.0f;
+        [SerializeField] private float respawnTime = 5.0f;
         [SerializeField] private float fadeDuration = 0.3f;
 
         private CanvasGroup canvasGroup;

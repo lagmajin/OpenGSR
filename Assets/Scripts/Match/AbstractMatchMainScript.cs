@@ -59,6 +59,9 @@ namespace OpenGS
         [SerializeField, Range(0f, 15f)]
         public float gotoResultSceneWaitTime = 4.0f;
 
+        [SerializeField, Min(0f)]
+        protected float respawnDelaySeconds = 5.0f;
+
         public GameObject itemSpawnPoints;
 
         public GameObject player;
@@ -355,10 +358,22 @@ namespace OpenGS
         /// <summary>
         /// ランダムなリスポーン地点を取得する。
         /// </summary>
-        protected Vector3 GetRandomSpawnPoint(IReSpawnPoints points)
+        protected Vector3 GetRandomSpawnPoint(IRespawnPoints points, ETeam team = ETeam.NoTeam)
         {
             if (points == null) return Vector3.zero;
-            return points.random();
+            return points.GetRandomSpawnPoint(team);
+        }
+
+        protected float ResolveRespawnDelaySeconds()
+        {
+            try
+            {
+                return SettingsManager.Instance?.GetGameplaySettings()?.RespawnDelaySeconds ?? respawnDelaySeconds;
+            }
+            catch
+            {
+                return respawnDelaySeconds;
+            }
         }
 
         public void Start()

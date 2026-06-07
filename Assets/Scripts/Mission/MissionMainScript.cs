@@ -5,7 +5,7 @@ namespace OpenGS
 {
     public class MissionMainScript : AbstractMatchMainScript
     {
-        public GameObject respawnPoints;
+        public MissionReSpawnPoints respawnPoints;
         public MissionReSpawnPoints points;
         public MissionAndQuestMediateObject mediateObject;
         public float time = 0.0f;
@@ -73,17 +73,12 @@ namespace OpenGS
         {
             if (respawnPoints != null)
             {
-                if (respawnPoints.transform.childCount > 0)
-                {
-                    return respawnPoints.transform.GetChild(0).position;
-                }
-
-                return respawnPoints.transform.position;
+                return GetRandomSpawnPoint(respawnPoints);
             }
 
             if (points != null)
             {
-                return points.transform.position;
+                return GetRandomSpawnPoint(points);
             }
 
             return Vector3.zero;

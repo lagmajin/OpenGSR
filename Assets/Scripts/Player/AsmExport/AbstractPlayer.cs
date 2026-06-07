@@ -176,6 +176,8 @@ namespace OpenGS
             {
                 PlayerRegistry.Instance.PublishPlayerRespawned(this);
             }
+
+            GameEventBroker.Publish(new PlayerRespawnEvent(UniqueID().ToString(), (Vector2)transform.position));
         }
 
         public virtual void ReserveReSpawn(float delay)
@@ -207,6 +209,11 @@ namespace OpenGS
         }
 
         public Guid UniqueID() => uniqueId;
+
+        public void SetUniqueID(Guid id)
+        {
+            uniqueId = id;
+        }
 
         // ─── IPlayer: チーム ─────────────────────────────────────────
 

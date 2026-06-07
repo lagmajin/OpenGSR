@@ -27,6 +27,8 @@ namespace OpenGS
         [SerializeField] public Sprite redFlag;
         [SerializeField] public Sprite blueFlag;
         [SerializeField] private float autoReturnTime = 30f;
+        [SerializeField] private GameObject droppedSmokeEffectPrefab;
+        [SerializeField] private GameObject returnEffectPrefab;
 
         [Header("Components")]
         [SerializeField] private CTFGameSoundMasterData ctfSoundMasterData;
@@ -47,6 +49,7 @@ namespace OpenGS
         private EFlagState currentState = EFlagState.AtBase;
         private float returnTimer = 0f;
         private Transform carrier;
+        private GameObject activeDroppedEffect;
 
         private void Start()
         {
@@ -125,6 +128,7 @@ namespace OpenGS
             currentState = EFlagState.Dropped;
             carrier = null;
             returnTimer = autoReturnTime;
+            PlayDroppedEffect();
             Dropped?.Invoke(this);
         }
 
@@ -134,12 +138,77 @@ namespace OpenGS
             carrier = null;
             returnTimer = 0f;
 
+            ClearDroppedEffect();
+            PlayReturnEffect();
+
             ReturnedToBase?.Invoke(this, player, reason);
             if (myFlagStand != null)
             {
                 myFlagStand.SetFlag();
             }
             Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            ClearDroppedEffect();
+        }
+
+        private void PlayDroppedEffect()
+        {
+            if (activeDroppedEffect != null)
+            {
+                return;
+            }
+
+            var prefab = GetDroppedSmokeEffectPrefab();
+            if (prefab == null)
+            {
+                return;
+            }
+
+            activeDroppedEffect = Instantiate(prefab, transform.position, Quaternion.identity, transform);
+            activeDroppedEffect.name = $"{FlagName()}_DroppedSmoke";
+        }
+
+        private void ClearDroppedEffect()
+        {
+            if (activeDroppedEffect != null)
+            {
+                Destroy(activeDroppedEffect);
+                activeDroppedEffect = null;
+            }
+        }
+
+        private void PlayReturnEffect()
+        {
+            var prefab = GetReturnEffectPrefab();
+            if (prefab == null)
+            {
+                return;
+            }
+
+            Instantiate(prefab, transform.position, Quaternion.identity);
+        }
+
+        private GameObject GetDroppedSmokeEffectPrefab()
+        {
+            if (droppedSmokeEffectPrefab != null)
+            {
+                return droppedSmokeEffectPrefab;
+            }
+
+            return Resources.Load<GameObject>("Prefabs/Weapon/Projectile/SmokeBombEffect");
+        }
+
+        private GameObject GetReturnEffectPrefab()
+        {
+            if (returnEffectPrefab != null)
+            {
+                return returnEffectPrefab;
+            }
+
+            return Resources.Load<GameObject>("Prefabs/Weapon/Projectile/SmokeBombEffect");
         }
 
         public string FlagName() => (team == ETeam.Red) ? "RedFlag" : "BlueFlag";

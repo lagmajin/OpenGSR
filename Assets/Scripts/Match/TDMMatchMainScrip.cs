@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 //using KanKikuchi.AudioManager;
 using Sirenix.OdinInspector;
@@ -11,41 +12,29 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class TDMMatchMainScript : AbstractMatchMainScript, ITDMMatchMainScript
     {
-        // Singleton instance for UI to access
         public static TDMMatchMainScript Instance { get; private set; }
 
-        // TDM Events for UI
-        public event Action<ETeam> OnPlayerKilled; // プレイヤーKill通知
-        public event Action<ETeam, ETeam> OnTeamKill; // チームがキル獲った通知 (killerTeam, victimTeam)
-        public event Action<ETeam> OnMatchEnded; // マッチ終了通知
+        public event Action<ETeam> OnPlayerKilled;
+        public event Action<ETeam, ETeam> OnTeamKill;
+        public event Action<ETeam> OnMatchEnded;
 
-        // ネットワークマネージャー
         private MatchRUDPServerNetworkManager networkManager;
 
-        // UIマネージャー
         [SerializeField] private TDMScoreUIManager scoreUIManager;
 
-        // チームリスポーンポイント
         [SerializeField] [Required] private TeamReSpawnPoints redTeamRespawnPoints;
         [SerializeField] [Required] private TeamReSpawnPoints blueTeamRespawnPoint;
-
-        // スコア
         private int redTeamKills = 0;
         private int blueTeamKills = 0;
-
-        void SpawnPlayers()
-        {
-        }
+        private ETeam localTeam = ETeam.Blue;
 
         private new void Start()
         {
             base.Start();
             Application.targetFrameRate = 30;
 
-            // Singleton設定
             Instance = this;
 
-            // ネットワークマネージャーを取得
             try
             {
                 networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
@@ -57,17 +46,16 @@ namespace OpenGS
             }
 
             Debug.Log("TDM GameStart");
-
             Invoke("GameSetup", 0.1f);
         }
 
         private void GameSetup()
         {
             PlayGameStartVoice();
-
+            localTeam = ResolveLocalTeam(matchRoomManager != null ? matchRoomManager.WaitRoom : null);
             CreateMyPlayerLocally();
+            CreateOtherPlayers();
 
-            // マッチ開始
             if (scoreUIManager != null)
             {
                 scoreUIManager.StartMatch();
@@ -76,19 +64,135 @@ namespace OpenGS
 
         private void CreateMyPlayerLocally()
         {
-            // TDMではチームが必要
-            ETeam myTeam = ETeam.Blue; // 本来はルーム設定から取得
-
-            // チームごとのリスポーンポイントから選ぶ
-            Vector3 spawnPos = (myTeam == ETeam.Blue)
-                ? blueTeamRespawnPoint.RandomBlueTeam()
-                : redTeamRespawnPoints.RandomRedTeam();
-
-            CreateMyPlayer(spawnPos, myTeam);
+            var spawnSource = localTeam == ETeam.Blue ? blueTeamRespawnPoint : redTeamRespawnPoints;
+            Vector3 spawnPos = GetRandomSpawnPoint(spawnSource, localTeam);
+            var myPlayer = CreateMyPlayer(spawnPos, localTeam);
+            AttachPlayerId(myPlayer, ResolveLocalPlayerId());
         }
 
         private void CreateOtherPlayers()
         {
+            var room = matchRoomManager != null ? matchRoomManager.WaitRoom : null;
+            if (room == null)
+            {
+                Debug.Log("[TDM] No wait room found. Skipping other player spawn.");
+                return;
+            }
+
+            var players = room.AllPlayers();
+            if (players == null || players.Count == 0)
+            {
+                Debug.Log("[TDM] Wait room has no players to spawn.");
+                return;
+            }
+
+            var localPlayerId = ResolveLocalPlayerId();
+            var spawnCount = 0;
+
+            foreach (var info in players)
+            {
+                if (info == null || string.IsNullOrWhiteSpace(info.Id))
+                {
+                    continue;
+                }
+
+                if (!string.IsNullOrWhiteSpace(localPlayerId) &&
+                    string.Equals(info.Id, localPlayerId, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                var team = info.Team == ETeam.NoTeam
+                    ? (info.Id == localPlayerId ? localTeam : ETeam.Blue)
+                    : info.Team;
+
+                if (team == ETeam.NoTeam)
+                {
+                    team = ETeam.Blue;
+                }
+
+                var spawnSource = team == ETeam.Red ? redTeamRespawnPoints : blueTeamRespawnPoint;
+                var spawnPos = GetRandomSpawnPoint(spawnSource, team);
+
+                var prefab = prefabMasterData != null
+                    ? prefabMasterData.SearchPlayerPrefab(OpenGSCore.EPlayerCharacter.Misty.ToString())
+                    : null;
+
+                if (prefab == null)
+                {
+                    continue;
+                }
+
+                var playerObj = Instantiate(prefab, spawnPos, Quaternion.identity);
+                playerObj.name = $"OtherPlayer_{info.Name}";
+
+                var player = playerObj.GetComponent<AbstractPlayer>();
+                if (player != null)
+                {
+                    player.SetPlayerType(string.Equals(info.Id, localPlayerId, StringComparison.OrdinalIgnoreCase)
+                        ? EPlayerType.MyPlayer
+                        : EPlayerType.OtherPlayer);
+                    player.SetTeam(team);
+                    AttachPlayerId(playerObj, info.Id);
+                    player.OnSpawn();
+                }
+
+                spawnCount++;
+            }
+
+            Debug.Log($"[TDM] Spawned {spawnCount} other players.");
+        }
+
+        private static string ResolveLocalPlayerId()
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            return string.IsNullOrWhiteSpace(profile?.GlobalUserId) ? string.Empty : profile.GlobalUserId;
+        }
+
+        private static void AttachPlayerId(GameObject playerObj, string playerId)
+        {
+            if (playerObj == null)
+            {
+                return;
+            }
+
+            var linker = playerObj.GetComponent<PlayerDataLinker>();
+            if (linker == null)
+            {
+                linker = playerObj.AddComponent<PlayerDataLinker>();
+            }
+
+            linker.SetPlayerId(playerId ?? string.Empty);
+        }
+
+        private static ETeam ResolveLocalTeam(WaitRoom room)
+        {
+            if (room == null)
+            {
+                return ETeam.Blue;
+            }
+
+            var localId = ResolveLocalPlayerId();
+            var players = room.AllPlayers();
+            if (players == null)
+            {
+                return ETeam.Blue;
+            }
+
+            foreach (var player in players)
+            {
+                if (player == null || string.IsNullOrWhiteSpace(player.Id))
+                {
+                    continue;
+                }
+
+                if (string.Equals(player.Id, localId, StringComparison.OrdinalIgnoreCase) && player.Team != ETeam.NoTeam)
+                {
+                    return player.Team;
+                }
+            }
+
+            return ETeam.Blue;
         }
 
         private void Update()
@@ -100,12 +204,8 @@ namespace OpenGS
             GoToResult();
         }
 
-        /// <summary>
-        /// プレイヤー死亡イベントを処理（AbstractPlayerから呼ばれる）
-        /// </summary>
         public void OnPlayerDead(ETeam victimTeam, ETeam killerTeam)
         {
-            // キラーのチームにキル数を加算
             if (killerTeam == ETeam.Red)
             {
                 redTeamKills++;
@@ -118,19 +218,59 @@ namespace OpenGS
             }
 
             OnPlayerKilled?.Invoke(victimTeam);
-            // イベント発火
             OnTeamKill?.Invoke(killerTeam, victimTeam);
 
-            // オンラインの場合はサーバーに通知
             if (GameManager != null && GameManager.IsOnlineGameMode)
             {
                 SendKillEventToServer(killerTeam, victimTeam);
             }
         }
 
-        /// <summary>
-        /// キルイベントをサーバーに送信
-        /// </summary>
+        public override void OnMyPlayerDead()
+        {
+            if (!MatchModeResolver.CanRespawnCurrentMatch())
+            {
+                return;
+            }
+
+            var delay = ResolveRespawnDelaySeconds();
+            Invoke(nameof(HandleMyPlayerRespawn), delay);
+
+            if (battleSceneMediateObject != null && battleSceneMediateObject.uiManager != null)
+            {
+                battleSceneMediateObject.uiManager.ShowRespawnGauge(delay);
+            }
+        }
+
+        private void HandleMyPlayerRespawn()
+        {
+            if (endFlag)
+            {
+                return;
+            }
+
+            if (player != null)
+            {
+                Destroy(player);
+                player = null;
+            }
+
+            var spawnSource = localTeam == ETeam.Red ? redTeamRespawnPoints : blueTeamRespawnPoint;
+            var spawnPos = GetRandomSpawnPoint(spawnSource, localTeam);
+            var oldPlayerId = player != null ? player.GetComponent<AbstractPlayer>()?.UniqueID() : Guid.Empty;
+            var myPlayer = CreateMyPlayer(spawnPos, localTeam);
+            if (myPlayer != null)
+            {
+                var playerComponent = myPlayer.GetComponent<AbstractPlayer>();
+                if (oldPlayerId != Guid.Empty)
+                {
+                    playerComponent?.SetUniqueID(oldPlayerId);
+                }
+                AttachPlayerId(myPlayer, ResolveLocalPlayerId());
+            }
+            Debug.Log($"[TDM] My player respawned at {spawnPos}");
+        }
+
         private void SendKillEventToServer(ETeam killerTeam, ETeam victimTeam)
         {
             if (networkManager == null || !networkManager.IsConnected()) return;
@@ -156,45 +296,31 @@ namespace OpenGS
 
             if ("FlagLostEvent" == eventName)
             {
-                //PlaySound.PlayBGM()
             }
         }
 
         private void OfflineEventParser(AbstractGameEvent e)
         {
-            //GameGeneralManager.GetInstance
-
         }
 
         public override void PostEvent(AbstractGameEvent e)
         {
-            // キルイベントを処理
             if (e is PlayerKillEvent killEvent)
             {
-                // ローカルでイベントを処理
                 ProcessKillEvent(killEvent);
             }
 
-            // オンラインの場合はサーバーに送信
             if (GameManager != null && GameManager.IsOnlineGameMode)
             {
                 SendEventToServer(e);
             }
         }
 
-        /// <summary>
-        /// キルイベントをローカルで処理
-        /// </summary>
         private void ProcessKillEvent(PlayerKillEvent e)
         {
-            // キラーのチームを取得（これはサーバーから情報をもらう必要がある）
-            // 暫定的に処理
             Debug.Log($"[TDM] Kill event processed: {e.KillerID()} killed {e.VictimID()}");
         }
 
-        /// <summary>
-        /// イベントをサーバーに送信
-        /// </summary>
         private void SendEventToServer(AbstractGameEvent e)
         {
             if (networkManager == null || !networkManager.IsConnected()) return;
@@ -223,9 +349,6 @@ namespace OpenGS
             }
         }
 
-        /// <summary>
-        /// サーバーからのネットワークデータ受信処理
-        /// </summary>
         protected override void OnNetworkDataRecved(JObject obj)
         {
             var messageType = OpenGSCore.MessageType.Normalize(obj["MessageType"]?.ToString());
@@ -250,9 +373,6 @@ namespace OpenGS
             }
         }
 
-        /// <summary>
-        /// チームキルイベントを処理
-        /// </summary>
         private void HandleTeamKill(JObject json)
         {
             var killerTeamStr = json["KillerTeam"]?.ToString() ?? "Red";
@@ -261,7 +381,6 @@ namespace OpenGS
             Enum.TryParse<ETeam>(killerTeamStr, out var killerTeam);
             Enum.TryParse<ETeam>(victimTeamStr, out var victimTeam);
 
-            // UI更新
             if (killerTeam == ETeam.Red)
             {
                 redTeamKills++;
@@ -277,9 +396,6 @@ namespace OpenGS
             Debug.Log($"[TDM] Received team kill from server: {killerTeam} killed {victimTeam}");
         }
 
-        /// <summary>
-        /// スコア更新を処理
-        /// </summary>
         private void HandleScoreUpdate(JObject json)
         {
             var redKills = json["RedTeamKills"]?.ToObject<int>() ?? 0;
@@ -289,9 +405,6 @@ namespace OpenGS
             Debug.Log($"[TDM] Score update: Red={redKills}, Blue={blueKills}");
         }
 
-        /// <summary>
-        /// プレイヤーキルイベントを処理
-        /// </summary>
         private void HandlePlayerKill(JObject json)
         {
             var killerId = json["KillerId"]?.ToString();

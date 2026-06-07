@@ -113,6 +113,11 @@ namespace OpenGS
             return settings.Control;
         }
 
+        public GameplaySettings GetGameplaySettings()
+        {
+            return settings.Gameplay;
+        }
+
         /// <summary>
         /// グラフィックス設定を適用する
         /// </summary>
@@ -322,6 +327,7 @@ namespace OpenGS
         public GraphicsSettings Graphics = new GraphicsSettings();
         public SoundSettings Sound = new SoundSettings();
         public ControlSettings Control = new ControlSettings();
+        public GameplaySettings Gameplay = new GameplaySettings();
     }
 
     /// <summary>
@@ -366,5 +372,14 @@ namespace OpenGS
         public bool InvertMouseY = false;
         public bool AutoAim = true;
         public Dictionary<string, string> KeyBindings = new Dictionary<string, string>();
+    }
+
+    /// <summary>
+    /// ゲームプレイ設定クラス
+    /// </summary>
+    [Serializable]
+    public class GameplaySettings
+    {
+        public float RespawnDelaySeconds = 5.0f;
     }
 }

@@ -101,10 +101,11 @@ namespace OpenGS
                 return;
             }
 
-            Invoke(nameof(HandleMyPlayerRespawn), 3f);
+            var delay = ResolveRespawnDelaySeconds();
+            Invoke(nameof(HandleMyPlayerRespawn), delay);
             if (battleSceneMediateObject != null && battleSceneMediateObject.uiManager != null)
             {
-                battleSceneMediateObject.uiManager.ShowRespawnGauge(3.0f);
+                battleSceneMediateObject.uiManager.ShowRespawnGauge(delay);
             }
 
 
@@ -311,7 +312,34 @@ namespace OpenGS
 
         private void HandleMyPlayerRespawn()
         {
-            Debug.Log("MyPlayerRespawn");
+            if (endFlag)
+            {
+                return;
+            }
+
+            var spawnPos = GetRandomSpawnPoint(respawnPoints);
+            var oldPlayerId = player != null ? player.GetComponent<AbstractPlayer>()?.UniqueID() : Guid.Empty;
+
+            if (player != null)
+            {
+                Destroy(player);
+                player = null;
+            }
+
+            var myPlayer = CreateMyPlayer(spawnPos, ETeam.NoTeam);
+            if (myPlayer == null)
+            {
+                Debug.LogError("[DMMatchMainScript] Failed to respawn my player.");
+                return;
+            }
+
+            if (oldPlayerId != Guid.Empty)
+            {
+                var playerComponent = myPlayer.GetComponent<AbstractPlayer>();
+                playerComponent?.SetUniqueID(oldPlayerId);
+            }
+
+            Debug.Log($"[DMMatchMainScript] My player respawned at {spawnPos}");
         }
 
         private void HandleMatchEnd(JObject json)
