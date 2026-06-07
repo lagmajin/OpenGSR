@@ -11,6 +11,7 @@
 /UserSettings/AI.Generators/
 /SavedData/
 /UserSettings/AI.*/
+.kilo/
 
 # --- Visual Studio 関連（13700KFの演算用ゴミ） ---
 .vs/
