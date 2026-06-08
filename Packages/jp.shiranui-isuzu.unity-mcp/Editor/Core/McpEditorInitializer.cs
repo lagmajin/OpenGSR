@@ -1,3 +1,4 @@
+using System;
 using UnityEditor;
 using UnityEngine;
 
@@ -17,6 +18,7 @@ namespace UnityMCP.Editor.Core
     {
         private const string SessionKeyBoundPort = "UnityMCP.BoundPort";
         private const string SessionKeyWasRunning = "UnityMCP.WasRunning";
+        private const string AutoStartEnvVar = "UNITY_MCP_AUTOSTART";
 
         static McpEditorInitializer()
         {
@@ -40,9 +42,8 @@ namespace UnityMCP.Editor.Core
 
         private static void InitializeServer()
         {
-            Debug.Log("[McpEditorInitializer] Initializing Unity MCP system...");
-
             var settings = McpSettings.instance;
+            var allowAutoStart = IsExplicitAutoStartEnabled();
 
             // Clean up any existing server
             if (McpServiceManager.Instance.TryGetService<McpHttpServer>(out var existing))
@@ -55,6 +56,17 @@ namespace UnityMCP.Editor.Core
             // On first Editor launch, SessionState is empty: wasRunning=false, savedPort=settings.httpPort.
             var wasRunning = SessionState.GetBool(SessionKeyWasRunning, false);
             var savedPort = SessionState.GetInt(SessionKeyBoundPort, settings.httpPort);
+            var shouldAutoStart = wasRunning || (settings.autoStartOnLaunch && allowAutoStart);
+
+            if (!shouldAutoStart)
+            {
+                if (settings.detailedLogs)
+                    Debug.Log("[McpEditorInitializer] MCP auto-start is disabled. Set UNITY_MCP_AUTOSTART=1 to enable it.");
+
+                return;
+            }
+
+            Debug.Log("[McpEditorInitializer] Initializing Unity MCP system...");
 
             var server = new McpHttpServer();
             McpServiceManager.Instance.RegisterService(server);
@@ -94,6 +106,18 @@ namespace UnityMCP.Editor.Core
             }
 
             Debug.Log("[McpEditorInitializer] Unity MCP system initialized");
+        }
+
+        private static bool IsExplicitAutoStartEnabled()
+        {
+            try
+            {
+                return string.Equals(Environment.GetEnvironmentVariable(AutoStartEnvVar), "1", StringComparison.OrdinalIgnoreCase);
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         private static void OnBeforeAssemblyReload()
