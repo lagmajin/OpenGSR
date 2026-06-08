@@ -80,6 +80,7 @@ namespace OpenGS
         public const string PlayerTeamSwitch = "PlayerTeamSwitch"; // チーム切り替え
         public const string PlayerSpectating = "PlayerSpectating"; // スペクテイターモード
         public const string PlayerRevive = "PlayerRevive";        // 蘇生
+        public const string PlayerPose = "PlayerPose";            // 姿勢変更
 
         // 武器関連 - クライアント → サーバー / サーバー → クライアント
         public const string WeaponChange = "WeaponChange";       // 武器切り替え

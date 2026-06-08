@@ -128,6 +128,10 @@ namespace OpenGS
             {
                 json = SerializePlayerSpectatingEvent((PlayerSpectatingEvent)gameEvent);
             }
+            else if (eventType == typeof(PlayerPoseEvent))
+            {
+                json = SerializePlayerPoseEvent((PlayerPoseEvent)gameEvent);
+            }
             else if (eventType == typeof(PlayerReviveEvent))
             {
                 json = SerializePlayerReviveEvent((PlayerReviveEvent)gameEvent);
@@ -573,6 +577,16 @@ namespace OpenGS
             json["MessageType"] = RUDPMessageTypes.PlayerSpectating;
             json["PlayerId"] = e.PlayerID();
             json["IsSpectating"] = e.IsSpectating();
+            json["Timestamp"] = e.Timestamp.ToString("o");
+            return json;
+        }
+
+        private static JObject SerializePlayerPoseEvent(PlayerPoseEvent e)
+        {
+            var json = new JObject();
+            json["MessageType"] = RUDPMessageTypes.PlayerPose;
+            json["PlayerId"] = e.PlayerID();
+            json["PoseState"] = e.PoseState().ToString();
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
         }

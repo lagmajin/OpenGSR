@@ -577,6 +577,10 @@ namespace OpenGS
                     LogUdpEvent("ObjectDestroyed", message.GetStringOrNull("RoomID"), message.GetStringOrNull("ObjectType"), message.GetStringOrNull("ObjectId"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
+                case RUDPMessageTypes.PlayerPose:
+                    LogUdpEvent("PlayerPose", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("PoseState"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
                 // 他のUDPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown UDP message: {message}");

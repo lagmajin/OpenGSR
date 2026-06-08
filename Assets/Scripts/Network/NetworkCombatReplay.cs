@@ -111,11 +111,11 @@ namespace OpenGS
             if (spawnedObjects.TryGetValue(e.ObjectID(), out var go) && go != null)
             {
                 Destroy(go);
-                LogReplayEvent("Removed", e.ObjectType(), e.ObjectID());
+                LogReplayEvent("Removed", e.DestroyedBy(), e.ObjectID());
             }
             else
             {
-                LogReplayWarning("Missing object for destroy", e.ObjectType(), e.ObjectID());
+                LogReplayWarning("Missing object for destroy", e.DestroyedBy(), e.ObjectID());
             }
 
             spawnedObjects.Remove(e.ObjectID());
@@ -195,7 +195,8 @@ namespace OpenGS
                 return;
             }
 
-            var roomId = MatchRoomManager.Instance?.OnlineMatchRoom?.Id;
+            var roomManager = ResolveMatchRoomManager();
+            var roomId = roomManager?.OnlineMatchRoom?.Id;
             var roomTag = string.IsNullOrWhiteSpace(roomId) ? "no-room" : roomId;
 
             if (position.HasValue)
@@ -209,9 +210,22 @@ namespace OpenGS
 
         private static void LogReplayWarning(string action, string objectType, string objectId)
         {
-            var roomId = MatchRoomManager.Instance?.OnlineMatchRoom?.Id;
+            var roomManager = ResolveMatchRoomManager();
+            var roomId = roomManager?.OnlineMatchRoom?.Id;
             var roomTag = string.IsNullOrWhiteSpace(roomId) ? "no-room" : roomId;
             Debug.LogWarning($"[NetReplay] [{roomTag}] {action} '{objectType}' ({objectId})");
+        }
+
+        private static MatchRoomManager ResolveMatchRoomManager()
+        {
+            try
+            {
+                return DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

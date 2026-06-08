@@ -1,4 +1,5 @@
 using UnityEngine;
+using DG.Tweening;
 
 namespace OpenGS
 {
@@ -9,12 +10,30 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class WeaponArmController : MonoBehaviour
     {
+        [SerializeField] private Vector3 sitLocalOffset = new Vector3(-0.02f, -0.01f, 0f);
+        [SerializeField] private float sitTransitionTime = 0.2f;
+        private Vector3 originalLocalPosition;
+        private bool hasCachedPosition;
+
+        private void Awake()
+        {
+            originalLocalPosition = transform.localPosition;
+            hasCachedPosition = true;
+        }
+
         /// <summary>
         /// Called when the player sits down - play sit animation for weapon arm
         /// </summary>
         public void Sit()
         {
-            // Weapon arm sit animation logic here
+            if (!hasCachedPosition)
+            {
+                originalLocalPosition = transform.localPosition;
+                hasCachedPosition = true;
+            }
+
+            transform.DOKill();
+            transform.DOLocalMove(originalLocalPosition + sitLocalOffset, sitTransitionTime).SetEase(Ease.OutSine);
         }
 
         /// <summary>
@@ -22,7 +41,14 @@ namespace OpenGS
         /// </summary>
         public void StandUp()
         {
-            // Weapon arm stand up animation logic here
+            if (!hasCachedPosition)
+            {
+                originalLocalPosition = transform.localPosition;
+                hasCachedPosition = true;
+            }
+
+            transform.DOKill();
+            transform.DOLocalMove(originalLocalPosition, sitTransitionTime).SetEase(Ease.OutSine);
         }
     }
 }

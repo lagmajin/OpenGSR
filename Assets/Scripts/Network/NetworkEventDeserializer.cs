@@ -63,6 +63,7 @@ namespace OpenGS
                 RUDPMessageTypes.PlayerLeft        => DeserializePlayerLeft(json),
                 RUDPMessageTypes.PlayerTeamSwitch   => DeserializePlayerTeamSwitch(json),
                 RUDPMessageTypes.PlayerSpectating   => DeserializePlayerSpectating(json),
+                RUDPMessageTypes.PlayerPose        => DeserializePlayerPose(json),
                 RUDPMessageTypes.PlayerRevive       => DeserializePlayerRevive(json),
 
                 // 武器関連
@@ -228,6 +229,12 @@ namespace OpenGS
         private static PlayerSpectatingEvent DeserializePlayerSpectating(JObject json)
         {
             return new PlayerSpectatingEvent(S(json, "PlayerId"), B(json, "IsSpectating"));
+        }
+
+        private static PlayerPoseEvent DeserializePlayerPose(JObject json)
+        {
+            Enum.TryParse<EPlayerPoseState>(S(json, "PoseState"), out var poseState);
+            return new PlayerPoseEvent(S(json, "PlayerId"), poseState);
         }
 
         private static PlayerReviveEvent DeserializePlayerRevive(JObject json)

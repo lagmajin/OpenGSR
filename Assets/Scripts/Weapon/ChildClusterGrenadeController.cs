@@ -41,7 +41,7 @@ namespace OpenGS
             }
 
             if (ProjectileHitUtility.IsStageHit(collision.collider.gameObject) ||
-                ProjectileHitUtility.IsPlayerHit(collision.collider.gameObject))
+                ProjectileHitUtility.TryGetTargetPlayer(collision.collider, out _))
             {
                 Explosion();
             }
@@ -56,7 +56,7 @@ namespace OpenGS
             }
 
             if (ProjectileHitUtility.IsStageHit(collision.gameObject) ||
-                ProjectileHitUtility.IsPlayerHit(collision.gameObject))
+                ProjectileHitUtility.TryGetTargetPlayer(collision, out _))
             {
                 Explosion();
             }

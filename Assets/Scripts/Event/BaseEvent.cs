@@ -24,6 +24,13 @@ namespace OpenGS
         Suicide
     }
 
+    public enum EPlayerPoseState
+    {
+        Stand,
+        Sit,
+        LieDown
+    }
+
     public class PlayerDeadEvent : AbstractGameEvent
     {
         private EDeadReason reason_ = EDeadReason.Unknown;
@@ -529,6 +536,24 @@ namespace OpenGS
 
         public string PlayerID() => playerID_;
         public bool IsSpectating() => isSpectating_;
+    }
+
+    /// <summary>
+    /// プレイヤー姿勢イベント
+    /// </summary>
+    public class PlayerPoseEvent : AbstractGameEvent
+    {
+        private string playerID_;
+        private EPlayerPoseState poseState_;
+
+        public PlayerPoseEvent(string playerId, EPlayerPoseState poseState)
+        {
+            playerID_ = playerId;
+            poseState_ = poseState;
+        }
+
+        public string PlayerID() => playerID_;
+        public EPlayerPoseState PoseState() => poseState_;
     }
 
     /// <summary>
