@@ -102,9 +102,9 @@ namespace OpenGS
                     continue;
                 }
 
-                var team = info.Team == ETeam.NoTeam
-                    ? (info.Id == localPlayerId ? localTeam : ETeam.Blue)
-                    : info.Team;
+                var team = Enum.TryParse<ETeam>(info.Team.ToString(), out var parsedTeam) && parsedTeam != ETeam.NoTeam
+                    ? parsedTeam
+                    : (info.Id == localPlayerId ? localTeam : ETeam.Blue);
 
                 if (team == ETeam.NoTeam)
                 {
@@ -165,7 +165,7 @@ namespace OpenGS
             linker.SetPlayerId(playerId ?? string.Empty);
         }
 
-        private static ETeam ResolveLocalTeam(WaitRoom room)
+        private static ETeam ResolveLocalTeam(OpenGSCore.WaitRoom room)
         {
             if (room == null)
             {
@@ -186,9 +186,11 @@ namespace OpenGS
                     continue;
                 }
 
-                if (string.Equals(player.Id, localId, StringComparison.OrdinalIgnoreCase) && player.Team != ETeam.NoTeam)
+                if (string.Equals(player.Id, localId, StringComparison.OrdinalIgnoreCase) &&
+                    Enum.TryParse<ETeam>(player.Team.ToString(), out var parsedTeam) &&
+                    parsedTeam != ETeam.NoTeam)
                 {
-                    return player.Team;
+                    return parsedTeam;
                 }
             }
 
@@ -249,6 +251,16 @@ namespace OpenGS
                 return;
             }
 
+            Guid oldPlayerId = Guid.Empty;
+            if (player != null)
+            {
+                var oldPlayerComponent = player.GetComponent<AbstractPlayer>();
+                if (oldPlayerComponent != null)
+                {
+                    oldPlayerId = oldPlayerComponent.UniqueID();
+                }
+            }
+
             if (player != null)
             {
                 Destroy(player);
@@ -257,7 +269,6 @@ namespace OpenGS
 
             var spawnSource = localTeam == ETeam.Red ? redTeamRespawnPoints : blueTeamRespawnPoint;
             var spawnPos = GetRandomSpawnPoint(spawnSource, localTeam);
-            var oldPlayerId = player != null ? player.GetComponent<AbstractPlayer>()?.UniqueID() : Guid.Empty;
             var myPlayer = CreateMyPlayer(spawnPos, localTeam);
             if (myPlayer != null)
             {

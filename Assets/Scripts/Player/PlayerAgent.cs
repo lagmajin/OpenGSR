@@ -243,6 +243,16 @@ namespace OpenGS
                 StandUp();
             }
 
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                LieDown();
+            }
+
+            if (Input.GetKeyUp(KeyCode.X))
+            {
+                StandUp();
+            }
+
             if (isDashing)
             {
                 dashTimer -= Time.deltaTime;
@@ -305,7 +315,7 @@ namespace OpenGS
 
         public void Sit()
         {
-            animator.SetBool("IsSit", true);
+            SetPoseState(isSit: true, isLieDown: false);
             if (standingCollider != null) standingCollider.enabled = false;
             if (sittingCollider != null) sittingCollider.enabled = true;
             
@@ -318,7 +328,7 @@ namespace OpenGS
 
         private void StandUp()
         {
-            animator.SetBool("IsSit", false);
+            SetPoseState(isSit: false, isLieDown: false);
             if (standingCollider != null) standingCollider.enabled = true;
             if (sittingCollider != null) sittingCollider.enabled = false;
 
@@ -349,6 +359,28 @@ namespace OpenGS
             {
                 capsuleCollider.enabled = false;
             }
+        }
+
+        public void LieDown()
+        {
+            SetPoseState(isSit: false, isLieDown: true);
+            if (standingCollider != null) standingCollider.enabled = false;
+            if (sittingCollider != null) sittingCollider.enabled = true;
+
+            headController?.Sit();
+            primaryGunController?.Sit();
+            armController?.Sit();
+        }
+
+        private void SetPoseState(bool isSit, bool isLieDown)
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            animator.SetBool("IsSit", isSit);
+            animator.SetBool("IsLieDown", isLieDown);
         }
         private void OnValidate()
         {

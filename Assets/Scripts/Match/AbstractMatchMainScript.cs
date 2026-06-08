@@ -376,6 +376,19 @@ namespace OpenGS
             }
         }
 
+        public void SetPlayerCameraZoom(float orthographicSizeScale)
+        {
+            if (playerCamera == null)
+            {
+                return;
+            }
+
+            orthographicSizeScale = Mathf.Max(0.1f, orthographicSizeScale);
+            var lens = playerCamera.Lens;
+            lens.OrthographicSize *= orthographicSizeScale;
+            playerCamera.Lens = lens;
+        }
+
         public void Start()
         {
             EnsureMasterDataReferences();

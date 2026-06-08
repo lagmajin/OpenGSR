@@ -72,6 +72,7 @@ namespace OpenGS
         protected bool isDead = false;
         protected bool isJump = false;
         protected bool isSitting = false;
+        protected bool isLyingDown = false;
         protected bool invisible = false;
         protected float jumpPos = 0.0f;
         protected float jumpInterval = 10.0f;
@@ -89,6 +90,11 @@ namespace OpenGS
         private float cachedBaseMaxHp = -1f;
         private MultipleTags myTags;
         private IEffectService effectService;
+        private float standingMoveSpeedCache;
+        private bool cachedStandingMoveSpeed;
+        private float cachedCameraZoomScale = 1f;
+        private float cachedProneCameraZoomScale = 1f;
+        private IDisposable poseEventSubscription;
 
         protected SpriteRenderer spriteRenderer;
 
@@ -147,6 +153,7 @@ namespace OpenGS
             canJump = true;
             canWarp = true;
             isSitting = false;
+            isLyingDown = false;
 
             if (PlayerRegistry.Instance != null)
             {
@@ -171,6 +178,7 @@ namespace OpenGS
             canJump = true;
             canWarp = true;
             isSitting = false;
+            isLyingDown = false;
 
             if (PlayerRegistry.Instance != null)
             {
@@ -515,23 +523,21 @@ namespace OpenGS
 
         public virtual void Sit()
         {
-            isSitting = true;
-            weaponSlots?.GetCurrentGun()?.Sit();
+            ApplySitState(true);
         }
 
         public bool IsStandUp() => !isSitting;
 
         public void StandUp()
         {
-            isSitting = false;
-            weaponSlots?.GetCurrentGun()?.StandUp();
+            ApplyStandUpState(true);
         }
 
-        public bool IsLieDown() => false;
+        public bool IsLieDown() => isLyingDown;
 
         public void LieDown()
         {
-            Debug.Log("LieDown");
+            ApplyLieDownState(true);
         }
 
         // ─── プレイヤータイプ ────────────────────────────────────────
@@ -832,10 +838,13 @@ namespace OpenGS
 
         protected void SubscribeEvent()
         {
+            poseEventSubscription ??= GameEventBroker.Subscribe<PlayerPoseEvent>(ApplyPoseFromNetwork);
         }
 
         protected void UnSubscribeEvent()
         {
+            poseEventSubscription?.Dispose();
+            poseEventSubscription = null;
         }
 
         // ─── Odin Inspectorテストボタン ──────────────────────────────
@@ -906,6 +915,176 @@ namespace OpenGS
             effect.transform.SetParent(transform, true);
         }
 
+        private void CacheStandingMoveSpeed()
+        {
+            if (cachedStandingMoveSpeed)
+            {
+                return;
+            }
+
+            standingMoveSpeedCache = moveSpeed;
+            cachedStandingMoveSpeed = true;
+        }
+
+        private void ApplySitState(bool notify)
+        {
+            if (isLyingDown)
+            {
+                isLyingDown = false;
+                if (!Mathf.Approximately(cachedProneCameraZoomScale, 1f))
+                {
+                    FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(1f / cachedProneCameraZoomScale);
+                    cachedProneCameraZoomScale = 1f;
+                }
+            }
+
+            if (isSitting)
+            {
+                return;
+            }
+
+            isSitting = true;
+            CacheStandingMoveSpeed();
+            moveSpeed = Mathf.Max(0.05f, baseMoveSpeed * 0.72f);
+            SetPoseAnimatorState(isSit: true, isLieDown: false);
+
+            var gun = weaponSlots?.GetCurrentGun();
+            if (gun != null && gun.canZooming)
+            {
+                cachedCameraZoomScale = 1.18f;
+                FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(cachedCameraZoomScale);
+            }
+            else
+            {
+                cachedCameraZoomScale = 1f;
+            }
+
+            weaponSlots?.GetCurrentGun()?.Sit();
+            if (notify)
+            {
+                PublishPose(EPlayerPoseState.Sit);
+            }
+        }
+
+        private void ApplyStandUpState(bool notify)
+        {
+            var hadPose = isSitting || isLyingDown;
+            if (!hadPose)
+            {
+                return;
+            }
+
+            isSitting = false;
+            isLyingDown = false;
+            if (cachedStandingMoveSpeed)
+            {
+                moveSpeed = standingMoveSpeedCache;
+                cachedStandingMoveSpeed = false;
+            }
+
+            if (!Mathf.Approximately(cachedCameraZoomScale, 1f))
+            {
+                FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(1f / cachedCameraZoomScale);
+                cachedCameraZoomScale = 1f;
+            }
+
+            if (!Mathf.Approximately(cachedProneCameraZoomScale, 1f))
+            {
+                FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(1f / cachedProneCameraZoomScale);
+                cachedProneCameraZoomScale = 1f;
+            }
+
+            SetPoseAnimatorState(isSit: false, isLieDown: false);
+            weaponSlots?.GetCurrentGun()?.StandUp();
+            if (notify)
+            {
+                PublishPose(EPlayerPoseState.Stand);
+            }
+        }
+
+        private void ApplyLieDownState(bool notify)
+        {
+            if (isLyingDown)
+            {
+                return;
+            }
+
+            isLyingDown = true;
+            isSitting = false;
+            CacheStandingMoveSpeed();
+            moveSpeed = Mathf.Max(0.03f, baseMoveSpeed * 0.45f);
+            SetPoseAnimatorState(isSit: false, isLieDown: true);
+
+            var gun = weaponSlots?.GetCurrentGun();
+            if (gun != null && gun.canZooming)
+            {
+                cachedProneCameraZoomScale = 1.28f;
+                FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(cachedProneCameraZoomScale);
+            }
+            else
+            {
+                cachedProneCameraZoomScale = 1f;
+            }
+
+            weaponSlots?.GetCurrentGun()?.Sit();
+            if (notify)
+            {
+                PublishPose(EPlayerPoseState.LieDown);
+            }
+        }
+
+        private void PublishPose(EPlayerPoseState poseState)
+        {
+            if (!IsLocalPlayablePlayer())
+            {
+                return;
+            }
+
+            NetworkEventSerializer.SerializeAndSend(new PlayerPoseEvent(UniqueID().ToString(), poseState));
+        }
+
+        private void SetPoseAnimatorState(bool isSit, bool isLieDown)
+        {
+            if (animator == null)
+            {
+                return;
+            }
+
+            animator.SetBool("IsSit", isSit);
+            animator.SetBool("IsLieDown", isLieDown);
+        }
+
+        private void ApplyPoseFromNetwork(PlayerPoseEvent poseEvent)
+        {
+            if (poseEvent == null)
+            {
+                return;
+            }
+
+            if (!string.Equals(poseEvent.PlayerID(), UniqueID().ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            switch (poseEvent.PoseState())
+            {
+                case EPlayerPoseState.Sit:
+                    ApplySitState(false);
+                    break;
+                case EPlayerPoseState.LieDown:
+                    ApplyLieDownState(false);
+                    break;
+                default:
+                    ApplyStandUpState(false);
+                    break;
+            }
+        }
+
+        private bool IsLocalPlayablePlayer()
+        {
+            return PlayerType() == EPlayerType.MyPlayer;
+        }
+
         protected void PlayDeathAnimation()
         {
             var deathAnimation = GetComponentInChildren<DeathAnimation>();
@@ -919,6 +1098,16 @@ namespace OpenGS
         private void InjectEffectService([InjectOptional] IEffectService effectService)
         {
             this.effectService = effectService;
+        }
+
+        protected virtual void OnEnable()
+        {
+            SubscribeEvent();
+        }
+
+        protected virtual void OnDisable()
+        {
+            UnSubscribeEvent();
         }
     }
 }

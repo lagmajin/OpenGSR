@@ -318,7 +318,15 @@ namespace OpenGS
             }
 
             var spawnPos = GetRandomSpawnPoint(respawnPoints);
-            var oldPlayerId = player != null ? player.GetComponent<AbstractPlayer>()?.UniqueID() : Guid.Empty;
+            Guid oldPlayerId = Guid.Empty;
+            if (player != null)
+            {
+                var playerComponent = player.GetComponent<AbstractPlayer>();
+                if (playerComponent != null)
+                {
+                    oldPlayerId = playerComponent.UniqueID();
+                }
+            }
 
             if (player != null)
             {

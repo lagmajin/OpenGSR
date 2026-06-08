@@ -86,6 +86,7 @@ namespace OpenGS
             CreateOtherPlayers();
             SetUpUI();
             ApplyRuleSettings();
+            CTFScoreUIManager.Instance?.StartMatch();
 
             redTeamFlagStand.SetFlag();
             blueTeamFlagStand.SetFlag();
@@ -97,7 +98,7 @@ namespace OpenGS
         {
             if (CTFScoreUIManager.Instance != null)
             {
-                CTFScoreUIManager.Instance.UpdateScore(0, 0);
+                CTFScoreUIManager.Instance.PrepareMatch();
             }
         }
 
@@ -306,7 +307,7 @@ namespace OpenGS
 
         private void CreateOtherPlayers()
         {
-            var room = ResolveCurrentMatchRoom()?.WaitRoom;
+            var room = matchRoomManager != null ? matchRoomManager.WaitRoom : null;
             if (room == null)
             {
                 Debug.Log("[CTF] No wait room found. Skipping other player spawn.");
@@ -336,7 +337,15 @@ namespace OpenGS
                     continue;
                 }
 
-                var team = info.Team == ETeam.NoTeam ? (spawned % 2 == 0 ? ETeam.Red : ETeam.Blue) : info.Team;
+                var team = ETeam.Blue;
+                if (Enum.TryParse(info.Team.ToString(), out ETeam parsedTeam) && parsedTeam != ETeam.NoTeam)
+                {
+                    team = parsedTeam;
+                }
+                else if (info.Id == localId)
+                {
+                    team = localTeam;
+                }
                 var spawnSource = team == ETeam.Red ? RedTeamReSpawnPoints : BlueTeamReSpawnPoints;
                 var spawnPos = ResolveSpawnPoint(team);
                 var prefab = prefabMasterData != null ? prefabMasterData.SearchPlayerPrefab(info.playerCharacter) : null;
@@ -372,7 +381,7 @@ namespace OpenGS
         private GameObject GetCharacterPrefabForLocalPlayer()
         {
             var localId = ResolveLocalPlayerId();
-            var room = ResolveCurrentMatchRoom()?.WaitRoom;
+            var room = matchRoomManager != null ? matchRoomManager.WaitRoom : null;
             if (room != null)
             {
                 var me = room.AllPlayers()?.Find(p => p != null && string.Equals(p.Id, localId, StringComparison.OrdinalIgnoreCase));
@@ -391,7 +400,7 @@ namespace OpenGS
 
         private ETeam ResolveLocalTeam()
         {
-            var room = ResolveCurrentMatchRoom()?.WaitRoom;
+            var room = matchRoomManager != null ? matchRoomManager.WaitRoom : null;
             var localId = ResolveLocalPlayerId();
             if (room == null || string.IsNullOrWhiteSpace(localId))
             {
@@ -399,7 +408,14 @@ namespace OpenGS
             }
 
             var local = room.AllPlayers()?.Find(p => p != null && string.Equals(p.Id, localId, StringComparison.OrdinalIgnoreCase));
-            return local != null && local.Team != ETeam.NoTeam ? local.Team : ETeam.Blue;
+            if (local == null)
+            {
+                return ETeam.Blue;
+            }
+
+            return Enum.TryParse(local.Team.ToString(), out ETeam parsedTeam) && parsedTeam != ETeam.NoTeam
+                ? parsedTeam
+                : ETeam.Blue;
         }
 
         private Vector3 ResolveSpawnPoint(ETeam team)
@@ -932,11 +948,19 @@ namespace OpenGS
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
 
             Debug.Log($"[CTF] Match ended: winner={winningTeam}, myTeam={myTeam}");
+            if (CTFScoreUIManager.Instance != null && Enum.TryParse(winningTeam, out ETeam winning))
+            {
+                var room = ResolveCurrentMatchRoom();
+                var redScore = room?.MatchData?.RedTeamFlagScore ?? 0;
+                var blueScore = room?.MatchData?.BlueTeamFlagScore ?? 0;
+                CTFScoreUIManager.Instance.ShowVictory(winning, redScore, blueScore);
+            }
             if (IsOfflineMatch())
             {
                 StoreOfflineMatchResult(winningTeam, myTeam);
             }
-            GoToResultScene();
+            CancelInvoke(nameof(GoToResultScene));
+            Invoke(nameof(GoToResultScene), gotoResultSceneWaitTime);
         }
 
         private void StoreOfflineMatchResult(string winningTeam, string myTeam)
