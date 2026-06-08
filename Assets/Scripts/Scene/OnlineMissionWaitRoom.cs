@@ -1,5 +1,8 @@
+#nullable enable
 using System.Threading;
+using Newtonsoft.Json.Linq;
 using Sirenix.OdinInspector;
+using UniRx;
 using UnityEngine;
 
 namespace OpenGS
@@ -7,11 +10,11 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class OnlineMissionWaitRoom : AbstractNonBattleScene
     {
-        [SerializeField] [Required] private MissionWaitRoomMediateObject mediateObject;
+        [SerializeField] [Required] private MissionWaitRoomMediateObject mediateObject = null!;
         [SerializeField] private QuestAndMissionSceneStorage missionSceneStorage;
         [SerializeField] private int maxPlayers = 3;
 
-        private SynchronizationContext mainThread;
+        private SynchronizationContext mainThread = null!;
         private GeneralServerNetworkManager? networkManager;
         private MatchRoomManager? matchRoomManager;
 
@@ -65,6 +68,11 @@ namespace OpenGS
 
         private void OnMissionServerMessage(JObject json)
         {
+            if (json == null)
+            {
+                return;
+            }
+
             var messageType = OpenGSCore.MessageType.Normalize(json?["MessageType"]?.ToString());
 
             switch (messageType)
@@ -78,8 +86,13 @@ namespace OpenGS
             }
         }
 
-        private void HandlePlayerList(JObject json)
+        private void HandlePlayerList(JObject? json)
         {
+            if (json == null)
+            {
+                return;
+            }
+
             var count = json["Players"]?["Count"]?.ToObject<int>() ?? 0;
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? "";
             var roomName = json["RoomName"]?.ToString() ?? "";

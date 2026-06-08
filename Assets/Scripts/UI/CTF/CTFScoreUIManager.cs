@@ -56,6 +56,11 @@ namespace OpenGS
         [SerializeField] private TextMeshProUGUI redFinalScoreText;
         [SerializeField] private TextMeshProUGUI blueFinalScoreText;
 
+        [Header("Match Flow")]
+        [SerializeField, Min(0f)] private float preMatchCountdownSeconds = 3f;
+        [SerializeField, Min(0f)] private float postMatchHoldSeconds = 3f;
+        [SerializeField] private TextMeshProUGUI matchStatusText;
+
         [Header("Animation")]
         [SerializeField] private float scorePopDuration = 0.3f;
         [SerializeField] private float scorePopScale = 1.3f;
@@ -68,6 +73,8 @@ namespace OpenGS
         private int previousBlueScore = 0;
         private float remainingTime;
         private bool isMatchActive = false;
+        private bool isPreparingMatch = false;
+        private Coroutine matchCountdownRoutine;
 
         // フラッグの状態
         public enum FlagState
@@ -119,7 +126,7 @@ namespace OpenGS
         {
             UpdateScoreDisplay();
             UpdateFlagStatusDisplay();
-            StartMatch();
+            PrepareMatch();
         }
 
         /// <summary>
@@ -127,7 +134,18 @@ namespace OpenGS
         /// </summary>
         public void StartMatch()
         {
-            isMatchActive = true;
+            if (matchCountdownRoutine != null)
+            {
+                StopCoroutine(matchCountdownRoutine);
+            }
+
+            matchCountdownRoutine = StartCoroutine(BeginMatchRoutine());
+        }
+
+        public void PrepareMatch()
+        {
+            isMatchActive = false;
+            isPreparingMatch = true;
             redScore = 0;
             blueScore = 0;
             previousRedScore = 0;
@@ -135,8 +153,34 @@ namespace OpenGS
             remainingTime = matchDuration;
             redFlagState = FlagState.AtBase;
             blueFlagState = FlagState.AtBase;
+            if (victoryPanel != null)
+            {
+                victoryPanel.SetActive(false);
+            }
             UpdateScoreDisplay();
             UpdateFlagStatusDisplay();
+            UpdateTimerDisplay();
+            SetMatchStatusText("READY");
+        }
+
+        private System.Collections.IEnumerator BeginMatchRoutine()
+        {
+            isMatchActive = false;
+            isPreparingMatch = true;
+
+            var countdown = Mathf.Max(0f, preMatchCountdownSeconds);
+            while (countdown > 0f)
+            {
+                SetMatchStatusText($"START {Mathf.CeilToInt(countdown)}");
+                UpdateTimerDisplay();
+                countdown -= Time.deltaTime;
+                yield return null;
+            }
+
+            isPreparingMatch = false;
+            isMatchActive = true;
+            SetMatchStatusText(string.Empty);
+            UpdateTimerDisplay();
         }
 
         private void Update()
@@ -354,6 +398,15 @@ namespace OpenGS
             }
         }
 
+        public void ShowVictory(ETeam winningTeam, int redFinalScore, int blueFinalScore)
+        {
+            redScore = redFinalScore;
+            blueScore = blueFinalScore;
+            previousRedScore = redFinalScore;
+            previousBlueScore = blueFinalScore;
+            ShowVictory(winningTeam);
+        }
+
         private void EndMatch()
         {
             isMatchActive = false;
@@ -414,6 +467,18 @@ namespace OpenGS
         {
             matchDuration = duration;
             remainingTime = duration;
+        }
+
+        private void SetMatchStatusText(string message)
+        {
+            if (matchStatusText != null)
+            {
+                matchStatusText.text = message;
+            }
+            else if (timerText != null && !isMatchActive)
+            {
+                timerText.text = message;
+            }
         }
     }
 }

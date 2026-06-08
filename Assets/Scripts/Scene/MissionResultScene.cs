@@ -39,10 +39,9 @@ namespace OpenGS
             }
 
             var players = matchRoomManager.WaitRoom.AllPlayers();
-            var rule = matchRoomManager.WaitRoom.MatchRule ?? new MissionRule();
             var setting = matchRoomManager.WaitRoom.GetOrCreateSetting();
 
-            var evaluator = OpenGSCore.MissionResultEvaluatorFactory.CreateEvaluator(setting?.Mode);
+            var evaluator = OpenGSCore.MissionResultEvaluatorFactory.CreateEvaluator(setting?.Mode ?? EGameMode.Unknown);
             if (evaluator != null)
             {
                 var result = evaluator.Evaluate(null, players);

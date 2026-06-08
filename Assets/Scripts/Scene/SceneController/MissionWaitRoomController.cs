@@ -29,6 +29,7 @@ namespace OpenGS
         private SynchronizationContext mainThread = null!;
         private MatchRoomManager? matchRoomManager;
         private GeneralServerNetworkManager? generalServer;
+        [SerializeField] private GeneralSceneMasterData? generalSceneMasterData;
 
         [ShowInInspector, ReadOnly]
         private EMissionPhase currentPhase = EMissionPhase.WaitingForPlayers;
@@ -49,10 +50,13 @@ namespace OpenGS
         public IObservable<JObject> OnPlayerJoinedStream => onPlayerJoined.AsObservable();
         public IObservable<JObject> OnPlayerLeftStream => onPlayerLeft.AsObservable();
 
-        protected override void Awake()
+        private void Awake()
         {
-            base.Awake();
             mainThread = SynchronizationContext.Current ?? new SynchronizationContext();
+            if (generalSceneMasterData == null)
+            {
+                generalSceneMasterData = UnityEngine.Object.FindFirstObjectByType<GeneralSceneMasterData>();
+            }
         }
 
         private void Start()
@@ -109,7 +113,13 @@ namespace OpenGS
                         || messageType == MessageType.MissionFailedNotification
                         || messageType == MessageType.WaitRoomPlayerList;
                 })
-                .Subscribe(OnMissionServerMessage)
+                .Subscribe(json =>
+                {
+                    if (json != null)
+                    {
+                        OnMissionServerMessage(json);
+                    }
+                })
                 .AddTo(this);
         }
 
@@ -231,7 +241,7 @@ namespace OpenGS
 
         private static string ResolveMissionScene(int missionIndex)
         {
-            var storage = Object.FindFirstObjectByType<QuestAndMissionSceneStorage>();
+            var storage = UnityEngine.Object.FindFirstObjectByType<QuestAndMissionSceneStorage>();
             if (storage == null) return "";
 
             return missionIndex switch
@@ -247,7 +257,7 @@ namespace OpenGS
 
         private static string ResolveQuestScene(int questIndex)
         {
-            var storage = Object.FindFirstObjectByType<QuestAndMissionSceneStorage>();
+            var storage = UnityEngine.Object.FindFirstObjectByType<QuestAndMissionSceneStorage>();
             if (storage == null) return "";
 
             return questIndex switch
@@ -276,6 +286,17 @@ namespace OpenGS
                 : GeneralSceneMasterData.Instance().MissionLobbyScene();
 
             RequestSceneTransition(lobbyScene, "MissionWaitRoomToMissionLobby");
+        }
+
+        private void RequestSceneTransition(string nextSceneName, string reason)
+        {
+            if (string.IsNullOrWhiteSpace(nextSceneName))
+            {
+                Debug.LogWarning($"[MissionWaitRoomController] Invalid transition target. reason={reason}");
+                return;
+            }
+
+            SceneManager.LoadScene(nextSceneName);
         }
     }
 }
