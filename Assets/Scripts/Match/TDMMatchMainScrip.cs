@@ -62,6 +62,25 @@ namespace OpenGS
             }
         }
 
+        protected override float ResolveMatchDuration()
+        {
+            return 600f;
+        }
+
+        protected override void OnTimeUp()
+        {
+            if (endFlag) return;
+            Debug.Log("[TDM] Time up!");
+            var winningTeam = redTeamKills >= blueTeamKills ? "Red" : "Blue";
+            HandleMatchEnd(new Newtonsoft.Json.Linq.JObject
+            {
+                ["WinningTeam"] = winningTeam,
+                ["MyTeam"] = ResolveLocalTeamName(),
+                ["RedTeamKills"] = redTeamKills,
+                ["BlueTeamKills"] = blueTeamKills
+            });
+        }
+
         private void CreateMyPlayerLocally()
         {
             var spawnSource = localTeam == ETeam.Blue ? blueTeamRespawnPoint : redTeamRespawnPoints;

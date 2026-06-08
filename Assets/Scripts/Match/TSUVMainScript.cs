@@ -203,6 +203,23 @@ namespace OpenGS
             CheckTeamElimination();
         }
 
+        protected override float ResolveMatchDuration()
+        {
+            return 600f;
+        }
+
+        protected override void OnTimeUp()
+        {
+            if (endFlag) return;
+            Debug.Log("[TSUV] Time up!");
+            endFlag = true;
+            string winningTeam = redAliveCount > blueAliveCount ? "Red" : (blueAliveCount > redAliveCount ? "Blue" : "Draw");
+            var myLabel = ResolveLocalTeamName();
+            OnMatchEnded?.Invoke(System.Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
+            StoreOfflineMatchResult(winningTeam, myLabel);
+            Invoke(nameof(GoToResultScene), gotoResultSceneWaitTime);
+        }
+
         /// <summary>
         /// チーム全滅 or 時間切れをチェックして試合終了。
         /// </summary>
