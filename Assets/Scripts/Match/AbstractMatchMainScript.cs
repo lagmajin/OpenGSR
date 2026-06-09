@@ -397,24 +397,41 @@ namespace OpenGS
             PlayStageBGM();
             BindMatchNetwork();
 
-            Debug.Log("AbstracMainScript.Con");
+            Debug.Log("AbstractMainScript.Start");
 
             if (!impluseSource)
             {
                 impluseSource = gameObject.GetComponent<CinemachineImpulseSource>();
             }
 
-            /*
-
-            oneSecInvtervalTimer.Elapsed += On1Sec;
-            oneSecInvtervalTimer.Start();
-
-            oneMiniteIntervalTimer.Elapsed += On1Min;
-            oneMiniteIntervalTimer.Start();
-            */
+            // MatchTimer auto-start if timer is assigned and not overridden
+            if (timer != null && !overrideGameTime)
+            {
+                timer.SetTime(ResolveMatchDuration());
+                timer.timeupEvent.RemoveAllListeners();
+                timer.timeupEvent.AddListener(OnTimeUp);
+                timer.StartTimer();
+                Debug.Log($"[{GetType().Name}] Timer started: {timer.GetRemainingTime()}s");
+            }
 
             StartCoroutine(OneSecCallback());
             StartCoroutine(OneMinCallback());
+        }
+
+        /// <summary>
+        /// Match duration in seconds per mode. Override in derived classes. Default 10 minutes.
+        /// </summary>
+        protected virtual float ResolveMatchDuration()
+        {
+            return 600f;
+        }
+
+        /// <summary>
+        /// Called when timer reaches 0. Override in each mode to trigger game end.
+        /// </summary>
+        protected virtual void OnTimeUp()
+        {
+            Debug.Log($"[{GetType().Name}] Time up!");
         }
 
         IEnumerator OneSecCallback()
