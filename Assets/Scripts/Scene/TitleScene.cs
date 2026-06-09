@@ -162,7 +162,7 @@ namespace OpenGS
             bgmFlag = true;
             Debug.Log("[TitleScene] GoToExportAssetsScene");
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene("ExportAssetScene");
+            SceneManager.LoadScene(GeneralSceneMasterData.Instance().ExportAssetScene());
         }
 
         [Button("自動セット")]

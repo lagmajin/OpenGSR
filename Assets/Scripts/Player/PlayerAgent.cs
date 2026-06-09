@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 using Sirenix.OdinInspector;
@@ -767,6 +767,7 @@ namespace OpenGS
         {
             if(playerMasterData)
             {
+                if (playerMasterData == null || playerMasterData.damageVoices == null || playerMasterData.damageVoices.Length == 0) { Destroy(this.gameObject); return; }
                 var sound=playerMasterData.damageVoices[0];
 
                 audioSource?.PlayOneShot(sound);

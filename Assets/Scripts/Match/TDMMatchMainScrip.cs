@@ -26,7 +26,7 @@ namespace OpenGS
         [SerializeField] [Required] private TeamReSpawnPoints blueTeamRespawnPoint;
         private int redTeamKills = 0;
         private int blueTeamKills = 0;
-        private ETeam localTeam = ETeam.Blue;
+        private ETeam localTeam = ETeam.Blue; private const int OfflineKillLimit = 50;
 
         private new void Start()
         {
@@ -218,6 +218,7 @@ namespace OpenGS
 
         private void Update()
         {
+            if (endFlag) return;
             if (HandleEscapeToBackScene())
                 return;
 
@@ -232,6 +233,13 @@ namespace OpenGS
                 });
             }
 
+            // Offline kill limit check
+            if (IsOfflineMatch() && (redTeamKills >= OfflineKillLimit || blueTeamKills >= OfflineKillLimit))
+            {
+                var winningTeam = redTeamKills >= blueTeamKills ? "Red" : "Blue";
+                HandleMatchEnd(new JObject { ["WinningTeam"] = winningTeam, ["MyTeam"] = ResolveLocalTeamName(), ["RedTeamKills"] = redTeamKills, ["BlueTeamKills"] = blueTeamKills });
+                return;
+            }
             if (Input.GetKeyDown(KeyCode.F2))
             {
                 HandleMatchEnd(new JObject

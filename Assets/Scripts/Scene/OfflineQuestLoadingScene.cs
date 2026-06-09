@@ -1,4 +1,3 @@
-﻿
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -11,77 +10,46 @@ namespace OpenGS
     public class OfflineQuestLoadingScene : MonoBehaviour
     {
         private bool loadImmediately = true;
-        private bool asyncLoadScene = true;
 
         public GeneralSceneMasterData senes;
 
         private void Awake()
         {
-
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
-
-
-
         }
 
         private void Start()
         {
-
-            if (DebugFlagManager.IsDebug())
-            {
-                //GameGeneralManager.GetInstance.LoadDebugMissionSelect();
-            }
-
             if (loadImmediately)
             {
                 LoadingStart();
             }
         }
 
-        private void OnApplicationQuit()
-        {
-
-
-
-        }
-
-        void Update()
-        {
-
-        }
-
         public void LoadingStart()
         {
-            StartCoroutine(LoadingCorutine());
-            int number = Random.Range(0, 0);
-            var r1 = new System.Random();
-
-
-
-            //var v = r1.Next(0, 8);
-
-            //img.sprite = sprites[v];
-
-
-
-
+            StartCoroutine(LoadingCoroutine());
         }
 
-        private IEnumerator LoadingCorutine()
+        private IEnumerator LoadingCoroutine()
         {
-
             yield return new WaitForSecondsRealtime(1);
+            var sceneName = senes != null ? senes.MissionScene() : "Mission1";
+            var async = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            async.allowSceneActivation = false;
+            yield return new WaitForSecondsRealtime(1);
+            async.allowSceneActivation = true;
         }
 
         private void GotoMission()
         {
-
+            LoadingStart();
         }
 
         private void BackToOfflineWaitRoom()
         {
-            SceneManager.LoadScene(GeneralSceneMasterData.Instance().TitleScene());
-
+            var sceneName = senes != null ? senes.OfflineWaitRoomScene() : "OfflineWaitRoom";
+            SceneManager.LoadScene(sceneName);
         }
     }
 }

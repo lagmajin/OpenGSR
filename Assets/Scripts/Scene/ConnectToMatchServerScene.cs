@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Sockets;
@@ -68,7 +68,7 @@ namespace OpenGS
         // Update is called once per frame
         void Update()
         {
-            up();
+            up?.Invoke();
         }
 
         void ConnectError()

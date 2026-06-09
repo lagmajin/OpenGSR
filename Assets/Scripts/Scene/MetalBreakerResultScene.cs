@@ -1,4 +1,4 @@
-﻿
+
 
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,7 +33,7 @@ namespace OpenGS
 
         void BacktoWaitRoom()
         {
-            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name; SceneManager.LoadScene("OfflineWaitRoom");
         }
 
     }

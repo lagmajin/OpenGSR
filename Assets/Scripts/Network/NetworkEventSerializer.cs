@@ -322,7 +322,7 @@ namespace OpenGS
             return new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.MatchPause,
-                ["PausedByPlayerId"] = e.PausedByPlayerID(),
+                ["PausedBy"] = e.PausedByPlayerID(),
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
         }
@@ -332,7 +332,7 @@ namespace OpenGS
             return new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.MatchResume,
-                ["ResumedByPlayerId"] = e.ResumedByPlayerID(),
+                ["ResumedBy"] = e.ResumedByPlayerID(),
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
         }

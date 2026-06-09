@@ -18,7 +18,10 @@ namespace OpenGS
         private void MissionClear()
         {
             var mainScript = GameObject.Find("MissionMainScript");
-
+            if (mainScript != null)
+            {
+                mainScript.SendMessage("MissionClear", SendMessageOptions.DontRequireReceiver);
+            }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -33,7 +36,6 @@ namespace OpenGS
 
 
     }
-
 
 
 }

@@ -302,6 +302,20 @@ Mission2-4 と同様。アートはあるがゲームプレイロジックがな
 
 ---
 
+## ネットワークプロトコル制約
+
+**UDPペイロード: JSON限定。LiteNetLibはクライアント側では不使用。**
+
+- Unityクライアント (OpenGSR) のプラットフォーム制約により、クライアント側では
+  LiteNetLibを採用しない。サーバー (OpenGSServer) はLiteNetLibをトランスポート
+  層として使用してもよいが、ペイロードは必ずJSON文字列形式とする。
+- クライアントの `ClientNetworkManager` はすでにJSON形式で送受信しているため、
+  この制約はクライアント側の既存コードに合致する。
+- サーバー側の `MatchUDPServer.OnNetworkReceive()` は現在LiteNetLibバイナリ
+  (Put/Get) で処理しているため、JSONパース方式に修正が必要。
+
+---
+
 ## Phase 6: ネットワークの堅牢化 ⚪
 
 ### P6-1. ClientNetworkManager で40+メッセージ中7つしか処理していない

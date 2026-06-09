@@ -1,4 +1,4 @@
-﻿
+
 using UnityEngine;
 
 namespace OpenGS
@@ -76,7 +76,7 @@ namespace OpenGS
             }
             else
             {
-                Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
+                if (expEffect != null) Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
             }
             var owner = GetOwnerPlayer();
             var resolvedOwnerId = !string.IsNullOrWhiteSpace(ownerPlayerId)
