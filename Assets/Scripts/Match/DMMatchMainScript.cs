@@ -97,7 +97,10 @@ namespace OpenGS
 
             if (!MatchModeResolver.CanRespawnCurrentMatch())
             {
-                Debug.Log("[DMMatchMainScript] Survival mode detected, switching to spectator flow.");
+                Debug.Log("[DMMatchMainScript] Survival mode detected, switching to spectator mode.");
+                if (player != null)
+                    player.SetActive(false);
+                EnterSpectatorMode(player?.transform);
                 return;
             }
 

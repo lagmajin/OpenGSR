@@ -218,6 +218,30 @@ namespace OpenGS
 
         private void Update()
         {
+            if (HandleEscapeToBackScene())
+                return;
+
+            if (Input.GetKeyDown(KeyCode.F1))
+            {
+                HandleMatchEnd(new JObject
+                {
+                    ["WinningTeam"] = "Red",
+                    ["MyTeam"] = ResolveLocalTeamName(),
+                    ["RedTeamKills"] = redTeamKills,
+                    ["BlueTeamKills"] = blueTeamKills
+                });
+            }
+
+            if (Input.GetKeyDown(KeyCode.F2))
+            {
+                HandleMatchEnd(new JObject
+                {
+                    ["WinningTeam"] = "Blue",
+                    ["MyTeam"] = ResolveLocalTeamName(),
+                    ["RedTeamKills"] = redTeamKills,
+                    ["BlueTeamKills"] = blueTeamKills
+                });
+            }
         }
 
         void GoToResultScene()
