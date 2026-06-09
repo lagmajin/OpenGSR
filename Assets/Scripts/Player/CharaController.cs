@@ -1,51 +1,24 @@
-﻿using OpenGSCore;
-using OpenGS;
+using OpenGSCore;
 using UnityEngine;
-//using KanKikuchi.AudioManager;
 using System;
 using System.Collections;
-
 using System.Collections.Generic;
-//using MoreMountains.CorgiEngine;
 using Sirenix.OdinInspector;
-
-
-
-#pragma warning disable 0414
 
 namespace OpenGS
 {
-
-
-
-
     public partial class CharaController : AbstractPlayer
     {
-
-
-        [SerializeField]
-        public BoxCollider2D defaultCollider;
-        [SerializeField]
-        public BoxCollider2D triggerCollider;
-
-
-
-
+        [SerializeField] public BoxCollider2D defaultCollider;
+        [SerializeField] public BoxCollider2D triggerCollider;
 
         private int currentWeapon = 0;
-
         private bool canOpenGranade = false;
-        public float blinkInterval = 0.1f;
-
         private bool spaceKeyDown = false;
-
         private bool onDamage = false;
-
         bool isBlink = false;
 
-
-        [SerializeField]
-        private float time = 10.0f;
+        [SerializeField] private float time = 10.0f;
         private bool rightKey = false;
         private bool leftKey = false;
 
@@ -55,29 +28,18 @@ namespace OpenGS
         private MatchEventProvider matchEventProvider;
         private PlayerGrenadeComponent grenadeComponent;
 
-
         private PlayerStatus status = GamePlayerManager.Instance.Status;
-
-
-        [SerializeField] [Required] private Animator animetor;
-
-        //private matchnet
 
         private PlayerStatus PlayerStatus()
         {
             return GamePlayerManager.Instance.Status;
         }
 
-
         private IEnumerator OnBlink()
         {
-
             yield return new WaitForSeconds(3.0f);
-
-            // 通常状態に戻す
             isBlink = false;
             onDamage = false;
-
         }
 
         public override void OnSpawn()
@@ -100,11 +62,7 @@ namespace OpenGS
 
         private void StartBlink()
         {
-            if (isBlink)
-            {
-                return;
-            }
-
+            if (isBlink) return;
             isBlink = true;
             onDamage = true;
             StartCoroutine(OnBlink());
@@ -121,63 +79,29 @@ namespace OpenGS
 
         public void Update()
         {
-            if (isDead)
-            {
-                return;
-            }
+            if (isDead) return;
 
             var screenPos = Camera.main.WorldToScreenPoint(transform.position);
-
-
-
-            var direction = Input.mousePosition - screenPos;
-            var trans = transform.localScale;
-
-
-
-            var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
             var direc = Input.mousePosition - screenPos;
-
-            // var gun = CurrentWeapon().GetComponent<AbstractGunController>();
-
-
-
-            //if (mousePos.x<=transform.position.x)
 
             if (direc.x >= 0)
             {
                 var ls = transform.localScale;
                 ls.x = -Mathf.Abs(ls.x);
                 transform.localScale = ls;
-
-                //gun?.transform.SetLocalScaleX(-1);
             }
             else
             {
                 var ls = transform.localScale;
                 ls.x = Mathf.Abs(ls.x);
                 transform.localScale = ls;
-
-                //gun?.transform.SetLocalScaleX(1);
             }
-
 
             if (Input.GetMouseButton(0))
             {
-                //Debug.LogError("Shot");
-
                 Shot();
             }
-
-
-
-
-
-
         }
-
-
 
         private void FixedUpdate()
         {
@@ -186,6 +110,7 @@ namespace OpenGS
                 StartBlink();
             }
         }
+
         private void LateUpdate()
         {
             var gun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
@@ -194,6 +119,7 @@ namespace OpenGS
                 gun.SetGunDirection(transform.localScale.x < 0f);
             }
         }
+
         public void OpenGrenade()
         {
             canOpenGranade = true;
@@ -204,10 +130,7 @@ namespace OpenGS
         [Button("グレネードテスト")]
         public void ThrowGrenade()
         {
-            if (isDead)
-            {
-                return;
-            }
+            if (isDead) return;
 
             if (!canOpenGranade)
             {
@@ -233,32 +156,22 @@ namespace OpenGS
 
             Debug.LogWarning("[CharaController] No grenade component available.");
         }
+
         [Button("Shot")]
         void Shot()
         {
-            if (isDead)
-            {
-                return;
-            }
+            if (isDead) return;
 
             var weapon = weaponSlots.mainWeaponSlot;
-
             var cont = weapon.transform.GetComponentInChildren<AbstractGunController>();
 
             if (cont.CanShot())
             {
-
                 cont.Shot();
-
-                // 射撃通知をサーバーに送信
                 SendShotNotificationToServer();
             }
-
         }
 
-        /// <summary>
-        /// 射撃通知をサーバーに送信
-        /// </summary>
         private void SendShotNotificationToServer()
         {
             try
@@ -266,14 +179,11 @@ namespace OpenGS
                 var networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
                 if (networkManager != null && networkManager.IsConnected())
                 {
-                    // 武器タイプを取得
                     string weaponType = weaponSlots?.mainWeaponSlot?.name ?? "Unknown";
-
-                    // 射撃メッセージを作成して送信
                     var shotMsg = RUDPMessageBuilder.CreatePlayerShot(
                         UniqueID().ToString(),
                         transform.position,
-                        new Vector2(transform.localScale.x, 0), // 方向
+                        new Vector2(transform.localScale.x, 0),
                         weaponType
                     );
                     networkManager.SendToServer(shotMsg);
@@ -294,10 +204,7 @@ namespace OpenGS
                     matchEventProvider = FindFirstObjectByType<MatchEventProvider>();
                 }
 
-                if (matchEventProvider == null)
-                {
-                    return;
-                }
+                if (matchEventProvider == null) return;
 
                 matchEventProvider.UseGrenade(this, grenadeComponent != null ? grenadeComponent.CurrentGrenadeType : EGrenadeType.Normal);
             }
@@ -311,13 +218,12 @@ namespace OpenGS
         public override void Sit()
         {
             Debug.Log("Sit");
-
             if (null != animator)
             {
                 //animator.SetBool("Sit", true);
             }
-
         }
+
         [Button("ローリングテスト")]
         public void Rolling()
         {
@@ -336,12 +242,6 @@ namespace OpenGS
             }
         }
 
-
-
-
-
-
-
         void Scope()
         {
             var gun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
@@ -350,36 +250,19 @@ namespace OpenGS
                 Debug.Log($"[CharaController] Scope on: {gun.Name}");
                 return;
             }
-
             Debug.Log("[CharaController] Scope");
         }
+
         [Button("死亡テスト")]
         void Die()
         {
-            if (animator)
-            {
-                animator.SetBool("Die", true);
-            }
-
-
+            if (animator) animator.SetBool("Die", true);
             DropWeapon();
-
-
-            //Instantiate(DeathAnimationPrefab, this.transform.position, Quaternion.identity);
-
             gameObject.SetActive(false);
-
-
-
         }
 
         public override void Burst()
         {
-
-
-
-            //script.PostEvent();
-
         }
 
         public override void UseItem(int num = 0)
@@ -427,7 +310,6 @@ namespace OpenGS
         GameObject CurrentWeapon()
         {
             return weaponSlots != null ? weaponSlots.currentWeapon : null;
-
         }
 
         private void ResetInstantItems()
@@ -517,10 +399,8 @@ namespace OpenGS
                     result.Add(EInstantItemType.None);
                     continue;
                 }
-
                 result.Add(itemType);
             }
-
             return result;
         }
 
@@ -540,29 +420,20 @@ namespace OpenGS
                     result.Add(EGrenadeType.Empty);
                     continue;
                 }
-
                 result.Add(grenadeType);
             }
-
             return result;
         }
 
         private void SyncGrenadeComponentTypeFromStatus()
         {
-            if (grenadeComponent == null || Status == null)
-            {
-                return;
-            }
+            if (grenadeComponent == null || Status == null) return;
 
             var selectedGrenadeType = EGrenadeType.Empty;
             for (var index = 0; index < Status.GrenadeSlots.Count; index++)
             {
                 var grenadeType = Status.GetGrenadeSlot(index);
-                if (grenadeType == EGrenadeType.Empty)
-                {
-                    continue;
-                }
-
+                if (grenadeType == EGrenadeType.Empty) continue;
                 selectedGrenadeType = grenadeType;
                 break;
             }
@@ -584,12 +455,7 @@ namespace OpenGS
                 Debug.LogWarning("[CharaController] weaponSlots is null.");
                 return;
             }
-
             weaponSlots.FlipWeapon();
-        }
-        void TakeNewWeapon()
-        {
-            TakeWeapon();
         }
 
         void TakeWeapon()
@@ -643,72 +509,17 @@ namespace OpenGS
                 Debug.LogWarning("[CharaController] ReloadCancel requested but no gun is equipped.");
                 return;
             }
-
             gun.ReloadCancel();
         }
 
         void OnTriggerEnter2D(Collider2D other)
         {
-            if (other == null)
-            {
-                return;
-            }
-
+            if (other == null) return;
             Debug.Log("OnTriggerEnter2D: " + other.tag);
 
-            if ("StageObject" == other.tag)
-            {
-                StartBlink();
-            }
-
-            if ("GameOverArea" == other.tag)
-            {
-                Burst();
-            }
-
-            if ("FieldWeapon" == other.tag)
-            {
-                TakeNewWeapon();
-            }
-
+            if ("StageObject" == other.tag) StartBlink();
+            if ("GameOverArea" == other.tag) Burst();
+            if ("FieldWeapon" == other.tag) TakeWeapon();
         }
-
-
-        public override void IncreaseAttack(float sec)
-        {
-            base.IncreaseAttack(sec);
-        }
-
-        public override void IncreaseDefense(float sec)
-        {
-            base.IncreaseDefense(sec);
-        }
-
-
-
-        public override void SpeedUp(float sec)
-        {
-            base.SpeedUp(sec);
-        }
-        public override void Invisible(float sec)
-        {
-            base.Invisible(sec);
-        }
-
-        /*
-        public override void EquipWeapon(GameObject weaponPrefab)
-        {
-
-
-            //weaponSlots.transform.Find("Weapi")
-
-
-            weaponSlots.EquipWeapon(weaponPrefab);
-
-
-        }
-*/
-
-
     }
 }
