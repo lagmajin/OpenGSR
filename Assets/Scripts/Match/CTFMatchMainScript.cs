@@ -480,6 +480,22 @@ namespace OpenGS
             if (Instance == this) Instance = null;
         }
 
+        protected override float ResolveMatchDuration()
+        {
+            return 600f;
+        }
+
+        protected override void OnTimeUp()
+        {
+            if (endFlag) return;
+            Debug.Log("[CTF] Time up!");
+            var room = ResolveCurrentMatchRoom();
+            var redScore = room?.MatchData?.RedTeamFlagScore ?? 0;
+            var blueScore = room?.MatchData?.BlueTeamFlagScore ?? 0;
+            endFlag = true;
+            HandleMatchEndFromScores(redScore, blueScore);
+        }
+
         // Update is called once per frame
         void Update()
         {

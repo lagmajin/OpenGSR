@@ -145,6 +145,18 @@ namespace OpenGS
             Debug.Log("[DM] SetUpUI");
         }
 
+        protected override float ResolveMatchDuration()
+        {
+            return 600f;
+        }
+
+        protected override void OnTimeUp()
+        {
+            if (endFlag) return;
+            Debug.Log("[DM] Time up!");
+            GameEnd();
+        }
+
         void SuddenDeathStart()
         {
             var canvasIf = uiManager.GetComponent(typeof(IBattleSceneUIManager)) as IBattleSceneUIManager;
