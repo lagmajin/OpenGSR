@@ -581,6 +581,45 @@ namespace OpenGS
                     LogUdpEvent("PlayerPose", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("PoseState"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
+                case RUDPMessageTypes.PlayerDeath:
+                case RUDPMessageTypes.PlayerKilled:
+                case RUDPMessageTypes.PlayerDamage:
+                case RUDPMessageTypes.PlayerDamaged:
+                case RUDPMessageTypes.PlayerKill:
+                case RUDPMessageTypes.KillScoreUpdate:
+                case RUDPMessageTypes.FlagCaptured:
+                case RUDPMessageTypes.FlagLost:
+                case RUDPMessageTypes.FlagReturn:
+                case RUDPMessageTypes.FlagBurst:
+                case RUDPMessageTypes.FlagPickup:
+                case RUDPMessageTypes.FlagScoreUpdate:
+                case RUDPMessageTypes.MatchStart:
+                case RUDPMessageTypes.MatchEnd:
+                case RUDPMessageTypes.MatchPause:
+                case RUDPMessageTypes.MatchResume:
+                case RUDPMessageTypes.RoundStart:
+                case RUDPMessageTypes.RoundEnd:
+                case RUDPMessageTypes.PlayerRespawn:
+                case RUDPMessageTypes.RespawnCountdown:
+                case RUDPMessageTypes.PlayerJoined:
+                case RUDPMessageTypes.PlayerLeft:
+                case RUDPMessageTypes.PlayerTeamSwitch:
+                case RUDPMessageTypes.WeaponChange:
+                case RUDPMessageTypes.PlayerReload:
+                case RUDPMessageTypes.ItemPickup:
+                case RUDPMessageTypes.ItemUse:
+                case RUDPMessageTypes.ItemSpawn:
+                case RUDPMessageTypes.GameStateSync:
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.PingRequest:
+                {
+                    var pong = new JObject();
+                    pong["MessageType"] = "PingResponse";
+                    pong["ClientTimestamp"] = message["ClientTimestamp"];
+                    SendUdpInput(pong);
+                    break;
+                }
                 // 他のUDPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown UDP message: {message}");
