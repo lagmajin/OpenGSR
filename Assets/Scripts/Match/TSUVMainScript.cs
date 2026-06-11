@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using CoreETeam = OpenGSCore.ETeam;
 using OpenGSCore;
 using Newtonsoft.Json.Linq;
 using Sirenix.OdinInspector;
@@ -73,8 +74,8 @@ namespace OpenGS
             }
 
             var players = room.AllPlayers();
-            redAliveCount = players?.Count(p => p != null && p.Team == ETeam.Red) ?? 0;
-            blueAliveCount = players?.Count(p => p != null && p.Team == ETeam.Blue) ?? 0;
+            redAliveCount = players?.Count(p => p != null && p.Team == CoreETeam.Red) ?? 0;
+            blueAliveCount = players?.Count(p => p != null && p.Team == CoreETeam.Blue) ?? 0;
 
             // 自分のチームに最低1人はいることを保証
             if (localTeam == ETeam.Red && redAliveCount == 0) redAliveCount = 1;
@@ -119,8 +120,8 @@ namespace OpenGS
                     string.Equals(info.Id, localPlayerId, StringComparison.OrdinalIgnoreCase))
                     continue;
 
-                var team = Enum.TryParse<ETeam>(info.Team.ToString(), out var parsedTeam) && parsedTeam != ETeam.NoTeam
-                    ? parsedTeam
+                var team = Enum.TryParse<CoreETeam>(info.Team.ToString(), out var parsedTeam) && parsedTeam != CoreETeam.NoTeam
+                    ? ToLocalTeam(parsedTeam)
                     : ETeam.Blue;
 
                 var spawnSource = team == ETeam.Red ? redTeamRespawnPoints : blueTeamRespawnPoint;
@@ -352,8 +353,10 @@ namespace OpenGS
             var killerTeamStr = json["KillerTeam"]?.ToString() ?? "Red";
             var victimTeamStr = json["VictimTeam"]?.ToString() ?? "Blue";
 
-            Enum.TryParse<ETeam>(killerTeamStr, out var killerTeam);
-            Enum.TryParse<ETeam>(victimTeamStr, out var victimTeam);
+            Enum.TryParse<CoreETeam>(killerTeamStr, out var killerTeamCore);
+            Enum.TryParse<CoreETeam>(victimTeamStr, out var victimTeamCore);
+            var killerTeam = ToLocalTeam(killerTeamCore);
+            var victimTeam = ToLocalTeam(victimTeamCore);
 
             // 生存数管理
             if (victimTeam == ETeam.Red)
@@ -452,14 +455,24 @@ namespace OpenGS
                     continue;
 
                 if (string.Equals(player.Id, localId, StringComparison.OrdinalIgnoreCase) &&
-                    Enum.TryParse<ETeam>(player.Team.ToString(), out var parsedTeam) &&
-                    parsedTeam != ETeam.NoTeam)
+                    Enum.TryParse<CoreETeam>(player.Team.ToString(), out var parsedTeam) &&
+                    parsedTeam != CoreETeam.NoTeam)
                 {
-                    return parsedTeam;
+                    return ToLocalTeam(parsedTeam);
                 }
             }
 
             return ETeam.Blue;
+        }
+
+        private static ETeam ToLocalTeam(CoreETeam team)
+        {
+            return team switch
+            {
+                CoreETeam.Red => ETeam.Red,
+                CoreETeam.Blue => ETeam.Blue,
+                _ => ETeam.NoTeam
+            };
         }
     }
 }

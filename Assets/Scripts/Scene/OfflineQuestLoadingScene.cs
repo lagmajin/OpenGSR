@@ -34,7 +34,7 @@ namespace OpenGS
         private IEnumerator LoadingCoroutine()
         {
             yield return new WaitForSecondsRealtime(1);
-            var sceneName = senes != null ? senes.MissionScene() : "Mission1";
+            var sceneName = "Mission1";
             var async = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
             async.allowSceneActivation = false;
             yield return new WaitForSecondsRealtime(1);
