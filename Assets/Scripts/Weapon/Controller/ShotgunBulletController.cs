@@ -37,7 +37,8 @@ namespace OpenGS
                         eDamageType.Bullet,
                         ownerPlayerId,
                         weaponName,
-                        Team))
+                        Team,
+                        true))
                 {
                     Destroy(gameObject);
                     return;

@@ -41,6 +41,7 @@ namespace OpenGS
         [SerializeField] [BoxGroup("Status")] private float lavaDamageInterval = 1.2f;
         [SerializeField] [BoxGroup("Status")] private float lavaDamageCounter = 0.0f;
         [SerializeField] [BoxGroup("Status")] private float warpCounter = 0.0f;
+        [SerializeField] [BoxGroup("Status")] private float fallDeathY = -80f;
 
         [SerializeField] [BoxGroup("Health")] protected float damageInvincibleTime = 0.2f;
 
@@ -425,6 +426,29 @@ namespace OpenGS
             }
 
             AddDamage(Vector2.zero, v, eDamageType.Lava);
+        }
+
+        protected bool CheckFallDeath()
+        {
+            if (isDead)
+            {
+                return false;
+            }
+
+            if (transform.position.y >= fallDeathY)
+            {
+                return false;
+            }
+
+            isDead = true;
+            if (Status != null)
+            {
+                Status.Hp = 0f;
+            }
+            Status?.AddDeath();
+            GameEventBroker.Publish(new PlayerDeadEvent(EDeadReason.Suicide, gameObject.name, UniqueID().ToString(), Team()));
+            OnDead();
+            return true;
         }
 
         // ─── IPowerupable ────────────────────────────────────────────

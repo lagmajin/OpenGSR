@@ -47,7 +47,7 @@ namespace OpenGS
 
         protected virtual void Update()
         {
-            if (isDead || inputService == null) return;
+            if (CheckFallDeath() || isDead || inputService == null) return;
 
             UpdateFacing();
             HandleActions();
@@ -61,7 +61,7 @@ namespace OpenGS
 
         protected virtual void FixedUpdate()
         {
-            if (isDead || inputService == null) return;
+            if (CheckFallDeath() || isDead || inputService == null) return;
 
             HandleMovement();
             HandleBooster();
@@ -125,7 +125,7 @@ namespace OpenGS
 
         protected virtual void LateUpdate()
         {
-            if (isDead)
+            if (CheckFallDeath() || isDead)
             {
                 wasGrounded = IsGround();
                 return;

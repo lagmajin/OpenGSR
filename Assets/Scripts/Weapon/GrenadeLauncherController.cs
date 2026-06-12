@@ -32,19 +32,25 @@ namespace OpenGS
                 return;
             }
 
+            var grenadeBullet = grenadeObj.GetComponent<GrenadeLauncherBulletController>();
+            if (grenadeBullet != null)
+            {
+                grenadeBullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam, owner != null ? owner.transform : null);
+                grenadeBullet.EnableGravity();
+                return;
+            }
+
             var bullet = grenadeObj.GetComponent<BulletController>();
             if (bullet != null)
             {
                 bullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam);
                 bullet.EnableGravity();
-                return;
-            }
 
-            var grenadeBullet = grenadeObj.GetComponent<GrenadeLauncherBulletController>();
-            if (grenadeBullet != null)
-            {
-                grenadeBullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam);
-                grenadeBullet.EnableGravity();
+                var impactBullet = grenadeObj.AddComponent<GrenadeLauncherBulletController>();
+                impactBullet.Team = ownerTeam;
+                impactBullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam, owner != null ? owner.transform : null);
+                impactBullet.EnableGravity();
+                bullet.enabled = false;
             }
         }
     }

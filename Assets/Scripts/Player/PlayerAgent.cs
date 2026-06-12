@@ -77,6 +77,7 @@ namespace OpenGS
         [SerializeField] private float collisionSkinWidth = 0.02f;
         [SerializeField] private float maxFallSpeed = 12f;
         [SerializeField] private float maxBoostRiseSpeed = 10f;
+        [SerializeField] private float fallDeathY = -80f;
 
         private float currentHorizontalVelocity;
         private Vector2 scriptedPosition;
@@ -99,6 +100,7 @@ namespace OpenGS
         private int invisibleBuffVersion;
         private int normalGrenadeCount = 3;
         private bool invisibleBuffActive = false;
+        private bool deathTriggered = false;
 
         public int NormalGrenadeCount => normalGrenadeCount;
 
@@ -211,6 +213,11 @@ namespace OpenGS
 
         void Update()
         {
+            if (CheckFallDeath())
+            {
+                return;
+            }
+
             GetInput();
             CheckJumping();
             CheckFlip();
@@ -287,6 +294,11 @@ namespace OpenGS
 
         public void FixedUpdate()
         {
+            if (CheckFallDeath())
+            {
+                return;
+            }
+
             CheckGround();
             coyoteTimeLeft = Mathf.Max(0f, coyoteTimeLeft - Time.fixedDeltaTime);
             jumpBufferLeft = Mathf.Max(0f, jumpBufferLeft - Time.fixedDeltaTime);
@@ -765,13 +777,23 @@ namespace OpenGS
         [Button("死亡")]
         private void Die(EDeadReason reason=EDeadReason.Unknown)
         {
-            if(playerMasterData)
+            if (deathTriggered)
             {
-                if (playerMasterData == null || playerMasterData.damageVoices == null || playerMasterData.damageVoices.Length == 0) { Destroy(this.gameObject); return; }
-                var sound=playerMasterData.damageVoices[0];
+                return;
+            }
 
-                audioSource?.PlayOneShot(sound);
+            deathTriggered = true;
 
+            if (TryGetDeathVoiceClip(out var sound))
+            {
+                if (audioSource != null)
+                {
+                    audioSource.PlayOneShot(sound);
+                }
+                else
+                {
+                    SoundManager.Instance.PlayOneShotSafe(sound, context: nameof(PlayerAgent));
+                }
             }
 
             DropWeapon();
@@ -783,6 +805,20 @@ namespace OpenGS
 
 
             Destroy(this.gameObject);
+        }
+
+        private bool TryGetDeathVoiceClip(out AudioClip clip)
+        {
+            clip = null;
+
+            if (playerMasterData == null || playerMasterData.damageVoices == null || playerMasterData.damageVoices.Length == 0)
+            {
+                return false;
+            }
+
+            var index = UnityEngine.Random.Range(0, playerMasterData.damageVoices.Length);
+            clip = playerMasterData.damageVoices[index];
+            return clip != null;
         }
 
         /// <summary>
@@ -810,6 +846,17 @@ namespace OpenGS
             {
                 Debug.LogWarning($"[Network] Failed to send death notification: {ex.Message}");
             }
+        }
+
+        private bool CheckFallDeath()
+        {
+            if (deathTriggered || transform.position.y >= fallDeathY)
+            {
+                return false;
+            }
+
+            Die(EDeadReason.Suicide);
+            return true;
         }
 
         public void TakeDamage()

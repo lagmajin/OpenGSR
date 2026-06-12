@@ -84,7 +84,8 @@ namespace OpenGS
                 damageType,
                 ownerPlayerId,
                 weaponName,
-                false);
+                false,
+                knockback);
             return true;
         }
     }

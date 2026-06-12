@@ -22,6 +22,7 @@ namespace OpenGS
 
         [SerializeField] private GameObject explosion;
         private IEffectService effectService;
+        private Transform ownerTransform;
         private readonly ProjectileBallistics2D ballistics = new ProjectileBallistics2D();
 
         [Inject]
@@ -32,11 +33,17 @@ namespace OpenGS
 
         public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerPlayerId, string weaponName, ETeam team)
         {
+            Init(direction, initSpeed, initDamage, ownerPlayerId, weaponName, team, null);
+        }
+
+        public void Init(Vector2 direction, float initSpeed, float initDamage, string ownerPlayerId, string weaponName, ETeam team, Transform owner)
+        {
             speed = initSpeed;
             damage = Mathf.RoundToInt(initDamage);
             OwnerPlayerId = ownerPlayerId ?? string.Empty;
             WeaponName = string.IsNullOrWhiteSpace(weaponName) ? "Unknown" : weaponName;
             Team = team;
+            ownerTransform = owner;
             ballistics.Configure(direction, speed, enableGravity, gravityStrength, alignToVelocity, spriteAngleOffset);
             transform.rotation = ballistics.GetRotation();
         }
@@ -68,19 +75,44 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.gameObject.TryGetComponent<IMultipleTags>(out var tags))
+            TryExplode(collision != null ? collision.gameObject : null);
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            TryExplode(collision != null ? collision.gameObject : null);
+        }
+
+        private void TryExplode(GameObject target)
+        {
+            if (target == null || ShouldIgnoreTarget(target))
+            {
+                return;
+            }
+
+            var tags = target.GetComponentInParent<IMultipleTags>();
+            if (tags != null)
             {
                 if (tags.HasPlayerTag() || tags.HasStageObjectTag())
                 {
                     Explosion();
                 }
-
             }
         }
 
         private void ApplyExplosionDamage()
         {
             GrenadeExplosionDamageUtility.ApplyCircularDamage((Vector2)transform.position, OwnerPlayerId, WeaponName, Team, damage / 100f);
+        }
+
+        private bool ShouldIgnoreTarget(GameObject target)
+        {
+            if (target == null || ownerTransform == null)
+            {
+                return false;
+            }
+
+            return target.transform == ownerTransform || target.transform.IsChildOf(ownerTransform);
         }
 
         public void EnableGravity()

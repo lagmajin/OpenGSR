@@ -113,10 +113,10 @@ namespace OpenGS
         /// </summary>
         public bool ApplyDamage(Guid id, Vector2 source, float damage, eDamageType type)
         {
-            return ApplyDamage(id, source, damage, type, string.Empty, "Unknown", false);
+            return ApplyDamage(id, source, damage, type, string.Empty, "Unknown", false, false);
         }
 
-        public bool ApplyDamage(Guid id, Vector2 source, float damage, eDamageType type, string attackerId, string weaponType, bool headshot)
+        public bool ApplyDamage(Guid id, Vector2 source, float damage, eDamageType type, string attackerId, string weaponType, bool headshot, bool knockback = false)
         {
             if (!TryGetPlayer(id, out var p) || p == null) return false;
 
@@ -158,6 +158,11 @@ namespace OpenGS
                 }
             }
 
+            if (knockback && (!Mathf.Approximately(prevHp, newHp) || !Mathf.Approximately(prevArmor, newArmor)))
+            {
+                ApplyKnockback(p, source, damage);
+            }
+
             if (!wasDead && p.IsDead())
             {
                 if (p.Status != null) p.Status.DeathCount++;
@@ -180,6 +185,23 @@ namespace OpenGS
             }
 
             return true;
+        }
+
+        private void ApplyKnockback(AbstractPlayer player, Vector2 source, float damage)
+        {
+            if (player == null)
+            {
+                return;
+            }
+
+            var impactDirection = source;
+            if (impactDirection.sqrMagnitude <= Mathf.Epsilon)
+            {
+                return;
+            }
+
+            var force = Mathf.Clamp(damage * 0.01f, 0.2f, 0.6f);
+            player.AddDamageAndForce(Mathf.Max(1f, damage), impactDirection, force);
         }
 
         private float GetPlayerHpSafe(AbstractPlayer p)
@@ -301,7 +323,7 @@ namespace OpenGS
         {
             var female = IsFemaleCharacter(player);
             var offset = UnityEngine.Random.Range(0, 4);
-            return female
+                return female
                 ? (EPlayerSound)((int)EPlayerSound.DeathFemale1 + offset)
                 : (EPlayerSound)((int)EPlayerSound.DeathMale1 + offset);
         }

@@ -39,6 +39,11 @@ namespace OpenGS
 
         private void Update()
         {
+            if (CheckFallDeath())
+            {
+                return;
+            }
+
             switch (mode)
             {
                 case eAIBattleMode.Patrol:

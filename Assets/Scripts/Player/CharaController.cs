@@ -79,7 +79,7 @@ namespace OpenGS
 
         public void Update()
         {
-            if (isDead) return;
+            if (CheckFallDeath() || isDead) return;
 
             var screenPos = Camera.main.WorldToScreenPoint(transform.position);
             var direc = Input.mousePosition - screenPos;
@@ -105,6 +105,11 @@ namespace OpenGS
 
         private void FixedUpdate()
         {
+            if (CheckFallDeath())
+            {
+                return;
+            }
+
             if (onDamage && !isBlink)
             {
                 StartBlink();
