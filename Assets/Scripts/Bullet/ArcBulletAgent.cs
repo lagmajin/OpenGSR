@@ -1,39 +1,25 @@
 using UnityEngine;
-
+using OpenGSCore;
 
 namespace OpenGS
 {
-
-
+    [DisallowMultipleComponent]
     public class ArcBulletAgent : AbstractBulletAgent
     {
         private Vector2 velocity;
         private float gravity = -9.8f;
         private float damage;
-        public override void Launch(Vector2 direction, float speed, float damage=0)
-        {
 
-            this.velocity = direction.normalized * speed;
+        public override void Launch(Vector2 direction, float speed, float damage = 0)
+        {
+            velocity = direction.normalized * speed;
             this.damage = damage;
-
+            Damage = damage;
         }
 
-        // Start is called once before the first execution of Update after the MonoBehaviour is created
-        void Start()
+        private void Update()
         {
-
-        }
-
-        // Update is called once per frame
-
-        void Update()
-        {
-
-
-            // d—Í“K—p
             velocity.y += gravity * Time.deltaTime;
-
-            // ˆÚ“®
             transform.position += (Vector3)(velocity * Time.deltaTime);
 
             if (velocity != Vector2.zero)
@@ -43,13 +29,31 @@ namespace OpenGS
             }
         }
 
-        void OnColision()
+        private void OnTriggerEnter2D(Collider2D collision)
         {
+            if (collision == null)
+            {
+                return;
+            }
 
-
+            if (TryApplyHit(collision, collision.ClosestPoint(transform.position), eDamageType.Bullet, true))
+            {
+                Destroy(gameObject);
+            }
         }
 
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision == null || collision.collider == null)
+            {
+                return;
+            }
+
+            var contactPoint = collision.contactCount > 0 ? collision.GetContact(0).point : (Vector2)transform.position;
+            if (TryApplyHit(collision.collider, contactPoint, eDamageType.Bullet, true))
+            {
+                Destroy(gameObject);
+            }
+        }
     }
-
-
 }

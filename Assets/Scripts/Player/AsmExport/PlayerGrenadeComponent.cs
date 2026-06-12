@@ -141,7 +141,7 @@ namespace OpenGS
             var facingDir = transform.localScale.x < 0f ? Vector2.left : Vector2.right;
             var throwDir = (facingDir + Vector2.up * 0.5f).normalized;
             var throwSpeed = baseThrowForce * powerMultiplier;
-            if (TrySendServerGrenadeThrow(throwDir))
+            if (TrySendServerGrenadeThrow(throwDir, powerMultiplier))
             {
                 Debug.Log($"[PlayerGrenadeComponent] Server-authoritative grenade throw sent: {grenadeData.Name}");
                 return;
@@ -179,7 +179,7 @@ namespace OpenGS
             // GameEventBroker.Publish(evt);
         }
 
-        private bool TrySendServerGrenadeThrow(Vector2 direction)
+        private bool TrySendServerGrenadeThrow(Vector2 direction, float powerMultiplier)
         {
             try
             {
@@ -197,7 +197,8 @@ namespace OpenGS
                     playerId,
                     position,
                     direction,
-                    grenadeType.ToString()));
+                    grenadeType.ToString(),
+                    powerMultiplier));
                 return true;
             }
             catch (Exception ex)

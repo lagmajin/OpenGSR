@@ -1,4 +1,4 @@
-﻿
+
 
 
 
@@ -59,7 +59,12 @@ namespace OpenGS
             Vector2 finalDir = spreadRotation * Vector2.right;
 
             var script = bullet.GetComponent<AbstractBulletAgent>();
-            script.Launch(finalDir,200);
+            var owner = GetOwnerPlayer();
+            if (script != null)
+            {
+                script.SetOwnerInfo(GetPlayerID(owner), Name, owner != null ? owner.Team() : ETeam.NoTeam);
+            }
+            script?.Launch(finalDir,200);
 
             CreateMuzzulleFlash();
 

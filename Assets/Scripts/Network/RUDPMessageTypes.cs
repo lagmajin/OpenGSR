@@ -809,7 +809,7 @@ namespace OpenGS
         /// <summary>
         /// グレネード投擲メッセージを作成
         /// </summary>
-        public static JObject CreateGrenadeThrow(string playerId, Vector2 position, Vector2 direction, string grenadeType)
+        public static JObject CreateGrenadeThrow(string playerId, Vector2 position, Vector2 direction, string grenadeType, float power = 1f)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.GrenadeThrow;
@@ -819,6 +819,7 @@ namespace OpenGS
             json["DirX"] = direction.x;
             json["DirY"] = direction.y;
             json["GrenadeType"] = grenadeType;
+            json["Power"] = power;
             return json;
         }
 

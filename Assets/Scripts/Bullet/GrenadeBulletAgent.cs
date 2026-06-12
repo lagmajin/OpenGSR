@@ -26,6 +26,7 @@ namespace OpenGS
             Speed = speed;
             velocity = direction.normalized * speed;
             this.damage = damage;
+            Damage = damage;
         }
 
         private void Start()
@@ -48,11 +49,18 @@ namespace OpenGS
 
         private void OnColision()
         {
-            Vector2 direction = transform.up;
+            Vector2 direction = transform.right;
             var hit = Physics2D.Raycast(transform.position, direction, Speed * Time.deltaTime, layerMask);
 
             if (hit.collider != null)
             {
+                if (TryApplyHit(hit.collider, hit.point, eDamageType.Explosion, false))
+                {
+                    Explosion();
+                    Destroy(gameObject);
+                    return;
+                }
+
                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Platforms"))
                 {
                     PlaySound(ESoundEffect.HitStageObject);
@@ -60,6 +68,35 @@ namespace OpenGS
                     Explosion();
                 }
 
+                Destroy(gameObject);
+            }
+        }
+
+        private void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision == null)
+            {
+                return;
+            }
+
+            if (TryApplyHit(collision, collision.ClosestPoint(transform.position), eDamageType.Explosion, false))
+            {
+                Explosion();
+                Destroy(gameObject);
+            }
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision == null || collision.collider == null)
+            {
+                return;
+            }
+
+            var contactPoint = collision.contactCount > 0 ? collision.GetContact(0).point : (Vector2)transform.position;
+            if (TryApplyHit(collision.collider, contactPoint, eDamageType.Explosion, false))
+            {
+                Explosion();
                 Destroy(gameObject);
             }
         }

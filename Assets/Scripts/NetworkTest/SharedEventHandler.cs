@@ -509,12 +509,14 @@ namespace OpenGS.Network
             var dirX = json["DirX"]?.ToObject<float>() ?? 1f;
             var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
             var grenadeType = json["GrenadeType"]?.ToString() ?? "Normal";
+            var power = json["Power"]?.ToObject<float>() ?? 1f;
 
             sender(RUDPMessageBuilder.CreateGrenadeThrow(
                 playerId,
                 new Vector2(posX, posY),
                 new Vector2(dirX, dirY),
-                grenadeType));
+                grenadeType,
+                power));
 
             sender(RUDPMessageBuilder.CreateObjectSpawned(
                 $"{playerId}_grenade_{DateTime.UtcNow.Ticks}",

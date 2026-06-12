@@ -10,6 +10,8 @@ namespace OpenGS
     public class NetworkCombatReplay : MonoBehaviour
     {
         [SerializeField] private GameObject shotFlashPrefab;
+        [SerializeField] private float remotePredictedBulletLifetime = 2.0f;
+        [SerializeField] private Color remotePredictedBulletColor = new Color(1f, 0.86f, 0.25f, 0.9f);
         [SerializeField] private GameObject grenadeThrowFlashPrefab;
         [SerializeField] private float shotFlashLifetime = 0.12f;
         [SerializeField] private float grenadeFlashLifetime = 0.18f;
@@ -18,6 +20,42 @@ namespace OpenGS
 
         private readonly CompositeDisposable disposables = new CompositeDisposable();
         private readonly Dictionary<string, GameObject> spawnedObjects = new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, ShotPrediction> recentShots = new Dictionary<string, ShotPrediction>();
+        private readonly Dictionary<string, GrenadePrediction> recentGrenades = new Dictionary<string, GrenadePrediction>();
+
+        private readonly struct ShotPrediction
+        {
+            public ShotPrediction(Vector2 position, Vector2 direction, string weaponType, float timestamp)
+            {
+                Position = position;
+                Direction = direction;
+                WeaponType = weaponType;
+                Timestamp = timestamp;
+            }
+
+            public Vector2 Position { get; }
+            public Vector2 Direction { get; }
+            public string WeaponType { get; }
+            public float Timestamp { get; }
+        }
+
+        private readonly struct GrenadePrediction
+        {
+            public GrenadePrediction(Vector2 position, Vector2 direction, EGrenadeType grenadeType, float power, float timestamp)
+            {
+                Position = position;
+                Direction = direction;
+                GrenadeType = grenadeType;
+                Power = power;
+                Timestamp = timestamp;
+            }
+
+            public Vector2 Position { get; }
+            public Vector2 Direction { get; }
+            public EGrenadeType GrenadeType { get; }
+            public float Power { get; }
+            public float Timestamp { get; }
+        }
 
         private void Start()
         {
@@ -39,6 +77,9 @@ namespace OpenGS
                 return;
             }
 
+            recentShots[e.PlayerID()] = new ShotPrediction(e.Position(), e.Direction(), e.WeaponType(), Time.time);
+            CleanupExpiredShotCache();
+
             var position = new Vector3(e.Position().x, e.Position().y, 0f);
             var rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(e.Direction().y, e.Direction().x) * Mathf.Rad2Deg);
 
@@ -54,10 +95,18 @@ namespace OpenGS
 
         private void HandleGrenadeThrow(GrenadeThrowEvent e)
         {
-            if (e == null || IsLocalPlayer(e.PlayerID()))
+            if (e == null)
             {
                 return;
             }
+
+            recentGrenades[e.PlayerID()] = new GrenadePrediction(
+                e.Position(),
+                e.Direction(),
+                ResolveGrenadeTypeFromEvent(e.GrenadeType()),
+                Mathf.Max(0f, e.Power()),
+                Time.time);
+            CleanupExpiredGrenadeCache();
 
             var position = new Vector3(e.Position().x, e.Position().y, 0f);
             var rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(e.Direction().y, e.Direction().x) * Mathf.Rad2Deg);
@@ -75,6 +124,19 @@ namespace OpenGS
         private void HandleObjectSpawned(ObjectSpawnedEvent e)
         {
             if (e == null)
+            {
+                return;
+            }
+
+            if (string.Equals(e.ObjectType(), "Bullet", StringComparison.OrdinalIgnoreCase))
+            {
+                if (TrySpawnPredictedBullet(e))
+                {
+                    return;
+                }
+            }
+
+            if (IsGrenadeObjectType(e.ObjectType()) && TrySpawnPredictedGrenade(e))
             {
                 return;
             }
@@ -110,6 +172,11 @@ namespace OpenGS
 
             if (spawnedObjects.TryGetValue(e.ObjectID(), out var go) && go != null)
             {
+                if (go.TryGetComponent<RemoteGrenadeVisual>(out var grenadeVisual))
+                {
+                    grenadeVisual.ForceExplosion(e.Position());
+                }
+
                 Destroy(go);
                 LogReplayEvent("Removed", e.DestroyedBy(), e.ObjectID());
             }
@@ -137,6 +204,320 @@ namespace OpenGS
             sr.color = color;
             go.transform.localScale = Vector3.one * 0.08f;
             Destroy(go, lifetime);
+        }
+
+        private bool TrySpawnPredictedBullet(ObjectSpawnedEvent e)
+        {
+            if (e == null)
+            {
+                return false;
+            }
+
+            var ownerId = ExtractOwnerId(e.ObjectID());
+            if (IsLocalPlayer(ownerId))
+            {
+                return true;
+            }
+
+            var position = e.Position();
+            var direction = Quaternion.Euler(0f, 0f, e.Rotation()) * Vector2.right;
+            var weaponType = ResolveWeaponTypeFromCache(ownerId);
+            var speed = ResolvePredictedBulletSpeed(weaponType);
+            var lifetime = remotePredictedBulletLifetime;
+
+            if (recentShots.TryGetValue(ownerId, out var shot))
+            {
+                if (Time.time - shot.Timestamp <= 1.25f)
+                {
+                    position = shot.Position;
+                    direction = shot.Direction.sqrMagnitude > Mathf.Epsilon ? shot.Direction.normalized : direction;
+                }
+            }
+
+            SpawnPredictedBullet(position, direction, speed, lifetime);
+            return true;
+        }
+
+        private void SpawnPredictedBullet(Vector2 position, Vector2 direction, float speed, float lifetime)
+        {
+            var bullet = new GameObject("RemotePredictedBullet");
+            bullet.transform.position = position;
+
+            var spriteRenderer = bullet.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Bullet/Circle");
+            if (spriteRenderer.sprite == null)
+            {
+                Destroy(bullet);
+                return;
+            }
+
+            spriteRenderer.color = remotePredictedBulletColor;
+            bullet.transform.localScale = Vector3.one * 0.07f;
+
+            var mover = bullet.AddComponent<RemoteShotVisual>();
+            mover.Initialize(direction, speed, lifetime);
+        }
+
+        private bool TrySpawnPredictedGrenade(ObjectSpawnedEvent e)
+        {
+            if (e == null)
+            {
+                return false;
+            }
+
+            var grenadeType = ResolveGrenadeTypeFromObjectType(e.ObjectType());
+            if (grenadeType == EGrenadeType.Empty)
+            {
+                return false;
+            }
+
+            var ownerId = ExtractOwnerId(e.ObjectID());
+            var position = e.Position();
+            var direction = Quaternion.Euler(0f, 0f, e.Rotation()) * Vector2.right;
+            var power = 1f;
+
+            if (recentGrenades.TryGetValue(ownerId, out var grenade))
+            {
+                if (Time.time - grenade.Timestamp <= 3f)
+                {
+                    position = grenade.Position;
+
+                    if (grenade.Direction.sqrMagnitude > Mathf.Epsilon)
+                    {
+                        direction = grenade.Direction.normalized;
+                    }
+
+                    if (grenade.GrenadeType != EGrenadeType.Empty)
+                    {
+                        grenadeType = grenade.GrenadeType;
+                    }
+
+                    power = grenade.Power;
+                }
+            }
+
+            var speed = ResolvePredictedGrenadeSpeed(power);
+            var gravity = ResolvePredictedGrenadeGravity(grenadeType);
+            var lifetime = ResolveLifetime(e.ObjectType());
+
+            SpawnPredictedGrenade(e.ObjectID(), position, direction, grenadeType, speed, gravity, lifetime);
+            return true;
+        }
+
+        private void SpawnPredictedGrenade(
+            string objectId,
+            Vector2 position,
+            Vector2 direction,
+            EGrenadeType grenadeType,
+            float speed,
+            float gravity,
+            float lifetime)
+        {
+            if (spawnedObjects.TryGetValue(objectId, out var existing) && existing != null)
+            {
+                Destroy(existing);
+                spawnedObjects.Remove(objectId);
+            }
+
+            var grenade = new GameObject("RemotePredictedGrenade");
+            grenade.transform.position = position;
+
+            var spriteRenderer = grenade.AddComponent<SpriteRenderer>();
+            spriteRenderer.sprite = ResolveGrenadeSprite(grenadeType) ?? Resources.Load<Sprite>("Sprites/Bullet/Circle");
+            if (spriteRenderer.sprite == null)
+            {
+                Destroy(grenade);
+                return;
+            }
+
+            grenade.transform.localScale = Vector3.one * 0.09f;
+
+            var mover = grenade.AddComponent<RemoteGrenadeVisual>();
+            mover.Initialize(direction, speed, gravity, lifetime, grenadeType, () => spawnedObjects.Remove(objectId));
+
+            spawnedObjects[objectId] = grenade;
+            LogReplayEvent("Spawned", grenadeType.ToString(), objectId, position);
+            Destroy(grenade, lifetime + 0.5f);
+        }
+
+        private void CleanupExpiredShotCache()
+        {
+            if (recentShots.Count == 0)
+            {
+                return;
+            }
+
+            var now = Time.time;
+            var staleKeys = new List<string>();
+            foreach (var kv in recentShots)
+            {
+                if (now - kv.Value.Timestamp > 1.5f)
+                {
+                    staleKeys.Add(kv.Key);
+                }
+            }
+
+            foreach (var key in staleKeys)
+            {
+                recentShots.Remove(key);
+            }
+        }
+
+        private void CleanupExpiredGrenadeCache()
+        {
+            if (recentGrenades.Count == 0)
+            {
+                return;
+            }
+
+            var now = Time.time;
+            var staleKeys = new List<string>();
+            foreach (var kv in recentGrenades)
+            {
+                if (now - kv.Value.Timestamp > 4f)
+                {
+                    staleKeys.Add(kv.Key);
+                }
+            }
+
+            foreach (var key in staleKeys)
+            {
+                recentGrenades.Remove(key);
+            }
+        }
+
+        private static string ExtractOwnerId(string objectId)
+        {
+            if (string.IsNullOrWhiteSpace(objectId))
+            {
+                return string.Empty;
+            }
+
+            const string bulletMarker = "_bullet_";
+            var index = objectId.IndexOf(bulletMarker, StringComparison.OrdinalIgnoreCase);
+            if (index > 0)
+            {
+                return objectId.Substring(0, index);
+            }
+
+            const string grenadeMarker = "_grenade_";
+            index = objectId.IndexOf(grenadeMarker, StringComparison.OrdinalIgnoreCase);
+            if (index > 0)
+            {
+                return objectId.Substring(0, index);
+            }
+
+            var underscore = objectId.IndexOf('_');
+            return underscore > 0 ? objectId.Substring(0, underscore) : objectId;
+        }
+
+        private string ResolveWeaponTypeFromCache(string ownerId)
+        {
+            if (string.IsNullOrWhiteSpace(ownerId))
+            {
+                return "Unknown";
+            }
+
+            return recentShots.TryGetValue(ownerId, out var shot) ? shot.WeaponType : "Unknown";
+        }
+
+        private static EGrenadeType ResolveGrenadeTypeFromEvent(string grenadeType)
+        {
+            if (string.IsNullOrWhiteSpace(grenadeType))
+            {
+                return EGrenadeType.Normal;
+            }
+
+            return grenadeType.ToLowerInvariant() switch
+            {
+                "powergrenade" => EGrenadeType.Power,
+                "power" => EGrenadeType.Power,
+                "magneticgrenade" => EGrenadeType.Magnetic,
+                "magnetic" => EGrenadeType.Magnetic,
+                "minegrenade" => EGrenadeType.Mine,
+                "mine" => EGrenadeType.Mine,
+                "clustergrenade" => EGrenadeType.Cluster,
+                "cluster" => EGrenadeType.Cluster,
+                "childclustergrenade" => EGrenadeType.ClusterChild,
+                "clusterchild" => EGrenadeType.ClusterChild,
+                "firegrenade" => EGrenadeType.Fire,
+                "fire" => EGrenadeType.Fire,
+                "smokegrenade" => EGrenadeType.Smoke,
+                "smoke" => EGrenadeType.Smoke,
+                _ => EGrenadeType.Normal
+            };
+        }
+
+        private static EGrenadeType ResolveGrenadeTypeFromObjectType(string objectType)
+        {
+            if (string.IsNullOrWhiteSpace(objectType))
+            {
+                return EGrenadeType.Empty;
+            }
+
+            return objectType.ToLowerInvariant() switch
+            {
+                "normalgrenade" => EGrenadeType.Normal,
+                "powergrenade" => EGrenadeType.Power,
+                "magneticgrenade" => EGrenadeType.Magnetic,
+                "minegrenade" => EGrenadeType.Mine,
+                "clustergrenade" => EGrenadeType.Cluster,
+                "childclustergrenade" => EGrenadeType.ClusterChild,
+                "firegrenade" => EGrenadeType.Fire,
+                "smokegrenade" => EGrenadeType.Smoke,
+                _ => EGrenadeType.Empty
+            };
+        }
+
+        private static bool IsGrenadeObjectType(string objectType)
+        {
+            return ResolveGrenadeTypeFromObjectType(objectType) != EGrenadeType.Empty;
+        }
+
+        private static Sprite ResolveGrenadeSprite(EGrenadeType grenadeType)
+        {
+            return GrenadeVisualResolver.GetHudSprite(grenadeType);
+        }
+
+        private static float ResolvePredictedGrenadeSpeed(float power)
+        {
+            return Mathf.Max(0f, 20f * Mathf.Clamp(power, 0.1f, 1f));
+        }
+
+        private static float ResolvePredictedGrenadeGravity(EGrenadeType grenadeType)
+        {
+            return grenadeType == EGrenadeType.Smoke ? 18f : 18f;
+        }
+
+        private static float ResolvePredictedBulletSpeed(string weaponType)
+        {
+            if (string.IsNullOrWhiteSpace(weaponType))
+            {
+                return 100f;
+            }
+
+            var normalized = weaponType.ToLowerInvariant();
+            if (normalized.Contains("sniper") || normalized.Contains("awp") || normalized.Contains("dragunov") || normalized.Contains("psg"))
+            {
+                return 180f;
+            }
+
+            if (normalized.Contains("smg") || normalized.Contains("uzi") || normalized.Contains("mp5") || normalized.Contains("scorpion") || normalized.Contains("p90"))
+            {
+                return 130f;
+            }
+
+            if (normalized.Contains("shotgun") || normalized.Contains("spas") || normalized.Contains("benelli") || normalized.Contains("m3") || normalized.Contains("usas"))
+            {
+                return 110f;
+            }
+
+            if (normalized.Contains("launcher") || normalized.Contains("m79") || normalized.Contains("hk69") || normalized.Contains("gm94"))
+            {
+                return 90f;
+            }
+
+            return 100f;
         }
 
         private static GameObject ResolveSpawnPrefab(string objectType)

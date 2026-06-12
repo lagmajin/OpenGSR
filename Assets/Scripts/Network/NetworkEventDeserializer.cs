@@ -262,7 +262,8 @@ namespace OpenGS
                 S(json, "PlayerId"),
                 new Vector2(F(json, "PosX"), F(json, "PosY")),
                 new Vector2(F(json, "DirX"), F(json, "DirY")),
-                S(json, "GrenadeType")
+                S(json, "GrenadeType"),
+                F(json, "Power", 1f)
             );
         }
 

@@ -258,6 +258,7 @@ namespace OpenGS
             var dirX = json["DirX"]?.ToObject<float>() ?? 1f;
             var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
             var grenadeType = json["GrenadeType"]?.ToString() ?? "Normal";
+            var power = json["Power"]?.ToObject<float>() ?? 1f;
 
             PrettyLogger.Bold("RUDP Server", $"GrenadeThrow from {playerId}: {grenadeType}");
 
@@ -265,7 +266,8 @@ namespace OpenGS
                 playerId,
                 new Vector2(posX, posY),
                 new Vector2(dirX, dirY),
-                grenadeType);
+                grenadeType,
+                power);
             SendJson(broadcastMsg);
 
             SendJson(RUDPMessageBuilder.CreateObjectSpawned(

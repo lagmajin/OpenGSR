@@ -30,6 +30,8 @@ namespace OpenGS
             var bulletAgent = bullet.GetComponent<AbstractBulletAgent>();
             if (bulletAgent != null)
             {
+                var owner = GetOwnerPlayer();
+                bulletAgent.SetOwnerInfo(GetPlayerID(owner), Name, owner != null ? owner.Team() : ETeam.NoTeam);
                 bulletAgent.Launch(dir, bulletSpeed);
             }
         }

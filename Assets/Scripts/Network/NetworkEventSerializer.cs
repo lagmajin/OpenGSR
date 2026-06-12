@@ -516,6 +516,7 @@ namespace OpenGS
             json["DirX"] = e.Direction().x;
             json["DirY"] = e.Direction().y;
             json["GrenadeType"] = e.GrenadeType();
+            json["Power"] = e.Power();
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
         }

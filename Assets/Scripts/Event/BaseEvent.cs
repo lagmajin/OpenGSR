@@ -412,19 +412,22 @@ namespace OpenGS
         private Vector2 position_;
         private Vector2 direction_;
         private string grenadeType_;
+        private float power_ = 1f;
 
-        public GrenadeThrowEvent(string playerId, Vector2 position, Vector2 direction, string grenadeType)
+        public GrenadeThrowEvent(string playerId, Vector2 position, Vector2 direction, string grenadeType, float power = 1f)
         {
             playerID_ = playerId;
             position_ = position;
             direction_ = direction;
             grenadeType_ = grenadeType;
+            power_ = power;
         }
 
         public string PlayerID() => playerID_;
         public Vector2 Position() => position_;
         public Vector2 Direction() => direction_;
         public string GrenadeType() => grenadeType_;
+        public float Power() => power_;
     }
 
     /// <summary>
