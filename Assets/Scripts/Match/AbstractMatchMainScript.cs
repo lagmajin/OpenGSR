@@ -677,6 +677,15 @@ namespace OpenGS
 
             switch (messageType)
             {
+                case RUDPMessageTypes.WeaponReserve:
+                    HandleWeaponReservation(obj, true);
+                    break;
+                case RUDPMessageTypes.WeaponRelease:
+                    HandleWeaponReservation(obj, false);
+                    break;
+                case RUDPMessageTypes.WeaponPickup:
+                    HandleWeaponPickup(obj);
+                    break;
                 case RUDPMessageTypes.ItemUse:
                     HandleItemUse(obj);
                     break;
@@ -697,6 +706,49 @@ namespace OpenGS
             var effect = json["Effect"]?.ToString() ?? "";
 
             Debug.Log($"[{GetType().Name}] ItemUse received: player={playerId}, item={itemId}, type={itemType}, effect={effect}");
+        }
+
+        protected virtual void HandleWeaponReservation(JObject json, bool reserved)
+        {
+            var weaponType = json["WeaponType"]?.ToString() ?? "";
+            var playerId = json["ReservedByPlayerId"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "";
+            var position = new Vector2(
+                json["PosX"]?.ToObject<float>() ?? 0f,
+                json["PosY"]?.ToObject<float>() ?? 0f
+            );
+
+            if (!FieldWeaponController.TryFindMatchingWeapon(weaponType, position, out var controller))
+            {
+                Debug.Log($"[{GetType().Name}] Weapon reservation ignored because no matching weapon was found: type={weaponType}, pos={position}");
+                return;
+            }
+
+            if (reserved)
+            {
+                controller.ApplyNetworkReservation(playerId);
+            }
+            else
+            {
+                controller.ApplyNetworkRelease(playerId);
+            }
+        }
+
+        protected virtual void HandleWeaponPickup(JObject json)
+        {
+            var weaponType = json["WeaponType"]?.ToString() ?? "";
+            var playerId = json["ReservedByPlayerId"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "";
+            var position = new Vector2(
+                json["PosX"]?.ToObject<float>() ?? 0f,
+                json["PosY"]?.ToObject<float>() ?? 0f
+            );
+
+            if (!FieldWeaponController.TryFindMatchingWeapon(weaponType, position, out var controller))
+            {
+                Debug.Log($"[{GetType().Name}] Weapon pickup ignored because no matching weapon was found: type={weaponType}, pos={position}");
+                return;
+            }
+
+            controller.ApplyNetworkPickup(playerId, weaponType, position);
         }
 
         protected virtual void HandlePlayerBuff(JObject json)

@@ -85,6 +85,8 @@ namespace OpenGS
         // 武器関連 - クライアント → サーバー / サーバー → クライアント
         public const string WeaponChange = "WeaponChange";       // 武器切り替え
         public const string WeaponPickup = "WeaponPickup";        // 武器拾得
+        public const string WeaponReserve = "WeaponReserve";      // 武器予約
+        public const string WeaponRelease = "WeaponRelease";      // 武器予約解除
         public const string AmmoUpdate = "AmmoUpdate";            // アモ更新
         public const string GrenadeThrow = "GrenadeThrow";        // グレネード投擲
         public const string PlayerReload = "PlayerReload";       // リロード
@@ -780,7 +782,7 @@ namespace OpenGS
         /// <summary>
         /// 武器拾得メッセージを作成
         /// </summary>
-        public static JObject CreateWeaponPickup(string playerId, string weaponId, string weaponType, Vector2 position)
+        public static JObject CreateWeaponPickup(string playerId, string weaponId, string weaponType, Vector2 position, bool isReserved = false, string reservedByPlayerId = null)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.WeaponPickup;
@@ -789,6 +791,31 @@ namespace OpenGS
             json["WeaponType"] = weaponType;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
+            json["IsReserved"] = isReserved;
+            if (!string.IsNullOrWhiteSpace(reservedByPlayerId))
+            {
+                json["ReservedByPlayerId"] = reservedByPlayerId;
+            }
+            return json;
+        }
+
+        /// <summary>
+        /// 武器予約メッセージを作成
+        /// </summary>
+        public static JObject CreateWeaponReserve(string playerId, string weaponId, string weaponType, Vector2 position)
+        {
+            var json = CreateWeaponPickup(playerId, weaponId, weaponType, position, true, playerId);
+            json["MessageType"] = RUDPMessageTypes.WeaponReserve;
+            return json;
+        }
+
+        /// <summary>
+        /// 武器予約解除メッセージを作成
+        /// </summary>
+        public static JObject CreateWeaponRelease(string playerId, string weaponId, string weaponType, Vector2 position)
+        {
+            var json = CreateWeaponPickup(playerId, weaponId, weaponType, position, false, playerId);
+            json["MessageType"] = RUDPMessageTypes.WeaponRelease;
             return json;
         }
 

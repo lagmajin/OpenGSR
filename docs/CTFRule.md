@@ -22,6 +22,9 @@
 
 - Normal field weapons are dropped world pickups under `Assets/Prefabs/Weapon/World/`.
 - Normal field weapons auto-pick up when touched by an unarmed player.
+- Normal and dropped weapons are claimed by the first player who touches them.
+- If the toucher can equip the weapon, pickup happens immediately.
+- The claim is only a short-lived anti-duplicate guard, not a long lock.
 - Normal weapon drops preserve the current magazine count.
 - When a player swaps between main and secondary weapon slots, that weapon is refilled to full magazine.
 - A dropped normal weapon can be picked up again and will restore its saved magazine count.

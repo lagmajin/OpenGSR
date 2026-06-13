@@ -217,6 +217,11 @@ namespace OpenGS
                 case RUDPMessageTypes.FlagPickup:
                     HandleFlagEvent(json);
                     break;
+                case RUDPMessageTypes.WeaponReserve:
+                case RUDPMessageTypes.WeaponRelease:
+                case RUDPMessageTypes.WeaponPickup:
+                    SendJson(json);
+                    break;
                 default:
                     PrettyLogger.Bold("RUDP Server", $"Unknown message: {messageType}");
                     break;
