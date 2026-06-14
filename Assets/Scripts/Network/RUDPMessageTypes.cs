@@ -57,6 +57,7 @@ namespace OpenGS
         public const string ItemPickup = "ItemPickup";            // アイテムを拾う
         public const string ItemUse = "ItemUse";                  // アイテムを使用
         public const string ItemSpawn = "ItemSpawn";              // アイテムが出現
+        public const string ItemDespawn = "ItemDespawn";          // アイテムが消滅
 
         // ======== システム系通信 ========
 
@@ -497,7 +498,8 @@ namespace OpenGS
         /// <param name="itemId">アイテムID</param>
         /// <param name="itemType">アイテムタイプ（health, ammo, weapon, etc.）</param>
         /// <param name="position">ピックアップ位置</param>
-        public static JObject CreateItemPickup(string playerId, string itemId, string itemType, Vector2 position)
+        /// <param name="spawnPointId">スポーンポイントID</param>
+        public static JObject CreateItemPickup(string playerId, string itemId, string itemType, Vector2 position, int spawnPointId = -1, float value = 0f, float durationSeconds = 0f)
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.ItemPickup;
@@ -506,6 +508,9 @@ namespace OpenGS
             json["ItemType"] = itemType;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
+            json["SpawnPointId"] = spawnPointId;
+            json["Value"] = value;
+            json["Duration"] = durationSeconds;
             return json;
         }
 

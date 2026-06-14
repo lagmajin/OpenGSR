@@ -47,6 +47,7 @@ namespace OpenGS
         public CinemachineCamera vcamera;
         public CinemachineCamera playerCamera;
         public CinemachineCamera observerCamera;
+        [SerializeField] private Transform initialCameraFollowTarget;
 
         public CinemachineImpulseSource impluseSource;
 
@@ -290,6 +291,39 @@ namespace OpenGS
             }
         }
 
+        protected void SetupInitialCameraFollow()
+        {
+            var target = FindInitialCameraFollowTarget();
+            if (target == null)
+            {
+                return;
+            }
+
+            SetupPlayerCamera(target);
+        }
+
+        protected virtual Transform FindInitialCameraFollowTarget()
+        {
+            if (initialCameraFollowTarget != null)
+            {
+                return initialCameraFollowTarget;
+            }
+
+            var centralObject = GameObject.Find("CentralObject");
+            if (centralObject != null)
+            {
+                return centralObject.transform;
+            }
+
+            var centralGameObject = GameObject.Find("CentralGameObject");
+            if (centralGameObject != null)
+            {
+                return centralGameObject.transform;
+            }
+
+            return null;
+        }
+
         public void EnterSpectatorMode(Transform excluded = null)
         {
             var target = ResolveSpectatorTarget(excluded);
@@ -396,6 +430,7 @@ namespace OpenGS
             gameMode = MatchModeResolver.ResolveCurrentGameMode();
             PlayStageBGM();
             BindMatchNetwork();
+            SetupInitialCameraFollow();
 
             Debug.Log("AbstractMainScript.Start");
 
@@ -686,8 +721,17 @@ namespace OpenGS
                 case RUDPMessageTypes.WeaponPickup:
                     HandleWeaponPickup(obj);
                     break;
+                case RUDPMessageTypes.ItemSpawn:
+                    HandleItemSpawn(obj);
+                    break;
+                case RUDPMessageTypes.ItemDespawn:
+                    HandleItemDespawn(obj);
+                    break;
                 case RUDPMessageTypes.ItemUse:
                     HandleItemUse(obj);
+                    break;
+                case RUDPMessageTypes.ItemPickup:
+                    HandleItemPickup(obj);
                     break;
                 case RUDPMessageTypes.PlayerBuff:
                     HandlePlayerBuff(obj);
@@ -706,6 +750,75 @@ namespace OpenGS
             var effect = json["Effect"]?.ToString() ?? "";
 
             Debug.Log($"[{GetType().Name}] ItemUse received: player={playerId}, item={itemId}, type={itemType}, effect={effect}");
+        }
+
+        protected virtual void HandleItemPickup(JObject json)
+        {
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var itemType = json["ItemType"]?.ToString() ?? "";
+            var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? -1;
+
+            if (spawnPointId >= 0 && ItemSpawnPoints.TryGetPoint(spawnPointId, out var spawnPoint))
+            {
+                spawnPoint.DespawnItem();
+                Debug.Log($"[{GetType().Name}] ItemPickup received: player={playerId}, type={itemType}, spawnPoint={spawnPointId}");
+                return;
+            }
+
+            if (itemSpawnPoints != null)
+            {
+                var fallbackSpawnPoints = itemSpawnPoints.GetComponent<ItemSpawnPoints>();
+                if (fallbackSpawnPoints != null)
+                {
+                    fallbackSpawnPoints.DespawnAllItems();
+                }
+            }
+
+            Debug.Log($"[{GetType().Name}] ItemPickup received but spawn point was not found: player={playerId}, type={itemType}, spawnPoint={spawnPointId}");
+        }
+
+        protected virtual void HandleItemSpawn(JObject json)
+        {
+            var itemTypeStr = json["ItemType"]?.ToString() ?? "";
+            var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? 0;
+
+            if (!Enum.TryParse(itemTypeStr, true, out EFieldItemType itemType))
+            {
+                Debug.LogWarning($"[{GetType().Name}] ItemSpawn ignored because item type was invalid: {itemTypeStr}");
+                return;
+            }
+
+            if (ItemSpawnPoints.TryGetPoint(spawnPointId, out var point))
+            {
+                point.SpawnItem(itemType);
+                Debug.Log($"[{GetType().Name}] ItemSpawn received: type={itemType}, spawnPoint={spawnPointId}");
+                return;
+            }
+
+            Debug.LogWarning($"[{GetType().Name}] ItemSpawn received but spawn point was not found: type={itemType}, spawnPoint={spawnPointId}");
+        }
+
+        protected virtual void HandleItemDespawn(JObject json)
+        {
+            var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? -1;
+
+            if (spawnPointId >= 0 && ItemSpawnPoints.TryGetPoint(spawnPointId, out var point))
+            {
+                point.DespawnItem();
+                Debug.Log($"[{GetType().Name}] ItemDespawn received: spawnPoint={spawnPointId}");
+                return;
+            }
+
+            if (itemSpawnPoints != null)
+            {
+                var fallbackSpawnPoints = itemSpawnPoints.GetComponent<ItemSpawnPoints>();
+                if (fallbackSpawnPoints != null)
+                {
+                    fallbackSpawnPoints.DespawnAllItems();
+                }
+            }
+
+            Debug.Log($"[{GetType().Name}] ItemDespawn received but spawn point was not found: spawnPoint={spawnPointId}");
         }
 
         protected virtual void HandleWeaponReservation(JObject json, bool reserved)
@@ -753,13 +866,20 @@ namespace OpenGS
 
         protected virtual void HandlePlayerBuff(JObject json)
         {
-            var player = ResolveLocalPlayer();
+            var targetPlayerId = json["PlayerId"]?.ToString() ?? json["TargetPlayerId"]?.ToString() ?? "";
+            var player = ResolvePlayerById(targetPlayerId);
             var buffType = json["BuffType"]?.ToString() ?? "";
             var duration = json["Duration"]?.ToObject<int>() ?? 0;
             var value = json["Value"]?.ToObject<float>() ?? 0f;
 
             if (player != null)
             {
+                if (IsLocalPlayer(player))
+                {
+                    Debug.Log($"[{GetType().Name}] PlayerBuff ignored for local player echo: {json}");
+                    return;
+                }
+
                 switch (buffType)
                 {
                     case "HpRecovery":
@@ -810,12 +930,19 @@ namespace OpenGS
 
         protected virtual void HandlePlayerDebuff(JObject json)
         {
-            var player = ResolveLocalPlayer();
+            var targetPlayerId = json["PlayerId"]?.ToString() ?? json["TargetPlayerId"]?.ToString() ?? "";
+            var player = ResolvePlayerById(targetPlayerId);
             var debuffType = json["DebuffType"]?.ToString() ?? "";
             var duration = json["Duration"]?.ToObject<int>() ?? 0;
 
             if (player != null)
             {
+                if (IsLocalPlayer(player))
+                {
+                    Debug.Log($"[{GetType().Name}] PlayerDebuff ignored for local player echo: {json}");
+                    return;
+                }
+
                 switch (debuffType)
                 {
                     case "PoisonBullet":
@@ -884,6 +1011,43 @@ namespace OpenGS
             {
                 uiCanvasMasterData = FindFirstObjectByType<CanvasMasterData>();
             }
+        }
+
+        protected virtual AbstractPlayer ResolvePlayerById(string playerId)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return ResolveLocalPlayer();
+            }
+
+            if (ResolveLocalPlayer() is AbstractPlayer localPlayer &&
+                string.Equals(localPlayer.UniqueID().ToString(), playerId, StringComparison.OrdinalIgnoreCase))
+            {
+                return localPlayer;
+            }
+
+            if (PlayerRegistry.Instance != null &&
+                Guid.TryParse(playerId, out var playerGuid) &&
+                PlayerRegistry.Instance.TryGetPlayer(playerGuid, out var registryPlayer))
+            {
+                return registryPlayer;
+            }
+
+            foreach (var candidate in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
+            {
+                if (candidate != null && string.Equals(candidate.UniqueID().ToString(), playerId, StringComparison.OrdinalIgnoreCase))
+                {
+                    return candidate;
+                }
+            }
+
+            return null;
+        }
+
+        protected virtual bool IsLocalPlayer(AbstractPlayer target)
+        {
+            var local = ResolveLocalPlayer();
+            return local != null && target != null && ReferenceEquals(local, target);
         }
 
         private void EnsureMasterDataReferences()

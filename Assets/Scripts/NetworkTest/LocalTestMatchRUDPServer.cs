@@ -27,6 +27,7 @@ namespace OpenGS
         private bool _matchEnded;
         private int _totalDeathEvents;
         private readonly Dictionary<string, int> _teamKills = new();
+        private readonly FieldItemService itemServiceA = new FieldItemService();
 
         public event Action<JObject> MessageProduced;
 
@@ -194,6 +195,15 @@ namespace OpenGS
                 case "ItemUseRequest":
                 case RUDPMessageTypes.ItemUse:
                     HandleItemUseRequest(json);
+                    break;
+                case RUDPMessageTypes.ItemSpawn:
+                    SendJson(json);
+                    break;
+                case RUDPMessageTypes.ItemDespawn:
+                    SendJson(json);
+                    break;
+                case RUDPMessageTypes.ItemPickup:
+                    HandleItemPickup(json);
                     break;
                 case "ChatMessage":
                     HandleChatMessage(json);
@@ -529,6 +539,37 @@ namespace OpenGS
             }
         }
 
+        private void HandleItemPickup(JObject json)
+        {
+            PrettyLogger.Bold("RUDP Server", $"ItemPickup received: {json}");
+
+            var itemType = json["ItemType"]?.ToString() ?? "";
+            var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? 0;
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var value = json["Value"]?.ToObject<float>() ?? 0f;
+            var duration = json["Duration"]?.ToObject<float>() ?? 0f;
+
+            if (string.Equals(itemType, OpenGSCore.EFieldItemType.PowerUpItem.ToString(), StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(itemType, OpenGSCore.EFieldItemType.DefenceUpItem.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                itemServiceA.OnItemPickedUp();
+            }
+
+            SendJson(json);
+
+            SendJson(new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.ItemDespawn,
+                ["SpawnPointId"] = spawnPointId
+            });
+
+            var pickupEffect = BuildPickupEffect(playerId, itemType, value, duration);
+            if (pickupEffect != null)
+            {
+                SendJson(pickupEffect);
+            }
+        }
+
         private IEnumerable<JObject> BuildItemUseResponses(string playerId, EInstantItemType itemType)
         {
             switch (itemType)
@@ -622,6 +663,17 @@ namespace OpenGS
                         {
                             AdvanceDummyPlayerState();
                             SendJson(BuildDummyPlayerPositionUpdate());
+
+                            EFieldItemType? spawnedItem;
+                            var itemStateChange = itemServiceA.Update(1f, out spawnedItem);
+                            if (itemStateChange == FieldItemService.ESpawnState.Active && spawnedItem.HasValue)
+                            {
+                                SendJson(BuildItemSpawnNotification(spawnedItem.Value, 0));
+                            }
+                            else if (itemStateChange == FieldItemService.ESpawnState.Waiting)
+                            {
+                                SendJson(BuildItemDespawnNotification(0));
+                            }
                         }
 
                         // 120フレームごと（約2秒）にゲーム状態を送信
@@ -673,6 +725,67 @@ namespace OpenGS
             };
 
             return RUDPMessageBuilder.CreateGameStateSync(300 - frameCount / 60, scores);
+        }
+
+        private static JObject BuildItemSpawnNotification(EFieldItemType itemType, int spawnPointId)
+        {
+            var message = RUDPMessageBuilder.CreateItemSpawn(
+                spawnPointId.ToString(),
+                itemType.ToString(),
+                Vector2.zero);
+            message["SpawnPointId"] = spawnPointId;
+            return message;
+        }
+
+        private static JObject BuildItemDespawnNotification(int spawnPointId)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.ItemDespawn,
+                ["SpawnPointId"] = spawnPointId
+            };
+        }
+
+        private static JObject BuildPickupEffect(string playerId, string itemType, float value, float duration)
+        {
+            if (string.IsNullOrWhiteSpace(itemType))
+            {
+                return null;
+            }
+
+            if (string.Equals(itemType, nameof(HealItem), StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(itemType, OpenGSCore.EFieldItemType.HealItem.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "HpRecovery", 0, value > 0f ? value : 25f);
+            }
+
+            if (string.Equals(itemType, OpenGSCore.EFieldItemType.PowerUpItem.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "PowerUpItem", Mathf.RoundToInt(duration > 0f ? duration : 30f), 0f);
+            }
+
+            if (string.Equals(itemType, OpenGSCore.EFieldItemType.DefenceUpItem.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "DefenceUpItem", Mathf.RoundToInt(duration > 0f ? duration : 30f), 0f);
+            }
+
+            if (string.Equals(itemType, OpenGSCore.EFieldItemType.SpeedUpItem.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "SpeedUpItem", Mathf.RoundToInt(duration > 0f ? duration : 30f), 0f);
+            }
+
+            if (string.Equals(itemType, OpenGSCore.EFieldItemType.StealthItem.ToString(), StringComparison.OrdinalIgnoreCase))
+            {
+                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "StealthItem", Mathf.RoundToInt(duration > 0f ? duration : 30f), 0f);
+            }
+
+            if (string.Equals(itemType, OpenGSCore.EFieldItemType.GrenadePack.ToString(), StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(itemType, "NormalGrenadePackItem", StringComparison.OrdinalIgnoreCase))
+            {
+                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, value > 0f ? value : 3f);
+            }
+
+            return null;
         }
 
 

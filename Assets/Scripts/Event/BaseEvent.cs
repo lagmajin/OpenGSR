@@ -671,6 +671,36 @@ namespace OpenGS
     }
 
     /// <summary>
+    /// フィールドアイテム拾得イベント
+    /// </summary>
+    public class ItemPickupEvent : AbstractGameEvent
+    {
+        private string playerID_;
+        private string itemType_;
+        private int spawnPointId_;
+        private Vector2 position_;
+        private float effectValue_;
+        private float durationSeconds_;
+
+        public ItemPickupEvent(string playerId, string itemType, int spawnPointId, Vector2 position, float effectValue = 0f, float durationSeconds = 0f)
+        {
+            playerID_ = playerId;
+            itemType_ = itemType;
+            spawnPointId_ = spawnPointId;
+            position_ = position;
+            effectValue_ = effectValue;
+            durationSeconds_ = durationSeconds;
+        }
+
+        public string PlayerID() => playerID_;
+        public string ItemType() => itemType_;
+        public int SpawnPointId() => spawnPointId_;
+        public Vector2 Position() => position_;
+        public float EffectValue() => effectValue_;
+        public float DurationSeconds() => durationSeconds_;
+    }
+
+    /// <summary>
     /// ピングイベント
     /// </summary>
     public class PingEvent : AbstractGameEvent

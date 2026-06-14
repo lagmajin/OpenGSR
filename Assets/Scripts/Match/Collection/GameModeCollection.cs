@@ -88,27 +88,33 @@ namespace OpenGS
         {
             if (!booted)
             {
+                var mode = MatchModeResolver.ResolveCurrentGameMode();
+                Debug.Log($"[GameModeCollection] Boot mode={mode}");
 
+                switch (mode)
+                {
+                    case OpenGSCore.EGameMode.TeamDeathMatch:
+                        SetupTDMMatch();
+                        break;
+                    case OpenGSCore.EGameMode.Survival:
+                        SetupSUV();
+                        break;
+                    case OpenGSCore.EGameMode.TeamSurvival:
+                        SetupTSUV();
+                        break;
+                    case OpenGSCore.EGameMode.CaptureTheFlag:
+                        SetupCTFMatch();
+                        break;
+                    case OpenGSCore.EGameMode.ArmsRace:
+                        SetupArmsRace();
+                        break;
+                    case OpenGSCore.EGameMode.DeathMatch:
+                    default:
+                        SetupDeathMatch();
+                        break;
+                }
 
-
-                //var gameManager = GameGeneralManager.GetInstance;
-
-                //var rule = gameManager.MatchRoom.Rule;
-
-                //var mode = rule.Mode;
-
-                //Debug.Log("Boot" + mode.ToString());
-
-                //SetupDeathMatch();
-
-                //SetupTDMMatch();
-
-                SetupDeathMatch();
-
-                //SetupCTFMatch();
-
-                //booted = true;
-
+                booted = true;
             }
         }
 
@@ -145,62 +151,35 @@ namespace OpenGS
 
         private void SetupDeathMatch()
         {
-            //if (!isAnyOn())
+            dmMatchMainScript?.SetActive(true);
+            if (autoDeleteOthers)
             {
-                dmMatchMainScript?.SetActive(true);
-
-
-
-
-                if (TryGetComponent<DMMatchMainScript>(out var script))
-                {
-                    //GameGeneralManager.GetInstance.MainScript = script;
-                }
-
-
-                if (autoDeleteOthers)
-                {
-                    DeleteNotUseScripts();
-                }
+                DeleteNotUseScripts();
             }
         }
 
         private void SetupTDMMatch()
         {
-
-            //if (!IsAnyOn())
+            tdmMatchMainScript?.SetActive(true);
+            if (autoDeleteOthers)
             {
-                tdmMatchMainScript?.SetActive(true);
-                if (autoDeleteOthers)
-                {
-                    DeleteNotUseScripts();
-                }
+                DeleteNotUseScripts();
             }
-
-
         }
 
         private void SetupSUV()
         {
-            if (!IsAnyOn())
+            suvMatchMainScript?.SetActive(true);
+
+            if (autoDeleteOthers)
             {
-                suvMatchMainScript?.SetActive(true);
-
-                if (autoDeleteOthers)
-                {
-                    DeleteNotUseScripts();
-                }
-
+                DeleteNotUseScripts();
             }
-
-
         }
 
         private void SetupTSUV()
         {
-            if (!IsAnyOn())
-            {
-            }
+            tsuvMatchMainScript?.SetActive(true);
 
             if (autoDeleteOthers)
             {
@@ -211,10 +190,7 @@ namespace OpenGS
 
         private void SetupCTFMatch()
         {
-            //if (!IsAnyOn())
-            {
-                ctfMatchMainScript.SetActive(true);
-            }
+            ctfMatchMainScript?.SetActive(true);
 
             if (autoDeleteOthers)
             {

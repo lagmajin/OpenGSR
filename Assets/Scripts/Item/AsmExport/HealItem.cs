@@ -1,5 +1,6 @@
 ﻿
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -43,6 +44,7 @@ namespace OpenGS
                 if (player != null)
                 {
                     player.Heal(healAmount);
+                    SendPickupToNetwork(player);
                 }
 
                 Destroy(gameObject);
@@ -61,10 +63,25 @@ namespace OpenGS
                 if (player != null)
                 {
                     player.Heal(healAmount);
+                    SendPickupToNetwork(player);
                 }
 
                 Destroy(gameObject);
             }
+        }
+
+        private void SendPickupToNetwork(AbstractPlayer player)
+        {
+            var spawnPoint = point as ItemSpawnPoint ?? GetComponentInParent<ItemSpawnPoint>();
+            var spawnPointId = spawnPoint != null ? spawnPoint.SpawnPointId : -1;
+
+            NetworkEventSerializer.SerializeAndSend(new ItemPickupEvent(
+                player.UniqueID().ToString(),
+                nameof(HealItem),
+                spawnPointId,
+                transform.position,
+                healAmount,
+                0f));
         }
 
 

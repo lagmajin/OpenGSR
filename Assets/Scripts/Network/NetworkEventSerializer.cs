@@ -152,6 +152,10 @@ namespace OpenGS
             {
                 json = SerializeObjectDestroyedEvent((ObjectDestroyedEvent)gameEvent);
             }
+            else if (eventType == typeof(ItemPickupEvent))
+            {
+                json = SerializeItemPickupEvent((ItemPickupEvent)gameEvent);
+            }
             else if (eventType == typeof(PingEvent))
             {
                 json = SerializePingEvent((PingEvent)gameEvent);
@@ -404,6 +408,18 @@ namespace OpenGS
                 ["PosY"] = e.Position().y,
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
+        }
+
+        private static JObject SerializeItemPickupEvent(ItemPickupEvent e)
+        {
+            return RUDPMessageBuilder.CreateItemPickup(
+                e.PlayerID(),
+                e.SpawnPointId() >= 0 ? e.SpawnPointId().ToString() : e.ItemType(),
+                e.ItemType(),
+                e.Position(),
+                e.SpawnPointId(),
+                e.EffectValue(),
+                e.DurationSeconds());
         }
 
         private static JObject SerializeWarmupEvent(WarmupEvent e)

@@ -86,6 +86,7 @@ namespace OpenGS
                 // オブジェクト
                 RUDPMessageTypes.ObjectSpawned   => DeserializeObjectSpawned(json),
                 RUDPMessageTypes.ObjectDestroyed => DeserializeObjectDestroyed(json),
+                RUDPMessageTypes.ItemPickup      => DeserializeItemPickup(json),
 
                 // Ping
                 RUDPMessageTypes.PingRequest  => DeserializePing(json),
@@ -330,6 +331,18 @@ namespace OpenGS
                 S(json, "ObjectId"),
                 S(json, "DestroyedBy"),
                 new Vector2(F(json, "PosX"), F(json, "PosY"))
+            );
+        }
+
+        private static ItemPickupEvent DeserializeItemPickup(JObject json)
+        {
+            return new ItemPickupEvent(
+                S(json, "PlayerId"),
+                S(json, "ItemType", S(json, "ItemId")),
+                I(json, "SpawnPointId"),
+                new Vector2(F(json, "PosX"), F(json, "PosY")),
+                F(json, "Value"),
+                F(json, "Duration")
             );
         }
 

@@ -310,8 +310,14 @@ namespace OpenGS
                 case RUDPMessageTypes.KillScoreUpdate:
                     Debug.Log($"[DM] KillScoreUpdate received: {obj["PlayerId"]?.ToString()}");
                     break;
+                case RUDPMessageTypes.ItemPickup:
+                    base.OnNetworkDataRecved(obj);
+                    break;
                 case MessageType.MatchEndNotification:
                     HandleMatchEnd(obj);
+                    break;
+                default:
+                    base.OnNetworkDataRecved(obj);
                     break;
             }
         }

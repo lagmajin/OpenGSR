@@ -138,7 +138,7 @@ MonoBehaviour:
   gravity: 0
   bulletPrefab: {fileID: 2562133398872187811, guid: f550a79ea00232b44a4482fb1324e49a, type: 3}
   shotEffectPrefab: {fileID: 0}
-  shellCasingPrefab: {fileID: 0}
+  shellCasingPrefab: {fileID: 5335318510494855871, guid: babc08ab2d274f844a575ab09cf13d02, type: 3}
   muzzle: {fileID: 0}
   fieldWeaponPrefab: {fileID: 0}
   gunBigIcon: {fileID: 0}
