@@ -171,18 +171,22 @@ namespace OpenGS
         {
             if (!shellCasingPrefab) return;
 
-            float angleOffset = UnityEngine.Random.Range(-19f, 19f);
-            Quaternion spawnRot = transform.rotation * Quaternion.Euler(0, 0, angleOffset);
-            var shell = Instantiate(shellCasingPrefab, transform.position, spawnRot);
+            var ejectionAngle = UnityEngine.Random.Range(8f, 24f);
+            var angleJitter = UnityEngine.Random.Range(-10f, 10f);
+            var shellRotation = transform.rotation * Quaternion.Euler(0, 0, ejectionAngle + angleJitter);
+            var shell = Instantiate(shellCasingPrefab, transform.position, shellRotation);
 
             var rb = shell.GetComponent<Rigidbody2D>();
             if (rb != null)
             {
                 bool isWildShell = UnityEngine.Random.value < 0.05f;
-                float fx = isWildShell ? UnityEngine.Random.Range(3f, 4f) : UnityEngine.Random.Range(1.4f, 1.4f);
-                float fy = isWildShell ? UnityEngine.Random.Range(6f, 8f) : UnityEngine.Random.Range(3.0f, 4.0f);
+                float fx = isWildShell ? UnityEngine.Random.Range(3f, 4f) : 1.4f;
+                float fy = isWildShell ? UnityEngine.Random.Range(7f, 9f) : UnityEngine.Random.Range(4.5f, 5.5f);
+                float sideSign = transform.right.x >= 0f ? 1f : -1f;
 
-                Vector2 force = transform.right * fx + transform.up * fy;
+                var outward = transform.right * sideSign;
+                var ejectDirection = Quaternion.Euler(0f, 0f, ejectionAngle + angleJitter) * outward;
+                Vector2 force = ejectDirection * fx + transform.up * fy;
                 rb.AddForce(force, ForceMode2D.Impulse);
 
                 float torque = isWildShell ? UnityEngine.Random.Range(-40f, 40f) : UnityEngine.Random.Range(-10f, 10f);

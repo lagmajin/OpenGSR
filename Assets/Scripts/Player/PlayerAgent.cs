@@ -101,8 +101,13 @@ namespace OpenGS
         private int normalGrenadeCount = 3;
         private bool invisibleBuffActive = false;
         private bool deathTriggered = false;
+        [Header("Standing Sway")]
+        [SerializeField] private float standBobAmplitude = 0.02f;
+        [SerializeField] private float standBobFrequency = 7.5f;
+        [SerializeField] private Vector3 standBobDirection = new Vector3(0f, 1f, 0f);
 
         public int NormalGrenadeCount => normalGrenadeCount;
+        public Vector3 StandingBobOffset => GetStandingBobOffset();
 
         void Start()
         {
@@ -1082,6 +1087,19 @@ namespace OpenGS
                 color.a = Mathf.Clamp01(alpha);
                 sr.color = color;
             }
+        }
+
+        public Vector3 GetStandingBobOffset()
+        {
+            if (standBobAmplitude <= 0f || standBobFrequency <= 0f)
+            {
+                return Vector3.zero;
+            }
+
+            var phase = Time.time * standBobFrequency;
+            var bob = Mathf.Sin(phase) * standBobAmplitude;
+            var direction = standBobDirection.sqrMagnitude > 0.0001f ? standBobDirection.normalized : Vector3.up;
+            return direction * bob;
         }
 
     }

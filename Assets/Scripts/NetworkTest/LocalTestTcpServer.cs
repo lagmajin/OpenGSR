@@ -1139,6 +1139,7 @@ namespace OpenGS
                 RoomName = room.RoomName,
                 Capacity = room.Capacity,
                 GameMode = room.GameMode,
+                Map = room.Map,
                 TeamBalance = room.TeamBalance,
                 OwnerId = room.OwnerId
             };

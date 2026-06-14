@@ -476,6 +476,10 @@ namespace OpenGS
                 {
                     waitRoomManager.WaitRoom.RoomName = currentRoomName;
                     waitRoomManager.WaitRoom.PlayerCount = Mathf.Max(1, players.Count);
+                    if (!string.IsNullOrWhiteSpace(snapshot.Map) && Enum.TryParse(snapshot.Map, true, out EMap map))
+                    {
+                        waitRoomManager.WaitRoom.Map = map;
+                    }
                     waitRoomManager.WaitRoom.PlayerList.Clear();
                     foreach (var playerInfo in players)
                     {
@@ -658,6 +662,11 @@ namespace OpenGS
             {
                 currentRoomName = roomName;
             }
+
+            if (waitRoomManager?.WaitRoom != null && !string.IsNullOrWhiteSpace(roomInfo.Map) && Enum.TryParse(roomInfo.Map, true, out EMap map))
+            {
+                waitRoomManager.WaitRoom.Map = map;
+            }
             
             PrettyLogger.Bold("RoomList", $"ルーム作成: {roomName} ({roomId}) owner={ownerId}");
         }
@@ -714,6 +723,11 @@ namespace OpenGS
                     {
                         waitRoomManager.WaitRoom.GameMode = gameMode;
                     }
+
+                    if (!string.IsNullOrWhiteSpace(roomSnapshot.Map) && Enum.TryParse(roomSnapshot.Map, true, out EMap map))
+                    {
+                        waitRoomManager.WaitRoom.Map = map;
+                    }
                 }
             }
 
@@ -732,7 +746,7 @@ namespace OpenGS
 
             if (Enum.TryParse<EFieldItemType>(typeStr, out var type))
             {
-                if (ItemSpawnPoint.AllSpawnPoints.TryGetValue(pointId, out var point))
+                if (ItemSpawnPoints.TryGetPoint(pointId, out var point))
                 {
                     point.SpawnItem(type);
                     PrettyLogger.Bold("Item", $"Item spawned: {type} at point {pointId}");
@@ -747,12 +761,12 @@ namespace OpenGS
             if (pointId == -1)
             {
                 // 全てのポイントのアイテムを消去
-                foreach (var point in ItemSpawnPoint.AllSpawnPoints.Values)
+                foreach (var point in ItemSpawnPoints.AllSpawnPoints)
                 {
-                    point.DespawnItem();
+                    point?.DespawnItem();
                 }
             }
-            else if (ItemSpawnPoint.AllSpawnPoints.TryGetValue(pointId, out var point))
+            else if (ItemSpawnPoints.TryGetPoint(pointId, out var point))
             {
                 point.DespawnItem();
             }

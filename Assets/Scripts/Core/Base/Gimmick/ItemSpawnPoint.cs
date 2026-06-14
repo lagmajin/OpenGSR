@@ -25,9 +25,13 @@ namespace OpenGS
         [SerializeField]
         public int spawnPointId;
 
+        public int SpawnPointId => spawnPointId;
+
         private void Awake()
         {
             AllSpawnPoints[spawnPointId] = this;
+            var manager = GetComponentInParent<ItemSpawnPoints>();
+            manager?.Register(this);
         }
 
         private void OnDestroy()
@@ -36,6 +40,9 @@ namespace OpenGS
             {
                 AllSpawnPoints.Remove(spawnPointId);
             }
+
+            var manager = GetComponentInParent<ItemSpawnPoints>();
+            manager?.Unregister(this);
         }
 
         public void SpawnItem(EFieldItemType type)
@@ -60,6 +67,12 @@ namespace OpenGS
                 var pos = transform.position;
                 pos.y += heightOffset;
                 item.transform.position = pos;
+
+                var fieldItem = item.GetComponent<AbstractFieldItem>();
+                if (fieldItem != null)
+                {
+                    fieldItem.point = this;
+                }
             }
         }
 

@@ -18,15 +18,32 @@ namespace OpenGS
 
         [SerializeField] private GameObject head;
         private Vector3 defaultLocalHeadPos;
-        private Vector3 jumpLocalHeadPos;
-        private Vector3 sitLocalHeadPos;
+        private Vector3 jumpLocalOffset;
+        private Vector3 sitLocalOffset;
         private bool initialized;
 
         [SerializeField]Transform jumpHeadPos;
         [SerializeField] Transform layDownPos;
+        [SerializeField] private float jumpBlendSpeed = 18f;
+        [SerializeField] private float sitBlendSpeed = 18f;
+        [SerializeField] private float standBobHeadMultiplier = 1.0f;
+
+        public Vector3 StandingBobOffset { get; private set; }
+        private PlayerAgent owner;
+
+        private enum HeadPose
+        {
+            Default,
+            Jump,
+            Sit
+        }
+
+        private HeadPose targetPose = HeadPose.Default;
+        private HeadPose currentPose = HeadPose.Default;
 
         private void Start()
         {
+            owner = GetComponentInParent<PlayerAgent>();
             InitializeHeadPoseCache();
         }
 
@@ -43,8 +60,8 @@ namespace OpenGS
             }
 
             defaultLocalHeadPos = head.transform.localPosition;
-            jumpLocalHeadPos = ResolveLocalTarget(jumpHeadPos, defaultLocalHeadPos);
-            sitLocalHeadPos = ResolveLocalTarget(layDownPos, defaultLocalHeadPos);
+            jumpLocalOffset = ResolveLocalTarget(jumpHeadPos, defaultLocalHeadPos) - defaultLocalHeadPos;
+            sitLocalOffset = ResolveLocalTarget(layDownPos, defaultLocalHeadPos) - defaultLocalHeadPos;
             initialized = true;
         }
 
@@ -99,57 +116,63 @@ namespace OpenGS
 
         }
 
+        private void LateUpdate()
+        {
+            if (head == null)
+            {
+                return;
+            }
+
+            if (!initialized)
+            {
+                InitializeHeadPoseCache();
+            }
+
+            if (currentPose != targetPose)
+            {
+                currentPose = targetPose;
+            }
+
+            var targetOffset = currentPose switch
+            {
+                HeadPose.Jump => jumpLocalOffset,
+                HeadPose.Sit => sitLocalOffset,
+                _ => Vector3.zero
+            };
+
+            StandingBobOffset = owner != null ? owner.GetStandingBobOffset() : Vector3.zero;
+            var desiredLocalPos = defaultLocalHeadPos + targetOffset + StandingBobOffset * standBobHeadMultiplier;
+            head.transform.localPosition = Vector3.Lerp(head.transform.localPosition, desiredLocalPos, Time.deltaTime * GetBlendSpeed(currentPose));
+        }
+
+        private float GetBlendSpeed(HeadPose pose)
+        {
+            return pose switch
+            {
+                HeadPose.Jump => jumpBlendSpeed,
+                HeadPose.Sit => sitBlendSpeed,
+                _ => Mathf.Max(jumpBlendSpeed, sitBlendSpeed)
+            };
+        }
+
         public void Jump()
         {
-            if (head != null)
-            {
-                if (!initialized)
-                {
-                    InitializeHeadPoseCache();
-                }
-
-                head.transform.localPosition = jumpLocalHeadPos;
-            }
+            targetPose = HeadPose.Jump;
         }
 
         public void OnGround()
         {
-            if (head != null)
-            {
-                if (!initialized)
-                {
-                    InitializeHeadPoseCache();
-                }
-
-                head.transform.localPosition = defaultLocalHeadPos;
-            }
+            targetPose = HeadPose.Default;
         }
-
-
 
         public void Sit()
         {
-            if (head != null)
-            {
-                if (!initialized)
-                {
-                    InitializeHeadPoseCache();
-                }
-
-                head.transform.localPosition = sitLocalHeadPos;
-            }
+            targetPose = HeadPose.Sit;
         }
+
         public void StandUp()
         {
-            if (head != null)
-            {
-                if (!initialized)
-                {
-                    InitializeHeadPoseCache();
-                }
-
-                head.transform.localPosition = defaultLocalHeadPos;
-            }
+            targetPose = HeadPose.Default;
         }
 
 

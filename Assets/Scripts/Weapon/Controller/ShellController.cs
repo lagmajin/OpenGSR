@@ -1,55 +1,66 @@
 ﻿
 using UnityEngine;
-using DG.Tweening;
-
-
-
-#pragma warning disable 0414
 
 namespace OpenGS
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class ShellController : MonoBehaviour
     {
-        public AudioClip shellSound;
+        [SerializeField] private AudioClip shellSound;
+        [SerializeField, Min(0.1f)] private float lifetime = 2.5f;
+        [SerializeField, Min(0f)] private float destroyDelayAfterImpact = 0.15f;
 
-        float activeTime = 2.0f;
+        private bool hasImpacted;
 
         private void Start()
         {
-            //var seq =new  Sequence();
+            Destroy(gameObject, lifetime);
         }
-
-        private void Update()
-        {
-
-        }
-
-        private void HitStageObject()
-        {
-            SoundManager.Instance.PlayOneShotSafe(shellSound, context: nameof(ShellController));
-            Destroy(gameObject);
-        }
-
-
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            var tags = collision.gameObject.GetComponent<MultipleTags>();
-
-            if (tags.Contains("StageObject"))
+            if (hasImpacted)
             {
-                HitStageObject();
+                return;
             }
 
-            if (tags.HasBurstAreaTag())
+            if (collision == null || collision.gameObject == null)
             {
-
+                return;
             }
 
-
+            if (IsGroundLike(collision.gameObject))
+            {
+                hasImpacted = true;
+                PlayImpactSound();
+                Destroy(gameObject, destroyDelayAfterImpact);
+            }
         }
 
+        private bool IsGroundLike(GameObject target)
+        {
+            if (target.CompareTag("StageObject") || target.CompareTag("BurstArea"))
+            {
+                return true;
+            }
 
+            if (target.TryGetComponent<MultipleTags>(out var tags))
+            {
+                return tags.Contains("StageObject") || tags.HasBurstAreaTag();
+            }
+
+            return target.layer == LayerMask.NameToLayer("Platforms");
+        }
+
+        private void PlayImpactSound()
+        {
+            if (shellSound == null)
+            {
+                return;
+            }
+
+            SoundManager.Instance?.PlayOneShotSafe(shellSound, context: nameof(ShellController));
+        }
     }
 }

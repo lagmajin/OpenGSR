@@ -40,13 +40,18 @@ namespace OpenGS
         /// <summary>
         /// アイテムピックアメッセージを作成
         /// </summary>
-        public static JObject CreatePickupMessage(string itemId, string playerId)
+        public static JObject CreatePickupMessage(string itemId, string playerId, int spawnPointId = -1, Vector3? position = null)
         {
+            var pos = position ?? Vector3.zero;
             return new JObject
             {
                 ["MessageType"] = ItemPickup,
                 ["ItemId"] = itemId,
-                ["PlayerId"] = playerId
+                ["PlayerId"] = playerId,
+                ["SpawnPointId"] = spawnPointId,
+                ["PositionX"] = pos.x,
+                ["PositionY"] = pos.y,
+                ["PositionZ"] = pos.z
             };
         }
 
@@ -147,6 +152,7 @@ namespace OpenGS
         [Header("Field Item Info")]
         [SerializeField] private string _itemId = "";
         [SerializeField] private eFieldItemType _itemType = eFieldItemType.PowerUpItem;
+        [SerializeField] private int _spawnPointId = -1;
 
         private FieldItemNetworkManager _manager;
         private bool _isInitialized = false;
@@ -154,10 +160,11 @@ namespace OpenGS
         public string ItemId => _itemId;
         public eFieldItemType ItemType => _itemType;
 
-        public void Initialize(string itemId, eFieldItemType itemType)
+        public void Initialize(string itemId, eFieldItemType itemType, int spawnPointId = -1)
         {
             _itemId = itemId;
             _itemType = itemType;
+            _spawnPointId = spawnPointId;
             _isInitialized = true;
 
             _manager = FieldItemNetworkManager.Instance;
@@ -192,7 +199,7 @@ namespace OpenGS
         {
             if (!_isInitialized) return;
 
-            var message = FieldItemMessages.CreatePickupMessage(_itemId, playerId);
+            var message = FieldItemMessages.CreatePickupMessage(_itemId, playerId, _spawnPointId, transform.position);
 
             try
             {

@@ -38,6 +38,7 @@ namespace OpenGS
                 PlayerCount = roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1,
                 OwnerId = roomInfo.OwnerId,
                 GameMode = Enum.TryParse(roomInfo.GameMode, true, out EGameMode gameMode) ? gameMode : EGameMode.DeathMatch,
+                Map = Enum.TryParse(roomInfo.Map, true, out EMap map) ? map : EMap.Unknown,
                 TeamBalance = roomInfo.TeamBalance
             };
 

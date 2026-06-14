@@ -81,8 +81,10 @@ MonoBehaviour:
   vcamera: {fileID: 0}
   playerCamera: {fileID: 0}
   observerCamera: {fileID: 0}
+  initialCameraFollowTarget: {fileID: 0}
   impluseSource: {fileID: 0}
   gotoResultSceneWaitTime: 4
+  respawnDelaySeconds: 5
   itemSpawnPoints: {fileID: 0}
   player: {fileID: 0}
   overrideGameTime: 0
@@ -143,8 +145,10 @@ MonoBehaviour:
   vcamera: {fileID: 0}
   playerCamera: {fileID: 0}
   observerCamera: {fileID: 0}
+  initialCameraFollowTarget: {fileID: 0}
   impluseSource: {fileID: 0}
   gotoResultSceneWaitTime: 4
+  respawnDelaySeconds: 5
   itemSpawnPoints: {fileID: 0}
   player: {fileID: 0}
   overrideGameTime: 0
@@ -234,8 +238,10 @@ MonoBehaviour:
   vcamera: {fileID: 0}
   playerCamera: {fileID: 0}
   observerCamera: {fileID: 0}
+  initialCameraFollowTarget: {fileID: 0}
   impluseSource: {fileID: 0}
   gotoResultSceneWaitTime: 4
+  respawnDelaySeconds: 5
   itemSpawnPoints: {fileID: 0}
   player: {fileID: 0}
   overrideGameTime: 0
@@ -255,6 +261,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1244779542123666901}
+  - component: {fileID: 5135805630852641022}
   m_Layer: 0
   m_Name: SUVMatchMainScript
   m_TagString: Untagged
@@ -277,6 +284,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6527395882241844908}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5135805630852641022
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7938413619883870535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1465c0506a537bf4680346d69e38cfe5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.SurvivalMatchMainScript
+  timer: {fileID: 0}
+  mainCamera: {fileID: 0}
+  BackgroundCamera: {fileID: 0}
+  vcamera: {fileID: 0}
+  playerCamera: {fileID: 0}
+  observerCamera: {fileID: 0}
+  initialCameraFollowTarget: {fileID: 0}
+  impluseSource: {fileID: 0}
+  gotoResultSceneWaitTime: 4
+  respawnDelaySeconds: 5
+  itemSpawnPoints: {fileID: 0}
+  player: {fileID: 0}
+  overrideGameTime: 0
+  testGameTime: 1000
+  gameEndTimeScale: 0.4
+  prefabMasterData: {fileID: 0}
+  uiCanvasMasterData: {fileID: 0}
+  battleSceneMediateObject: {fileID: 0}
+  respawnPoints: {fileID: 0}
 --- !u!1 &8437000161792324588
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,8 +430,10 @@ MonoBehaviour:
   vcamera: {fileID: 0}
   playerCamera: {fileID: 0}
   observerCamera: {fileID: 0}
+  initialCameraFollowTarget: {fileID: 0}
   impluseSource: {fileID: 0}
   gotoResultSceneWaitTime: 4
+  respawnDelaySeconds: 5
   itemSpawnPoints: {fileID: 0}
   player: {fileID: 0}
   overrideGameTime: 0
