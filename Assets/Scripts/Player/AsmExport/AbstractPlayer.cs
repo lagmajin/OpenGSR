@@ -939,6 +939,20 @@ namespace OpenGS
             effect.transform.SetParent(transform, true);
         }
 
+        public void PlayReloadCompleteEffect()
+        {
+            if (PlayerEffectPrefabMasterData != null && PlayerEffectPrefabMasterData.BoosterSparkEffectPrefab != null)
+            {
+                SpawnPlayerEffect(PlayerEffectPrefabMasterData.BoosterSparkEffectPrefab);
+                return;
+            }
+
+            if (EffectPrefabMasterData != null && EffectPrefabMasterData.HitEffect != null)
+            {
+                SpawnPlayerEffect(EffectPrefabMasterData.HitEffect);
+            }
+        }
+
         private void CacheStandingMoveSpeed()
         {
             if (cachedStandingMoveSpeed)

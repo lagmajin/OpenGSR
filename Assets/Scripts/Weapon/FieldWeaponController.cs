@@ -267,9 +267,15 @@ namespace OpenGS
             {
                 return;
             }
+
             if (p is AbstractPlayer pickupPlayer)
             {
-                SendWeaponPickupSync(pickupPlayer.UniqueID().ToString());
+                pickupPlayer.TryPlayGeneralSound(EPlayerGeneralSound.TakeItem, 1f, 1f);
+            }
+
+            if (p is AbstractPlayer pickupActor)
+            {
+                SendWeaponPickupSync(pickupActor.UniqueID().ToString());
             }
             Destroy(gameObject);
         }

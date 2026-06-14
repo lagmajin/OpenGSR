@@ -10,6 +10,7 @@ using UnityMCP.Editor.Core;
 
 namespace UnityMCP.Editor.Handlers
 {
+    #pragma warning disable CS0619
     internal static class InspectorAccess
     {
         private const int MaxProperties = 100;
@@ -30,7 +31,7 @@ namespace UnityMCP.Editor.Handlers
                 GameObject go = null;
                 if (instanceId.HasValue)
                 {
-                    var obj = EditorUtility.InstanceIDToObject(instanceId.Value);
+                    var obj = UnityObjectIdCompat.ResolveEntityIdObject(instanceId.Value);
                     go = obj as GameObject;
                 }
 
@@ -184,7 +185,7 @@ namespace UnityMCP.Editor.Handlers
             return new JObject
             {
                 ["gameObject"] = go.name,
-                ["instanceId"] = go.GetInstanceID(),
+                ["instanceId"] = UnityObjectIdCompat.GetObjectId(go),
                 ["components"] = page["items"],
                 ["truncated"] = page["truncated"],
                 ["next"] = page["next"]
@@ -374,7 +375,7 @@ namespace UnityMCP.Editor.Handlers
                     var objRef = prop.objectReferenceValue;
                     return new JObject
                     {
-                        ["instanceId"] = prop.objectReferenceInstanceIDValue,
+                        ["instanceId"] = prop.objectReferenceEntityIdValue.ToString(),
                         ["name"] = objRef != null ? objRef.name : null,
                         ["type"] = objRef != null ? objRef.GetType().Name : null
                     };
@@ -498,4 +499,5 @@ namespace UnityMCP.Editor.Handlers
             }
         }
     }
+    #pragma warning restore CS0619
 }

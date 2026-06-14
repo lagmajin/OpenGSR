@@ -9,6 +9,7 @@ using UnityMCP.Editor.Core;
 
 namespace UnityMCP.Editor.Handlers
 {
+    #pragma warning disable CS0619
     internal static class SceneHierarchy
     {
         public static JObject Browse(JObject parameters)
@@ -178,8 +179,8 @@ namespace UnityMCP.Editor.Handlers
             return new JObject
             {
                 ["name"] = go.name,
-                ["id"] = go.GetInstanceID(),
-                ["instanceId"] = go.GetInstanceID(),
+                ["id"] = UnityObjectIdCompat.GetObjectId(go),
+                ["instanceId"] = UnityObjectIdCompat.GetObjectId(go),
                 ["active"] = go.activeSelf,
                 ["tag"] = go.tag,
                 ["layer"] = LayerMask.LayerToName(go.layer),
@@ -361,4 +362,5 @@ namespace UnityMCP.Editor.Handlers
             return arr;
         }
     }
+    #pragma warning restore CS0619
 }

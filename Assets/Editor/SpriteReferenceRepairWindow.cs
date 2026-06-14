@@ -269,8 +269,8 @@ namespace OpenGS.EditorTools
                 return;
             }
 
-            var instanceId = spriteProp.objectReferenceInstanceIDValue;
-            if (instanceId == 0)
+            var instanceId = spriteProp.objectReferenceEntityIdValue.ToString();
+            if (string.IsNullOrEmpty(instanceId) || instanceId == "0")
             {
                 return;
             }
@@ -471,7 +471,7 @@ namespace OpenGS.EditorTools
             public string GameObjectPath;
             public string ComponentType;
             public string FieldName;
-            public int MissingInstanceId;
+            public string MissingInstanceId;
             public string CandidatePath;
             public string CandidateSpriteName;
             public int CandidateScore;

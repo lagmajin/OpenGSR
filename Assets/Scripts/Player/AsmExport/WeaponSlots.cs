@@ -148,6 +148,9 @@ namespace OpenGS
                 var dropPrefab = gun != null ? gun.FieldPrefab() : null;
                 if (gun != null && dropPrefab != null)
                 {
+                    var ownerPlayer = GetComponentInParent<AbstractPlayer>();
+                    ownerPlayer?.TryPlayGeneralSound(EPlayerGeneralSound.DropItem, 1f, 1f);
+
                     var dropped = Instantiate(dropPrefab, currentWeaponObject.transform.position, currentWeaponObject.transform.rotation);
                     var fieldController = dropped.GetComponent<FieldWeaponController>();
                     if (fieldController != null)

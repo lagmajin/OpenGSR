@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1000000000000000003}
   - component: {fileID: 1000000000000000004}
   - component: {fileID: 1000000000000000005}
+  - component: {fileID: 8500304368074373509}
   m_Layer: 0
   m_Name: Bullet
   m_TagString: Untagged
@@ -37,7 +38,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1000000000000000002
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -84,7 +85,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 10
   m_MaskInteraction: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: 4d29558850c7a6f4ead4c6c5bb4c90c8, type: 3}
+  m_Sprite: {fileID: -1954009950819095002, guid: 343e7bef7af522e4586509edc4e03fdc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -94,6 +95,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!58 &1000000000000000003
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -105,9 +107,29 @@ CircleCollider2D:
   serializedVersion: 3
   m_Density: 1
   m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
   m_IsTrigger: 1
   m_UsedByEffector: 0
-  m_UsedByComposite: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
   m_Radius: 0.45
 --- !u!50 &1000000000000000004
@@ -155,3 +177,16 @@ MonoBehaviour:
   gravityStrength: 18
   hitSound: {fileID: 0}
   body: {fileID: 1000000000000000004}
+--- !u!114 &8500304368074373509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000000000000000000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89add0b35036c3048a5bf14fc699a0a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: OpenGSR::OpenGS.MultipleTags
+  tags: []

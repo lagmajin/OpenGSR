@@ -45,6 +45,7 @@ namespace OpenGS
             Set("TakePowerUpItemEffect", ref TakePowerUpItemEffect);
             Set("TakeDefenseUpItemEffect", ref TakeDefenseUpItemEffect);
             Set("TakeSpeedUpItemEffect", ref TakeSpeedUpItemEffect);
+            Set("BoosterSparkEffectPrefab", ref BoosterSparkEffectPrefab);
         }
 
 #endif

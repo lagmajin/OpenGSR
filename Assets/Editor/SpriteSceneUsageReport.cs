@@ -230,8 +230,8 @@ namespace OpenGS.EditorTools
                 return;
             }
 
-            var instanceId = spriteProp.objectReferenceInstanceIDValue;
-            if (instanceId != 0)
+            var instanceId = spriteProp.objectReferenceEntityIdValue.ToString();
+            if (!string.IsNullOrEmpty(instanceId) && instanceId != "0")
             {
                 report.BrokenEntries.Add(new BrokenSpriteEntry
                 {
@@ -405,7 +405,7 @@ namespace OpenGS.EditorTools
                     sb.AppendLine($"          \"game_object_path\": \"{EscapeJson(entry.GameObjectPath)}\",");
                     sb.AppendLine($"          \"component_type\": \"{EscapeJson(entry.ComponentType)}\",");
                     sb.AppendLine($"          \"field_name\": \"{EscapeJson(entry.FieldName)}\",");
-                    sb.AppendLine($"          \"instance_id\": {entry.InstanceId}");
+                    sb.AppendLine($"          \"instance_id\": \"{EscapeJson(entry.InstanceId)}\"");
                     sb.Append("        }");
                     sb.AppendLine(j + 1 < asset.BrokenEntries.Count ? "," : string.Empty);
                 }
@@ -449,7 +449,7 @@ namespace OpenGS.EditorTools
             public string GameObjectPath;
             public string ComponentType;
             public string FieldName;
-            public int InstanceId;
+            public string InstanceId;
         }
     }
 }

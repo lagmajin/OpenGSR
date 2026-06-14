@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UniRx;
 using UnityEngine;
 using OpenGSCore;
@@ -172,10 +173,7 @@ namespace OpenGS
 
             if (spawnedObjects.TryGetValue(e.ObjectID(), out var go) && go != null)
             {
-                if (go.TryGetComponent<RemoteGrenadeVisual>(out var grenadeVisual))
-                {
-                    grenadeVisual.ForceExplosion(e.Position());
-                }
+                TryInvokeRemoteGrenadeExplosion(go, e.Position());
 
                 Destroy(go);
                 LogReplayEvent("Removed", e.DestroyedBy(), e.ObjectID());
@@ -332,8 +330,13 @@ namespace OpenGS
 
             grenade.transform.localScale = Vector3.one * 0.09f;
 
-            var mover = grenade.AddComponent<RemoteGrenadeVisual>();
-            mover.Initialize(direction, speed, gravity, lifetime, grenadeType, () => spawnedObjects.Remove(objectId));
+            var moverType = ResolveRemoteGrenadeVisualType();
+            if (moverType != null)
+            {
+                var mover = grenade.AddComponent(moverType);
+                var init = moverType.GetMethod("Initialize", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                init?.Invoke(mover, new object[] { direction, speed, gravity, lifetime, grenadeType, (Action)(() => spawnedObjects.Remove(objectId)) });
+            }
 
             spawnedObjects[objectId] = grenade;
             LogReplayEvent("Spawned", grenadeType.ToString(), objectId, position);
@@ -477,6 +480,46 @@ namespace OpenGS
         private static Sprite ResolveGrenadeSprite(EGrenadeType grenadeType)
         {
             return GrenadeVisualResolver.GetHudSprite(grenadeType);
+        }
+
+        private static Type ResolveRemoteGrenadeVisualType()
+        {
+            const string fullName = "OpenGS.RemoteGrenadeVisual";
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                var type = assembly.GetType(fullName, false);
+                if (type != null)
+                {
+                    return type;
+                }
+            }
+
+            return null;
+        }
+
+        private static void TryInvokeRemoteGrenadeExplosion(GameObject go, Vector2 position)
+        {
+            if (go == null)
+            {
+                return;
+            }
+
+            foreach (var component in go.GetComponents<MonoBehaviour>())
+            {
+                if (component == null)
+                {
+                    continue;
+                }
+
+                var method = component.GetType().GetMethod("ForceExplosion", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+                if (method == null)
+                {
+                    continue;
+                }
+
+                method.Invoke(component, new object[] { position });
+                return;
+            }
         }
 
         private static float ResolvePredictedGrenadeSpeed(float power)

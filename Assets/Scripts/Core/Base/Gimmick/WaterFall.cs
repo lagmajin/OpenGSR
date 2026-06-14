@@ -126,7 +126,7 @@ namespace OpenGS
             if (!go.TryGetComponent<IMultipleTags>(out var tags)) return;
             if (!tags.HasPlayerTag()) return;
 
-            var id = go.GetInstanceID();
+            var id = UnityObjectIdCompat.GetObjectId(go);
             if (!players.ContainsKey(id))
             {
                 // register and apply immediate damage on enter
@@ -138,7 +138,7 @@ namespace OpenGS
         private void UnregisterPlayer(GameObject go)
         {
             if (go == null) return;
-            var id = go.GetInstanceID();
+            var id = UnityObjectIdCompat.GetObjectId(go);
             players.Remove(id);
         }
 

@@ -242,7 +242,7 @@ namespace OpenGS
                 foreach (var p in players.Values)
                 {
                     if (p == null) continue;
-                    if (p.gameObject.GetInstanceID() == instanceId)
+                    if (UnityObjectIdCompat.GetObjectId(p.gameObject) == instanceId)
                     {
                         player = p;
                         return true;

@@ -90,10 +90,9 @@ The following weapon prefabs have been started as templates:
 - `Assets/Prefabs/Weapon/Guns/Pistol/Glock.prefab`
 - `Assets/Prefabs/Weapon/Guns/Pistol/DE.prefab`
 - `Assets/Prefabs/Weapon/Guns/AR/AK47.prefab`
+- `Assets/Prefabs/Weapon/Guns/AR/M16.prefab`
 - `Assets/Prefabs/Weapon/Guns/AR/FAMAS.prefab`
 - `Assets/Prefabs/Weapon/Guns/AR/F2000.prefab`
-- `Assets/Prefabs/Weapon/Guns/AR/M4.prefab`
-- `Assets/Prefabs/Weapon/Guns/AR/M16.prefab`
 - `Assets/Prefabs/Weapon/Guns/SMG/Uzi.prefab`
 - `Assets/Prefabs/Weapon/Guns/SMG/Scorpion.prefab`
 - `Assets/Prefabs/Weapon/Guns/SMG/FN_P90.prefab`
@@ -106,11 +105,18 @@ The following weapon prefabs have been started as templates:
 - `Assets/Prefabs/Weapon/Guns/Shotgun/Spas.prefab`
 - `Assets/Prefabs/Weapon/Guns/MG/M60.prefab`
 - `Assets/Prefabs/Weapon/Guns/MG/MG42.prefab`
+- `Assets/Prefabs/Weapon/World/WorldAK47.prefab`
+- `Assets/Prefabs/Weapon/World/WorldM16.prefab`
+- `Assets/Prefabs/Weapon/World/WorldFAMAS.prefab`
+- `Assets/Prefabs/Weapon/World/WorldF2000.prefab`
+- `Assets/Prefabs/Weapon/World/WorldSteyrAug.prefab`
 
 The firearm templates currently point at the shared `Bullet.prefab` projectile
 and use the matching weapon master data sprites as the first visual pass.
 `Spas` is currently a template-only shotgun family prefab because the repo does
 not yet have a dedicated canonical shotgun master data asset.
+The AR line now has matched player-held and world pickup prefabs for
+`AK47`, `M16`, `FAMAS`, `F2000`, and `SteyrAug`.
 
 ## Practical Next Step
 

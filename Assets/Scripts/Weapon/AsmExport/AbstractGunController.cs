@@ -215,6 +215,7 @@ namespace OpenGS
             reloadDelay = 0.0f;
             remains = magazine;
             PublishAmmoUpdate();
+            GetOwnerPlayer()?.PlayReloadCompleteEffect();
         }
 
         public int CurrentMagazineCount() => remains;

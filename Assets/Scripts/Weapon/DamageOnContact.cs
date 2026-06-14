@@ -56,7 +56,7 @@ namespace OpenGS
         {
             if (!IsValidTarget(other)) return;
 
-            var id = other.GetInstanceID();
+            var id = UnityObjectIdCompat.GetObjectId(other);
             var now = Time.time;
 
             if (oneShotPerTarget && lastHitTime.ContainsKey(id))

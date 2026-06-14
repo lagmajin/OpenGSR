@@ -18,5 +18,5 @@ MonoBehaviour:
   RedBoosterEffectPrefab: {fileID: 0}
   GreenBoosterEffectPrefab: {fileID: 0}
   BlueBoosterEffectPrefab: {fileID: 0}
-  BoosterSparkEffectPrefab: {fileID: 0}
+  BoosterSparkEffectPrefab: {fileID: 11400000, guid: 7c0cb6b47e2342fb8af7cce0f6d95b31, type: 3}
   HitEffect: {fileID: 0}

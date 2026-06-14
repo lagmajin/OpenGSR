@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using UnityEditor;
@@ -13,6 +14,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using OpenGS;
 using Object = UnityEngine.Object;
 using TMPro;
 
@@ -539,6 +541,78 @@ namespace OpenGSR.Editor.MCP
             return new JArray(values);
         }
 
+        private static int GetObjectId(UnityEngine.Object obj)
+        {
+            return UnityObjectIdCompat.GetObjectId(obj);
+        }
+
+        private static UnityEngine.Object ResolveEntityIdObject(int entityId)
+        {
+            try
+            {
+                foreach (var method in typeof(EditorUtility).GetMethods(BindingFlags.Public | BindingFlags.Static))
+                {
+                    if (!string.Equals(method.Name, nameof(EditorUtility.EntityIdToObject), StringComparison.Ordinal))
+                    {
+                        continue;
+                    }
+
+                    var parameters = method.GetParameters();
+                    if (parameters.Length != 1)
+                    {
+                        continue;
+                    }
+
+                    var entityIdArg = CreateEntityId(parameters[0].ParameterType, entityId);
+                    if (entityIdArg == null)
+                    {
+                        continue;
+                    }
+
+                    return method.Invoke(null, new[] { entityIdArg }) as UnityEngine.Object;
+                }
+            }
+            catch
+            {
+            }
+
+            return null;
+        }
+
+        private static object CreateEntityId(Type entityIdType, int value)
+        {
+            if (entityIdType == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                var intCtor = entityIdType.GetConstructor(new[] { typeof(int) });
+                if (intCtor != null)
+                {
+                    return intCtor.Invoke(new object[] { value });
+                }
+
+                var longCtor = entityIdType.GetConstructor(new[] { typeof(long) });
+                if (longCtor != null)
+                {
+                    return longCtor.Invoke(new object[] { (long)value });
+                }
+
+                var parse = entityIdType.GetMethod("Parse", BindingFlags.Public | BindingFlags.Static, null, new[] { typeof(string) }, null);
+                if (parse != null)
+                {
+                    return parse.Invoke(null, new object[] { value.ToString() });
+                }
+            }
+            catch
+            {
+            }
+
+            return null;
+        }
+
         private static GameObject ResolveGameObject(JObject jparams)
         {
             var path = jparams["path"]?.ToString();
@@ -546,7 +620,7 @@ namespace OpenGSR.Editor.MCP
 
             if (instanceId.HasValue && instanceId.Value != 0)
             {
-                var obj = EditorUtility.EntityIdToObject(instanceId.Value) as GameObject;
+                var obj = ResolveEntityIdObject(instanceId.Value) as GameObject;
                 if (obj != null) return obj;
             }
 
@@ -588,7 +662,7 @@ namespace OpenGSR.Editor.MCP
             {
                 ["name"] = go.name,
                 ["path"] = GetGameObjectPath(go),
-                ["instance_id"] = go.GetInstanceID(),
+                ["instance_id"] = GetObjectId(go),
                 ["active"] = go.activeSelf,
                 ["tag"] = go.tag,
                 ["layer"] = go.layer,
@@ -634,7 +708,7 @@ namespace OpenGSR.Editor.MCP
             return new JObject
             {
                 ["name"] = go.name,
-                ["instance_id"] = go.GetInstanceID(),
+                ["instance_id"] = GetObjectId(go),
                 ["active"] = go.activeSelf,
                 ["children"] = children
             };
@@ -682,7 +756,7 @@ namespace OpenGSR.Editor.MCP
             {
                 ["name"] = go.name,
                 ["path"] = GetGameObjectPath(go),
-                ["instance_id"] = go.GetInstanceID(),
+                ["instance_id"] = GetObjectId(go),
                 ["active"] = go.activeSelf,
                 ["tag"] = go.tag,
                 ["layer"] = go.layer,
@@ -743,7 +817,7 @@ namespace OpenGSR.Editor.MCP
                 {
                     ["name"] = go.name,
                     ["path"] = GetGameObjectPath(go),
-                    ["instance_id"] = go.GetInstanceID(),
+                    ["instance_id"] = GetObjectId(go),
                 });
             }
 
@@ -890,7 +964,7 @@ namespace OpenGSR.Editor.MCP
             {
                 ["success"] = true,
                 ["type"] = type.Name,
-                ["instance_id"] = comp.GetInstanceID()
+                ["instance_id"] = GetObjectId(comp)
             };
         }
 
@@ -1064,7 +1138,7 @@ namespace OpenGSR.Editor.MCP
                         if (value is JObject sceneObj && sceneObj["instance_id"] != null)
                         {
                             var instanceId = sceneObj["instance_id"]!.Value<int>();
-                            var sceneObjectRef = EditorUtility.EntityIdToObject(instanceId);
+                            var sceneObjectRef = ResolveEntityIdObject(instanceId);
                             if (sceneObjectRef != null)
                             {
                                 prop.objectReferenceValue = sceneObjectRef;
@@ -2520,7 +2594,7 @@ public class {className} : MonoBehaviour
             var instanceId = jparams["instance_id"]?.Value<int>();
 
             if (instanceId.HasValue && instanceId.Value != 0)
-                go = EditorUtility.EntityIdToObject(instanceId.Value) as GameObject;
+                go = ResolveEntityIdObject(instanceId.Value) as GameObject;
             else if (!string.IsNullOrEmpty(path))
                 go = GameObject.Find(path);
             else

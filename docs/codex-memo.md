@@ -56,6 +56,7 @@
 - `docs/codex/grenade-types.md`
 - `docs/codex/slot-definitions.md`
 - `docs/codex/weapon-stats.md`
+- `docs/codex/prefab-yaml-notes.md`
 - `docs/CTFRule.md` - CTF: `FlagReturn` is state recovery, not scoring
 
 ## Notes
