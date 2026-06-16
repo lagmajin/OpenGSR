@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4818988165179584151}
+  - component: {fileID: 5230151032340224155}
   m_Layer: 0
   m_Name: PlayerPrefabBase
   m_TagString: Untagged
@@ -31,3 +32,61 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &5230151032340224155
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 416872647633589789}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17968d3c5f07fec478e618e57311faa3, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: OpenGSR::OpenGS.PlayerAgent
+  playerTransform: {fileID: 0}
+  standingCollider: {fileID: 0}
+  sittingCollider: {fileID: 0}
+  head: {fileID: 0}
+  headController: {fileID: 0}
+  weaponArm: {fileID: 0}
+  primaryGunController: {fileID: 0}
+  armController: {fileID: 0}
+  weaponSlots: {fileID: 0}
+  movementSpeed: 0
+  jumpHeight: 0
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  horizontalSpeed: 0
+  verticalSpeed: 0
+  isGrounded: 0
+  isWallAhead: 0
+  doubleTapTime: 0.3
+  dashDuration: 0.2
+  dashSpeed: 6
+  dashAngle: {x: 1, y: 0.3}
+  jetBooster: {fileID: 0}
+  spriteRenderer: {fileID: 0}
+  animator: {fileID: 0}
+  battleSceneMediateObject: {fileID: 0}
+  playerMasterData: {fileID: 0}
+  audioSource: {fileID: 0}
+  rigidbody2D: {fileID: 0}
+  gravity: 28
+  groundProbeDistance: 0.12
+  groundSnapDistance: 0.18
+  wallProbeDistance: 0.08
+  maxGroundAngle: 70
+  groundAcceleration: 45
+  airAcceleration: 25
+  groundFriction: 35
+  collisionSkinWidth: 0.02
+  maxFallSpeed: 12
+  maxBoostRiseSpeed: 10
+  fallDeathY: -80
+  coyoteTime: 0.12
+  jumpBufferTime: 0.12
+  standBobAmplitude: 0.02
+  standBobFrequency: 7.5
+  standBobDirection: {x: 0, y: 1, z: 0}
