@@ -1,6 +1,7 @@
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using LiteNetLib; // DeliveryMethodのために必要
+using Zenject;
 
 namespace OpenGS
 {
@@ -9,6 +10,7 @@ namespace OpenGS
         private ClientNetworkManager _networkManager;
         private string _playerId;
         [SerializeField] private KeyCode grenadeKey = KeyCode.G;
+        [Inject] private IInputService inputService;
 
         private float _lastMoveSendTime;
         [SerializeField] private float moveSendInterval = 0.05f; // 20回/秒
@@ -38,8 +40,8 @@ namespace OpenGS
                 return;
             }
 
-            float horizontalInput = Input.GetAxis("Horizontal");
-            float verticalInput = Input.GetAxis("Vertical");
+            float horizontalInput = inputService != null ? inputService.GetHorizontalAxis() : Input.GetAxis("Horizontal");
+            float verticalInput = inputService != null ? inputService.GetVerticalAxis() : Input.GetAxis("Vertical");
 
             // 入力がない場合は送信しない
             if (Mathf.Approximately(horizontalInput, 0f) && Mathf.Approximately(verticalInput, 0f))
@@ -65,7 +67,7 @@ namespace OpenGS
 
         private void SendActionInput()
         {
-            if (Input.GetButtonDown("Fire1")) // マウス左クリックまたはCtrlキー
+            if ((inputService != null && inputService.IsFireJustPressed()) || Input.GetButtonDown("Fire1")) // マウス左クリックまたはCtrlキー
             {
                 var aimDirection = GetAimDirection();
                 _networkManager.SendShootRequest(transform.position, aimDirection, ResolveWeaponType());
@@ -80,13 +82,22 @@ namespace OpenGS
 
         private Vector2 GetAimDirection()
         {
+            if (inputService != null)
+            {
+                var aimWorld = inputService.GetAimWorldPosition();
+                var dirFromService = (aimWorld - (Vector2)transform.position);
+                if (dirFromService.sqrMagnitude > Mathf.Epsilon)
+                {
+                    return dirFromService.normalized;
+                }
+            }
+
             var camera = Camera.main;
             if (camera == null)
             {
                 return transform.localScale.x < 0f ? Vector2.left : Vector2.right;
             }
 
-            var screenPos = camera.WorldToScreenPoint(transform.position);
             var worldMouse = camera.ScreenToWorldPoint(Input.mousePosition);
             var dir = (Vector2)(worldMouse - transform.position);
             if (dir.sqrMagnitude <= Mathf.Epsilon)

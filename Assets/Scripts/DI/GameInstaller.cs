@@ -23,6 +23,9 @@ namespace OpenGS
             Container.Bind<OnlineLoadingSceneNetworkManager>()
  .FromComponentInHierarchy()
  .AsSingle();
+            Container.Bind<UnityInputService>().AsSingle();
+            Container.Bind<ReplaySession>().AsSingle();
+            Container.BindInterfacesAndSelfTo<ReplayInputService>().AsSingle();
             // ClientSessionData をシングルトンとして登録
             //Container.Bind<ClientSessionData>().AsSingle().NonLazy();
             Container.BindInstance(DependencyInjectionConfig.Resolve<MatchRoomManager>()).AsSingle();
