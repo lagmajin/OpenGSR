@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -180,7 +180,7 @@ namespace OpenGS
 
             switch (messageType)
             {
-                case "ClientConnect":
+                case RUDPMessageTypes.ClientConnect:
                     HandleClientConnect(json);
                     break;
                 case "PlayerMove":
@@ -217,13 +217,66 @@ namespace OpenGS
                 case RUDPMessageTypes.KillScoreUpdate:
                     HandleKillScoreUpdate(json);
                     break;
+                case RUDPMessageTypes.FlagScoreUpdate:
+                    HandleFlagScoreUpdate(json);
+                    break;
                 case RUDPMessageTypes.PlayerRespawn:
                     HandlePlayerRespawn(json);
+                    break;
+                case RUDPMessageTypes.FlagCaptured:
+                case RUDPMessageTypes.FlagLost:
+                case RUDPMessageTypes.FlagReturn:
+                case RUDPMessageTypes.FlagBurst:
+                case RUDPMessageTypes.FlagPickup:
+                    HandleFlagEvent(json);
+                    break;
+                case RUDPMessageTypes.WeaponReserve:
+                case RUDPMessageTypes.WeaponRelease:
+                case RUDPMessageTypes.WeaponPickup:
+                    SendJson(json);
                     break;
                 default:
                     PrettyLogger.Bold("RUDP Server", $"Unknown message: {messageType}");
                     break;
             }
+        }
+
+        private void HandlePlayerInput(JObject json)
+        {
+            // プレイヤー入力を受け取ったら、他のクライアントにブロードキャスト（今は自分に返す）
+            PrettyLogger.Bold("RUDP Server", $"PlayerInput received: {json}");
+        }
+
+        private void HandleClientConnect(JObject json)
+        {
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "unknown";
+            PrettyLogger.Bold("RUDP Server", $"ClientConnect from {playerId}");
+
+            SendJson(new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.MatchJoined,
+                ["RoomID"] = "local-test-room",
+                ["PlayerID"] = playerId
+            });
+        }
+
+        private void HandlePlayerMove(JObject json)
+        {
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "unknown";
+            var posX = json["PosX"]?.ToObject<float>() ?? testPlayerX;
+            var posY = json["PosY"]?.ToObject<float>() ?? testPlayerY;
+            var velX = json["VelX"]?.ToObject<float>() ?? 0f;
+            var velY = json["VelY"]?.ToObject<float>() ?? 0f;
+
+            PrettyLogger.Bold("RUDP Server", $"PlayerMove from {playerId}: pos({posX}, {posY}) vel({velX}, {velY})");
+
+            testPlayerX = posX;
+            testPlayerY = posY;
+
+            SendJson(RUDPMessageBuilder.CreatePlayerPositionUpdate(
+                playerId,
+                new Vector2(posX, posY),
+                testPlayerRotation));
         }
 
         private void HandlePlayerInput(JObject json)
@@ -619,19 +672,17 @@ namespace OpenGS
 
             running = false;
             server?.Stop();
-            _replayTape.StopRecording();
-
-            if (!string.IsNullOrWhiteSpace(_lastReplayPath))
+            try
             {
-                try
+                if (!string.IsNullOrWhiteSpace(_lastReplayPath))
                 {
-                    _replayTape.Save(_lastReplayPath);
+                    NetworkReplayFileStore.Save(_lastReplayPath, _replayTape.StopRecording("server", "LocalTestMatch"));
                     PrettyLogger.Bold("Network", $"Server replay saved: {_lastReplayPath}");
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"Server replay save failed: {ex.Message}");
-                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Server replay save failed: {ex.Message}");
             }
         }
 

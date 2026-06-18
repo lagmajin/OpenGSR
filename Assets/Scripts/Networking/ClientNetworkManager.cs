@@ -25,6 +25,8 @@ namespace OpenGS
         [Header("Client State")]
         public string ClientPlayerId { get; private set; } = Guid.NewGuid().ToString("N");
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
+        [Tooltip("Enable detailed UDP receive logs for match traffic. Non-verbose match warnings still remain visible.")]
+        [SerializeField] private bool verboseUdpLogs = false;
 
         // LiteNetLib UDP Client
         private NetManager _netClient;
@@ -506,7 +508,7 @@ namespace OpenGS
             // サーバーにクライアントのPlayerIDを通知 (サーバー側のOnPeerConnectedでID取得できない場合のため)
             SendUdpInput(new JObject
             {
-                ["MessageType"] = "ClientConnect",
+                ["MessageType"] = RUDPMessageTypes.ClientConnect,
                 ["PlayerID"] = ClientPlayerId
             }, DeliveryMethod.ReliableOrdered);
         }
@@ -528,12 +530,12 @@ namespace OpenGS
             {
                 string jsonString = reader.GetString();
                 JObject message = JObject.Parse(jsonString);
+                NetworkReplayRecorder.RecordIncoming(message);
                 ProcessUdpMessage(message);
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[ClientNetwork] Error parsing UDP message: {ex.Message}");
-            }
             finally
             {
                 reader.Recycle();
@@ -545,7 +547,7 @@ namespace OpenGS
             string messageType = message.GetStringOrNull("MessageType");
             switch (messageType)
             {
-                case "Snapshot":
+                case RUDPMessageTypes.Snapshot:
                     if (_matchRoomManager != null && _matchRoomManager.OnlineMatchRoom != null)
                     {
                         _matchRoomManager.OnlineMatchRoom.PushInput(message); // スナップショットをクライアントのMatchRoomバッファへ
@@ -555,15 +557,144 @@ namespace OpenGS
                         Debug.LogWarning("[ClientNetwork] Received Snapshot but MatchRoom is not ready.");
                     }
                     break;
-                case "MatchJoined":
+                case RUDPMessageTypes.MatchJoined:
                     CurrentMatchRoomId = message.GetStringOrNull("RoomID");
-                    Debug.Log($"[ClientNetwork] Joined Match Room: {CurrentMatchRoomId}");
+                    Debug.Log($"[ClientNetwork] Joined Match Room [{FormatRoomTag(CurrentMatchRoomId)}]");
                     break;
+                case RUDPMessageTypes.PlayerShot:
+                    LogUdpEvent("PlayerShot", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("ObjectId"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.GrenadeThrow:
+                    LogUdpEvent("GrenadeThrow", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("ObjectId"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.ObjectSpawned:
+                    LogUdpEvent("ObjectSpawned", message.GetStringOrNull("RoomID"), message.GetStringOrNull("ObjectType"), message.GetStringOrNull("ObjectId"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.ObjectDestroyed:
+                    LogUdpEvent("ObjectDestroyed", message.GetStringOrNull("RoomID"), message.GetStringOrNull("ObjectType"), message.GetStringOrNull("ObjectId"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.PlayerPose:
+                    LogUdpEvent("PlayerPose", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("PoseState"));
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.PlayerPositionUpdate:
+                    HandlePlayerPositionUpdate(message);
+                    break;
+                case RUDPMessageTypes.PlayerDeath:
+                case RUDPMessageTypes.PlayerKilled:
+                case RUDPMessageTypes.PlayerDamage:
+                case RUDPMessageTypes.PlayerDamaged:
+                case RUDPMessageTypes.PlayerKill:
+                case RUDPMessageTypes.KillScoreUpdate:
+                case RUDPMessageTypes.FlagCaptured:
+                case RUDPMessageTypes.FlagLost:
+                case RUDPMessageTypes.FlagReturn:
+                case RUDPMessageTypes.FlagBurst:
+                case RUDPMessageTypes.FlagPickup:
+                case RUDPMessageTypes.FlagScoreUpdate:
+                case RUDPMessageTypes.MatchStart:
+                case RUDPMessageTypes.MatchEnd:
+                case RUDPMessageTypes.MatchPause:
+                case RUDPMessageTypes.MatchResume:
+                case RUDPMessageTypes.RoundStart:
+                case RUDPMessageTypes.RoundEnd:
+                case RUDPMessageTypes.PlayerRespawn:
+                case RUDPMessageTypes.RespawnCountdown:
+                case RUDPMessageTypes.PlayerJoined:
+                case RUDPMessageTypes.PlayerLeft:
+                case RUDPMessageTypes.PlayerTeamSwitch:
+                case RUDPMessageTypes.WeaponChange:
+                case RUDPMessageTypes.PlayerReload:
+                case RUDPMessageTypes.ItemPickup:
+                case RUDPMessageTypes.ItemUse:
+                case RUDPMessageTypes.ItemSpawn:
+                case RUDPMessageTypes.GameStateSync:
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.PingRequest:
+                {
+                    var pong = new JObject();
+                    pong["MessageType"] = "PingResponse";
+                    pong["ClientTimestamp"] = message["ClientTimestamp"];
+                    SendUdpInput(pong);
+                    break;
+                }
                 // 他のUDPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown UDP message: {message}");
                     break;
             }
+        }
+
+        public void ReplayUdpMessage(JObject message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+
+            ProcessUdpMessage(message);
+        }
+
+        private void HandlePlayerPositionUpdate(JObject message)
+        {
+            var playerId = message.GetStringOrNull("PlayerID") ?? message.GetStringOrNull("PlayerId");
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return;
+            }
+
+            var state = new OpenGS.Network.TransformState
+            {
+                playerId = playerId,
+                position = new Vector3(
+                    message["PosX"]?.ToObject<float>() ?? 0f,
+                    message["PosY"]?.ToObject<float>() ?? 0f,
+                    0f),
+                rotation = Quaternion.Euler(0f, 0f, message["Rotation"]?.ToObject<float>() ?? 0f),
+                velocity = Vector3.zero,
+                timestamp = Time.time,
+                sequenceNumber = message["SequenceNumber"]?.ToObject<byte>() ?? 0
+            };
+
+            var lagManager = FindFirstObjectByType<OpenGS.Network.LagCompensationManager>();
+            if (lagManager != null)
+            {
+                lagManager.OnPlayerStateReceived(state);
+                return;
+            }
+
+            Debug.Log($"[ClientNetwork] PlayerPositionUpdate received for {playerId}: {state.position}");
+        }
+
+        private static void PublishGameEvent(AbstractGameEvent gameEvent)
+        {
+            if (gameEvent == null)
+            {
+                return;
+            }
+
+            GameEventBroker.Publish(gameEvent);
+        }
+
+        private void LogUdpEvent(string eventType, string roomId, string primary, string secondary)
+        {
+            if (!verboseUdpLogs)
+            {
+                return;
+            }
+
+            var roomTag = FormatRoomTag(roomId);
+            Debug.Log($"[ClientNetwork] UDP {eventType} [{roomTag}]: {primary} / {secondary}");
+        }
+
+        private static string FormatRoomTag(string roomId)
+        {
+            return string.IsNullOrWhiteSpace(roomId) ? "no-room" : roomId;
         }
 
         public void SendUdpInput(JObject input, DeliveryMethod method = DeliveryMethod.Unreliable)
@@ -589,18 +720,39 @@ namespace OpenGS
             SendUdpInput(new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.ShootRequest,
-                ["PlayerId"] = ClientPlayerId,
-                ["PosX"] = position.x,
-                ["PosY"] = position.y,
-                ["DirX"] = direction.x,
-                ["DirY"] = direction.y,
-                ["WeaponType"] = weaponType
-            }, DeliveryMethod.ReliableOrdered);
+                ["PlayerID"] = ClientPlayerId,
+                ["Position"] = new JObject
+                {
+                    ["X"] = position.x,
+                    ["Y"] = position.y
+                },
+                ["Direction"] = new JObject
+                {
+                    ["X"] = direction.x,
+                    ["Y"] = direction.y
+                },
+                ["WeaponType"] = string.IsNullOrWhiteSpace(weaponType) ? "Unknown" : weaponType
+            }, DeliveryMethod.Unreliable);
         }
 
         public void SendGrenadeThrow(Vector2 position, Vector2 direction, string grenadeType)
         {
-            SendUdpInput(RUDPMessageBuilder.CreateGrenadeThrow(ClientPlayerId, position, direction, grenadeType), DeliveryMethod.ReliableOrdered);
+            SendUdpInput(new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.GrenadeThrow,
+                ["PlayerID"] = ClientPlayerId,
+                ["Position"] = new JObject
+                {
+                    ["X"] = position.x,
+                    ["Y"] = position.y
+                },
+                ["Direction"] = new JObject
+                {
+                    ["X"] = direction.x,
+                    ["Y"] = direction.y
+                },
+                ["GrenadeType"] = string.IsNullOrWhiteSpace(grenadeType) ? "Normal" : grenadeType
+            }, DeliveryMethod.Unreliable);
         }
 
         #endregion
