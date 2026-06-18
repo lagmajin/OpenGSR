@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,7 +28,8 @@ namespace OpenGS
         private bool _matchEnded;
         private int _totalDeathEvents;
         private readonly Dictionary<string, int> _teamKills = new();
-        private readonly FieldItemService itemServiceA = new FieldItemService();
+        private readonly ServerReplayTape _replayTape = new ServerReplayTape();
+        private string _lastReplayPath = string.Empty;
 
         public event Action<JObject> MessageProduced;
 
@@ -51,6 +53,7 @@ namespace OpenGS
         private void SendJson(in JObject json)
         {
             MessageProduced?.Invoke(json);
+            _replayTape.RecordOutbound(json);
 
             if (_loopbackMode)
             {
@@ -71,6 +74,8 @@ namespace OpenGS
         {
             ResetMatchState();
             ResetDummyPlayerState();
+            _replayTape.StartRecording();
+            _lastReplayPath = BuildReplayPath(port);
             listener = new EventBasedNetListener();
             server = new NetManager(listener);
             server.Start(port);
@@ -169,41 +174,39 @@ namespace OpenGS
                 return;
             }
 
+            _replayTape.RecordInbound(json);
             var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
             PrettyLogger.Bold("RUDP Server", $"Received: {messageType}");
 
             switch (messageType)
             {
+                case "ClientConnect":
+                    HandleClientConnect(json);
+                    break;
+                case "PlayerMove":
+                    HandlePlayerMove(json);
+                    break;
                 case "PlayerInput":
                     HandlePlayerInput(json);
                     break;
                 case "ShootRequest":
                     HandleShootRequest(json);
                     break;
-                case RUDPMessageTypes.GrenadeThrow:
-                    HandleGrenadeThrow(json);
-                    break;
                 case RUDPMessageTypes.PlayerShot:
                     HandlePlayerShot(json);
+                    break;
+                case RUDPMessageTypes.GrenadeThrow:
+                    HandleGrenadeThrow(json);
                     break;
                 case RUDPMessageTypes.PlayerDeath:
                     HandlePlayerDeath(json);
                     break;
-                case RUDPMessageTypes.TeamKill:
+                case "TeamKill":
                     HandleTeamKill(json);
                     break;
                 case "ItemUseRequest":
                 case RUDPMessageTypes.ItemUse:
                     HandleItemUseRequest(json);
-                    break;
-                case RUDPMessageTypes.ItemSpawn:
-                    SendJson(json);
-                    break;
-                case RUDPMessageTypes.ItemDespawn:
-                    SendJson(json);
-                    break;
-                case RUDPMessageTypes.ItemPickup:
-                    HandleItemPickup(json);
                     break;
                 case "ChatMessage":
                     HandleChatMessage(json);
@@ -214,23 +217,8 @@ namespace OpenGS
                 case RUDPMessageTypes.KillScoreUpdate:
                     HandleKillScoreUpdate(json);
                     break;
-                case RUDPMessageTypes.FlagScoreUpdate:
-                    HandleFlagScoreUpdate(json);
-                    break;
                 case RUDPMessageTypes.PlayerRespawn:
                     HandlePlayerRespawn(json);
-                    break;
-                case RUDPMessageTypes.FlagCaptured:
-                case RUDPMessageTypes.FlagLost:
-                case RUDPMessageTypes.FlagReturn:
-                case RUDPMessageTypes.FlagBurst:
-                case RUDPMessageTypes.FlagPickup:
-                    HandleFlagEvent(json);
-                    break;
-                case RUDPMessageTypes.WeaponReserve:
-                case RUDPMessageTypes.WeaponRelease:
-                case RUDPMessageTypes.WeaponPickup:
-                    SendJson(json);
                     break;
                 default:
                     PrettyLogger.Bold("RUDP Server", $"Unknown message: {messageType}");
@@ -244,61 +232,52 @@ namespace OpenGS
             PrettyLogger.Bold("RUDP Server", $"PlayerInput received: {json}");
         }
 
+        private void HandleClientConnect(JObject json)
+        {
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "unknown";
+            PrettyLogger.Bold("RUDP Server", $"ClientConnect from {playerId}");
+
+            SendJson(new JObject
+            {
+                ["MessageType"] = "MatchJoined",
+                ["RoomID"] = "local-test-room",
+                ["PlayerID"] = playerId
+            });
+        }
+
+        private void HandlePlayerMove(JObject json)
+        {
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "unknown";
+            var posX = json["PosX"]?.ToObject<float>() ?? testPlayerX;
+            var posY = json["PosY"]?.ToObject<float>() ?? testPlayerY;
+            var velX = json["VelX"]?.ToObject<float>() ?? 0f;
+            var velY = json["VelY"]?.ToObject<float>() ?? 0f;
+
+            PrettyLogger.Bold("RUDP Server", $"PlayerMove from {playerId}: pos({posX}, {posY}) vel({velX}, {velY})");
+
+            testPlayerX = posX;
+            testPlayerY = posY;
+
+            SendJson(RUDPMessageBuilder.CreatePlayerPositionUpdate(
+                playerId,
+                new Vector2(posX, posY),
+                testPlayerRotation));
+        }
+
         private void HandleShootRequest(JObject json)
         {
             // 射撃リクエストを受け取ったら、射撃イベントを全クライアントに通知
-            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? "unknown";
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
             var posX = json["PosX"]?.ToObject<float>() ?? 0f;
             var posY = json["PosY"]?.ToObject<float>() ?? 0f;
-            var dirX = json["DirX"]?.ToObject<float>() ?? 1f;
+            var dirX = json["DirX"]?.ToObject<float>() ?? 0f;
             var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
             var weaponType = json["WeaponType"]?.ToString() ?? "Pistol";
             PrettyLogger.Bold("RUDP Server", $"ShootRequest from {playerId}");
 
+            // テスト：射撃イベントを返す
             var shotMsg = RUDPMessageBuilder.CreatePlayerShot(playerId, new Vector2(posX, posY), new Vector2(dirX, dirY), weaponType);
             SendJson(shotMsg);
-
-            SendJson(RUDPMessageBuilder.CreateObjectSpawned(
-                $"{playerId}_bullet_{DateTime.UtcNow.Ticks}",
-                "Bullet",
-                new Vector2(posX, posY),
-                Mathf.Atan2(dirY, dirX) * Mathf.Rad2Deg));
-        }
-
-        private void HandleGrenadeThrow(JObject json)
-        {
-            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? "unknown";
-            var posX = json["PosX"]?.ToObject<float>() ?? 0f;
-            var posY = json["PosY"]?.ToObject<float>() ?? 0f;
-            var dirX = json["DirX"]?.ToObject<float>() ?? 1f;
-            var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
-            var grenadeType = json["GrenadeType"]?.ToString() ?? "Normal";
-            var power = json["Power"]?.ToObject<float>() ?? 1f;
-
-            PrettyLogger.Bold("RUDP Server", $"GrenadeThrow from {playerId}: {grenadeType}");
-
-            var broadcastMsg = RUDPMessageBuilder.CreateGrenadeThrow(
-                playerId,
-                new Vector2(posX, posY),
-                new Vector2(dirX, dirY),
-                grenadeType,
-                power);
-            SendJson(broadcastMsg);
-
-            SendJson(RUDPMessageBuilder.CreateObjectSpawned(
-                $"{playerId}_grenade_{DateTime.UtcNow.Ticks}",
-                grenadeType switch
-                {
-                    "Power" => "PowerGrenade",
-                    "Magnetic" => "MagneticGrenade",
-                    "Mine" => "MineGrenade",
-                    "Cluster" => "ClusterGrenade",
-                    "Fire" => "FireGrenade",
-                    "Smoke" => "SmokeGrenade",
-                    _ => "NormalGrenade"
-                },
-                new Vector2(posX, posY),
-                Mathf.Atan2(dirY, dirX) * Mathf.Rad2Deg));
         }
 
         /// <summary>
@@ -306,7 +285,7 @@ namespace OpenGS
         /// </summary>
         private void HandlePlayerShot(JObject json)
         {
-            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? "unknown";
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
             var posX = json["PosX"]?.ToObject<float>() ?? 0f;
             var posY = json["PosY"]?.ToObject<float>() ?? 0f;
             var dirX = json["DirX"]?.ToObject<float>() ?? 0f;
@@ -318,6 +297,24 @@ namespace OpenGS
             // テスト：他のクライアントにブロードキャスト（自分に返す）
             var broadcastMsg = RUDPMessageBuilder.CreatePlayerShot(playerId, new Vector2(posX, posY), new Vector2(dirX, dirY), weaponType);
             SendJson(broadcastMsg);
+        }
+
+        private void HandleGrenadeThrow(JObject json)
+        {
+            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            var posX = json["PosX"]?.ToObject<float>() ?? 0f;
+            var posY = json["PosY"]?.ToObject<float>() ?? 0f;
+            var dirX = json["DirX"]?.ToObject<float>() ?? 0f;
+            var dirY = json["DirY"]?.ToObject<float>() ?? 0f;
+            var grenadeType = json["GrenadeType"]?.ToString() ?? "Normal";
+
+            PrettyLogger.Bold("RUDP Server", $"GrenadeThrow from {playerId}: {grenadeType} at ({posX}, {posY}) dir({dirX}, {dirY})");
+
+            SendJson(RUDPMessageBuilder.CreateGrenadeThrow(
+                playerId,
+                new Vector2(posX, posY),
+                new Vector2(dirX, dirY),
+                grenadeType));
         }
 
         /// <summary>
@@ -429,39 +426,6 @@ namespace OpenGS
             });
         }
 
-        private void HandleFlagScoreUpdate(JObject json)
-        {
-            var redScore = json["RedTeamScore"]?.ToObject<int>() ?? 0;
-            var blueScore = json["BlueTeamScore"]?.ToObject<int>() ?? 0;
-            var eventKey = json["EventKey"]?.ToString();
-
-            PrettyLogger.Bold("RUDP Server", $"FlagScoreUpdate: Red={redScore}, Blue={blueScore}");
-
-            SendJson(new JObject
-            {
-                ["MessageType"] = RUDPMessageTypes.FlagScoreUpdate,
-                ["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey,
-                ["RedTeamScore"] = redScore,
-                ["BlueTeamScore"] = blueScore,
-                ["RedTeamFlags"] = json["RedTeamFlags"]?.ToObject<int>() ?? 0,
-                ["BlueTeamFlags"] = json["BlueTeamFlags"]?.ToObject<int>() ?? 0
-            });
-        }
-
-        private void HandleFlagEvent(JObject json)
-        {
-            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
-            var eventKey = json["EventKey"]?.ToString();
-
-            if (string.IsNullOrWhiteSpace(eventKey))
-            {
-                json["EventKey"] = Guid.NewGuid().ToString("N");
-            }
-
-            PrettyLogger.Bold("RUDP Server", $"FlagEvent: {messageType} {json}");
-            SendJson(json);
-        }
-
         private void HandlePlayerRespawn(JObject json)
         {
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
@@ -539,37 +503,6 @@ namespace OpenGS
             }
         }
 
-        private void HandleItemPickup(JObject json)
-        {
-            PrettyLogger.Bold("RUDP Server", $"ItemPickup received: {json}");
-
-            var itemType = json["ItemType"]?.ToString() ?? "";
-            var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? 0;
-            var playerId = json["PlayerId"]?.ToString() ?? "unknown";
-            var value = json["Value"]?.ToObject<float>() ?? 0f;
-            var duration = json["Duration"]?.ToObject<float>() ?? 0f;
-
-            if (string.Equals(itemType, OpenGSCore.EFieldItemType.PowerUpItem.ToString(), StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(itemType, OpenGSCore.EFieldItemType.DefenceUpItem.ToString(), StringComparison.OrdinalIgnoreCase))
-            {
-                itemServiceA.OnItemPickedUp();
-            }
-
-            SendJson(json);
-
-            SendJson(new JObject
-            {
-                ["MessageType"] = RUDPMessageTypes.ItemDespawn,
-                ["SpawnPointId"] = spawnPointId
-            });
-
-            var pickupEffect = BuildPickupEffect(playerId, itemType, value, duration);
-            if (pickupEffect != null)
-            {
-                SendJson(pickupEffect);
-            }
-        }
-
         private IEnumerable<JObject> BuildItemUseResponses(string playerId, EInstantItemType itemType)
         {
             switch (itemType)
@@ -587,19 +520,19 @@ namespace OpenGS
                     yield break;
 
                 case EInstantItemType.PowerGrenadePack:
-                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, EInstantItemType.PowerGrenadePack.ToString(), 0, 1f);
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
                     yield break;
 
                 case EInstantItemType.ClusterGrenadePack:
-                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, EInstantItemType.ClusterGrenadePack.ToString(), 0, 1f);
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
                     yield break;
 
                 case EInstantItemType.MagnetGrenadePack:
-                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, EInstantItemType.MagnetGrenadePack.ToString(), 0, 1f);
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
                     yield break;
 
                 case EInstantItemType.MineGrenadePack:
-                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, EInstantItemType.MineGrenadePack.ToString(), 0, 1f);
+                    yield return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, 1f);
                     yield break;
 
                 default:
@@ -663,17 +596,6 @@ namespace OpenGS
                         {
                             AdvanceDummyPlayerState();
                             SendJson(BuildDummyPlayerPositionUpdate());
-
-                            EFieldItemType? spawnedItem;
-                            var itemStateChange = itemServiceA.Update(1f, out spawnedItem);
-                            if (itemStateChange == FieldItemService.ESpawnState.Active && spawnedItem.HasValue)
-                            {
-                                SendJson(BuildItemSpawnNotification(spawnedItem.Value, 0));
-                            }
-                            else if (itemStateChange == FieldItemService.ESpawnState.Waiting)
-                            {
-                                SendJson(BuildItemDespawnNotification(0));
-                            }
                         }
 
                         // 120フレームごと（約2秒）にゲーム状態を送信
@@ -697,6 +619,27 @@ namespace OpenGS
 
             running = false;
             server?.Stop();
+            _replayTape.StopRecording();
+
+            if (!string.IsNullOrWhiteSpace(_lastReplayPath))
+            {
+                try
+                {
+                    _replayTape.Save(_lastReplayPath);
+                    PrettyLogger.Bold("Network", $"Server replay saved: {_lastReplayPath}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Server replay save failed: {ex.Message}");
+                }
+            }
+        }
+
+        private static string BuildReplayPath(int port)
+        {
+            var folder = Path.Combine(Application.persistentDataPath, "replays", "server");
+            var fileName = $"server-{DateTime.UtcNow:yyyyMMdd-HHmmss}-p{port}.jsonl";
+            return Path.Combine(folder, fileName);
         }
 
         private void AdvanceDummyPlayerState()
@@ -725,67 +668,6 @@ namespace OpenGS
             };
 
             return RUDPMessageBuilder.CreateGameStateSync(300 - frameCount / 60, scores);
-        }
-
-        private static JObject BuildItemSpawnNotification(EFieldItemType itemType, int spawnPointId)
-        {
-            var message = RUDPMessageBuilder.CreateItemSpawn(
-                spawnPointId.ToString(),
-                itemType.ToString(),
-                Vector2.zero);
-            message["SpawnPointId"] = spawnPointId;
-            return message;
-        }
-
-        private static JObject BuildItemDespawnNotification(int spawnPointId)
-        {
-            return new JObject
-            {
-                ["MessageType"] = RUDPMessageTypes.ItemDespawn,
-                ["SpawnPointId"] = spawnPointId
-            };
-        }
-
-        private static JObject BuildPickupEffect(string playerId, string itemType, float value, float duration)
-        {
-            if (string.IsNullOrWhiteSpace(itemType))
-            {
-                return null;
-            }
-
-            if (string.Equals(itemType, nameof(HealItem), StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(itemType, OpenGSCore.EFieldItemType.HealItem.ToString(), StringComparison.OrdinalIgnoreCase))
-            {
-                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "HpRecovery", 0, value > 0f ? value : 25f);
-            }
-
-            if (string.Equals(itemType, OpenGSCore.EFieldItemType.PowerUpItem.ToString(), StringComparison.OrdinalIgnoreCase))
-            {
-                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "PowerUpItem", Mathf.RoundToInt(duration > 0f ? duration : 30f), 0f);
-            }
-
-            if (string.Equals(itemType, OpenGSCore.EFieldItemType.DefenceUpItem.ToString(), StringComparison.OrdinalIgnoreCase))
-            {
-                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "DefenceUpItem", Mathf.RoundToInt(duration > 0f ? duration : 30f), 0f);
-            }
-
-            if (string.Equals(itemType, OpenGSCore.EFieldItemType.SpeedUpItem.ToString(), StringComparison.OrdinalIgnoreCase))
-            {
-                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "SpeedUpItem", Mathf.RoundToInt(duration > 0f ? duration : 30f), 0f);
-            }
-
-            if (string.Equals(itemType, OpenGSCore.EFieldItemType.StealthItem.ToString(), StringComparison.OrdinalIgnoreCase))
-            {
-                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "StealthItem", Mathf.RoundToInt(duration > 0f ? duration : 30f), 0f);
-            }
-
-            if (string.Equals(itemType, OpenGSCore.EFieldItemType.GrenadePack.ToString(), StringComparison.OrdinalIgnoreCase) ||
-                string.Equals(itemType, "NormalGrenadePackItem", StringComparison.OrdinalIgnoreCase))
-            {
-                return RUDPMessageBuilder.CreatePlayerBuff(playerId, "GrenadePack", 0, value > 0f ? value : 3f);
-            }
-
-            return null;
         }
 
 
