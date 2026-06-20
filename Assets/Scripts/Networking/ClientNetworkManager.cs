@@ -536,6 +536,7 @@ namespace OpenGS
             catch (Exception ex)
             {
                 Debug.LogError($"[ClientNetwork] Error parsing UDP message: {ex.Message}");
+            }
             finally
             {
                 reader.Recycle();

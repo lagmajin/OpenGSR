@@ -80,6 +80,7 @@ namespace OpenGS
         protected bool endFlag = false;
 
         protected bool isStarted = false;
+        protected bool isMatchTerminating = false;
 
         public GameGeneralManager GameManager { get => gameManager; set => gameManager = value; }
 
@@ -469,6 +470,38 @@ namespace OpenGS
             Debug.Log($"[{GetType().Name}] Time up!");
         }
 
+        /// <summary>
+        /// 終了処理の二重実行を防ぐための共通ガード。
+        /// すでに終了処理へ入っている場合は false を返す。
+        /// </summary>
+        protected bool TryBeginMatchEnd()
+        {
+            if (isMatchTerminating || endFlag)
+            {
+                return false;
+            }
+
+            isMatchTerminating = true;
+            endFlag = true;
+            CancelInvoke();
+            return true;
+        }
+
+        /// <summary>
+        /// 終了処理後のシーン遷移予約を統一して行う。
+        /// </summary>
+        protected void ScheduleResultSceneTransition(float delaySeconds)
+        {
+            CancelInvoke(nameof(GoToResult));
+            if (delaySeconds <= 0f)
+            {
+                GoToResult();
+                return;
+            }
+
+            Invoke(nameof(GoToResult), delaySeconds);
+        }
+
         IEnumerator OneSecCallback()
         {
             while (true)
@@ -757,6 +790,15 @@ namespace OpenGS
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
             var itemType = json["ItemType"]?.ToString() ?? "";
             var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? -1;
+            var value = json["Value"]?.ToObject<float>() ?? 0f;
+            var player = ResolvePlayerById(playerId);
+
+            if (player != null && value > 0f && (string.Equals(itemType, nameof(HealItem), StringComparison.OrdinalIgnoreCase) ||
+                                                  string.Equals(itemType, "HealthKit", StringComparison.OrdinalIgnoreCase)))
+            {
+                player.Heal(value);
+                Debug.Log($"[{GetType().Name}] Heal item applied: player={playerId}, value={value}, type={itemType}");
+            }
 
             if (spawnPointId >= 0 && ItemSpawnPoints.TryGetPoint(spawnPointId, out var spawnPoint))
             {

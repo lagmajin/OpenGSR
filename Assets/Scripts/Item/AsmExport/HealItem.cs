@@ -74,14 +74,22 @@ namespace OpenGS
         {
             var spawnPoint = point as ItemSpawnPoint ?? GetComponentInParent<ItemSpawnPoint>();
             var spawnPointId = spawnPoint != null ? spawnPoint.SpawnPointId : -1;
+            var playerId = player.UniqueID().ToString();
 
             NetworkEventSerializer.SerializeAndSend(new ItemPickupEvent(
-                player.UniqueID().ToString(),
+                playerId,
                 nameof(HealItem),
                 spawnPointId,
                 transform.position,
                 healAmount,
                 0f));
+
+            NetworkEventSerializer.SerializeAndSend(new BuffEvent(
+                playerId,
+                "HpRecovery",
+                0,
+                healAmount,
+                false));
         }
 
 
