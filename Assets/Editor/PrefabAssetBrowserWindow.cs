@@ -9,12 +9,22 @@ namespace OpenGS.EditorTools
     public sealed class PrefabAssetBrowserWindow : EditorWindow
     {
         private const string RootFolder = "Assets/Prefabs";
+        private const string ToolbarSearchTextFieldName = "ToolbarSeachTextField";
+        private const string ToolbarSearchCancelButtonName = "ToolbarSeachCancelButton";
+
+        private enum ViewMode
+        {
+            Compact = 0,
+            List = 1,
+            Grid = 2
+        }
 
         private readonly List<PrefabEntry> allEntries = new();
         private readonly List<PrefabEntry> filteredEntries = new();
 
         private string searchText = string.Empty;
         private string folderFilter = RootFolder;
+        private ViewMode viewMode = ViewMode.Compact;
         private Vector2 scroll;
 
         [MenuItem("OpenGSR/Tools/Prefab Browser")]
@@ -94,7 +104,18 @@ namespace OpenGS.EditorTools
             }
             else
             {
-                DrawGrid();
+                switch (viewMode)
+                {
+                    case ViewMode.Compact:
+                        DrawCompactList();
+                        break;
+                    case ViewMode.List:
+                        DrawListView();
+                        break;
+                    default:
+                        DrawGrid();
+                        break;
+                }
             }
 
             EditorGUILayout.EndScrollView();
@@ -119,18 +140,25 @@ namespace OpenGS.EditorTools
 
                 GUILayout.Space(8);
                 GUILayout.Label("Search", GUILayout.Width(45));
-                var newSearch = GUILayout.TextField(searchText, GUI.skin.FindStyle("ToolbarSeachTextField") ?? EditorStyles.toolbarTextField, GUILayout.MinWidth(160));
+                var newSearch = GUILayout.TextField(searchText, GUI.skin.FindStyle(ToolbarSearchTextFieldName) ?? EditorStyles.toolbarTextField, GUILayout.MinWidth(160));
                 if (newSearch != searchText)
                 {
                     searchText = newSearch;
                     RebuildFiltered();
                 }
 
-                if (GUILayout.Button(string.Empty, GUI.skin.FindStyle("ToolbarSeachCancelButton") ?? EditorStyles.toolbarButton, GUILayout.Width(18)))
+                if (GUILayout.Button(string.Empty, GUI.skin.FindStyle(ToolbarSearchCancelButtonName) ?? EditorStyles.toolbarButton, GUILayout.Width(18)))
                 {
                     searchText = string.Empty;
                     RebuildFiltered();
                     GUI.FocusControl(null);
+                }
+
+                GUILayout.Space(8);
+                var nextViewMode = (ViewMode)GUILayout.Toolbar((int)viewMode, new[] { "Compact", "List", "Grid" }, EditorStyles.toolbarButton, GUILayout.Width(220));
+                if (nextViewMode != viewMode)
+                {
+                    viewMode = nextViewMode;
                 }
 
                 GUILayout.FlexibleSpace();
@@ -152,6 +180,48 @@ namespace OpenGS.EditorTools
             }
 
             return folders;
+        }
+
+        private void DrawCompactList()
+        {
+            foreach (var entry in filteredEntries)
+            {
+                using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+                {
+                    var preview = entry.Preview ?? AssetPreview.GetMiniThumbnail(entry.Asset);
+                    GUILayout.Label(preview != null ? preview : EditorGUIUtility.IconContent("Prefab Icon").image, GUILayout.Width(24), GUILayout.Height(24));
+
+                    if (GUILayout.Button(entry.Name, EditorStyles.label))
+                    {
+                        SelectEntry(entry);
+                    }
+
+                    GUILayout.FlexibleSpace();
+                    GUILayout.Label(entry.Path, EditorStyles.miniLabel);
+                }
+            }
+        }
+
+        private void DrawListView()
+        {
+            foreach (var entry in filteredEntries)
+            {
+                using (new EditorGUILayout.HorizontalScope(EditorStyles.helpBox))
+                {
+                    var preview = entry.Preview ?? AssetPreview.GetMiniThumbnail(entry.Asset);
+                    GUILayout.Label(preview != null ? preview : EditorGUIUtility.IconContent("Prefab Icon").image, GUILayout.Width(48), GUILayout.Height(48));
+
+                    using (new EditorGUILayout.VerticalScope())
+                    {
+                        if (GUILayout.Button(entry.Name, EditorStyles.boldLabel))
+                        {
+                            SelectEntry(entry);
+                        }
+
+                        EditorGUILayout.LabelField(entry.Path, EditorStyles.miniLabel);
+                    }
+                }
+            }
         }
 
         private void DrawGrid()
@@ -215,11 +285,16 @@ namespace OpenGS.EditorTools
             }
             else
             {
-                Selection.activeObject = entry.Asset;
-                EditorGUIUtility.PingObject(entry.Asset);
+                SelectEntry(entry);
             }
 
             evt.Use();
+        }
+
+        private void SelectEntry(PrefabEntry entry)
+        {
+            Selection.activeObject = entry.Asset;
+            EditorGUIUtility.PingObject(entry.Asset);
         }
 
         private sealed class PrefabEntry
