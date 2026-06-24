@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TMPro;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using OpenGSCore;
 
@@ -48,6 +49,10 @@ namespace OpenGS
 
         [Header("Auto Close")]
         [SerializeField, Min(0f)] private float autoCloseDelaySeconds = 5f;
+
+        [Header("Click Behavior")]
+        [SerializeField] private bool singleClickFocusEnabled = true;
+        [SerializeField] private bool doubleClickCloseEnabled = true;
 
         public Action<IReadOnlyList<EWeaponType>> OnLeftSelectionConfirmed;
         public Action<IReadOnlyList<eWeaponType>> OnRightSelectionConfirmed;
@@ -236,14 +241,13 @@ namespace OpenGS
                     continue;
                 }
 
-                if (isLeft)
+                var relay = slot.selectButton.GetComponent<WeaponSelectDialogSlotClickRelay>();
+                if (relay == null)
                 {
-                    slot.selectButton.onClick.AddListener(() => OnLeftSlotClicked(slotIndex));
+                    relay = slot.selectButton.gameObject.AddComponent<WeaponSelectDialogSlotClickRelay>();
                 }
-                else
-                {
-                    slot.selectButton.onClick.AddListener(() => OnRightSlotClicked(slotIndex));
-                }
+
+                relay.Configure(this, slotIndex, isLeft);
             }
         }
 
@@ -362,7 +366,7 @@ namespace OpenGS
             }
         }
 
-        private void OnLeftSlotClicked(int index)
+        public void OnLeftSlotClicked(int index)
         {
             if (index < 0 || index >= leftWeapons.Count)
             {
@@ -377,13 +381,15 @@ namespace OpenGS
 
             selectedLeftIndex = index;
             RefreshUI();
-
-            UserSaveManager.ToggleFavoriteWeapon(weapon.ToString());
-            RefreshData();
-            RefreshUI();
+            if (!singleClickFocusEnabled)
+            {
+                UserSaveManager.ToggleFavoriteWeapon(weapon.ToString());
+                RefreshData();
+                RefreshUI();
+            }
         }
 
-        private void OnRightSlotClicked(int index)
+        public void OnRightSlotClicked(int index)
         {
             if (!allowRightSideBanToggle)
             {
@@ -402,9 +408,101 @@ namespace OpenGS
             }
 
             selectedRightIndex = index;
-            matchRoomManager.WeaponLimit.Toggle(weapon);
+            RefreshUI();
+            if (!singleClickFocusEnabled)
+            {
+                matchRoomManager.WeaponLimit.Toggle(weapon);
+                UpdateStatusText();
+            }
+        }
+
+        public void OnLeftSlotDoubleClicked(int index)
+        {
+            SelectLeftSlot(index);
+            if (doubleClickCloseEnabled)
+            {
+                ConfirmAndClose();
+            }
+        }
+
+        public void OnRightSlotDoubleClicked(int index)
+        {
+            SelectRightSlot(index);
+            if (doubleClickCloseEnabled)
+            {
+                ConfirmAndClose();
+            }
+        }
+
+        public void SetClickBehavior(bool enableSingleClickFocus, bool enableDoubleClickClose)
+        {
+            singleClickFocusEnabled = enableSingleClickFocus;
+            doubleClickCloseEnabled = enableDoubleClickClose;
+        }
+
+        private void SelectLeftSlot(int index)
+        {
+            if (index < 0 || index >= leftWeapons.Count)
+            {
+                return;
+            }
+
+            var weapon = leftWeapons[index];
+            if (weapon == EWeaponType.None || IsBanned(weapon))
+            {
+                return;
+            }
+
+            selectedLeftIndex = index;
+            RefreshUI();
+        }
+
+        private void SelectRightSlot(int index)
+        {
+            if (!allowRightSideBanToggle)
+            {
+                return;
+            }
+
+            if (index < 0 || index >= rightWeapons.Count)
+            {
+                return;
+            }
+
+            var weapon = rightWeapons[index];
+            if (weapon == eWeaponType.None || matchRoomManager == null)
+            {
+                return;
+            }
+
+            selectedRightIndex = index;
+            RefreshUI();
+        }
+
+        private void ConfirmAndClose()
+        {
+            if (selectedLeftIndex >= 0 && selectedLeftIndex < leftWeapons.Count)
+            {
+                var leftWeapon = leftWeapons[selectedLeftIndex];
+                if (leftWeapon != EWeaponType.None && !IsBanned(leftWeapon))
+                {
+                    UserSaveManager.ToggleFavoriteWeapon(leftWeapon.ToString());
+                    RefreshData();
+                }
+            }
+
+            if (selectedRightIndex >= 0 && selectedRightIndex < rightWeapons.Count && matchRoomManager != null)
+            {
+                var rightWeapon = rightWeapons[selectedRightIndex];
+                if (rightWeapon != eWeaponType.None)
+                {
+                    matchRoomManager.WeaponLimit.Toggle(rightWeapon);
+                }
+            }
+
             RefreshUI();
             UpdateStatusText();
+            Close();
         }
 
         private void Close()
@@ -475,5 +573,49 @@ namespace OpenGS
             return mapped;
         }
 
+    }
+
+    public sealed class WeaponSelectDialogSlotClickRelay : MonoBehaviour, IPointerClickHandler
+    {
+        private WeaponSelectDialog dialog;
+        private int slotIndex;
+        private bool isLeft;
+
+        public void Configure(WeaponSelectDialog owner, int index, bool leftSide)
+        {
+            dialog = owner;
+            slotIndex = index;
+            isLeft = leftSide;
+        }
+
+        public void OnPointerClick(PointerEventData eventData)
+        {
+            if (dialog == null || eventData == null || eventData.button != PointerEventData.InputButton.Left)
+            {
+                return;
+            }
+
+            if (eventData.clickCount >= 2)
+            {
+                if (isLeft)
+                {
+                    dialog.OnLeftSlotDoubleClicked(slotIndex);
+                }
+                else
+                {
+                    dialog.OnRightSlotDoubleClicked(slotIndex);
+                }
+                return;
+            }
+
+            if (isLeft)
+            {
+                dialog.OnLeftSlotClicked(slotIndex);
+            }
+            else
+            {
+                dialog.OnRightSlotClicked(slotIndex);
+            }
+        }
     }
 }

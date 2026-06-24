@@ -279,44 +279,6 @@ namespace OpenGS
                 testPlayerRotation));
         }
 
-        private void HandlePlayerInput(JObject json)
-        {
-            // プレイヤー入力を受け取ったら、他のクライアントにブロードキャスト（今は自分に返す）
-            PrettyLogger.Bold("RUDP Server", $"PlayerInput received: {json}");
-        }
-
-        private void HandleClientConnect(JObject json)
-        {
-            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "unknown";
-            PrettyLogger.Bold("RUDP Server", $"ClientConnect from {playerId}");
-
-            SendJson(new JObject
-            {
-                ["MessageType"] = "MatchJoined",
-                ["RoomID"] = "local-test-room",
-                ["PlayerID"] = playerId
-            });
-        }
-
-        private void HandlePlayerMove(JObject json)
-        {
-            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "unknown";
-            var posX = json["PosX"]?.ToObject<float>() ?? testPlayerX;
-            var posY = json["PosY"]?.ToObject<float>() ?? testPlayerY;
-            var velX = json["VelX"]?.ToObject<float>() ?? 0f;
-            var velY = json["VelY"]?.ToObject<float>() ?? 0f;
-
-            PrettyLogger.Bold("RUDP Server", $"PlayerMove from {playerId}: pos({posX}, {posY}) vel({velX}, {velY})");
-
-            testPlayerX = posX;
-            testPlayerY = posY;
-
-            SendJson(RUDPMessageBuilder.CreatePlayerPositionUpdate(
-                playerId,
-                new Vector2(posX, posY),
-                testPlayerRotation));
-        }
-
         private void HandleShootRequest(JObject json)
         {
             // 射撃リクエストを受け取ったら、射撃イベントを全クライアントに通知
@@ -494,6 +456,18 @@ namespace OpenGS
                 ["PosX"] = posX,
                 ["PosY"] = posY
             });
+        }
+
+        private void HandleFlagScoreUpdate(JObject json)
+        {
+            PrettyLogger.Bold("RUDP Server", $"FlagScoreUpdate: {json}");
+            SendJson(json);
+        }
+
+        private void HandleFlagEvent(JObject json)
+        {
+            PrettyLogger.Bold("RUDP Server", $"FlagEvent: {json}");
+            SendJson(json);
         }
 
         private void TryBroadcastMatchEnd()
@@ -676,7 +650,7 @@ namespace OpenGS
             {
                 if (!string.IsNullOrWhiteSpace(_lastReplayPath))
                 {
-                    NetworkReplayFileStore.Save(_lastReplayPath, _replayTape.StopRecording("server", "LocalTestMatch"));
+                    ReplayFileStore.Save(_lastReplayPath, _replayTape.StopRecording("server", "LocalTestMatch"));
                     PrettyLogger.Bold("Network", $"Server replay saved: {_lastReplayPath}");
                 }
             }

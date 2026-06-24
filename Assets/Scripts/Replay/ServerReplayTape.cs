@@ -48,7 +48,7 @@ namespace OpenGS
 
         public void Save(string filePath, string source, string sceneName)
         {
-            NetworkReplayFileStore.Save(filePath, StopRecording(source, sceneName));
+            ReplayFileStore.Save(filePath, StopRecording(source, sceneName));
         }
 
         void Record(string direction, JObject message)

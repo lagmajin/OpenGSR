@@ -69,7 +69,6 @@ namespace OpenGS
 
         protected override void OnTimeUp()
         {
-            if (endFlag) return;
             Debug.Log("[TDM] Time up!");
             var winningTeam = redTeamKills >= blueTeamKills ? "Red" : "Blue";
             HandleMatchEnd(new Newtonsoft.Json.Linq.JObject
@@ -478,6 +477,11 @@ namespace OpenGS
 
         private void HandleMatchEnd(JObject json)
         {
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
+
             var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
 
@@ -487,7 +491,7 @@ namespace OpenGS
                 StoreOfflineMatchResult(winningTeam, myTeam);
             }
             OnMatchEnded?.Invoke(Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
-            GoToResultScene();
+            ScheduleResultSceneTransition(0f);
         }
 
         private void StoreOfflineMatchResult(string winningTeam, string myTeam)

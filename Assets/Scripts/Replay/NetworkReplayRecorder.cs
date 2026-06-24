@@ -5,6 +5,26 @@ using UnityEngine;
 
 namespace OpenGS
 {
+    [Serializable]
+    public sealed class NetworkReplayFrame
+    {
+        public long elapsedMs;
+        public string direction = string.Empty;
+        public string messageType = string.Empty;
+        public JObject message = new JObject();
+    }
+
+    [Serializable]
+    public sealed class NetworkReplayRecording
+    {
+        public int formatVersion = 1;
+        public string source = "client";
+        public string gameVersion = string.Empty;
+        public string sceneName = string.Empty;
+        public string recordedAtUtc = string.Empty;
+        public System.Collections.Generic.List<NetworkReplayFrame> frames = new System.Collections.Generic.List<NetworkReplayFrame>();
+    }
+
     /// <summary>
     /// クライアント側の受信 UDP を記録する軽量レコーダー。
     /// </summary>
@@ -81,12 +101,12 @@ namespace OpenGS
                 throw new InvalidOperationException("No active replay recording.");
             }
 
-            NetworkReplayFileStore.Save(filePath, recording);
+            ReplayFileStore.Save(filePath, recording);
         }
 
         public static NetworkReplayRecording Load(string filePath)
         {
-            return NetworkReplayFileStore.Load(filePath);
+            return ReplayFileStore.LoadNetworkReplay(filePath);
         }
 
         static void Record(string direction, JObject message)

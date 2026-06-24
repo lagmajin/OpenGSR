@@ -166,11 +166,14 @@ namespace OpenGS
 
         private void ForceGameEnd(string winningTeam)
         {
-            endFlag = true;
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
             var myLabel = ResolveLocalTeamName();
             Debug.Log($"[TSUV] Force game end: winner={winningTeam}, myTeam={myLabel}");
             StoreOfflineMatchResult(winningTeam, myLabel);
-            GoToResult();
+            ScheduleResultSceneTransition(0f);
         }
 
         /// <summary>
@@ -211,14 +214,13 @@ namespace OpenGS
 
         protected override void OnTimeUp()
         {
-            if (endFlag) return;
+            if (!TryBeginMatchEnd()) return;
             Debug.Log("[TSUV] Time up!");
-            endFlag = true;
             string winningTeam = redAliveCount > blueAliveCount ? "Red" : (blueAliveCount > redAliveCount ? "Blue" : "Draw");
             var myLabel = ResolveLocalTeamName();
             OnMatchEnded?.Invoke(System.Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
             StoreOfflineMatchResult(winningTeam, myLabel);
-            Invoke(nameof(GoToResultScene), gotoResultSceneWaitTime);
+            ScheduleResultSceneTransition(gotoResultSceneWaitTime);
         }
 
         /// <summary>
@@ -231,9 +233,14 @@ namespace OpenGS
 
             // 両チームの生存者がいる場合は継続
             if (redAliveCount > 0 && blueAliveCount > 0)
+            {
                 return;
+            }
 
-            endFlag = true;
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
 
             string winningTeam = redAliveCount > 0 ? "Red" : (blueAliveCount > 0 ? "Blue" : "Draw");
             var myLabel = ResolveLocalTeamName();
@@ -242,7 +249,7 @@ namespace OpenGS
             OnMatchEnded?.Invoke(Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
 
             StoreOfflineMatchResult(winningTeam, myLabel);
-            Invoke(nameof(GoToResultScene), gotoResultSceneWaitTime);
+            ScheduleResultSceneTransition(gotoResultSceneWaitTime);
         }
 
         public override void OnMyPlayerDead()
@@ -395,7 +402,10 @@ namespace OpenGS
 
         private void HandleMatchEnd(JObject json)
         {
-            endFlag = true;
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
 
             var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
@@ -406,7 +416,7 @@ namespace OpenGS
                 StoreOfflineMatchResult(winningTeam, myTeam);
 
             OnMatchEnded?.Invoke(Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
-            Invoke(nameof(GoToResultScene), gotoResultSceneWaitTime);
+            ScheduleResultSceneTransition(gotoResultSceneWaitTime);
         }
 
         private void StoreOfflineMatchResult(string winningTeam, string myTeam)

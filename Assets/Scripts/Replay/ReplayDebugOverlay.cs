@@ -69,7 +69,7 @@ namespace OpenGS
             }
 
             var path = ResolveReplayPath();
-            NetworkReplayFileStore.Save(path, recording);
+            ReplayFileStore.Save(path, recording);
             Debug.Log($"[ReplayDebugOverlay] Saved replay: {path}");
         }
 
@@ -82,7 +82,7 @@ namespace OpenGS
                 return;
             }
 
-            loadedRecording = NetworkReplayFileStore.Load(path);
+            loadedRecording = ReplayFileStore.LoadNetworkReplay(path);
             Debug.Log($"[ReplayDebugOverlay] Loaded replay: {path}, frames={loadedRecording.frames.Count}");
         }
 
@@ -155,7 +155,7 @@ namespace OpenGS
         {
             if (string.IsNullOrWhiteSpace(replayFileName))
             {
-                return NetworkReplayFileStore.BuildDefaultClientReplayPath();
+                return ReplayFileStore.BuildDefaultClientReplayPath();
             }
 
             if (Path.IsPathRooted(replayFileName))
@@ -163,7 +163,7 @@ namespace OpenGS
                 return replayFileName;
             }
 
-            return NetworkReplayFileStore.BuildDefaultClientReplayPath(replayFileName);
+            return ReplayFileStore.BuildDefaultClientReplayPath(replayFileName);
         }
     }
 }

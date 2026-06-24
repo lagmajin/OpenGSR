@@ -487,12 +487,10 @@ namespace OpenGS
 
         protected override void OnTimeUp()
         {
-            if (endFlag) return;
             Debug.Log("[CTF] Time up!");
             var room = ResolveCurrentMatchRoom();
             var redScore = room?.MatchData?.RedTeamFlagScore ?? 0;
             var blueScore = room?.MatchData?.BlueTeamFlagScore ?? 0;
-            endFlag = true;
             HandleMatchEndFromScores(redScore, blueScore);
         }
 
@@ -960,6 +958,11 @@ namespace OpenGS
 
         private void HandleMatchEnd(JObject json)
         {
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
+
             var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
 
@@ -975,8 +978,7 @@ namespace OpenGS
             {
                 StoreOfflineMatchResult(winningTeam, myTeam);
             }
-            CancelInvoke(nameof(GoToResultScene));
-            Invoke(nameof(GoToResultScene), gotoResultSceneWaitTime);
+            ScheduleResultSceneTransition(gotoResultSceneWaitTime);
         }
 
         private void StoreOfflineMatchResult(string winningTeam, string myTeam)

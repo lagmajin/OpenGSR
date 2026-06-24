@@ -169,7 +169,10 @@ namespace OpenGS
 
         void GameEnd()
         {
-            endFlag = true;
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
 
             var canvasIf = uiManager != null ? uiManager.GetComponent(typeof(IBattleSceneUIManager)) as IBattleSceneUIManager : null;
             var result = StoreOfflineMatchResult();
@@ -192,8 +195,7 @@ namespace OpenGS
             }
 
             Debug.Log("GameEnd");
-
-            Invoke("GoToResult", gotoResultSceneWaitTime);
+            ScheduleResultSceneTransition(gotoResultSceneWaitTime);
 
         }
 
@@ -373,12 +375,15 @@ namespace OpenGS
 
         private void HandleMatchEnd(JObject json)
         {
-            endFlag = true;
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
 
             var (winningLabel, myLabel) = ResolveMatchOutcome(json);
 
             Debug.Log($"[DM] Match ended: winner={winningLabel}, myTeam={myLabel}");
-            GoToResult();
+            ScheduleResultSceneTransition(0f);
         }
 
         public override void OnStartUnityEditor()
