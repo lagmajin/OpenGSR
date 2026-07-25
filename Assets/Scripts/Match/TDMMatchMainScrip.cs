@@ -132,8 +132,11 @@ namespace OpenGS
                 var spawnSource = team == ETeam.Red ? redTeamRespawnPoints : blueTeamRespawnPoint;
                 var spawnPos = GetRandomSpawnPoint(spawnSource, team);
 
+                // Use the character selected by this room player.  The old code
+                // always spawned Misty, which hid missing character-prefab
+                // registrations and made the scene-placed Ami look necessary.
                 var prefab = prefabMasterData != null
-                    ? prefabMasterData.SearchPlayerPrefab(OpenGSCore.EPlayerCharacter.Misty.ToString())
+                    ? prefabMasterData.SearchPlayerPrefab(info.playerCharacter)
                     : null;
 
                 if (prefab == null)
@@ -153,6 +156,14 @@ namespace OpenGS
                     player.SetTeam(team);
                     AttachPlayerId(playerObj, info.Id);
                     player.OnSpawn();
+                }
+                else if (playerObj.TryGetComponent<PlayerAgent>(out var playableAgent))
+                {
+                    // Playable character prefabs use PlayerAgent rather than
+                    // the legacy AbstractPlayer hierarchy. Keep remote spawn
+                    // identity and lifecycle wiring for that path as well.
+                    playableAgent.SetPlayerType(EPlayerType.OtherPlayer);
+                    AttachPlayerId(playerObj, info.Id);
                 }
 
                 spawnCount++;

@@ -9,20 +9,27 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 63c44aaf6aa3a7a4caf76e24055f0782, type: 3}
+  m_Script: {fileID: 11500000, guid: 1e9b2c0be494c9f44846a05dca396da2, type: 3}
   m_Name: PlayerPrefabMasterData
   m_EditorClassIdentifier: 
-  amiPrefab: {fileID: 191332911140184892, guid: 25d2d2c4ff6be004299a4151f2ab0900,
-    type: 3}
-  yumiPrefab: {fileID: 0}
-  maryPrefab: {fileID: 0}
-  seoulPrefab: {fileID: 0}
-  littleJPrefab: {fileID: 0}
-  liuPrefab: {fileID: 0}
-  mistyPrefab: {fileID: 0}
-  wyburnPrefab: {fileID: 0}
-  jackPrefab: {fileID: 0}
-  jackallPrefab: {fileID: 0}
-  wolfPrefab: {fileID: 0}
-  LiuPrefab: {fileID: 0}
-  shuePrefab: {fileID: 0}
+  defaultPrefab: {fileID: 8932534833986542649, guid: 6721316fc1c69154bbb2c77ddbbb8f53, type: 3}
+  mistyPrefab: {fileID: 8932534833986542649, guid: 0f3c09be631b1e948a74f64a83baa6c2, type: 3}
+  characterPrefabs:
+  - character: 0
+    prefab: {fileID: 8932534833986542649, guid: 6721316fc1c69154bbb2c77ddbbb8f53, type: 3}
+  - character: 1
+    prefab: {fileID: 8932534833986542649, guid: 842dd7911cf055f449d7f94037b88329, type: 3}
+  - character: 2
+    prefab: {fileID: 8932534833986542649, guid: 461d6851c6c8af248a5ac14ca1e19226, type: 3}
+  - character: 4
+    prefab: {fileID: 8932534833986542649, guid: 0f3c09be631b1e948a74f64a83baa6c2, type: 3}
+  - character: 3
+    prefab: {fileID: 8932534833986542649, guid: 6721316fc1c69154bbb2c77ddbbb8f53, type: 3}
+  - character: 8
+    prefab: {fileID: 8932534833986542649, guid: 6721316fc1c69154bbb2c77ddbbb8f53, type: 3}
+  - character: 9
+    prefab: {fileID: 8932534833986542649, guid: 6721316fc1c69154bbb2c77ddbbb8f53, type: 3}
+  - character: 10
+    prefab: {fileID: 8932534833986542649, guid: 6721316fc1c69154bbb2c77ddbbb8f53, type: 3}
+  - character: 12
+    prefab: {fileID: 8932534833986542649, guid: 6721316fc1c69154bbb2c77ddbbb8f53, type: 3}

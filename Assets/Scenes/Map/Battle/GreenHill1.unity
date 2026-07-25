@@ -959,7 +959,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &161566535
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1547,7 +1547,7 @@ GameObject:
   - component: {fileID: 230346292}
   - component: {fileID: 230346289}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: PlayerName
   m_TagString: Ui
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1708,15 +1708,15 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 230346288}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -2.59}
+  m_LocalPosition: {x: 0, y: 0, z: -2.6400306}
   m_LocalScale: {x: 3.4389045, y: 2.5969572, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1199063277}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -3.2551, y: 1.088}
+  m_AnchoredPosition: {x: 2.4727042, y: 1.3521371}
   m_SizeDelta: {x: 0.8554, y: 0.192}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &230346292
@@ -6469,7 +6469,8 @@ Transform:
   m_LocalPosition: {x: -5.7278047, y: -0.264137, z: 0.050030775}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 230346291}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1199063278
@@ -10345,6 +10346,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1758015532}
   - component: {fileID: 1758015531}
+  - component: {fileID: 1758015533}
   m_Layer: 0
   m_Name: '#SceneContext'
   m_TagString: Untagged
@@ -10365,7 +10367,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scriptableObjectInstallers: []
-  _monoInstallers: []
+  _monoInstallers:
+  - {fileID: 1758015533}
   _installerPrefabs: []
   _autoRun: 1
   OnPreInstall:
@@ -10383,6 +10386,19 @@ MonoBehaviour:
   _parentNewObjectsUnderSceneContext: 0
   _contractNames: []
   _parentContractNames: []
+--- !u!114 &1758015533
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758015530}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2052a59f3c10dfa42b4d4f5d55bf3c09, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: OpenGSR::OpenGS.GameInstaller
+  onlineLoadingSceneManagerGO: {fileID: 0}
 --- !u!4 &1758015532
 Transform:
   m_ObjectHideFlags: 0
@@ -13125,7 +13141,6 @@ SceneRoots:
   - {fileID: 1199063277}
   - {fileID: 161566538}
   - {fileID: 1386908531}
-  - {fileID: 230346291}
   - {fileID: 828103155}
   - {fileID: 636575328}
   - {fileID: 151418215}

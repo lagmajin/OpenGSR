@@ -9,12 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e667b32ef96c19344964b08314ee257e, type: 3}
+  m_Script: {fileID: 11500000, guid: d74f4830f7329ec4ea0fa6e5ab666e30, type: 3}
   m_Name: AllGrenadeListMasterData
   m_EditorClassIdentifier: 
-  normalGrenade: {fileID: 11400000, guid: d210622797abf0b48a8ea812f7be95e3, type: 2}
-  fireGrenade: {fileID: 11400000, guid: 57b590b45fc5fc54a8c6726c1d1ed79b, type: 2}
-  magneticGrenade: {fileID: 11400000, guid: a49b6adc8a8d0304fb78328924d13fec, type: 2}
-  mineGrenade: {fileID: 11400000, guid: 6d5bb6d476e71ff499af42420c9da930, type: 2}
-  powerGrenade: {fileID: 11400000, guid: fe4f4ea19f103884aa028cac0a09f78c, type: 2}
-  clusterGrenade: {fileID: 11400000, guid: 261f4a41ca88ddd4bbb64568421cb6b6, type: 2}
+  dataList:
+  - Name: NormalGrenade
+    GrenadePrefab: {fileID: 2562133398872187811, guid: f550a79ea00232b44a4482fb1324e49a, type: 3}

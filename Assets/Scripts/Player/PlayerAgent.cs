@@ -109,6 +109,26 @@ namespace OpenGS
         public int NormalGrenadeCount => normalGrenadeCount;
         public Vector3 StandingBobOffset => GetStandingBobOffset();
 
+        public bool TryConsumeNormalGrenade()
+        {
+            if (normalGrenadeCount <= 0)
+            {
+                return false;
+            }
+
+            normalGrenadeCount--;
+            return true;
+        }
+
+        public void RefillNormalGrenadeIfEmpty()
+        {
+            if (normalGrenadeCount <= 0)
+            {
+                normalGrenadeCount = 3;
+                Debug.Log("[PlayerAgent] Normal grenades refilled on spawn/respawn.");
+            }
+        }
+
         void Start()
         {
             AutoBindColliders();

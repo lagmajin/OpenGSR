@@ -239,9 +239,9 @@ namespace OpenGS
                 return null;
             }
 
-            // 装備データからキャラクターIDを取得（未設定ならMisty）
+            // 装備データからキャラクターIDを取得（未設定ならAmi）
             string charId = UserSaveManager.GetEquippedId(EShopCategory.Character);
-            if (string.IsNullOrEmpty(charId)) charId = EPlayerCharacter.Misty.ToString();
+            if (string.IsNullOrEmpty(charId)) charId = EPlayerCharacter.Ami.ToString();
 
             // プレハブの検索
             var prefab = prefabMasterData.SearchPlayerPrefab(charId);
@@ -1100,6 +1100,18 @@ namespace OpenGS
                 if (prefabMasterData == null)
                 {
                     prefabMasterData = Resources.Load<PlayerPrefabMasterData>("MasterData/Player/PlayerPrefabMasterData");
+
+                    // Some battle scenes override the serialized reference with
+                    // an empty value. Keep player creation independent from that
+                    // scene override and recover from the Resources folder.
+                    if (prefabMasterData == null)
+                    {
+                        var candidates = Resources.LoadAll<PlayerPrefabMasterData>("MasterData/Player");
+                        if (candidates != null && candidates.Length > 0)
+                        {
+                            prefabMasterData = candidates[0];
+                        }
+                    }
                 }
             }
 

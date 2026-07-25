@@ -24,6 +24,8 @@ namespace OpenGS
  .FromComponentInHierarchy()
  .AsSingle();
             Container.Bind<UnityInputService>().AsSingle();
+            Container.Bind<VirtualInputService>().AsSingle();
+            Container.Bind<IInputService>().To<VirtualInputService>().FromResolve().AsSingle();
             Container.Bind<ReplaySession>().AsSingle();
             Container.BindInterfacesAndSelfTo<ReplayInputService>().AsSingle();
             // ClientSessionData をシングルトンとして登録

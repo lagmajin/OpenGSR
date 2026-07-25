@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7000000000000000001}
   - component: {fileID: 7000000000000000002}
   - component: {fileID: 7782948471924381001}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: NormalGrenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -37,7 +37,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1910790476358514904
 SpriteRenderer:
-  serializedVersion: 2
+  serializedVersion: 3
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -61,7 +61,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 65ccf955a456abe4ca4da1c2ea2de9e3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -94,6 +94,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_SpriteSortPoint: 0
+  m_BlendShapeWeights: []
 --- !u!60 &7000000000000000001
 PolygonCollider2D:
   m_ObjectHideFlags: 0
@@ -191,6 +192,13 @@ MonoBehaviour:
   collisionRadius: 0.08
   hitMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 256
   spriteAngleOffset: 0
   alignToVelocity: 1
+  spawnChildProjectiles: 0
+  childProjectilePrefab: {fileID: 0}
+  childProjectileCount: 0
+  childLaunchSpeed: 8
+  childSpreadAngle: 45
+  childDamageMultiplier: 0.35
+  childFuseTime: 1.25

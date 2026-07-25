@@ -36,6 +36,8 @@ namespace OpenGS
             {
                 throwPoint = transform; // 設定されてなければ自身の位置から
             }
+
+            GetComponent<PlayerAgent>()?.RefillNormalGrenadeIfEmpty();
         }
 
         void Update()
@@ -120,23 +122,44 @@ namespace OpenGS
         public void ThrowGrenade(float powerMultiplier)
         {
             var owner = GetComponent<AbstractPlayer>();
+            var playableAgent = GetComponent<PlayerAgent>();
+            var consumedPlayableGrenade = false;
             if (owner != null)
             {
                 if (owner.Status == null)
                 {
-                    Debug.LogWarning("プレイヤーステータスが見つかりません");
-                    return;
+                    // PlayerAgent-only playable prefabs do not use the legacy
+                    // AbstractPlayer status component. Allow local preview
+                    // throws while keeping normal ammo consumption intact when
+                    // an AbstractPlayer is present.
+                    Debug.LogWarning("プレイヤーステータスが見つからないため、プレビュー投擲として実行します。");
                 }
-
-                if (!owner.Status.UseGrenade(grenadeType))
+                else if (!owner.Status.UseGrenade(grenadeType))
                 {
                     Debug.Log($"選択中のグレネード({grenadeType})の残弾がありません。");
                     return;
                 }
             }
+            else if (playableAgent != null && grenadeType == EGrenadeType.Normal)
+            {
+                if (!playableAgent.TryConsumeNormalGrenade())
+                {
+                    Debug.Log("[PlayerGrenadeComponent] No normal grenades remaining.");
+                    return;
+                }
+
+                consumedPlayableGrenade = true;
+            }
 
             var grenadeData = ResolveGrenadeEntry();
-            if (grenadeData == null || grenadeData.GrenadePrefab == null) return;
+            if (grenadeData == null || grenadeData.GrenadePrefab == null)
+            {
+                if (consumedPlayableGrenade)
+                {
+                    playableAgent.RefillGrenade(EGrenadeType.Normal, playableAgent.NormalGrenadeCount + 1);
+                }
+                return;
+            }
 
             var facingDir = transform.localScale.x < 0f ? Vector2.left : Vector2.right;
             var throwDir = (facingDir + Vector2.up * 0.5f).normalized;

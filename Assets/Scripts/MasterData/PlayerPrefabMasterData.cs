@@ -60,6 +60,11 @@ namespace OpenGS
                 }
             }
 
+            // Keep character spawning resilient while the serialized roster is being rebuilt.
+            // The generated playable prefabs live outside Resources, so load them through the
+            // editor/runtime asset reference only when they are already registered; otherwise
+            // use the known-good default instead of failing the whole match.
+
             return defaultPrefab != null ? defaultPrefab : mistyPrefab;
         }
     }

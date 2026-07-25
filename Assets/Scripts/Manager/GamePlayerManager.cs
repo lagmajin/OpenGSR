@@ -9,7 +9,7 @@ namespace OpenGS
         public PlayerStatus Status { get; set; } = new PlayerStatus();
         public MatchData MatchData { get; private set; } = new MatchData();
 
-        private EPlayerCharacter _selectedPlayerCharacter = EPlayerCharacter.Misty;
+        private EPlayerCharacter _selectedPlayerCharacter = EPlayerCharacter.Ami;
 
         private GamePlayerManager()
         {
@@ -20,7 +20,7 @@ namespace OpenGS
             return _selectedPlayerCharacter;
         }
 
-        public void SetPlayerCharacter(EPlayerCharacter character = EPlayerCharacter.Misty)
+        public void SetPlayerCharacter(EPlayerCharacter character = EPlayerCharacter.Ami)
         {
             _selectedPlayerCharacter = character;
         }

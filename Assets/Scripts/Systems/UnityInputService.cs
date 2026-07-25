@@ -27,7 +27,7 @@ namespace OpenGS
 
         public bool IsSwapWeaponJustPressed() => Input.GetKeyDown(KeyCode.Q);
 
-        public bool IsDropWeaponJustPressed() => Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.LeftShift);
+        public bool IsDropWeaponJustPressed() => Input.GetKeyDown(KeyCode.Tab);
 
         public bool IsJumpJustPressed() => Input.GetButtonDown("Jump") || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Space);
 
