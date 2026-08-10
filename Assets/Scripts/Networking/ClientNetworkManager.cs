@@ -239,6 +239,7 @@ namespace OpenGS
                         }
                         Debug.Log($"[ClientNetwork] Login successful. PlayerID: {ClientPlayerId}");
                         RequestDailyList();
+                        RequestGuildList();
                     }
                     else
                     {
