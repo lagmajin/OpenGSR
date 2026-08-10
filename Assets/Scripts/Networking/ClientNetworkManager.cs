@@ -54,6 +54,11 @@ namespace OpenGS
         public event Action<JObject> GuildCreateResponseReceived;
         public event Action<JObject> GuildJoinResponseReceived;
         public event Action<JObject> GuildLeaveResponseReceived;
+        public event Action<JObject> GuildInviteResponseReceived;
+        public event Action<JObject> GuildInviteNotificationReceived;
+        public event Action<JObject> GuildKickResponseReceived;
+        public event Action<JObject> GuildKickNotificationReceived;
+        public event Action<JObject> GuildChatNotificationReceived;
 
         // MatchRoomManagerへの参照
         private MatchRoomManager _matchRoomManager;
@@ -286,6 +291,21 @@ namespace OpenGS
                 case MessageType.GuildLeaveResponse:
                     GuildLeaveResponseReceived?.Invoke(message);
                     break;
+                case MessageType.GuildInviteResponse:
+                    GuildInviteResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.GuildInviteNotification:
+                    GuildInviteNotificationReceived?.Invoke(message);
+                    break;
+                case MessageType.GuildKickResponse:
+                    GuildKickResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.GuildKickNotification:
+                    GuildKickNotificationReceived?.Invoke(message);
+                    break;
+                case MessageType.GuildChatNotification:
+                    GuildChatNotificationReceived?.Invoke(message);
+                    break;
                 // 他のTCPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown TCP message: {message}");
@@ -380,6 +400,42 @@ namespace OpenGS
             {
                 ["MessageType"] = MessageType.GuildLeaveRequest,
                 ["GuildName"] = guildName,
+                ["PlayerID"] = ClientPlayerId
+            });
+        }
+
+        public void InviteToGuild(string guildName, string targetPlayerId)
+        {
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(targetPlayerId)) return;
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.GuildInviteRequest,
+                ["GuildName"] = guildName,
+                ["TargetPlayerId"] = targetPlayerId,
+                ["PlayerID"] = ClientPlayerId
+            });
+        }
+
+        public void KickFromGuild(string guildName, string memberId)
+        {
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(memberId)) return;
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.GuildKickRequest,
+                ["GuildName"] = guildName,
+                ["MemberId"] = memberId,
+                ["PlayerID"] = ClientPlayerId
+            });
+        }
+
+        public void SendGuildChat(string guildName, string message)
+        {
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(message)) return;
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.GuildChatRequest,
+                ["GuildName"] = guildName,
+                ["Message"] = message,
                 ["PlayerID"] = ClientPlayerId
             });
         }
