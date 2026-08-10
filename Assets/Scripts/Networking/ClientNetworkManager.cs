@@ -26,6 +26,8 @@ namespace OpenGS
         public string ClientPlayerId { get; private set; } = Guid.NewGuid().ToString("N");
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
         public JObject LastDailyListResponse { get; private set; }
+        public JObject LastGuildListResponse { get; private set; }
+        public JObject LastGuildInfoResponse { get; private set; }
         [Tooltip("Enable detailed UDP receive logs for match traffic. Non-verbose match warnings still remain visible.")]
         [SerializeField] private bool verboseUdpLogs = false;
 
@@ -278,9 +280,11 @@ namespace OpenGS
                     GuildRoleResponseReceived?.Invoke(message);
                     break;
                 case MessageType.GuildListResponse:
+                    LastGuildListResponse = message;
                     GuildListResponseReceived?.Invoke(message);
                     break;
                 case MessageType.GuildInfoResponse:
+                    LastGuildInfoResponse = message;
                     GuildInfoResponseReceived?.Invoke(message);
                     break;
                 case MessageType.GuildCreateResponse:
