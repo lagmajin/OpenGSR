@@ -28,6 +28,7 @@ namespace OpenGS
         public JObject LastDailyListResponse { get; private set; }
         public JObject LastGuildListResponse { get; private set; }
         public JObject LastGuildInfoResponse { get; private set; }
+        public JObject LastGuildRoleResponse { get; private set; }
         [Tooltip("Enable detailed UDP receive logs for match traffic. Non-verbose match warnings still remain visible.")]
         [SerializeField] private bool verboseUdpLogs = false;
 
@@ -277,6 +278,7 @@ namespace OpenGS
                     DailyClaimResponseReceived?.Invoke(message);
                     break;
                 case MessageType.GuildRoleResponse:
+                    LastGuildRoleResponse = message;
                     GuildRoleResponseReceived?.Invoke(message);
                     break;
                 case MessageType.GuildListResponse:
