@@ -51,6 +51,9 @@ namespace OpenGS
         public event Action<JObject> GuildRoleResponseReceived;
         public event Action<JObject> GuildListResponseReceived;
         public event Action<JObject> GuildInfoResponseReceived;
+        public event Action<JObject> GuildCreateResponseReceived;
+        public event Action<JObject> GuildJoinResponseReceived;
+        public event Action<JObject> GuildLeaveResponseReceived;
 
         // MatchRoomManagerへの参照
         private MatchRoomManager _matchRoomManager;
@@ -274,6 +277,15 @@ namespace OpenGS
                 case MessageType.GuildInfoResponse:
                     GuildInfoResponseReceived?.Invoke(message);
                     break;
+                case MessageType.GuildCreateResponse:
+                    GuildCreateResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.GuildJoinResponse:
+                    GuildJoinResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.GuildLeaveResponse:
+                    GuildLeaveResponseReceived?.Invoke(message);
+                    break;
                 // 他のTCPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown TCP message: {message}");
@@ -334,6 +346,39 @@ namespace OpenGS
             SendTcpMessage(new JObject
             {
                 ["MessageType"] = MessageType.GuildInfoRequest,
+                ["GuildName"] = guildName,
+                ["PlayerID"] = ClientPlayerId
+            });
+        }
+
+        public void CreateGuild(string guildName)
+        {
+            if (string.IsNullOrWhiteSpace(guildName)) return;
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.GuildCreateRequest,
+                ["GuildName"] = guildName,
+                ["PlayerID"] = ClientPlayerId
+            });
+        }
+
+        public void JoinGuild(string guildName)
+        {
+            if (string.IsNullOrWhiteSpace(guildName)) return;
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.GuildJoinRequest,
+                ["GuildName"] = guildName,
+                ["PlayerID"] = ClientPlayerId
+            });
+        }
+
+        public void LeaveGuild(string guildName)
+        {
+            if (string.IsNullOrWhiteSpace(guildName)) return;
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.GuildLeaveRequest,
                 ["GuildName"] = guildName,
                 ["PlayerID"] = ClientPlayerId
             });
