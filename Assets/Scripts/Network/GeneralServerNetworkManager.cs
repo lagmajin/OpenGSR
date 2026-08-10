@@ -519,6 +519,39 @@ namespace OpenGS
             });
         }
 
+        public void InviteToGuild(string guildName, string targetPlayerId)
+        {
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(targetPlayerId)) return;
+            SendMessage(new JObject
+            {
+                ["MessageType"] = OpenGSCore.MessageType.GuildInviteRequest,
+                ["GuildName"] = guildName,
+                ["TargetPlayerId"] = targetPlayerId
+            });
+        }
+
+        public void KickFromGuild(string guildName, string memberId)
+        {
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(memberId)) return;
+            SendMessage(new JObject
+            {
+                ["MessageType"] = OpenGSCore.MessageType.GuildKickRequest,
+                ["GuildName"] = guildName,
+                ["MemberId"] = memberId
+            });
+        }
+
+        public void SendGuildChat(string guildName, string message)
+        {
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(message)) return;
+            SendMessage(new JObject
+            {
+                ["MessageType"] = OpenGSCore.MessageType.GuildChatRequest,
+                ["GuildName"] = guildName,
+                ["Message"] = message
+            });
+        }
+
         public void SendUpdateRoomRequest()
         {
             SendUpdateRoomRequestCore(new List<OpenGSCore.EGameMode>());
