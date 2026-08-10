@@ -25,6 +25,7 @@ namespace OpenGS
         [Header("Client State")]
         public string ClientPlayerId { get; private set; } = Guid.NewGuid().ToString("N");
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
+        public JObject LastDailyListResponse { get; private set; }
         [Tooltip("Enable detailed UDP receive logs for match traffic. Non-verbose match warnings still remain visible.")]
         [SerializeField] private bool verboseUdpLogs = false;
 
@@ -252,6 +253,7 @@ namespace OpenGS
                     FriendRequestNotificationReceived?.Invoke(message);
                     break;
                 case MessageType.DailyListResponse:
+                    LastDailyListResponse = message;
                     DailyListResponseReceived?.Invoke(message);
                     break;
                 case MessageType.DailyProgressResponse:
