@@ -226,7 +226,7 @@ namespace OpenGS
                             ClientPlayerId = resolvedPlayerId;
                         }
                         Debug.Log($"[ClientNetwork] Login successful. PlayerID: {ClientPlayerId}");
-                        // ログイン成功後の処理
+                        RequestDailyList();
                     }
                     else
                     {
