@@ -48,6 +48,7 @@ namespace OpenGS
         public event Action<JObject> DailyListResponseReceived;
         public event Action<JObject> DailyProgressResponseReceived;
         public event Action<JObject> DailyClaimResponseReceived;
+        public event Action<JObject> GuildRoleResponseReceived;
 
         // MatchRoomManagerへの参照
         private MatchRoomManager _matchRoomManager;
@@ -262,6 +263,9 @@ namespace OpenGS
                 case MessageType.DailyClaimResponse:
                     DailyClaimResponseReceived?.Invoke(message);
                     break;
+                case MessageType.GuildRoleResponse:
+                    GuildRoleResponseReceived?.Invoke(message);
+                    break;
                 // 他のTCPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown TCP message: {message}");
@@ -291,6 +295,19 @@ namespace OpenGS
                 ["MessageType"] = MessageType.DailyClaimRequest,
                 ["PlayerID"] = ClientPlayerId,
                 ["DailyId"] = dailyId
+            });
+        }
+
+        public void ChangeGuildMemberRole(string guildName, string memberId, string role)
+        {
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(memberId) || string.IsNullOrWhiteSpace(role)) return;
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.GuildRoleRequest,
+                ["GuildName"] = guildName,
+                ["MemberId"] = memberId,
+                ["Role"] = role,
+                ["PlayerID"] = ClientPlayerId
             });
         }
 
