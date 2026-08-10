@@ -44,6 +44,9 @@ namespace OpenGS
         public event Action<JObject> FriendApproveResponseReceived;
         public event Action<JObject> FriendListResponseReceived;
         public event Action<JObject> FriendRequestNotificationReceived;
+        public event Action<JObject> DailyListResponseReceived;
+        public event Action<JObject> DailyProgressResponseReceived;
+        public event Action<JObject> DailyClaimResponseReceived;
 
         // MatchRoomManagerへの参照
         private MatchRoomManager _matchRoomManager;
@@ -248,6 +251,15 @@ namespace OpenGS
                 case MessageType.FriendRequestNotification:
                     FriendRequestNotificationReceived?.Invoke(message);
                     break;
+                case MessageType.DailyListResponse:
+                    DailyListResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.DailyProgressResponse:
+                    DailyProgressResponseReceived?.Invoke(message);
+                    break;
+                case MessageType.DailyClaimResponse:
+                    DailyClaimResponseReceived?.Invoke(message);
+                    break;
                 // 他のTCPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown TCP message: {message}");
@@ -258,6 +270,26 @@ namespace OpenGS
         public void SendTcpMessage(JObject message)
         {
             _ = TrySendTcpMessage(message);
+        }
+
+        public void RequestDailyList()
+        {
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.DailyListRequest,
+                ["PlayerID"] = ClientPlayerId
+            });
+        }
+
+        public void ClaimDailyReward(string dailyId)
+        {
+            if (string.IsNullOrWhiteSpace(dailyId)) return;
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.DailyClaimRequest,
+                ["PlayerID"] = ClientPlayerId,
+                ["DailyId"] = dailyId
+            });
         }
 
         private bool TrySendTcpMessage(JObject message)
