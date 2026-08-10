@@ -534,16 +534,6 @@ namespace OpenGS
             SendEnterRoomRequest(roomId, GetCurrentPlayerId(), GetCurrentPlayerName());
         }
 
-        public void RefreshDailyList()
-        {
-            EnsureNetworkManager()?.RequestDailyList();
-        }
-
-        public void RefreshGuildList()
-        {
-            EnsureNetworkManager()?.RequestGuildList();
-        }
-
         public void OnCreateNewRoom(ICreateNewRoomDialog sourceDialog)
         {
             Debug.Log("OnCreateNewRoom");
