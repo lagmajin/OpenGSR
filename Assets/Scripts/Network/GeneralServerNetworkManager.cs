@@ -552,6 +552,18 @@ namespace OpenGS
             });
         }
 
+        public void ChangeGuildMemberRole(string guildName, string memberId, string role)
+        {
+            if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(memberId) || string.IsNullOrWhiteSpace(role)) return;
+            SendMessage(new JObject
+            {
+                ["MessageType"] = OpenGSCore.MessageType.GuildRoleRequest,
+                ["GuildName"] = guildName,
+                ["MemberId"] = memberId,
+                ["Role"] = role
+            });
+        }
+
         public void SendUpdateRoomRequest()
         {
             SendUpdateRoomRequestCore(new List<OpenGSCore.EGameMode>());
