@@ -489,6 +489,36 @@ namespace OpenGS
             });
         }
 
+        public void CreateGuild(string guildName)
+        {
+            if (string.IsNullOrWhiteSpace(guildName)) return;
+            SendMessage(new JObject
+            {
+                ["MessageType"] = OpenGSCore.MessageType.GuildCreateRequest,
+                ["GuildName"] = guildName
+            });
+        }
+
+        public void JoinGuild(string guildName)
+        {
+            if (string.IsNullOrWhiteSpace(guildName)) return;
+            SendMessage(new JObject
+            {
+                ["MessageType"] = OpenGSCore.MessageType.GuildJoinRequest,
+                ["GuildName"] = guildName
+            });
+        }
+
+        public void LeaveGuild(string guildName)
+        {
+            if (string.IsNullOrWhiteSpace(guildName)) return;
+            SendMessage(new JObject
+            {
+                ["MessageType"] = OpenGSCore.MessageType.GuildLeaveRequest,
+                ["GuildName"] = guildName
+            });
+        }
+
         public void SendUpdateRoomRequest()
         {
             SendUpdateRoomRequestCore(new List<OpenGSCore.EGameMode>());
