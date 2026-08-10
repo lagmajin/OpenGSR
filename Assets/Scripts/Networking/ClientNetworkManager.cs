@@ -26,6 +26,7 @@ namespace OpenGS
         public string ClientPlayerId { get; private set; } = Guid.NewGuid().ToString("N");
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
         public JObject LastDailyListResponse { get; private set; }
+        public JObject LastDailyClaimResponse { get; private set; }
         public JObject LastGuildListResponse { get; private set; }
         public JObject LastGuildInfoResponse { get; private set; }
         public JObject LastGuildRoleResponse { get; private set; }
@@ -275,6 +276,7 @@ namespace OpenGS
                     DailyProgressResponseReceived?.Invoke(message);
                     break;
                 case MessageType.DailyClaimResponse:
+                    LastDailyClaimResponse = message;
                     DailyClaimResponseReceived?.Invoke(message);
                     break;
                 case MessageType.GuildRoleResponse:
