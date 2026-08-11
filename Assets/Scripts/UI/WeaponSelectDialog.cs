@@ -17,18 +17,26 @@ namespace OpenGS
     /// </summary>
     public class WeaponSelectDialog : MonoBehaviour
     {
-        private const int SlotCount = 5;
+        private const int LeftSlotCount = 5;
+        private const int RightSlotCount = 5;
 
         [Header("Dialog")]
         [SerializeField] private CanvasGroup group;
         [SerializeField] private TextMeshProUGUI statusText;
 
         [Header("Left Side")]
-        [SerializeField] private WeaponSelectDialogSlot[] leftSlots = new WeaponSelectDialogSlot[SlotCount];
-        [SerializeField] private bool autoLoadFavoriteWeapons = true;
+        [SerializeField] private WeaponSelectDialogSlot[] leftSlots = new WeaponSelectDialogSlot[LeftSlotCount];
+        [SerializeField] private EWeaponType[] basicLeftWeapons =
+        {
+            EWeaponType.AK47,
+            EWeaponType.MP5,
+            EWeaponType.Scout,
+            EWeaponType.MG42,
+            EWeaponType.Glock,
+        };
 
         [Header("Right Side")]
-        [SerializeField] private WeaponSelectDialogSlot[] rightSlots = new WeaponSelectDialogSlot[SlotCount];
+        [SerializeField] private WeaponSelectDialogSlot[] rightSlots = new WeaponSelectDialogSlot[RightSlotCount];
         [SerializeField] private bool allowRightSideBanToggle = true;
 
         [Header("Colors")]
@@ -53,13 +61,14 @@ namespace OpenGS
         [Header("Click Behavior")]
         [SerializeField] private bool singleClickFocusEnabled = true;
         [SerializeField] private bool doubleClickCloseEnabled = true;
+        [SerializeField] private bool equipOnSingleClick = true;
 
         public Action<IReadOnlyList<EWeaponType>> OnLeftSelectionConfirmed;
         public Action<IReadOnlyList<eWeaponType>> OnRightSelectionConfirmed;
         public Action OnDialogClosed;
 
-        private readonly List<EWeaponType> leftWeapons = new List<EWeaponType>(SlotCount);
-        private readonly List<eWeaponType> rightWeapons = new List<eWeaponType>(SlotCount);
+        private readonly List<EWeaponType> leftWeapons = new List<EWeaponType>(LeftSlotCount);
+        private readonly List<eWeaponType> rightWeapons = new List<eWeaponType>(RightSlotCount);
         private readonly Dictionary<EWeaponType, eWeaponType> weaponMapCache = new Dictionary<EWeaponType, eWeaponType>();
         private MatchRoomManager matchRoomManager;
         private int selectedLeftIndex = -1;
@@ -136,10 +145,10 @@ namespace OpenGS
             leftWeapons.Clear();
             if (weapons != null)
             {
-                leftWeapons.AddRange(weapons.Where(w => w != EWeaponType.None).Take(SlotCount));
+                leftWeapons.AddRange(weapons.Where(w => w != EWeaponType.None).Take(LeftSlotCount));
             }
 
-            while (leftWeapons.Count < SlotCount)
+            while (leftWeapons.Count < LeftSlotCount)
             {
                 leftWeapons.Add(EWeaponType.None);
             }
@@ -152,10 +161,10 @@ namespace OpenGS
             rightWeapons.Clear();
             if (weapons != null)
             {
-                rightWeapons.AddRange(weapons.Where(w => w != eWeaponType.None).Take(SlotCount));
+                rightWeapons.AddRange(weapons.Where(w => w != eWeaponType.None).Take(RightSlotCount));
             }
 
-            while (rightWeapons.Count < SlotCount)
+            while (rightWeapons.Count < RightSlotCount)
             {
                 rightWeapons.Add(eWeaponType.None);
             }
@@ -191,14 +200,14 @@ namespace OpenGS
                 }
             }
 
-            if (leftSlots == null || leftSlots.Length != SlotCount)
+            if (leftSlots == null || leftSlots.Length != LeftSlotCount)
             {
-                Debug.LogWarning($"[WeaponSelectDialog] leftSlots should contain {SlotCount} slots.");
+                Debug.LogWarning($"[WeaponSelectDialog] leftSlots should contain {LeftSlotCount} slots.");
             }
 
-            if (rightSlots == null || rightSlots.Length != SlotCount)
+            if (rightSlots == null || rightSlots.Length != RightSlotCount)
             {
-                Debug.LogWarning($"[WeaponSelectDialog] rightSlots should contain {SlotCount} slots.");
+                Debug.LogWarning($"[WeaponSelectDialog] rightSlots should contain {RightSlotCount} slots.");
             }
 
             if (leftSlots != null && leftSlots.Any(slot => slot == null))
@@ -253,19 +262,18 @@ namespace OpenGS
 
         private void RefreshData()
         {
-            if (autoLoadFavoriteWeapons)
+            leftWeapons.Clear();
+            if (basicLeftWeapons != null)
             {
-                var favorites = FavoriteWeaponMemoryStorage.Load();
-                leftWeapons.Clear();
-                foreach (var weapon in favorites.Take(SlotCount))
-                {
-                    leftWeapons.Add(weapon);
-                }
+                leftWeapons.AddRange(basicLeftWeapons
+                    .Where(w => w != EWeaponType.None)
+                    .Distinct()
+                    .Take(LeftSlotCount));
+            }
 
-                while (leftWeapons.Count < SlotCount)
-                {
-                    leftWeapons.Add(EWeaponType.None);
-                }
+            while (leftWeapons.Count < LeftSlotCount)
+            {
+                leftWeapons.Add(EWeaponType.None);
             }
 
             if (rightWeapons.Count == 0)
@@ -273,10 +281,10 @@ namespace OpenGS
                 rightWeapons.Clear();
                 if (fallbackRightWeapons != null && fallbackRightWeapons.Length > 0)
                 {
-                    rightWeapons.AddRange(fallbackRightWeapons.Take(SlotCount));
+                    rightWeapons.AddRange(fallbackRightWeapons.Take(RightSlotCount));
                 }
 
-                while (rightWeapons.Count < SlotCount)
+                while (rightWeapons.Count < RightSlotCount)
                 {
                     rightWeapons.Add(eWeaponType.None);
                 }
@@ -381,12 +389,34 @@ namespace OpenGS
 
             selectedLeftIndex = index;
             RefreshUI();
+            if (equipOnSingleClick)
+            {
+                EquipWeaponForPlayer(weapon);
+            }
             if (!singleClickFocusEnabled)
             {
                 UserSaveManager.ToggleFavoriteWeapon(weapon.ToString());
                 RefreshData();
                 RefreshUI();
             }
+        }
+
+        private bool EquipWeaponForPlayer(EWeaponType weapon)
+        {
+            var player = FindFirstObjectByType<PlayerAgent>();
+            if (player == null)
+            {
+                Debug.LogWarning("[WeaponSelectDialog] PlayerAgent is not present; weapon remains selected in the dialog.");
+                return false;
+            }
+
+            if (player.EquipWeaponType(weapon))
+            {
+                statusText?.SetText($"EQUIPPED: {WeaponVisualResolver.GetDisplayName(weapon)}");
+                return true;
+            }
+
+            return false;
         }
 
         public void OnRightSlotClicked(int index)
@@ -419,19 +449,41 @@ namespace OpenGS
         public void OnLeftSlotDoubleClicked(int index)
         {
             SelectLeftSlot(index);
-            if (doubleClickCloseEnabled)
+            if (doubleClickCloseEnabled && index >= 0 && index < leftWeapons.Count)
             {
-                ConfirmAndClose();
+                var weapon = leftWeapons[index];
+                if (weapon != EWeaponType.None && !IsBanned(weapon) && EquipWeaponForPlayer(weapon))
+                {
+                    Close();
+                }
             }
         }
 
         public void OnRightSlotDoubleClicked(int index)
         {
             SelectRightSlot(index);
-            if (doubleClickCloseEnabled)
+            if (doubleClickCloseEnabled && index >= 0 && index < rightWeapons.Count)
             {
-                ConfirmAndClose();
+                var weapon = rightWeapons[index];
+                var playerWeapon = ConvertToPlayerWeapon(weapon);
+                if (playerWeapon != EWeaponType.None && !IsBanned(weapon) && EquipWeaponForPlayer(playerWeapon))
+                {
+                    Close();
+                }
             }
+        }
+
+        private EWeaponType ConvertToPlayerWeapon(eWeaponType weapon)
+        {
+            return weapon switch
+            {
+                eWeaponType.DE => EWeaponType.DesertEagle,
+                eWeaponType.FN_P90 => EWeaponType.FnP90,
+                eWeaponType.FNMinimi_SAW => EWeaponType.FNMinimiSaw,
+                eWeaponType.SteyAug => EWeaponType.SteyrAug,
+                eWeaponType.ChirstmasGun => EWeaponType.ChristmasGun,
+                _ => Enum.TryParse(weapon.ToString(), true, out EWeaponType parsed) ? parsed : EWeaponType.None
+            };
         }
 
         public void SetClickBehavior(bool enableSingleClickFocus, bool enableDoubleClickClose)
@@ -529,7 +581,7 @@ namespace OpenGS
 
             var leftCount = leftWeapons.Count(w => w != EWeaponType.None);
             var rightCount = rightWeapons.Count(w => w != eWeaponType.None);
-            statusText.text = $"LEFT {leftCount}/{SlotCount}  RIGHT {rightCount}/{SlotCount}";
+            statusText.text = $"LEFT {leftCount}/{LeftSlotCount}  RIGHT {rightCount}/{RightSlotCount}";
         }
 
         private bool IsBanned(EWeaponType weapon)
