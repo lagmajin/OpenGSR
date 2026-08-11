@@ -70,7 +70,9 @@ namespace OpenGS
         protected override void OnTimeUp()
         {
             Debug.Log("[TDM] Time up!");
-            var winningTeam = redTeamKills >= blueTeamKills ? "Red" : "Blue";
+            var winningTeam = redTeamKills == blueTeamKills
+                ? "Draw"
+                : (redTeamKills > blueTeamKills ? "Red" : "Blue");
             HandleMatchEnd(new Newtonsoft.Json.Linq.JObject
             {
                 ["WinningTeam"] = winningTeam,
@@ -246,7 +248,9 @@ namespace OpenGS
             // Offline kill limit check
             if (IsOfflineMatch() && (redTeamKills >= OfflineKillLimit || blueTeamKills >= OfflineKillLimit))
             {
-                var winningTeam = redTeamKills >= blueTeamKills ? "Red" : "Blue";
+                var winningTeam = redTeamKills == blueTeamKills
+                    ? "Draw"
+                    : (redTeamKills > blueTeamKills ? "Red" : "Blue");
                 HandleMatchEnd(new JObject { ["WinningTeam"] = winningTeam, ["MyTeam"] = ResolveLocalTeamName(), ["RedTeamKills"] = redTeamKills, ["BlueTeamKills"] = blueTeamKills });
                 return;
             }
