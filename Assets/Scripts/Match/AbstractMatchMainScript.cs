@@ -34,7 +34,7 @@ namespace OpenGS
         private GameGeneralManager gameManager = GameGeneralManager.GetInstance;
         EGameMode gameMode = EGameMode.Unknown;
 
-        [SerializeField] private MatchTimer timer;
+        [SerializeField] protected MatchTimer timer;
         //public AudioClip bgm;
         //public AudioClip gameStartSound;
         //public AudioClip gameWonSound;

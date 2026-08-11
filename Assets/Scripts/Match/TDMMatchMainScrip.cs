@@ -27,6 +27,9 @@ namespace OpenGS
         private int redTeamKills = 0;
         private int blueTeamKills = 0;
         private ETeam localTeam = ETeam.Blue; private const int OfflineKillLimit = 50;
+        [SerializeField] private bool suddenDeathOnDraw = true;
+        [SerializeField] private float suddenDeathDuration = 120f;
+        private bool suddenDeathActive;
 
         private new void Start()
         {
@@ -70,6 +73,38 @@ namespace OpenGS
         protected override void OnTimeUp()
         {
             Debug.Log("[TDM] Time up!");
+            if (redTeamKills == blueTeamKills && suddenDeathOnDraw)
+            {
+                StartSuddenDeath();
+                return;
+            }
+
+            FinishByScore();
+        }
+
+        private void StartSuddenDeath()
+        {
+            suddenDeathActive = true;
+            Debug.Log($"[TDM] Sudden death started ({suddenDeathDuration:0}s).");
+            if (timer == null)
+            {
+                return;
+            }
+
+            timer.SetTime(Mathf.Max(1f, suddenDeathDuration));
+            timer.timeupEvent.RemoveAllListeners();
+            timer.timeupEvent.AddListener(OnSuddenDeathTimeUp);
+            timer.StartTimer();
+        }
+
+        private void OnSuddenDeathTimeUp()
+        {
+            Debug.Log("[TDM] Sudden death time up; ending as draw.");
+            FinishByScore();
+        }
+
+        private void FinishByScore()
+        {
             var winningTeam = redTeamKills == blueTeamKills
                 ? "Draw"
                 : (redTeamKills > blueTeamKills ? "Red" : "Blue");
@@ -282,6 +317,17 @@ namespace OpenGS
             {
                 blueTeamKills++;
                 scoreUIManager?.AddBlueKill();
+            }
+
+            if (suddenDeathActive && redTeamKills != blueTeamKills)
+            {
+                HandleMatchEnd(new JObject
+                {
+                    ["WinningTeam"] = redTeamKills > blueTeamKills ? "Red" : "Blue",
+                    ["MyTeam"] = ResolveLocalTeamName(),
+                    ["RedTeamKills"] = redTeamKills,
+                    ["BlueTeamKills"] = blueTeamKills
+                });
             }
 
             OnPlayerKilled?.Invoke(victimTeam);
