@@ -1,0 +1,14 @@
+{
+  "name": "OpenGS.EmbeddedWebView",
+  "rootNamespace": "OpenGS.UI",
+  "references": ["unity-webview"],
+  "includePlatforms": ["Android", "Editor", "iOS", "macOSStandalone", "WebGL", "WindowsStandalone32", "WindowsStandalone64"],
+  "excludePlatforms": [],
+  "allowUnsafeCode": false,
+  "overrideReferences": false,
+  "precompiledReferences": [],
+  "autoReferenced": true,
+  "defineConstraints": [],
+  "versionDefines": [],
+  "noEngineReferences": false
+}

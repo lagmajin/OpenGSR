@@ -17,6 +17,7 @@ namespace OpenGS
         private readonly CompositeDisposable subscriptions = new CompositeDisposable();
 
         private LocalTestMatchRUDPServer localServer;
+        private ClientNetworkManager networkClient;
         private bool connected;
 
         public System.IObservable<JObject> DataReceivedStream => dataReceivedSubject.AsObservable();
@@ -39,6 +40,12 @@ namespace OpenGS
         {
             connected = false;
             subscriptions.Clear();
+
+            if (networkClient != null)
+            {
+                networkClient.UdpMessageReceived -= OnNetworkClientMessage;
+                networkClient = null;
+            }
 
             if (localServer != null)
             {
@@ -72,27 +79,52 @@ namespace OpenGS
                 return;
             }
 
-            dataReceivedSubject.OnNext(json);
+            if (networkClient != null)
+            {
+                // ClientNetworkManager owns the LiteNetLib peer and event
+                // polling. Keep this facade transport-agnostic for callers.
+                networkClient.SendUdpInput(json);
+                return;
+            }
+
+            Debug.LogWarning("[MatchRUDPServerNetworkManager] No LiteNetLib client is available; message was not sent.");
         }
 
         private void ConnectInternal(int port, bool isLocal)
         {
             Debug.Log($"[MatchRUDPServerNetworkManager] {(isLocal ? "ConnectToLocalServer" : "ConnectToServer")} port={port}");
 
-            try
+            localServer = null;
+            if (isLocal)
             {
-                localServer = DependencyInjectionConfig.Resolve<LocalTestMatchRUDPServer>();
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"[MatchRUDPServerNetworkManager] Failed to resolve LocalTestMatchRUDPServer: {ex.Message}");
-                localServer = null;
+                try
+                {
+                    localServer = DependencyInjectionConfig.Resolve<LocalTestMatchRUDPServer>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[MatchRUDPServerNetworkManager] Failed to resolve LocalTestMatchRUDPServer: {ex.Message}");
+                }
             }
 
             if (localServer != null)
             {
                 localServer.MessageProduced -= OnServerProducedMessage;
                 localServer.MessageProduced += OnServerProducedMessage;
+            }
+
+            if (!isLocal)
+            {
+                networkClient = UnityEngine.Object.FindFirstObjectByType<ClientNetworkManager>();
+                if (networkClient != null)
+                {
+                    networkClient.UdpMessageReceived -= OnNetworkClientMessage;
+                    networkClient.UdpMessageReceived += OnNetworkClientMessage;
+                }
+                else
+                {
+                    Debug.LogWarning("[MatchRUDPServerNetworkManager] ClientNetworkManager was not found; LiteNetLib UDP is unavailable.");
+                }
             }
 
             connected = true;
@@ -107,6 +139,15 @@ namespace OpenGS
             }
 
             var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            if (messageType == RUDPMessageTypes.LegacyMatchEnd)
+            {
+                // Older match servers emit MatchEnd while the result scene
+                // consumes MatchEndNotification. Normalize at this boundary
+                // so the notification is cached and forwarded consistently.
+                json["MessageType"] = MessageType.MatchEndNotification;
+                messageType = MessageType.MatchEndNotification;
+            }
+
             if (messageType == MessageType.MatchEndNotification || messageType == MessageType.MatchResult)
             {
                 try
@@ -121,6 +162,16 @@ namespace OpenGS
             }
 
             dataReceivedSubject.OnNext(json);
+        }
+
+        private void OnNetworkClientMessage(JObject json)
+        {
+            if (json == null)
+            {
+                return;
+            }
+
+            OnServerProducedMessage(json);
         }
     }
 }

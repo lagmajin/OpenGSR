@@ -296,6 +296,13 @@
         "com.unity.nuget.newtonsoft-json": "3.2.1"
       }
     },
+    "net.gree.unity-webview": {
+      "version": "https://github.com/gree/unity-webview.git?path=/dist/package",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "356e9422e98af02d29771ccf622df7b785b16395"
+    },
     "com.unity.modules.accessibility": {
       "version": "1.0.0",
       "depth": 0,
