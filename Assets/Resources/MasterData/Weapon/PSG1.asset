@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: PSG1
   m_EditorClassIdentifier: 
   weaponType: 9
+  weaponPrefab: {fileID: 4680218433913611656, guid: e667704aa9c213148b2efba3025d5d3c, type: 3}
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 30

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: F2000
   m_EditorClassIdentifier: 
   weaponType: 4
+  weaponPrefab: {fileID: 4680218433913611656, guid: 55555555555555555555555555555555, type: 3}
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 17

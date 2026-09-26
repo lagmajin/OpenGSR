@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Nocturne
   m_EditorClassIdentifier: 
   stage:
-    m_SceneName: 
+    m_SceneName: Nocturne
   boosterPower: 1.58
   gravityScale: 0.88
   difficulty: 4

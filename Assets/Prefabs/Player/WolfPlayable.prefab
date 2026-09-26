@@ -601,7 +601,7 @@ MonoBehaviour:
   armController: {fileID: 0}
   weaponSlots: {fileID: 0}
   movementSpeed: 5
-  jumpHeight: 3.5
+  jumpHeight: 2.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 256

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b045d08c51a2c214584e45bb5cd72f72, type: 3}
+  m_Script: {fileID: 11500000, guid: f061a92e5f469094d93d2f9579e4f85d, type: 3}
   m_Name: SoundEffectMasterData
   m_EditorClassIdentifier: 
   explosionSound: {fileID: 8300000, guid: 3e5416de1433ef542bb6e4db3718abbc, type: 3}

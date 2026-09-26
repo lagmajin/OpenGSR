@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b80a517563a60564bbf57b57acca3dfa, type: 3}
+  m_Script: {fileID: 11500000, guid: 08fcba6dd543eea49add29bc83d79cde, type: 3}
   m_Name: MatchSoundMasterData
   m_EditorClassIdentifier: 
   GameStartVoiceSound: {fileID: 8300000, guid: a6b722ec18b5e7247be128cda06157bd, type: 3}

@@ -13,12 +13,10 @@ MonoBehaviour:
   m_Name: Glock
   m_EditorClassIdentifier: 
   weaponType: 19
+  weaponPrefab: {fileID: 5869546682610312921, guid: e03260c636002124095ea2c4fb1ec298, type: 3}
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 30
-  inGameSprite: {fileID: -2392854933446875000, guid: d64510b4aa1c53e4fa282c815604ed0a,
-    type: 3}
-  inSelectionSprite: {fileID: -588767113450361958, guid: 96f453109546bd54eb313a1183cdfa44,
-    type: 3}
-  shilhouetteSprite: {fileID: -2392854933446875000, guid: d64510b4aa1c53e4fa282c815604ed0a,
-    type: 3}
+  inGameSprite: {fileID: -2392854933446875000, guid: d64510b4aa1c53e4fa282c815604ed0a, type: 3}
+  inSelectionSprite: {fileID: -588767113450361958, guid: 96f453109546bd54eb313a1183cdfa44, type: 3}
+  shilhouetteSprite: {fileID: -2392854933446875000, guid: d64510b4aa1c53e4fa282c815604ed0a, type: 3}

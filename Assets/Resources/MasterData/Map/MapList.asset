@@ -17,7 +17,7 @@ MonoBehaviour:
   Alps: {fileID: 11400000, guid: 4c3f0c50014472e44adffd2259a13a8d, type: 2}
   GhostHouse: {fileID: 11400000, guid: 32ef4de3e051e614e86ad682f8cf22a0, type: 2}
   jungle1: {fileID: 0}
-  jungle2: {fileID: 0}
+  jungle2: {fileID: 11400000, guid: d8560241497e64a4fa4aa82a3291ed4a, type: 2}
   CityOfDarkness1: {fileID: 0}
   CityOfDarkness2: {fileID: 0}
   DryDays: {fileID: 11400000, guid: 54733afcb8f26cd46b3221e8e10c190a, type: 2}
@@ -37,5 +37,5 @@ MonoBehaviour:
   fullHouse: {fileID: 11400000, guid: 8195eab7da539c540819c73b92fddd92, type: 2}
   lavacave: {fileID: 11400000, guid: d8b91315682bb314798995d2e95e77d7, type: 2}
   waterfall: {fileID: 11400000, guid: 6a9b78c62bfce75458b3ed866fea570a, type: 2}
-  nocturne: {fileID: 0}
+  nocturne: {fileID: 11400000, guid: 026d98a012411d847ad77b69227d4170, type: 2}
   chiristmas: {fileID: 11400000, guid: b5f526461ea7cf346ab9e7b6e21f4a7f, type: 2}

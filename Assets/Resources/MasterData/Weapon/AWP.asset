@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: AWP
   m_EditorClassIdentifier: 
   weaponType: 10
+  weaponPrefab: {fileID: 4680218433913611656, guid: a265ed73849b6134bad4dabd7f227527, type: 3}
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 10

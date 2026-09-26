@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Forest
   m_EditorClassIdentifier: 
   stage:
-    m_SceneName: 
+    m_SceneName: Forest
   boosterPower: 1
   gravityScale: 1
   difficulty: 1

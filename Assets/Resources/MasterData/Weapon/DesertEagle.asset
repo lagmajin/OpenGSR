@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: DesertEagle
   m_EditorClassIdentifier: 
   weaponType: 20
+  weaponPrefab: {fileID: 5869546682610312921, guid: a2d0631e9713e3c4488c1ffd1573c2d2, type: 3}
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 30

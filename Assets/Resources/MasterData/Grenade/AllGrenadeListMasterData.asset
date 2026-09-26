@@ -15,3 +15,15 @@ MonoBehaviour:
   dataList:
   - Name: NormalGrenade
     GrenadePrefab: {fileID: 2562133398872187811, guid: f550a79ea00232b44a4482fb1324e49a, type: 3}
+  - Name: PowerGrenade
+    GrenadePrefab: {fileID: 8268601047185429728, guid: d681f1e0042982c4db8fa01baa4bd614, type: 3}
+  - Name: MagneticGrenade
+    GrenadePrefab: {fileID: 7579011111111111111, guid: 7f3c2e8e9b2f4d6f8e5b7b1b3b2f9a02, type: 3}
+  - Name: MineGrenade
+    GrenadePrefab: {fileID: 6579011111111111111, guid: 48cfded4bbd94f7ab8f2f0f0a4d2d001, type: 3}
+  - Name: ClusterGrenade
+    GrenadePrefab: {fileID: 5579011111111111111, guid: 3a8130c0d8f44a2b9f26b5bf79f5a002, type: 3}
+  - Name: ChildClusterGrenade
+    GrenadePrefab: {fileID: 6119011111111111111, guid: 4a7f8b9d1e664d018a8db29a12b8c0b1, type: 3}
+  - Name: FireGrenade
+    GrenadePrefab: {fileID: 4579011111111111111, guid: 2d2c7f4f4d3241f1b7e9e6f8f8a1a001, type: 3}

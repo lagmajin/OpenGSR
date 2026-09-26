@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7000000000000000001}
   - component: {fileID: 7000000000000000002}
   - component: {fileID: 7782948471924381001}
-  m_Layer: 9
+  m_Layer: 0
   m_Name: NormalGrenade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -82,7 +82,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: -7696363807755580215, guid: 50f15a870fef15645b022094281e964e, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

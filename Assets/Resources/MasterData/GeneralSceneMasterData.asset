@@ -16,6 +16,8 @@ MonoBehaviour:
     m_SceneName: SplashScreen
   titleScene:
     m_SceneName: TitleScene
+  connectToServerScene:
+    m_SceneName: ConnectToServerScene
   loginScene:
     m_SceneName: LoginServerScene
   lobbyScene:
@@ -26,7 +28,19 @@ MonoBehaviour:
     m_SceneName: OnlineWaitRoom
   offlineWaitRoomScene:
     m_SceneName: OfflineWaitRoom
+  offlineMissionWaitRoomScene:
+    m_SceneName: MissionWaitroom
+  offlineLoadingScene:
+    m_SceneName: OfflineLoadingScene
   onlineLoadingScene:
     m_SceneName: OnlineLoadingScene
   resultScene:
     m_SceneName: ResultScene
+  missionLobbyScene:
+    m_SceneName: MissionLobbyScene
+  missionResultScene:
+    m_SceneName: MissionResultScene
+  gameSettingScene:
+    m_SceneName: GameSettingScene
+  exportAssetScene:
+    m_SceneName: ExportAssetScene

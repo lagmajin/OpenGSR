@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: LavaCave
   m_EditorClassIdentifier: 
   stage:
-    m_SceneName: 
+    m_SceneName: LavaCave
   boosterPower: 1
   difficulty: 1
   canPlayDM: 0

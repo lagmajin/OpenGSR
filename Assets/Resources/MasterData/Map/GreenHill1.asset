@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GreenHill1
   m_EditorClassIdentifier: 
   stage:
-    m_SceneName: GreenHill1(Stage)(DM)
+    m_SceneName: GreenHill1
   boosterPower: 1
   gravityScale: 1
   difficulty: 1

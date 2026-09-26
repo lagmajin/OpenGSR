@@ -26,7 +26,7 @@ Transform:
   m_GameObject: {fileID: 3433523782824421713}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.15, z: 0}
+  m_LocalPosition: {x: 0, y: 0.111, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -117,13 +117,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4550667204169580343}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.13, y: -0.02, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: 0.67528445, w: -0.7375574}
+  m_LocalPosition: {x: -0.069, y: -0.008, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3589879083271150759}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 275.048}
 --- !u!212 &6357379410246372179
 SpriteRenderer:
   serializedVersion: 3
@@ -241,7 +241,7 @@ Transform:
   m_GameObject: {fileID: 7267943790621438549}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.12, y: -0.02, z: 0}
+  m_LocalPosition: {x: -0.09, y: 0.012, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -601,7 +601,7 @@ MonoBehaviour:
   armController: {fileID: 0}
   weaponSlots: {fileID: 0}
   movementSpeed: 5
-  jumpHeight: 3.5
+  jumpHeight: 2.2
   groundLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -634,6 +634,8 @@ MonoBehaviour:
   fallDeathY: -80
   coyoteTime: 0.12
   jumpBufferTime: 0.12
+  maxHealth: 100
+  currentHealth: 100
   standBobAmplitude: 0.02
   standBobFrequency: 7.5
   standBobDirection: {x: 0, y: 1, z: 0}

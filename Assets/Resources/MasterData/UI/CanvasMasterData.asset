@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 14cc8f01d2d43b04b9321b7db708319a, type: 3}
+  m_Script: {fileID: 11500000, guid: 050cd6cdf8aa87d4a98d7fb3a5042b49, type: 3}
   m_Name: CanvasMasterData
   m_EditorClassIdentifier: 
   NavigatorCanvas: {fileID: 1654229739734850332, guid: fcdd6c4b23dcc9040a7bcad492902f2e,

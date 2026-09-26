@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: SteyrAug
   m_EditorClassIdentifier: 
   weaponType: 18
+  weaponPrefab: {fileID: 4680218433913611656, guid: 77777777777777777777777777777777, type: 3}
   shotSound: {fileID: 0}
   reloadTime: 2
   maxBullet: 30
