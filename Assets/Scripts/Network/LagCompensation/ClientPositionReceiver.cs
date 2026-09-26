@@ -79,7 +79,7 @@ namespace OpenGS.Network
                 ReadFinite(json, "RotationY", 0f),
                 ReadFinite(json, "RotationZ", 0f),
                 ReadFinite(json, "RotationW", 1f));
-            if (rotation.sqrMagnitude < 0.0001f)
+            if (QuaternionMath.SqrMagnitude(rotation) < 0.0001f)
             {
                 rotation = Quaternion.identity;
             }

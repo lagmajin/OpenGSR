@@ -59,6 +59,8 @@ namespace OpenGS.Network
             };
         }
 
+
+
         private static Vector3 SanitizeVector(Vector3 value)
         {
             return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z)
@@ -70,7 +72,7 @@ namespace OpenGS.Network
         {
             if (!float.IsFinite(value.x) || !float.IsFinite(value.y) ||
                 !float.IsFinite(value.z) || !float.IsFinite(value.w) ||
-                value.sqrMagnitude < 0.000001f)
+                QuaternionMath.SqrMagnitude(value) < 0.000001f)
             {
                 return Quaternion.identity;
             }

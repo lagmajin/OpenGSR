@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using OpenGSCore;
 
@@ -13,7 +13,7 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class AbstractPlayerAgent : MonoBehaviour, OpenGS.Network.INetworkTransform
     {
-        [SerializeField] Transform playerTransform;
+        [SerializeField] protected Transform playerTransform;
         private Rigidbody2D body;
         
         private string playerID = string.Empty;
@@ -61,7 +61,7 @@ namespace OpenGS
                     return;
                 }
 
-                if (value.sqrMagnitude < 0.000001f)
+                if (OpenGS.Network.QuaternionMath.SqrMagnitude(value) < 0.000001f)
                 {
                     return;
                 }

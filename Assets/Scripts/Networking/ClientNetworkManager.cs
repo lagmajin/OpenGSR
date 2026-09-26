@@ -11,6 +11,7 @@ using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 using LiteNetLib;
 using LiteNetLib.Utils;
+using OpenGS.Network;
 using OpenGSCore; // OpenGSCoreのMatchRoomMessageなどを使用
 
 namespace OpenGS
@@ -1276,7 +1277,7 @@ namespace OpenGS
                 return;
             }
 
-            if (state.rotation.sqrMagnitude < 0.0001f)
+            if (QuaternionMath.SqrMagnitude(state.rotation) < 0.0001f)
             {
                 state.rotation = Quaternion.identity;
             }
@@ -1332,7 +1333,7 @@ namespace OpenGS
                 return;
             }
 
-            if (state.rotation.sqrMagnitude < 0.0001f)
+            if (QuaternionMath.SqrMagnitude(state.rotation) < 0.0001f)
             {
                 state.rotation = Quaternion.identity;
             }

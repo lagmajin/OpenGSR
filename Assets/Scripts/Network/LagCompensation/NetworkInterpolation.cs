@@ -45,7 +45,7 @@ namespace OpenGS.Network
                 return;
             }
 
-            if (state.rotation.sqrMagnitude < 0.0001f)
+            if (QuaternionMath.SqrMagnitude(state.rotation) < 0.0001f)
             {
                 state.rotation = Quaternion.identity;
             }

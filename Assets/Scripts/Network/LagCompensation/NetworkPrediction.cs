@@ -155,7 +155,7 @@ namespace OpenGS.Network
                 return;
             }
 
-            if (serverState.rotation.sqrMagnitude < 0.0001f)
+            if (QuaternionMath.SqrMagnitude(serverState.rotation) < 0.0001f)
             {
                 serverState.rotation = Quaternion.identity;
             }
@@ -312,6 +312,11 @@ namespace OpenGS.Network
         /// 予測履歴の件数を取得
         /// </summary>
         public int HistoryCount => m_PredictionHistory.Count;
+
+        private static bool IsFinite(Quaternion value)
+        {
+            return IsFinite(value.x) && IsFinite(value.y) && IsFinite(value.z) && IsFinite(value.w);
+        }
 
         private static bool IsFinite(Vector3 value)
         {
