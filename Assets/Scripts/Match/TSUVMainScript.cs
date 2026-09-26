@@ -33,7 +33,13 @@ namespace OpenGS
         private new void Start()
         {
             base.Start();
-            Application.targetFrameRate = 30;
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
+            if (Instance != null && Instance != this)
+            {
+                Debug.LogWarning("[TSUV] Duplicate main script found; destroying duplicate.");
+                Destroy(gameObject);
+                return;
+            }
             Instance = this;
 
             try
@@ -48,6 +54,12 @@ namespace OpenGS
 
             Debug.Log("[TSUV] Team Survival GameStart");
             Invoke(nameof(GameSetup), 0.1f);
+        }
+
+        protected override void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
+            base.OnDestroy();
         }
 
         private void GameSetup()
@@ -194,8 +206,8 @@ namespace OpenGS
             else if (killerTeam == ETeam.Blue)
                 blueKills++;
 
-            OnPlayerKilled?.Invoke(victimTeam);
-            OnTeamKill?.Invoke(killerTeam, victimTeam);
+            InvokeSafely(OnPlayerKilled, victimTeam, nameof(OnPlayerKilled));
+            InvokeSafely(OnTeamKill, killerTeam, victimTeam, nameof(OnTeamKill));
 
             Debug.Log($"[TSUV] Player killed: victim={victimTeam}, killer={killerTeam}. " +
                       $"Alive: Red={redAliveCount}, Blue={blueAliveCount}");
@@ -218,7 +230,7 @@ namespace OpenGS
             Debug.Log("[TSUV] Time up!");
             string winningTeam = redAliveCount > blueAliveCount ? "Red" : (blueAliveCount > redAliveCount ? "Blue" : "Draw");
             var myLabel = ResolveLocalTeamName();
-            OnMatchEnded?.Invoke(System.Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
+            InvokeSafely(OnMatchEnded, System.Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam, nameof(OnMatchEnded));
             StoreOfflineMatchResult(winningTeam, myLabel);
             ScheduleResultSceneTransition(gotoResultSceneWaitTime);
         }
@@ -246,7 +258,7 @@ namespace OpenGS
             var myLabel = ResolveLocalTeamName();
 
             Debug.Log($"[TSUV] Team eliminated! Winner={winningTeam}");
-            OnMatchEnded?.Invoke(Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
+            InvokeSafely(OnMatchEnded, Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam, nameof(OnMatchEnded));
 
             StoreOfflineMatchResult(winningTeam, myLabel);
             ScheduleResultSceneTransition(gotoResultSceneWaitTime);
@@ -376,7 +388,7 @@ namespace OpenGS
             else if (killerTeam == ETeam.Blue)
                 blueKills++;
 
-            OnTeamKill?.Invoke(killerTeam, victimTeam);
+            InvokeSafely(OnTeamKill, killerTeam, victimTeam, nameof(OnTeamKill));
             Debug.Log($"[TSUV] Received team kill: {killerTeam} killed {victimTeam}. " +
                       $"Alive: Red={redAliveCount}, Blue={blueAliveCount}");
 
@@ -385,8 +397,8 @@ namespace OpenGS
 
         private void HandleScoreUpdate(JObject json)
         {
-            var red = json["RedTeamKills"]?.ToObject<int>() ?? 0;
-            var blue = json["BlueTeamKills"]?.ToObject<int>() ?? 0;
+            var red = ReadInt(json, "RedTeamKills");
+            var blue = ReadInt(json, "BlueTeamKills");
             redKills = Math.Max(redKills, red);
             blueKills = Math.Max(blueKills, blue);
             Debug.Log($"[TSUV] Score update: Red={red}, Blue={blue}");
@@ -396,7 +408,7 @@ namespace OpenGS
         {
             var killerId = json["KillerId"]?.ToString();
             var victimId = json["VictimId"]?.ToString();
-            var headshot = json["Headshot"]?.ToObject<bool>() ?? false;
+            var headshot = ReadBool(json, "Headshot");
             Debug.Log($"[TSUV] Player kill: {killerId} killed {victimId} (headshot: {headshot})");
         }
 
@@ -415,8 +427,48 @@ namespace OpenGS
             if (IsOfflineMatch())
                 StoreOfflineMatchResult(winningTeam, myTeam);
 
-            OnMatchEnded?.Invoke(Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
+            InvokeSafely(OnMatchEnded, Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam, nameof(OnMatchEnded));
             ScheduleResultSceneTransition(gotoResultSceneWaitTime);
+        }
+
+        private static void InvokeSafely(Action<ETeam> handlers, ETeam team, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<ETeam> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(team);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[TSUVMainScript] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<ETeam, ETeam> handlers, ETeam killerTeam, ETeam victimTeam, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<ETeam, ETeam> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(killerTeam, victimTeam);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[TSUVMainScript] {eventName} subscriber failed: {ex}");
+                }
+            }
         }
 
         private void StoreOfflineMatchResult(string winningTeam, string myTeam)
@@ -452,6 +504,7 @@ namespace OpenGS
                 linker = playerObj.AddComponent<PlayerDataLinker>();
 
             linker.SetPlayerId(playerId ?? string.Empty);
+            playerObj.GetComponent<PlayerAgent>()?.SetPlayerID(playerId ?? string.Empty);
         }
 
         private static ETeam ResolveLocalTeam(OpenGSCore.WaitRoom room)

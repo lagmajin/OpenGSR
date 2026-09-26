@@ -6,13 +6,18 @@ namespace OpenGS
 
     // eFieldItemType enum moved to Interface/eFieldItemType.cs
 
-    public interface IFieldItem
+    public interface IWorldItem
     {
         //string path();
     }
 
+    [System.Obsolete("Use IWorldItem instead.")]
+    public interface IFieldItem : IWorldItem
+    {
+    }
+
     [DisallowMultipleComponent]
-    public class AbstractFieldItem : MonoBehaviour,IFieldItem
+    public class WorldItem : MonoBehaviour, IWorldItem
     {
 
         public GameObject fieldItemEffect;
@@ -22,37 +27,66 @@ namespace OpenGS
 
         public AbstractItemSpawnPoint point;
 
+        private Coroutine lifetimeCoroutine;
+
+        private void Awake()
+        {
+            activeTime = float.IsFinite(activeTime) ? Mathf.Clamp(activeTime, 1f, 40f) : 27f;
+        }
+
         protected IEnumerator DelayCoroutine(float activeTime=10.0f)
         {
-            transform.position = Vector3.one;
-
-            // 3秒間待つ
-            yield return new WaitForSecondsRealtime(activeTime);
-
+            yield return new WaitForSecondsRealtime(Mathf.Max(0.1f, activeTime));
+            lifetimeCoroutine = null;
             Destroy(gameObject);
-            
         }
     
         void Start()
         {
+            EnableActiveTime();
+        }
 
-            StartCoroutine(DelayCoroutine(activeTime));
+        protected virtual void OnEnable()
+        {
+            if (lifetimeCoroutine == null)
+            {
+                EnableActiveTime();
+            }
+        }
+
+        protected virtual void OnDisable()
+        {
+            if (lifetimeCoroutine != null)
+            {
+                StopCoroutine(lifetimeCoroutine);
+                lifetimeCoroutine = null;
+            }
         }
 
         public void SetActiveTime()
         {
-
+            EnableActiveTime();
         }
 
         public void EnableActiveTime()
         {
+            if (!isActiveAndEnabled)
+            {
+                return;
+            }
 
+            if (lifetimeCoroutine != null)
+            {
+                StopCoroutine(lifetimeCoroutine);
+            }
+
+            lifetimeCoroutine = StartCoroutine(DelayCoroutine(activeTime));
         }
 
 
         public void SetTakable(bool b=true)
         {
-
+            takable = b;
         }
 
         /*
@@ -65,5 +99,10 @@ namespace OpenGS
         }
 
         */
+    }
+
+    [System.Obsolete("Use WorldItem instead.")]
+    public abstract class AbstractFieldItem : WorldItem
+    {
     }
 }

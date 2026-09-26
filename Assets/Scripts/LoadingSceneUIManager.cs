@@ -3,6 +3,7 @@ using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace OpenGS
 {
@@ -19,15 +20,49 @@ namespace OpenGS
         [SerializeField] private Slider progressbar;
         [SerializeField] private OnlineLoadingScene onlineLoadingScene;
 
+        [Inject] private OnlineLoadingManager onlineLoadingManager;
+
+        private void OnDestroy()
+        {
+            if (onlineLoadingManager != null)
+            {
+                onlineLoadingManager.LoadingMessageUpdated -= ChangeLoadingText;
+                onlineLoadingManager.LoadingInfoUpdated -= HandleLoadingInfoUpdated;
+                onlineLoadingManager.LoadingProgressUpdated -= HandleNetworkLoadingProgress;
+            }
+        }
+
         void Start()
         {
             AutoSet();
 
+            if (onlineLoadingManager == null)
+            {
+                onlineLoadingManager = OnlineLoadingManager.Instance;
+                Debug.LogWarning("[LoadingSceneUIManager] OnlineLoadingManager was not injected; using shared fallback instance.");
+            }
+
             if (onlineLoadingScene != null)
             {
                 onlineLoadingScene.Progress
-                    .Subscribe(value => ChangeLoadingProgress(Mathf.RoundToInt(value * 100f)))
+                    .Subscribe(value =>
+                    {
+                        var safeProgress = float.IsFinite(value) ? Mathf.Clamp01(value) : 0f;
+                        ChangeLoadingProgress(Mathf.RoundToInt(safeProgress * 100f));
+                    })
                     .AddTo(this);
+            }
+
+            if (onlineLoadingManager != null)
+            {
+                onlineLoadingManager.LoadingMessageUpdated += ChangeLoadingText;
+                onlineLoadingManager.LoadingInfoUpdated += HandleLoadingInfoUpdated;
+                if (onlineLoadingScene == null)
+                {
+                    onlineLoadingManager.LoadingProgressUpdated += HandleNetworkLoadingProgress;
+                }
+                HandleLoadingInfoUpdated(onlineLoadingManager.LoadingInfo);
+                ChangeLoadingText(onlineLoadingManager.LoadingMessage);
             }
         }
 
@@ -58,9 +93,30 @@ namespace OpenGS
             }
         }
 
+        private void HandleNetworkLoadingProgress(string playerId, float progress)
+        {
+            if (onlineLoadingScene != null)
+            {
+                return;
+            }
+
+            progress = float.IsFinite(progress) ? Mathf.Clamp01(progress) : 0f;
+            ChangeLoadingProgress(Mathf.RoundToInt(progress * 100f));
+        }
+
         public void SetMapName(string name)
         {
             ChangeLoadingText(name);
+        }
+
+        private void HandleLoadingInfoUpdated(LoadingInfo info)
+        {
+            if (info == null)
+            {
+                return;
+            }
+
+            SetMapName(info.MapName);
         }
 
         [Button("AutoSet")]

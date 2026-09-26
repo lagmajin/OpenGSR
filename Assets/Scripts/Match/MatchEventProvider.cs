@@ -36,7 +36,21 @@ namespace OpenGS
                 return;
             }
 
+            if (float.IsNaN(powerMultiplier) || float.IsInfinity(powerMultiplier))
+            {
+                Debug.LogWarning("[MatchEventProvider] Ignoring non-finite grenade power multiplier.");
+                return;
+            }
+
+            powerMultiplier = Mathf.Clamp(powerMultiplier, 0f, 10f);
             var position = player != null ? (Vector2)player.transform.position : Vector2.zero;
+            if (float.IsNaN(position.x) || float.IsInfinity(position.x) ||
+                float.IsNaN(position.y) || float.IsInfinity(position.y))
+            {
+                Debug.LogWarning("[MatchEventProvider] Ignoring grenade request with non-finite position.");
+                return;
+            }
+
             var direction = player != null && player.transform.localScale.x < 0f
                 ? Vector2.left
                 : Vector2.right;

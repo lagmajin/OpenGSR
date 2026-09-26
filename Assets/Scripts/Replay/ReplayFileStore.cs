@@ -43,7 +43,7 @@ namespace OpenGS
             writer.Write(frames.Length);
             for (var i = 0; i < frames.Length; i++)
             {
-                WriteFrame(writer, frames[i]);
+                WriteFrame(writer, frames[i], recording.formatVersion);
             }
         }
 
@@ -89,13 +89,13 @@ namespace OpenGS
             recording.frames = new ReplayFrame[frameCount];
             for (var i = 0; i < frameCount; i++)
             {
-                recording.frames[i] = ReadFrame(reader);
+                recording.frames[i] = ReadFrame(reader, recording.formatVersion);
             }
 
             return recording;
         }
 
-        static void WriteFrame(BinaryWriter writer, ReplayFrame frame)
+        static void WriteFrame(BinaryWriter writer, ReplayFrame frame, int recordingFormatVersion)
         {
             writer.Write(frame.tick);
             writer.Write(frame.aimWorldPosition.x);
@@ -107,6 +107,12 @@ namespace OpenGS
             writer.Write(frame.reloadJustPressed);
             writer.Write(frame.swapWeaponJustPressed);
             writer.Write(frame.dropWeaponJustPressed);
+            if (recordingFormatVersion >= 2)
+            {
+                writer.Write(frame.grenadeJustPressed);
+                writer.Write(frame.grenadePressed);
+                writer.Write(frame.grenadeJustReleased);
+            }
             writer.Write(frame.jumpJustPressed);
             writer.Write(frame.sitJustPressed);
             writer.Write(frame.lieDownJustPressed);
@@ -115,7 +121,7 @@ namespace OpenGS
             writer.Write(frame.boosterPressed);
         }
 
-        static ReplayFrame ReadFrame(BinaryReader reader)
+        static ReplayFrame ReadFrame(BinaryReader reader, int recordingFormatVersion)
         {
             return new ReplayFrame
             {
@@ -128,6 +134,9 @@ namespace OpenGS
                 reloadJustPressed = reader.ReadBoolean(),
                 swapWeaponJustPressed = reader.ReadBoolean(),
                 dropWeaponJustPressed = reader.ReadBoolean(),
+                grenadeJustPressed = recordingFormatVersion >= 2 && reader.ReadBoolean(),
+                grenadePressed = recordingFormatVersion >= 2 && reader.ReadBoolean(),
+                grenadeJustReleased = recordingFormatVersion >= 2 && reader.ReadBoolean(),
                 jumpJustPressed = reader.ReadBoolean(),
                 sitJustPressed = reader.ReadBoolean(),
                 lieDownJustPressed = reader.ReadBoolean(),

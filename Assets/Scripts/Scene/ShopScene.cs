@@ -16,6 +16,7 @@ namespace OpenGS
         [SerializeField] private ShopUIManager shopUIManager;
 
         public GeneralSceneMasterData generalScene;
+        private bool transitionRequested;
 
         protected override void Awake()
         {
@@ -47,6 +48,12 @@ namespace OpenGS
 
         private void EnsureTitleBgm()
         {
+            if (SoundManager.Instance == null)
+            {
+                Debug.LogWarning("[ShopScene] SoundManager is not ready; skipping title BGM setup.");
+                return;
+            }
+
             if (SoundManager.Instance.IsBgmPlaying(EBgm.Title))
             {
                 Debug.Log("[ShopScene] Title BGM is already playing.");
@@ -69,13 +76,28 @@ namespace OpenGS
 
         public void ChangeTab(string str)
         {
-            if (shopUIManager == null) return;
+            if (shopUIManager == null || string.IsNullOrWhiteSpace(str)) return;
 
             var temp = str.ToLower();
-            if (temp == "player") shopUIManager.SwitchCategory(EShopCategory.Character).Forget();
-            else if (temp == "booster") shopUIManager.SwitchCategory(EShopCategory.Booster).Forget();
-            else if (temp == "instantitem") shopUIManager.SwitchCategory(EShopCategory.InstantItem).Forget();
-            else if (temp == "weapon") shopUIManager.SwitchCategory(EShopCategory.Weapon).Forget();
+            if (temp == "player") SwitchTabAsync(EShopCategory.Character).Forget();
+            else if (temp == "booster") SwitchTabAsync(EShopCategory.Booster).Forget();
+            else if (temp == "instantitem") SwitchTabAsync(EShopCategory.InstantItem).Forget();
+            else if (temp == "weapon") SwitchTabAsync(EShopCategory.Weapon).Forget();
+        }
+
+        private async UniTask SwitchTabAsync(EShopCategory category)
+        {
+            try
+            {
+                if (shopUIManager != null && shopUIManager.isActiveAndEnabled)
+                {
+                    await shopUIManager.SwitchCategory(category);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[ShopScene] Failed to switch shop tab to {category}: {ex}");
+            }
         }
 
         [Button("ロビー移動テスト")]
@@ -85,30 +107,59 @@ namespace OpenGS
             var lobbyScene = generalSceneMasterData != null
                 ? generalSceneMasterData.LobbyScene()
                 : GeneralSceneMasterData.Instance().LobbyScene();
-            SceneManager.LoadSceneAsync(lobbyScene);
+            LoadConfiguredScene(lobbyScene, "BackToLobby");
         }
 
         [Button("ウェイトルーム移動テスト")]
         private void BackToOnlineWaitroom()
         {
-            var nextScene = DetermineReturnScene();
-            if (!string.IsNullOrWhiteSpace(nextScene))
+            if (transitionRequested)
             {
-                SceneManager.LoadSceneAsync(nextScene);
+                return;
             }
+
+            var nextScene = DetermineReturnScene();
+            LoadConfiguredScene(nextScene, "BackToOnlineWaitroom");
         }
         [Button("オフラインウェイトルーム移動テスト")]
         private void BackToOfflineWaitRoom()
         {
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
+                LoadConfiguredScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene(), "BackToOfflineWaitRoom");
         }
         [Button("タイトル移動テスト")]
         private void GoToTitle()
         {
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
 
-            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
+            LoadConfiguredScene(GeneralSceneMasterData.Instance().TitleScene(), "GoToTitle");
+        }
+
+        private void LoadConfiguredScene(string sceneName, string source)
+        {
+            if (transitionRequested)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogError($"[ShopScene] Scene name is not configured. source={source}");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                Debug.LogError($"[ShopScene] Scene is not in build settings: {sceneName}. source={source}");
+                return;
+            }
+
+            transitionRequested = true;
+            if (SceneManager.LoadSceneAsync(sceneName) == null)
+            {
+                transitionRequested = false;
+                Debug.LogError($"[ShopScene] Failed to load scene: {sceneName}. source={source}");
+            }
         }
 
         private static string DetermineReturnScene()
@@ -129,7 +180,7 @@ namespace OpenGS
 
         public override SynchronizationContext MainThread()
         {
-            return SynchronizationContext.Current;
+            return SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
         protected override void OnStartUnityEditor()

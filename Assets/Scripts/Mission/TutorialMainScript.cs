@@ -83,9 +83,15 @@ namespace OpenGS
                 return;
             }
 
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
             if (tutorialFinished)
             {
-                if (returnQueued && Time.time >= returnQueuedAt)
+                if (returnQueued && now >= returnQueuedAt)
                 {
                     returnQueued = false;
                     ReturnToLobbyOrConfiguredScene();
@@ -110,7 +116,7 @@ namespace OpenGS
                 return;
             }
 
-            if (step.kind == TutorialStepKind.Delay && Time.time - stepEnteredAt >= Mathf.Max(0f, step.delaySeconds))
+            if (step.kind == TutorialStepKind.Delay && now - stepEnteredAt >= Mathf.Max(0f, step.delaySeconds))
             {
                 AdvanceStep("delay");
                 return;
@@ -193,7 +199,13 @@ namespace OpenGS
                 return;
             }
 
-            stepEnteredAt = Time.time;
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            stepEnteredAt = now;
             UpdateStepUI(GetCurrentStep(), reason);
             Debug.Log($"[TutorialMainScript] Step {currentStepIndex + 1}/{steps.Count}: {GetCurrentStep()?.id} ({reason})");
         }
@@ -300,7 +312,15 @@ namespace OpenGS
             if (autoReturnToLobby)
             {
                 returnQueued = true;
-                returnQueuedAt = Time.time + Mathf.Max(0f, autoReturnDelaySeconds);
+                var now = Time.time;
+                if (float.IsFinite(now) && now >= 0f)
+                {
+                    returnQueuedAt = now + Mathf.Max(0f, autoReturnDelaySeconds);
+                }
+                else
+                {
+                    returnQueued = false;
+                }
             }
         }
 

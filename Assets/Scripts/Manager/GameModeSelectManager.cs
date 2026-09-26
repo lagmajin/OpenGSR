@@ -35,9 +35,16 @@ namespace OpenGS
             {
                 //var json1= new StreamWriter(Application.persistentDataPath + "/" + defaultName);
 
-                var mode = OnlineGameSelect.GameMode;
+                if (OnlineGameSelect == null)
+                {
+                    Debug.LogWarning("[GameModeSelectManager] No online game mode selection to save.");
+                    return;
+                }
 
-                Debug.Log("Save debug select...");
+                var path = Path.Combine(Application.persistentDataPath, defaultName);
+                Directory.CreateDirectory(Application.persistentDataPath);
+                File.WriteAllText(path, JsonConvert.SerializeObject(OnlineGameSelect, Formatting.Indented));
+                Debug.Log($"[GameModeSelectManager] Saved debug online selection: {path}");
 
 
             }
@@ -47,22 +54,32 @@ namespace OpenGS
         {
             if (DebugFlagManager.IsDebug())
             {
-                var json1 = new StreamReader(Application.persistentDataPath + "/" + DebugPlayerSelect.defalutName);
+                var path = Path.Combine(Application.persistentDataPath, defaultName);
+                if (!File.Exists(path))
+                {
+                    Debug.Log($"[GameModeSelectManager] Debug selection file not found: {path}");
+                    return;
+                }
 
-                var mapSelect = json1.ReadToEnd();
+                try
+                {
+                    var loaded = JsonConvert.DeserializeObject<OnlineGameModeSelect>(File.ReadAllText(path));
+                    if (loaded != null)
+                    {
+                        OnlineGameSelect = loaded;
+                        Debug.Log($"[GameModeSelectManager] Loaded debug online selection: {path}");
+                    }
+                    else
+                    {
+                        Debug.LogWarning($"[GameModeSelectManager] Debug selection was empty: {path}");
+                    }
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogWarning($"[GameModeSelectManager] Failed to load debug selection: {exception.Message}");
+                }
 
-                Debug.Log(mapSelect);
-
-                //JsonConvert.DeserializeObject(json1.)
-
-                var json2 = new StreamReader(Application.persistentDataPath + "/" + DebugGameModeSelect.defalutName);
-
-                var modeSelect = json2.ReadToEnd();
-
-                Debug.Log(modeSelect.ToString());
-
-
-                
+                return;
 
             }
         }

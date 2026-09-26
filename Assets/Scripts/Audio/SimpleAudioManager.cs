@@ -39,11 +39,20 @@ namespace OpenGSR.Audio
         private const int INITIAL_SE_SOURCES = 5;
 
         private AudioSource _currentBgmSource;
+        private float _currentBgmBaseVolume = 1f;
         private Coroutine _fadeCoroutine;
         private string _currentBgmName;
 
         private Dictionary<string, AudioConfig.AudioItem> _bgmDict = new Dictionary<string, AudioConfig.AudioItem>();
         private Dictionary<string, AudioConfig.AudioItem> _seDict = new Dictionary<string, AudioConfig.AudioItem>();
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(_defaultBgmFadeTime)) _defaultBgmFadeTime = 1f;
+            _defaultBgmFadeTime = Mathf.Max(0f, _defaultBgmFadeTime);
+            MasterBGMVolume = float.IsFinite(MasterBGMVolume) ? Mathf.Clamp01(MasterBGMVolume) : 1f;
+            MasterSEVolume = float.IsFinite(MasterSEVolume) ? Mathf.Clamp01(MasterSEVolume) : 1f;
+        }
 
         private void Awake()
         {
@@ -54,7 +63,18 @@ namespace OpenGSR.Audio
             }
             _instance = this;
             DontDestroyOnLoad(gameObject);
+            _defaultBgmFadeTime = float.IsFinite(_defaultBgmFadeTime) ? Mathf.Max(0f, _defaultBgmFadeTime) : 1f;
+            MasterBGMVolume = float.IsFinite(MasterBGMVolume) ? Mathf.Clamp01(MasterBGMVolume) : 1f;
+            MasterSEVolume = float.IsFinite(MasterSEVolume) ? Mathf.Clamp01(MasterSEVolume) : 1f;
             Init();
+        }
+
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
         }
 
         private void Init()
@@ -85,8 +105,27 @@ namespace OpenGSR.Audio
 
             if (_audioConfig != null)
             {
-                foreach (var item in _audioConfig.BGMList) _bgmDict[item.Name] = item;
-                foreach (var item in _audioConfig.SEList) _seDict[item.Name] = item;
+                if (_audioConfig.BGMList != null)
+                {
+                    foreach (var item in _audioConfig.BGMList)
+                    {
+                        if (item != null && !string.IsNullOrWhiteSpace(item.Name))
+                        {
+                            _bgmDict[item.Name] = item;
+                        }
+                    }
+                }
+
+                if (_audioConfig.SEList != null)
+                {
+                    foreach (var item in _audioConfig.SEList)
+                    {
+                        if (item != null && !string.IsNullOrWhiteSpace(item.Name))
+                        {
+                            _seDict[item.Name] = item;
+                        }
+                    }
+                }
             }
             
             Debug.Log("[SimpleAudioManager] Initialized with BGM sources and SE pool.");
@@ -94,6 +133,13 @@ namespace OpenGSR.Audio
 
         public void PlayBGM(string name, float fadeTime = -1)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Debug.LogWarning("[SimpleAudioManager] Ignoring empty BGM name.");
+                return;
+            }
+
+            name = name.Trim();
             if (!_bgmDict.TryGetValue(name, out var item))
             {
                 Debug.LogWarning($"[SimpleAudioManager] BGM not found in config: {name}");
@@ -121,7 +167,8 @@ namespace OpenGSR.Audio
             
             _currentBgmSource.clip = clip;
             _currentBgmSource.loop = loop;
-            _currentBgmSource.volume = Mathf.Clamp01(volume) * MasterBGMVolume;
+            _currentBgmBaseVolume = float.IsFinite(volume) ? Mathf.Clamp01(volume) : 1f;
+            _currentBgmSource.volume = _currentBgmBaseVolume * MasterBGMVolume;
             _currentBgmSource.Play();
             if (string.IsNullOrWhiteSpace(_currentBgmName))
             {
@@ -133,7 +180,9 @@ namespace OpenGSR.Audio
 
         public void StopBGM(float fadeTime = -1)
         {
+            if (!float.IsFinite(fadeTime)) fadeTime = -1f;
             float time = fadeTime < 0 ? _defaultBgmFadeTime : fadeTime;
+            time = Mathf.Max(0f, time);
             if (_fadeCoroutine != null) StopCoroutine(_fadeCoroutine);
             if (time > 0)
                 _fadeCoroutine = StartCoroutine(FadeOutBGM(time));
@@ -148,18 +197,33 @@ namespace OpenGSR.Audio
 
             while (elapsed < fadeTime)
             {
-                elapsed += Time.deltaTime;
-                _currentBgmSource.volume = Mathf.Lerp(startVol, 0, elapsed / fadeTime);
+                var deltaTime = Time.deltaTime;
+                if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+                {
+                    break;
+                }
+                deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+                elapsed = Mathf.Min(fadeTime, elapsed + deltaTime);
+                _currentBgmSource.volume = Mathf.Lerp(startVol, 0f, elapsed / fadeTime);
                 yield return null;
             }
 
             _currentBgmSource.Stop();
             _currentBgmName = null;
             _currentBgmSource.volume = 0;
+            _fadeCoroutine = null;
         }
 
         public void PlaySE(string name, float volume = 1.0f, float pitch = 1.0f)
         {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Debug.LogWarning("[SimpleAudioManager] Ignoring empty SE name.");
+                return;
+            }
+
+            name = name.Trim();
             if (_seDict.TryGetValue(name, out var item))
             {
                 PlaySE(item.Clip, item.Volume * volume, pitch);
@@ -173,6 +237,9 @@ namespace OpenGSR.Audio
         public void PlaySE(AudioClip clip, float volume = 1.0f, float pitch = 1.0f)
         {
             if (clip == null) return;
+
+            volume = float.IsFinite(volume) ? Mathf.Clamp01(volume) : 1f;
+            pitch = float.IsFinite(pitch) ? Mathf.Clamp(pitch, 0.1f, 3f) : 1f;
 
             AudioSource source = GetAvailableSESource();
             if (source != null)
@@ -204,9 +271,16 @@ namespace OpenGSR.Audio
                     || (_currentBgmSource.clip != null && string.Equals(_currentBgmSource.clip.name, name, System.StringComparison.OrdinalIgnoreCase))
                 );
         }
-        public void SetCurrentBGMName(string name) => _currentBgmName = name;
-        public void SetBGMVolume(float volume) => MasterBGMVolume = Mathf.Clamp01(volume);
-        public void SetSEVolume(float volume) => MasterSEVolume = Mathf.Clamp01(volume);
+        public void SetCurrentBGMName(string name) => _currentBgmName = string.IsNullOrWhiteSpace(name) ? null : name.Trim();
+        public void SetBGMVolume(float volume)
+        {
+            MasterBGMVolume = float.IsFinite(volume) ? Mathf.Clamp01(volume) : 1f;
+            if (_currentBgmSource != null && _currentBgmSource.isPlaying)
+            {
+                _currentBgmSource.volume = _currentBgmBaseVolume * MasterBGMVolume;
+            }
+        }
+        public void SetSEVolume(float volume) => MasterSEVolume = float.IsFinite(volume) ? Mathf.Clamp01(volume) : 1f;
         public void SetReverbEnabled(bool enabled)
         {
             _reverbEnabled = enabled;

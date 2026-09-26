@@ -20,6 +20,7 @@ namespace OpenGS
         public const string PlayerDeath = MessageType.PlayerDeath;
         public const string MatchStart = MessageType.GameStartNotification;
         public const string MatchEnd = MessageType.MatchEndNotification;
+        public const string LegacyMatchEnd = "MatchEnd";
         public const string ClientConnect = "ClientConnect";
         public const string TeamKill = "TeamKill";
         public const string Snapshot = "Snapshot";
@@ -152,17 +153,28 @@ namespace OpenGS
     /// </summary>
     public static class RUDPMessageBuilder
     {
+        private static Vector2 SafeVector(Vector2 value, Vector2 fallback)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) ? value : fallback;
+        }
+
+        private static float SafeFloat(float value, float fallback = 0f)
+        {
+            return float.IsFinite(value) ? value : fallback;
+        }
+
         /// <summary>
         /// プレイヤー位置同期メッセージを作成
         /// </summary>
         public static JObject CreatePlayerPositionUpdate(string playerId, Vector2 position, float rotation)
         {
+            position = SafeVector(position, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerPositionUpdate;
-            json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
-            json["Rotation"] = rotation;
+            json["Rotation"] = SafeFloat(rotation);
             return json;
         }
 
@@ -171,9 +183,11 @@ namespace OpenGS
         /// </summary>
         public static JObject CreatePlayerShot(string playerId, Vector2 position, Vector2 direction, string weaponType)
         {
+            position = SafeVector(position, Vector2.zero);
+            direction = SafeVector(direction, Vector2.right);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerShot;
-            json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
             json["DirX"] = direction.x;
@@ -203,7 +217,7 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerDeath;
-            json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["KillerId"] = killerId;
             return json;
         }
@@ -242,10 +256,11 @@ namespace OpenGS
         /// <param name="capturedAtPosition">キャプチャ位置</param>
         public static JObject CreateFlagCaptured(string playerId, string team, Vector2 capturedAtPosition, string eventKey = null)
         {
+            capturedAtPosition = SafeVector(capturedAtPosition, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagCaptured;
             json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
-            json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["PlayerID"] = playerId;
             json["Team"] = team;
             json["CapturingTeam"] = team;
@@ -262,10 +277,11 @@ namespace OpenGS
         /// <param name="position">ロストした位置</param>
         public static JObject CreateFlagLost(string playerId, string team, Vector2 position, string eventKey = null)
         {
+            position = SafeVector(position, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagLost;
             json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
-            json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["PlayerID"] = playerId;
             json["Team"] = team;
             json["PosX"] = position.x;
@@ -329,7 +345,7 @@ namespace OpenGS
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.FlagPickup;
             json["EventKey"] = string.IsNullOrWhiteSpace(eventKey) ? Guid.NewGuid().ToString("N") : eventKey;
-            json["PlayerId"] = playerId;
+            json["PlayerID"] = playerId;
             json["PlayerID"] = playerId;
             json["Team"] = team;
             json["PosX"] = position.x;
@@ -430,12 +446,13 @@ namespace OpenGS
         /// <param name="respawnTime">リスポーンまでの時間（秒）</param>
         public static JObject CreateRespawnUpdate(string playerId, Vector2 position, float respawnTime = 0f)
         {
+            position = SafeVector(position, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.RespawnUpdate;
             json["PlayerId"] = playerId;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
-            json["RespawnTime"] = respawnTime;
+            json["RespawnTime"] = Mathf.Max(0f, SafeFloat(respawnTime));
             return json;
         }
 
@@ -466,9 +483,9 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.ChatMessage;
-            json["PlayerId"] = playerId;
-            json["PlayerName"] = playerName;
-            json["Message"] = message;
+            json["PlayerId"] = NormalizeChatField(playerId, 128);
+            json["PlayerName"] = NormalizeChatField(playerName, 64);
+            json["Message"] = NormalizeChatField(message, 200);
             json["TeamOnly"] = teamOnly;
             json["Timestamp"] = DateTime.Now.ToString("HH:mm:ss");
             return json;
@@ -481,8 +498,8 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.ChatBroadcast;
-            json["Message"] = message;
-            json["BroadcastType"] = type;
+            json["Message"] = NormalizeChatField(message, 200);
+            json["BroadcastType"] = NormalizeChatField(type, 32);
             json["Timestamp"] = DateTime.Now.ToString("HH:mm:ss");
             return json;
         }
@@ -501,6 +518,7 @@ namespace OpenGS
         /// <param name="spawnPointId">スポーンポイントID</param>
         public static JObject CreateItemPickup(string playerId, string itemId, string itemType, Vector2 position, int spawnPointId = -1, float value = 0f, float durationSeconds = 0f)
         {
+            position = SafeVector(position, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.ItemPickup;
             json["PlayerId"] = playerId;
@@ -509,8 +527,8 @@ namespace OpenGS
             json["PosX"] = position.x;
             json["PosY"] = position.y;
             json["SpawnPointId"] = spawnPointId;
-            json["Value"] = value;
-            json["Duration"] = durationSeconds;
+            json["Value"] = SafeFloat(value);
+            json["Duration"] = Mathf.Max(0f, SafeFloat(durationSeconds));
             return json;
         }
 
@@ -559,13 +577,14 @@ namespace OpenGS
         /// <param name="respawnTime">リスポーン時間（秒、0なら出現のみ）</param>
         public static JObject CreateItemSpawn(string itemId, string itemType, Vector2 position, float respawnTime = 0f)
         {
+            position = SafeVector(position, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.ItemSpawn;
             json["ItemId"] = itemId;
             json["ItemType"] = itemType;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
-            json["RespawnTime"] = respawnTime;
+            json["RespawnTime"] = Mathf.Max(0f, SafeFloat(respawnTime));
             return json;
         }
 
@@ -580,6 +599,7 @@ namespace OpenGS
         /// </summary>
         public static JObject CreatePlayerRespawn(string playerId, Vector2 position)
         {
+            position = SafeVector(position, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerRespawn;
             json["PlayerId"] = playerId;
@@ -609,9 +629,11 @@ namespace OpenGS
             json["MessageType"] = RUDPMessageTypes.RespawnPosition;
             json["PlayerId"] = playerId;
             var positionsArray = new JArray();
+            if (positions == null) return json;
             foreach (var pos in positions)
             {
-                positionsArray.Add(new JObject { ["x"] = pos.x, ["y"] = pos.y });
+                var safePosition = SafeVector(pos, Vector2.zero);
+                positionsArray.Add(new JObject { ["x"] = safePosition.x, ["y"] = safePosition.y });
             }
             json["Positions"] = positionsArray;
             return json;
@@ -758,6 +780,7 @@ namespace OpenGS
         /// </summary>
         public static JObject CreatePlayerRevive(string playerId, string revivedByPlayerId, Vector2 position)
         {
+            position = SafeVector(position, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerRevive;
             json["PlayerId"] = playerId;
@@ -789,6 +812,7 @@ namespace OpenGS
         /// </summary>
         public static JObject CreateWeaponPickup(string playerId, string weaponId, string weaponType, Vector2 position, bool isReserved = false, string reservedByPlayerId = null)
         {
+            position = SafeVector(position, Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.WeaponPickup;
             json["PlayerId"] = playerId;
@@ -843,6 +867,8 @@ namespace OpenGS
         /// </summary>
         public static JObject CreateGrenadeThrow(string playerId, Vector2 position, Vector2 direction, string grenadeType, float power = 1f)
         {
+            position = SafeVector(position, Vector2.zero);
+            direction = SafeVector(direction, Vector2.right);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.GrenadeThrow;
             json["PlayerId"] = playerId;
@@ -851,7 +877,7 @@ namespace OpenGS
             json["DirX"] = direction.x;
             json["DirY"] = direction.y;
             json["GrenadeType"] = grenadeType;
-            json["Power"] = power;
+            json["Power"] = Mathf.Max(0f, SafeFloat(power, 1f));
             return json;
         }
 
@@ -873,6 +899,8 @@ namespace OpenGS
         /// </summary>
         public static JObject CreatePlayerMelee(string playerId, Vector2 position, Vector2 direction, string weaponId)
         {
+            position = SafeVector(position, Vector2.zero);
+            direction = SafeVector(direction, Vector2.right);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerMelee;
             json["PlayerId"] = playerId;
@@ -1175,9 +1203,9 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = MessageType.LobbyChat;
-            json["PlayerId"] = playerId;
-            json["PlayerName"] = playerName;
-            json["Message"] = message;
+            json["PlayerId"] = NormalizeChatField(playerId, 128);
+            json["PlayerName"] = NormalizeChatField(playerName, 64);
+            json["Message"] = NormalizeChatField(message, 200);
             json["Timestamp"] = DateTime.Now.ToString("HH:mm:ss");
             return json;
         }
@@ -1230,10 +1258,10 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = MessageType.WaitRoomChat;
-            json["PlayerId"] = playerId;
-            json["PlayerName"] = playerName;
-            json["Message"] = message;
-            json["RoomId"] = roomId;
+            json["PlayerId"] = NormalizeChatField(playerId, 128);
+            json["PlayerName"] = NormalizeChatField(playerName, 64);
+            json["Message"] = NormalizeChatField(message, 200);
+            json["RoomId"] = NormalizeChatField(roomId, 128);
             json["Timestamp"] = DateTime.Now.ToString("HH:mm:ss");
             return json;
         }
@@ -1244,10 +1272,17 @@ namespace OpenGS
         public static JObject CreateWaitRoomPlayerReady(string playerId, string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = MessageType.WaitRoomPlayerReady;
-            json["PlayerId"] = playerId;
-            json["RoomId"] = roomId;
+            json["MessageType"] = MessageType.PlayerReadyNotification;
+            json["PlayerID"] = playerId;
+            json["RoomID"] = roomId;
             return json;
+        }
+
+        private static string NormalizeChatField(string value, int maxLength)
+        {
+            var normalized = value?.Replace("\r\n", " ").Replace('\n', ' ').Replace('\r', ' ').Trim()
+                ?? string.Empty;
+            return normalized.Length > maxLength ? normalized.Substring(0, maxLength) : normalized;
         }
 
         /// <summary>
@@ -1256,9 +1291,9 @@ namespace OpenGS
         public static JObject CreateWaitRoomPlayerUnready(string playerId, string roomId)
         {
             var json = new JObject();
-            json["MessageType"] = MessageType.WaitRoomPlayerUnready;
-            json["PlayerId"] = playerId;
-            json["RoomId"] = roomId;
+            json["MessageType"] = MessageType.PlayerUnready;
+            json["PlayerID"] = playerId;
+            json["RoomID"] = roomId;
             return json;
         }
 

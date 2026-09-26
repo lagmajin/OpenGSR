@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenGS
@@ -44,12 +45,16 @@ namespace OpenGS
         private List<FriendEntry> currentFriends = new List<FriendEntry>();
         private bool showOnlineOnly = false;
         private string searchKeyword = "";
+        private FriendManager friendManager;
+        private Coroutine friendBindRoutine;
+        private Coroutine refreshRoutine;
 
         // ─── デリゲート ─────────────────────────────────────────────
 
         public Action OnDialogClosed;
         public Action OnAddFriendClicked;
         public Action OnPendingRequestsClicked;
+        public Action<FriendEntry> OnFriendActionRequested;
 
         // ─── Unity ライフサイクル ────────────────────────────────────
 
@@ -61,7 +66,74 @@ namespace OpenGS
 
         private void OnEnable()
         {
+            friendBindRoutine = StartCoroutine(BindFriendManagerWhenReady());
+        }
+
+        private void OnDisable()
+        {
+            CancelInvoke();
+            if (friendManager != null)
+            {
+                friendManager.OnFriendListUpdated -= HandleFriendListUpdated;
+            }
+
+            friendManager = null;
+            if (friendBindRoutine != null)
+            {
+                StopCoroutine(friendBindRoutine);
+                friendBindRoutine = null;
+            }
+            if (refreshRoutine != null)
+            {
+                StopCoroutine(refreshRoutine);
+                refreshRoutine = null;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            onlineOnlyToggle?.onValueChanged.RemoveListener(OnOnlineOnlyToggleChanged);
+            searchButton?.onClick.RemoveListener(OnSearchButtonClicked);
+            searchInput?.onValueChanged.RemoveListener(OnSearchValueChanged);
+            closeButton?.onClick.RemoveListener(OnCloseButtonClicked);
+            addFriendButton?.onClick.RemoveListener(OnAddFriendButtonClicked);
+            pendingRequestsButton?.onClick.RemoveListener(OnPendingRequestsButtonClicked);
+        }
+
+        private IEnumerator BindFriendManagerWhenReady()
+        {
+            while (isActiveAndEnabled && FriendManager.Instance == null)
+            {
+                yield return null;
+            }
+
+            if (!isActiveAndEnabled || FriendManager.Instance == null)
+            {
+                yield break;
+            }
+
+            friendManager = FriendManager.Instance;
+            friendManager.OnFriendListUpdated += HandleFriendListUpdated;
+            friendBindRoutine = null;
             RefreshFriendList();
+        }
+
+        private void HandleFriendListUpdated(List<FriendEntry> friends)
+        {
+            QueueRefreshFriendList();
+        }
+
+        private void QueueRefreshFriendList()
+        {
+            if (!isActiveAndEnabled || refreshRoutine != null) return;
+            refreshRoutine = StartCoroutine(RefreshFriendListNextFrame());
+        }
+
+        private IEnumerator RefreshFriendListNextFrame()
+        {
+            yield return null;
+            refreshRoutine = null;
+            if (isActiveAndEnabled) RefreshFriendList();
         }
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -148,7 +220,7 @@ namespace OpenGS
 
         private void OnSearchButtonClicked()
         {
-            FilterFriends(searchInput.text);
+            FilterFriends(searchInput != null ? searchInput.text : searchKeyword);
         }
 
         private void OnSearchValueChanged(string value)
@@ -179,14 +251,26 @@ namespace OpenGS
         /// </summary>
         private void RefreshFriendList()
         {
+            var manager = friendManager ?? FriendManager.Instance;
+            if (manager == null)
+            {
+                currentFriends = new List<FriendEntry>();
+                ClearFriendList();
+                UpdateStatistics();
+                return;
+            }
+
+            friendManager = manager;
+
             // フレンドデータを取得
-            var allFriends = FriendManager.Instance.GetFriends(showOnlineOnly);
+            var allFriends = manager.GetFriends(showOnlineOnly) ?? new List<FriendEntry>();
+            allFriends.RemoveAll(friend => friend == null);
 
             // 検索フィルタリング
             if (!string.IsNullOrEmpty(searchKeyword))
             {
-                allFriends = allFriends.FindAll(f => 
-                    f.PlayerName.IndexOf(searchKeyword, StringComparison.OrdinalIgnoreCase) >= 0);
+                allFriends = allFriends.FindAll(f =>
+                    (f.PlayerName ?? string.Empty).IndexOf(searchKeyword, StringComparison.OrdinalIgnoreCase) >= 0);
             }
 
             currentFriends = allFriends;
@@ -244,7 +328,7 @@ namespace OpenGS
             
             if (itemScript != null)
             {
-                itemScript.Setup(friend, OnFriendItemSelected);
+                itemScript.Setup(friend, OnFriendItemSelected, OnFriendActionRequested);
             }
             else
             {
@@ -281,8 +365,18 @@ namespace OpenGS
         /// </summary>
         private void UpdateStatistics()
         {
-            var allFriends = FriendManager.Instance.GetFriends();
-            var onlineFriends = FriendManager.Instance.GetFriends(true);
+            var manager = friendManager ?? FriendManager.Instance;
+            if (manager == null)
+            {
+                if (friendCountText != null) friendCountText.text = "フレンド: 0人";
+                if (onlineCountText != null) onlineCountText.text = "オンライン: 0人";
+                return;
+            }
+
+            friendManager = manager;
+
+            var allFriends = manager.GetFriends() ?? new List<FriendEntry>();
+            var onlineFriends = manager.GetFriends(true) ?? new List<FriendEntry>();
 
             // 総フレンド数
             if (friendCountText != null)

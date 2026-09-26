@@ -25,40 +25,80 @@ namespace OpenGS
 
         private bool isCharging = false;
         private float currentChargeTime = 0f;
+        private float lastThrowTime = -999f;
+        private PlayerAgent playerAgent;
+        private AbstractPlayer abstractPlayer;
+        private IInputService inputService = new UnityInputService();
         
         // UI 用に現在のパワー (0.0 ~ 1.0) を公開する場合に使う
         public float CurrentChargeRatio => isCharging ? Mathf.Clamp01(currentChargeTime / maxChargeTime) : 0f;
         public EGrenadeType CurrentGrenadeType => grenadeType;
 
+        [Zenject.Inject]
+        private void Construct(IInputService resolvedInputService)
+        {
+            if (resolvedInputService != null)
+            {
+                inputService = resolvedInputService;
+            }
+        }
+
+        private void Awake()
+        {
+            maxChargeTime = float.IsFinite(maxChargeTime) ? Mathf.Max(0.01f, maxChargeTime) : 2f;
+            minPower = float.IsFinite(minPower) ? Mathf.Clamp01(minPower) : 0.1f;
+            maxPower = float.IsFinite(maxPower) ? Mathf.Clamp01(maxPower) : 1f;
+            if (maxPower < minPower)
+            {
+                maxPower = minPower;
+            }
+
+            baseThrowForce = float.IsFinite(baseThrowForce) ? Mathf.Max(0f, baseThrowForce) : 20f;
+        }
+
+        private void OnDisable()
+        {
+            isCharging = false;
+            currentChargeTime = 0f;
+        }
+
         void Start()
         {
+            playerAgent = GetComponent<PlayerAgent>();
+            abstractPlayer = GetComponent<AbstractPlayer>();
             if (throwPoint == null)
             {
                 throwPoint = transform; // 設定されてなければ自身の位置から
             }
 
-            GetComponent<PlayerAgent>()?.RefillNormalGrenadeIfEmpty();
+            playerAgent?.RefillNormalGrenadeIfEmpty();
         }
 
         void Update()
         {
-            // スペースキーを押した瞬間
-            if (Input.GetKeyDown(KeyCode.Space))
+            // ジャンプ（Space）と投擲を同じキーにしない。
+            if (inputService.IsGrenadeJustPressed())
             {
                 isCharging = true;
                 currentChargeTime = 0f;
-                GetComponent<AbstractPlayer>()?.TryPlayGeneralSound(EPlayerGeneralSound.OpenGrenade);
+                abstractPlayer?.TryPlayGeneralSound(EPlayerGeneralSound.OpenGrenade);
             }
 
-            // スペースキー長押し中（パワーを溜める）
-            if (isCharging && Input.GetKey(KeyCode.Space))
+            // グレネードキー長押し中（パワーを溜める）
+            if (isCharging && inputService.IsGrenadePressed())
             {
-                currentChargeTime += Time.deltaTime;
-                currentChargeTime = Mathf.Min(currentChargeTime, maxChargeTime);
+                var deltaTime = Time.deltaTime;
+                if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+                {
+                    return;
+                }
+                deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+                currentChargeTime = Mathf.Min(maxChargeTime, currentChargeTime + deltaTime);
             }
 
-            // スペースキーを離した瞬間（投げる）
-            if (isCharging && Input.GetKeyUp(KeyCode.Space))
+            // グレネードキーを離した瞬間（投げる）
+            if (isCharging && inputService.IsGrenadeJustReleased())
             {
                 isCharging = false;
                 
@@ -66,7 +106,7 @@ namespace OpenGS
                 float ratio = currentChargeTime / maxChargeTime;
                 float powerMultiplier = Mathf.Lerp(minPower, maxPower, ratio);
                 
-                GetComponent<AbstractPlayer>()?.TryPlayGeneralSound(EPlayerGeneralSound.ThrowGrenade);
+                abstractPlayer?.TryPlayGeneralSound(EPlayerGeneralSound.ThrowGrenade);
                 ThrowGrenade(powerMultiplier);
             }
         }
@@ -74,7 +114,15 @@ namespace OpenGS
         [Button("オートセット")]
         private void AutoSet()
         {
-            // エディタ設定用
+            if (throwPoint == null)
+            {
+                throwPoint = transform;
+            }
+
+            if (grenadeListMasterData == null)
+            {
+                Debug.LogWarning("[PlayerGrenadeComponent] Grenade master data is not assigned.");
+            }
         }
 
         [Button("グレネード投擲(テスト用)")]
@@ -121,9 +169,28 @@ namespace OpenGS
 
         public void ThrowGrenade(float powerMultiplier)
         {
+            powerMultiplier = float.IsFinite(powerMultiplier)
+                ? Mathf.Clamp(powerMultiplier, minPower, maxPower)
+                : minPower;
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            if (now - lastThrowTime < 0.5f)
+            {
+                Debug.LogWarning("[PlayerGrenadeComponent] Duplicate grenade throw ignored.");
+                return;
+            }
+            lastThrowTime = now;
             var owner = GetComponent<AbstractPlayer>();
             var playableAgent = GetComponent<PlayerAgent>();
             var consumedPlayableGrenade = false;
+            if (playableAgent != null)
+            {
+                grenadeType = playableAgent.GetGrenadeSlotType(0);
+            }
             if (owner != null)
             {
                 if (owner.Status == null)
@@ -140,11 +207,11 @@ namespace OpenGS
                     return;
                 }
             }
-            else if (playableAgent != null && grenadeType == EGrenadeType.Normal)
+            else if (playableAgent != null)
             {
-                if (!playableAgent.TryConsumeNormalGrenade())
+                if (!playableAgent.TryConsumeGrenadeSlot(out grenadeType))
                 {
-                    Debug.Log("[PlayerGrenadeComponent] No normal grenades remaining.");
+                    Debug.Log("[PlayerGrenadeComponent] No grenade slots remaining.");
                     return;
                 }
 
@@ -170,7 +237,8 @@ namespace OpenGS
                 return;
             }
 
-            var grenadeObj = Instantiate(grenadeData.GrenadePrefab, throwPoint.position, Quaternion.identity);
+            var spawnPosition = throwPoint != null ? throwPoint.position : transform.position;
+            var grenadeObj = Instantiate(grenadeData.GrenadePrefab, spawnPosition, Quaternion.identity);
             var grenadeProjectile = grenadeObj.GetComponent<GrenadeProjectileController>();
 
             if (grenadeProjectile != null)
@@ -192,6 +260,12 @@ namespace OpenGS
                 {
                     rb.AddForce(throwDir * throwSpeed, ForceMode2D.Impulse);
                     rb.AddTorque(-5f * powerMultiplier, ForceMode2D.Impulse);
+                }
+                else
+                {
+                    Destroy(grenadeObj);
+                    Debug.LogWarning("[PlayerGrenadeComponent] Grenade prefab has no projectile or Rigidbody2D component.");
+                    return;
                 }
             }
 

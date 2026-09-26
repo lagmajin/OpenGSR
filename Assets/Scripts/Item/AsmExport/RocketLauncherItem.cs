@@ -1,30 +1,33 @@
-﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace OpenGS {
-
+namespace OpenGS
+{
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MultipleTags))]
-    public class RocketLauncherItem : AbstractFieldItem
+    public class RocketLauncherItem : WorldItem
     {
-        [SerializeField] private GameObject weaponPrefab; // 装備される武器のプレハブ
+        [SerializeField] private GameObject weaponPrefab;
         [SerializeField] private int initialAmmo = 10;
+        private bool consumed;
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var weaponSlots = collision.GetComponentInChildren<WeaponSlots>();
-            if (weaponSlots != null)
+            if (consumed || collision == null || weaponPrefab == null)
             {
-                // 特殊武器として装備
-                weaponSlots.EquipSpecialWeapon(weaponPrefab, initialAmmo);
-                
-                // アイテム自体は削除
-                Destroy(gameObject);
-                
-                Debug.Log($"[Item] RocketLauncher equipped. Ammo: {initialAmmo}");
+                return;
             }
+
+            var weaponSlots = collision.GetComponentInParent<WeaponSlots>();
+            if (weaponSlots == null)
+            {
+                return;
+            }
+
+            consumed = true;
+            weaponSlots.EquipSpecialWeapon(weaponPrefab, Mathf.Max(0, initialAmmo));
+            Destroy(gameObject);
+
+            Debug.Log($"[Item] RocketLauncher equipped. Ammo: {initialAmmo}");
         }
     }
-
 }

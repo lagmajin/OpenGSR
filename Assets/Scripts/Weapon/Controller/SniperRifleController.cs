@@ -20,7 +20,7 @@ namespace OpenGS
 
         protected override void OnUpdate()
         {
-            if (Input.GetMouseButton(0)) // 左クリックで1発撃つ
+            if (inputService != null && inputService.IsFirePressed())
             {
                 Shot();
             }
@@ -37,6 +37,11 @@ namespace OpenGS
 
         protected override void CreateBullet(EBulletType type = EBulletType.Normal)
         {
+            if (bulletPrefab == null || muzzle == null)
+            {
+                Debug.LogWarning("[SniperRifleController] Bullet prefab or muzzle is not assigned.");
+                return;
+            }
 
             float spreadAngle = Random.Range(0,0);
 
@@ -44,9 +49,17 @@ namespace OpenGS
             var bullet = Instantiate(bulletPrefab);
             bullet.transform.position = muzzle.transform.position;
 
-            // === マウス方向を計算 ===
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector2 dir = (mouseWorldPos - muzzle.transform.position).normalized;
+            // 他の武器と同じ入力サービスの照準座標を使う。
+            Vector3 mouseWorldPos = inputService != null
+                ? inputService.GetAimWorldPosition()
+                : muzzle.transform.position + transform.right;
+            var direction = mouseWorldPos - muzzle.transform.position;
+            if (!float.IsFinite(direction.x) || !float.IsFinite(direction.y) ||
+                !float.IsFinite(direction.z) || direction.sqrMagnitude <= Mathf.Epsilon)
+            {
+                direction = muzzle.transform.right;
+            }
+            Vector2 dir = ((Vector2)direction).normalized;
 
             // スプレッド角を回転に加える
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
@@ -65,6 +78,10 @@ namespace OpenGS
                 script.SetOwnerInfo(GetPlayerID(owner), Name, owner != null ? owner.Team() : ETeam.NoTeam);
             }
             script?.Launch(finalDir,200);
+            if (script == null)
+            {
+                Destroy(bullet);
+            }
 
             CreateMuzzulleFlash();
 

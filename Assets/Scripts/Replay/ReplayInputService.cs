@@ -38,7 +38,16 @@ namespace OpenGS
 
         public Vector2 GetAimDirection(Vector3 origin)
         {
-            return (GetAimWorldPosition() - (Vector2)origin).normalized;
+            if (!float.IsFinite(origin.x) || !float.IsFinite(origin.y) || !float.IsFinite(origin.z))
+            {
+                return Vector2.right;
+            }
+
+            var direction = GetAimWorldPosition() - (Vector2)origin;
+            return float.IsFinite(direction.x) && float.IsFinite(direction.y) &&
+                direction.sqrMagnitude > Mathf.Epsilon
+                ? direction.normalized
+                : Vector2.right;
         }
 
         public bool IsFirePressed()
@@ -65,6 +74,10 @@ namespace OpenGS
         {
             return TryGetPlaybackFrame(out var frame) ? frame.dropWeaponJustPressed : liveInput.IsDropWeaponJustPressed();
         }
+
+        public bool IsGrenadeJustPressed() => TryGetPlaybackFrame(out var frame) ? frame.grenadeJustPressed : liveInput.IsGrenadeJustPressed();
+        public bool IsGrenadePressed() => TryGetPlaybackFrame(out var frame) ? frame.grenadePressed : liveInput.IsGrenadePressed();
+        public bool IsGrenadeJustReleased() => TryGetPlaybackFrame(out var frame) ? frame.grenadeJustReleased : liveInput.IsGrenadeJustReleased();
 
         public bool IsJumpJustPressed()
         {
@@ -106,6 +119,9 @@ namespace OpenGS
             return TryGetPlaybackFrame(out var frame) ? frame.boosterPressed : liveInput.IsBoosterPressed();
         }
 
+        public bool IsScoreboardJustPressed() => liveInput.IsScoreboardJustPressed();
+        public bool IsScoreboardJustReleased() => liveInput.IsScoreboardJustReleased();
+
         public ReplaySession Session => session;
 
         ReplayFrame CaptureLiveFrame()
@@ -120,6 +136,9 @@ namespace OpenGS
                 reloadJustPressed = liveInput.IsReloadJustPressed(),
                 swapWeaponJustPressed = liveInput.IsSwapWeaponJustPressed(),
                 dropWeaponJustPressed = liveInput.IsDropWeaponJustPressed(),
+                grenadeJustPressed = liveInput.IsGrenadeJustPressed(),
+                grenadePressed = liveInput.IsGrenadePressed(),
+                grenadeJustReleased = liveInput.IsGrenadeJustReleased(),
                 jumpJustPressed = liveInput.IsJumpJustPressed(),
                 sitJustPressed = liveInput.IsSitJustPressed(),
                 lieDownJustPressed = liveInput.IsLieDownJustPressed(),

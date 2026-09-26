@@ -52,6 +52,7 @@ namespace OpenGS
 
         private void Awake()
         {
+            NormalizeVolumes();
             CacheReferences();
             CaptureInitialSprite();
             HookButtonEvents();
@@ -91,9 +92,22 @@ namespace OpenGS
 
         private void OnValidate()
         {
+            NormalizeVolumes();
             CacheReferences();
             CaptureInitialSprite();
             RefreshVisualState();
+        }
+
+        private void NormalizeVolumes()
+        {
+            hoverVolume = NormalizeVolume(hoverVolume);
+            pressVolume = NormalizeVolume(pressVolume);
+            clickVolume = NormalizeVolume(clickVolume);
+        }
+
+        private static float NormalizeVolume(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Clamp01(value) : 1f;
         }
 
         public void OnPointerEnter(PointerEventData eventData)
@@ -286,11 +300,14 @@ namespace OpenGS
         {
             if (useSystemSound)
             {
-                SoundManager.Instance.PlaySystemSound(systemSound);
+                if (SoundManager.Instance != null)
+                {
+                    SoundManager.Instance.PlaySystemSound(systemSound);
+                }
                 return;
             }
 
-            if (clip != null)
+            if (clip != null && SoundManager.Instance != null)
             {
                 SoundManager.Instance.PlayOneShotSafe(clip, volume, 1f, $"{nameof(UIButtonFeedback)}.{context}", warnIfMissing: false);
             }

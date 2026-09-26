@@ -49,7 +49,7 @@ namespace OpenGSR.Tween {
             _setter = setter;
             _startValue = getter();
             _endValue = endValue;
-            _duration = duration;
+            _duration = float.IsFinite(duration) ? Mathf.Max(0f, duration) : 0f;
             _lerp = lerp;
         }
 
@@ -59,13 +59,17 @@ namespace OpenGSR.Tween {
         }
 
         public bool Update(float deltaTime) {
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f) {
+                return false;
+            }
+
             if (_duration <= 0) {
                 _setter(_endValue);
                 _tcs?.TrySetResult();
                 return true;
             }
 
-            _elapsed += deltaTime;
+            _elapsed = Mathf.Min(_duration, (float.IsFinite(_elapsed) ? _elapsed : 0f) + deltaTime);
             float t = Mathf.Clamp01(_elapsed / _duration);
             float easedT = ZEase.Calculate(_ease, t);
             

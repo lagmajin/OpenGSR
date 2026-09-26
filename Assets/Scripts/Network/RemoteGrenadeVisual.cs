@@ -21,17 +21,31 @@ namespace OpenGS
         private bool exploded;
         private EGrenadeType grenadeType = EGrenadeType.Normal;
         private Action onFinished;
+        private static Sprite fallbackSprite;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(gravity)) gravity = 18f;
+            if (!float.IsFinite(collisionRadius)) collisionRadius = 0.08f;
+            if (!float.IsFinite(spriteScale)) spriteScale = 0.09f;
+            gravity = Mathf.Max(0f, gravity);
+            collisionRadius = Mathf.Max(0.02f, collisionRadius);
+            spriteScale = Mathf.Max(0.01f, spriteScale);
+        }
 
         private void Awake()
         {
+            gravity = float.IsFinite(gravity) ? Mathf.Max(0f, gravity) : 18f;
+            collisionRadius = float.IsFinite(collisionRadius) ? Mathf.Max(0.02f, collisionRadius) : 0.08f;
+            spriteScale = float.IsFinite(spriteScale) ? Mathf.Max(0.01f, spriteScale) : 0.09f;
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
         public void Initialize(Vector2 direction, float speed, float gravityStrength, float grenadeLifetime, EGrenadeType type, Action finishedCallback = null)
         {
             grenadeType = type;
-            gravity = Mathf.Max(0f, gravityStrength);
-            lifetime = Mathf.Max(0.1f, grenadeLifetime);
+            gravity = float.IsFinite(gravityStrength) ? Mathf.Max(0f, gravityStrength) : 18f;
+            lifetime = float.IsFinite(grenadeLifetime) ? Mathf.Max(0.1f, grenadeLifetime) : 10f;
             age = 0f;
             launched = true;
             exploded = false;
@@ -55,7 +69,7 @@ namespace OpenGS
             }
 
             spriteRenderer.sprite = GrenadeVisualResolver.GetHudSprite(grenadeType)
-                ?? Resources.Load<Sprite>("Sprites/Bullet/Circle");
+                ?? ResolveFallbackSprite();
 
             if (spriteRenderer.sprite == null)
             {
@@ -64,6 +78,9 @@ namespace OpenGS
             }
 
             spriteRenderer.color = tint;
+            // Grenades are world projectiles. Keep them in front of stage/player
+            // sprites just like the regular Bullet prefab.
+            spriteRenderer.sortingOrder = 10;
             transform.localScale = Vector3.one * spriteScale;
         }
 
@@ -75,8 +92,16 @@ namespace OpenGS
             }
 
             var dt = Time.deltaTime;
+            if (!float.IsFinite(dt) || dt <= 0f || !IsFinite(transform.position))
+            {
+                Destroy(gameObject);
+                return;
+            }
+            // Bound one simulation step so a frame hitch does not tunnel the visual grenade.
+            dt = Mathf.Min(dt, 0.1f);
+
             age += dt;
-            if (age >= lifetime)
+            if (!float.IsFinite(age) || age >= lifetime)
             {
                 Explode(transform.position);
                 return;
@@ -110,7 +135,17 @@ namespace OpenGS
             }
 
             transform.position = currentPosition + step;
+            if (!IsFinite(transform.position))
+            {
+                Destroy(gameObject);
+                return;
+            }
             UpdateRotation();
+        }
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z);
         }
 
         private float GetCollisionRadius()
@@ -136,7 +171,7 @@ namespace OpenGS
 
         public void ForceExplosion(Vector2 position)
         {
-            Explode(position);
+            Explode(IsFinite(position) ? position : (Vector2)transform.position);
         }
 
         private void Explode(Vector2 position)
@@ -148,8 +183,28 @@ namespace OpenGS
 
             exploded = true;
             SpawnExplosionVisual(position);
-            onFinished?.Invoke();
+            NotifyFinished();
             Destroy(gameObject);
+        }
+
+        private void NotifyFinished()
+        {
+            if (onFinished == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in onFinished.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[RemoteGrenadeVisual] finish callback failed: {ex}");
+                }
+            }
         }
 
         private void SpawnExplosionVisual(Vector2 position)
@@ -157,7 +212,10 @@ namespace OpenGS
             var explosionEffect = GrenadeVisualResolver.GetExplosionEffect(grenadeType);
             if (explosionEffect != null)
             {
-                Instantiate(explosionEffect, position, Quaternion.identity);
+                var spawnedEffect = Instantiate(explosionEffect, position, Quaternion.identity);
+                // Some effect prefabs self-delete, but replayed network effects
+                // must still have a hard upper bound when a prefab is misconfigured.
+                Destroy(spawnedEffect, 5f);
             }
             else
             {
@@ -165,7 +223,7 @@ namespace OpenGS
                 flash.transform.position = position;
 
                 var renderer = flash.AddComponent<SpriteRenderer>();
-                renderer.sprite = Resources.Load<Sprite>("Sprites/Bullet/Circle");
+                renderer.sprite = ResolveFallbackSprite();
                 if (renderer.sprite == null)
                 {
                     Destroy(flash);
@@ -186,6 +244,32 @@ namespace OpenGS
                     : EGrenadeSound.ExplosionGrenade;
                 SoundManager.Instance.PlayGrenadeExplosionSound(sound);
             }
+        }
+
+        private static Sprite ResolveFallbackSprite()
+        {
+            var sprite = Resources.Load<Sprite>("Sprites/Bullet/Circle");
+            if (sprite != null)
+            {
+                return sprite;
+            }
+
+            if (fallbackSprite == null && Texture2D.whiteTexture != null)
+            {
+                fallbackSprite = Sprite.Create(
+                    Texture2D.whiteTexture,
+                    new Rect(0f, 0f, 1f, 1f),
+                    new Vector2(0.5f, 0.5f),
+                    1f);
+                fallbackSprite.name = "RemoteGrenadeFallbackSprite";
+            }
+
+            return fallbackSprite;
+        }
+
+        private static bool IsFinite(Vector2 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y);
         }
     }
 }

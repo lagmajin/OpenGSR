@@ -27,8 +27,6 @@ namespace OpenGS
         public GameObject healItemPrefab;
         public GameObject randomItemPrefab;
 
-        private string path;
-
         public bool startImmidietry = true;
 
         public float firstTimeDelay = 27;
@@ -41,6 +39,15 @@ namespace OpenGS
         protected eFieldItemType? beforeGeneratedItem=null;
 
         protected eFieldItemType? nextItem = null;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(heightOffset)) heightOffset = 0.4f;
+            if (!float.IsFinite(firstTimeDelay)) firstTimeDelay = 27f;
+            if (!float.IsFinite(generateInterval)) generateInterval = 20f;
+            firstTimeDelay = Mathf.Max(0f, firstTimeDelay);
+            generateInterval = Mathf.Max(0.1f, generateInterval);
+        }
 
         IEnumerator OneSecCallback()
         {
@@ -58,7 +65,7 @@ namespace OpenGS
                 if (countdown <= 0.0f)
                 {
                     GenerateItem();
-                    countdown = generateInterval;
+                    countdown = Mathf.Max(0.1f, generateInterval);
                 }
 
             }
@@ -66,10 +73,6 @@ namespace OpenGS
 
         void Start()
         {
-            //path = gameObject.GetHierarchyPath();
-
-            Debug.Log("path" + path);
-
             if(startImmidietry)
             {
                 StartWorking();
@@ -77,9 +80,9 @@ namespace OpenGS
 
         }
 
-        void OnEnable()
+        private void OnDisable()
         {
-
+            TurnOffGenerate();
         }
 
         public void StartWorking()
@@ -90,15 +93,12 @@ namespace OpenGS
             }
 
             isGenerating = true;
-            if (startImmidietry)
-            {
-                generateCoroutine = StartCoroutine(OneSecCallback());
-            }
+            generateCoroutine = StartCoroutine(OneSecCallback());
         }
 
         public virtual void GenerateItem()
         {
-            countdown = generateInterval;
+            countdown = Mathf.Max(0.1f, generateInterval);
             TurnOffGenerate();
         }
 
@@ -129,7 +129,12 @@ namespace OpenGS
         [Button("アイテム削除")]
         public void DeleteItem()
         {
-            var item = gameObject.transform.GetChild(0);
+            if (transform.childCount == 0)
+            {
+                return;
+            }
+
+            var item = transform.GetChild(0);
 
             if (item)
             {

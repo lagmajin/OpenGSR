@@ -10,10 +10,11 @@ namespace OpenGS
     {
         public bool Save<T>(string fileName, T data, Formatting formatting = Formatting.Indented)
         {
+            string tempPath = null;
             try
             {
                 string path = GetPath(fileName);
-                string tempPath = path + ".tmp";
+                tempPath = path + ".tmp";
                 string backupPath = path + ".bak";
                 string json = JsonConvert.SerializeObject(data, formatting);
 
@@ -30,6 +31,21 @@ namespace OpenGS
             }
             catch (Exception e)
             {
+                if (!string.IsNullOrEmpty(tempPath))
+                {
+                    try
+                    {
+                        if (File.Exists(tempPath))
+                        {
+                            File.Delete(tempPath);
+                        }
+                    }
+                    catch (Exception cleanupException)
+                    {
+                        Debug.LogWarning($"[JsonFileSaveStorage] Temporary file cleanup failed ({fileName}): {cleanupException.Message}");
+                    }
+                }
+
                 Debug.LogError($"[JsonFileSaveStorage] Save failed ({fileName}): {e.Message}");
                 return false;
             }

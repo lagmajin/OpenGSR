@@ -18,12 +18,40 @@ namespace OpenGS
         public float afterScale = 1.5f;
         public float opacity = 0.5f;
 
+        private void Awake()
+        {
+            delay = float.IsFinite(delay) ? Mathf.Max(0f, delay) : 0f;
+            soundDelay = float.IsFinite(soundDelay) ? Mathf.Max(0f, soundDelay) : 0.5f;
+            time = float.IsFinite(time) ? Mathf.Max(0.01f, time) : 0.3f;
+            afterScale = float.IsFinite(afterScale) ? Mathf.Max(0f, afterScale) : 1.5f;
+            opacity = float.IsFinite(opacity) ? Mathf.Clamp01(opacity) : 0.5f;
+        }
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(delay)) delay = 0f;
+            if (!float.IsFinite(soundDelay)) soundDelay = 0.5f;
+            if (!float.IsFinite(time)) time = 0.3f;
+            if (!float.IsFinite(afterScale)) afterScale = 1.5f;
+            if (!float.IsFinite(opacity)) opacity = 0.5f;
+            delay = Mathf.Max(0f, delay);
+            soundDelay = Mathf.Max(0f, soundDelay);
+            time = Mathf.Max(0.01f, time);
+            afterScale = Mathf.Max(0f, afterScale);
+            opacity = Mathf.Clamp01(opacity);
+        }
+
         private void Start()
         {
             
             var spritreRender = gameObject.GetComponent<SpriteRenderer>();
 
-            spritreRender.color = new Color(1, 1, 1, opacity);
+            if (spritreRender != null)
+            {
+                var color = spritreRender.color;
+                color.a = Mathf.Clamp01(opacity);
+                spritreRender.color = color;
+            }
             
             
             
@@ -37,11 +65,6 @@ namespace OpenGS
             seq.Play();
 
             //PlaySound.PlaySE(sound,soundDelay);
-        }
-
-        private void Update()
-        {
-
         }
 
         private void DeleteThis()

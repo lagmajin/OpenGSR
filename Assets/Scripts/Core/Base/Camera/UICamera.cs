@@ -73,7 +73,22 @@ namespace OpenGS
                 unityCamera.orthographic = true;
             }
 
-            OnInitialized?.Invoke();
+            if (OnInitialized == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in OnInitialized.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[UICamera] OnInitialized subscriber failed: {ex}");
+                }
+            }
         }
 
         public void SetActive(bool enabled)

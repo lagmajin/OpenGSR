@@ -14,6 +14,7 @@ namespace OpenGS
     public class OnlineResultScene : AbstractResultScene, INetworkManagerScript
     {
         private GeneralServerNetworkManager networkManager;
+        private bool hasRecordedHistory;
 
         [Header("UI Manager")]
         public AbstractMatchResultUIManager resultUIManager;
@@ -22,7 +23,15 @@ namespace OpenGS
         {
             base.Start();
 
-            networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+            try
+            {
+                networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+            }
+            catch (System.Exception ex)
+            {
+                networkManager = null;
+                Debug.LogWarning($"[OnlineResultScene] GeneralServerNetworkManager resolution failed: {ex.Message}");
+            }
 
             if (networkManager != null)
             {
@@ -109,6 +118,66 @@ namespace OpenGS
             }
 
             ShowResult(winningTeam, myTeam);
+
+            if (!hasRecordedHistory)
+            {
+                var profile = AccountManager.Instance?.CurrentProfile;
+                var localPlayerName = profile?.DisplayName;
+                if (string.IsNullOrWhiteSpace(localPlayerName))
+                {
+                    localPlayerName = localPlayerId;
+                }
+
+                var result = string.Equals(winningTeam, "Draw", System.StringComparison.OrdinalIgnoreCase)
+                    ? "Draw"
+                    : string.Equals(winningTeam, myTeam, System.StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(winningTeam, localPlayerId, System.StringComparison.OrdinalIgnoreCase)
+                        ? "Win"
+                        : "Lose";
+                var gameMode = ReadString(json, "GameMode", "Mode");
+                if (string.IsNullOrWhiteSpace(gameMode))
+                {
+                    gameMode = "Online";
+                }
+
+                var historyScore = 0;
+                var historyKills = 0;
+                var historyDeaths = 0;
+                var historyPlayers = FindPlayersArray(json);
+                foreach (var token in historyPlayers ?? new JArray())
+                {
+                    if (token is not JObject player)
+                    {
+                        continue;
+                    }
+
+                    var playerId = ReadString(player, "PlayerId", "Id", "PlayerID", "AccountId");
+                    var playerName = ReadString(player, "Name", "PlayerName", "DisplayName", "Nickname", "AccountName");
+                    var isLocal = !string.IsNullOrWhiteSpace(localPlayerId)
+                        && string.Equals(playerId, localPlayerId, System.StringComparison.OrdinalIgnoreCase);
+                    if (!isLocal && string.IsNullOrWhiteSpace(playerId))
+                    {
+                        isLocal = string.Equals(playerName, localPlayerName, System.StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    if (!isLocal)
+                    {
+                        continue;
+                    }
+
+                    historyKills = ReadInt(player, 0, "Kills", "KillCount", "TotalKill");
+                    historyDeaths = ReadInt(player, 0, "Deaths", "DeathCount");
+                    historyScore = ReadInt(player, historyKills, "Score", "TotalScore", "Points");
+                    break;
+                }
+
+                if (MatchHistoryManager.Instance != null)
+                {
+                    MatchHistoryManager.Instance.RecordMatch(
+                        localPlayerName, gameMode, result, historyScore, historyKills, historyDeaths);
+                }
+                hasRecordedHistory = true;
+            }
 
             if (!string.IsNullOrWhiteSpace(winnerName))
             {

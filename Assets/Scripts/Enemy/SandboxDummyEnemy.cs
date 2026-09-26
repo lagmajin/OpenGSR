@@ -34,6 +34,7 @@ namespace OpenGS
 
         private float currentHealth;
         private Coroutine resetCoroutine;
+        private Camera overlayCamera;
         private IEffectService effectService;
 
         [Inject]
@@ -55,8 +56,24 @@ namespace OpenGS
 
         private void Awake()
         {
+            maxHealth = float.IsFinite(maxHealth) ? Mathf.Max(1f, maxHealth) : 1000f;
+            resetDelaySeconds = float.IsFinite(resetDelaySeconds) ? Mathf.Max(0f, resetDelaySeconds) : 2f;
+            defaultBulletDamage = float.IsFinite(defaultBulletDamage) ? Mathf.Max(0f, defaultBulletDamage) : 25f;
+            overlayWidth = float.IsFinite(overlayWidth) ? Mathf.Max(1f, overlayWidth) : 140f;
+            overlayHeight = float.IsFinite(overlayHeight) ? Mathf.Max(1f, overlayHeight) : 40f;
+            maxDamageLogEntries = Mathf.Max(0, maxDamageLogEntries);
+            damageLogLifetime = float.IsFinite(damageLogLifetime) ? Mathf.Max(0.1f, damageLogLifetime) : 1.5f;
             EnsureEnemyTag();
             ResetHealth();
+        }
+
+        private void OnDisable()
+        {
+            if (resetCoroutine != null)
+            {
+                StopCoroutine(resetCoroutine);
+                resetCoroutine = null;
+            }
         }
 
         public void AddDamage(Vector2 source, float damage, eDamageType type)
@@ -170,7 +187,8 @@ namespace OpenGS
                 }
                 else
                 {
-                    Instantiate(hitEffectPrefab, sourcePosition, Quaternion.identity);
+                    var spawnedEffect = Instantiate(hitEffectPrefab, sourcePosition, Quaternion.identity);
+                    Destroy(spawnedEffect, 5f);
                 }
             }
 
@@ -240,10 +258,16 @@ namespace OpenGS
                 return;
             }
 
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
             damageLogEntries.Add(new DamageLogEntry
             {
                 damage = damage,
-                expiresAt = Time.time + Mathf.Max(0.1f, damageLogLifetime)
+                expiresAt = now + Mathf.Max(0.1f, damageLogLifetime)
             });
 
             if (damageLogEntries.Count > maxDamageLogEntries)
@@ -260,6 +284,10 @@ namespace OpenGS
             }
 
             float now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
             for (int i = damageLogEntries.Count - 1; i >= 0; i--)
             {
                 if (damageLogEntries[i].expiresAt <= now)
@@ -271,13 +299,23 @@ namespace OpenGS
 
         private void OnGUI()
         {
-            if (!showOverlay || Camera.main == null)
+            if (!showOverlay)
+            {
+                return;
+            }
+
+            if (overlayCamera == null)
+            {
+                overlayCamera = Camera.main;
+            }
+
+            if (overlayCamera == null)
             {
                 return;
             }
 
             Vector3 worldPosition = transform.position + overlayOffset;
-            Vector3 screen = Camera.main.WorldToScreenPoint(worldPosition);
+            Vector3 screen = overlayCamera.WorldToScreenPoint(worldPosition);
             if (screen.z <= 0f)
             {
                 return;
@@ -302,10 +340,16 @@ namespace OpenGS
                 return;
             }
 
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
             for (int i = 0; i < damageLogEntries.Count; i++)
             {
                 var entry = damageLogEntries[damageLogEntries.Count - 1 - i];
-                float alpha = Mathf.Clamp01((entry.expiresAt - Time.time) / Mathf.Max(0.1f, damageLogLifetime));
+                float alpha = Mathf.Clamp01((entry.expiresAt - now) / Mathf.Max(0.1f, damageLogLifetime));
 
                 Color logColor = new Color(1f, 0.5f, 0.5f, alpha);
                 GUI.color = logColor;

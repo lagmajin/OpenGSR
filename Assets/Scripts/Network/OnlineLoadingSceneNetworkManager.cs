@@ -1,5 +1,6 @@
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UniRx;
 using UnityEngine;
@@ -19,6 +20,7 @@ namespace OpenGS
         private bool enterMapAllowedReceived;
         private int expectedPlayerCount = 1;
         private bool loadingSessionStarted;
+        private Coroutine dependencyRetryRoutine;
 
         private void Awake()
         {
@@ -30,11 +32,43 @@ namespace OpenGS
         {
             ResolveDependencies();
             SubscribeToServer();
+            dependencyRetryRoutine = StartCoroutine(RetrySubscribeWhenDependenciesReady());
         }
 
         private void OnDisable()
         {
+            if (dependencyRetryRoutine != null)
+            {
+                StopCoroutine(dependencyRetryRoutine);
+                dependencyRetryRoutine = null;
+            }
+
             subscription.Disposable = null;
+        }
+
+        private IEnumerator RetrySubscribeWhenDependenciesReady()
+        {
+            while (isActiveAndEnabled)
+            {
+                if (generalServerNetworkManager == null || subscription.Disposable == null)
+                {
+                    ResolveDependencies();
+                    if (generalServerNetworkManager != null)
+                    {
+                        SubscribeToServer();
+                    }
+                }
+
+                if (subscription.Disposable != null)
+                {
+                    dependencyRetryRoutine = null;
+                    yield break;
+                }
+
+                yield return null;
+            }
+
+            dependencyRetryRoutine = null;
         }
 
         public void SendLoadingSceneEntered()
@@ -70,6 +104,11 @@ namespace OpenGS
 
         public void SendLoadingProgress(float progress)
         {
+            if (float.IsNaN(progress) || float.IsInfinity(progress))
+            {
+                progress = 0f;
+            }
+
             SendLoadingState(MessageType.LoadingProgress, Mathf.Clamp01(progress), "loading-progress");
         }
 
@@ -171,24 +210,26 @@ namespace OpenGS
                 return;
             }
 
-            if (messageType == MessageType.MatchServerInfoResponse)
+            if (messageType == MessageType.MatchServerInfoResponse ||
+                messageType == "MatchServerInformationNotification")
             {
                 var ip = json["IP"]?.ToString() ?? json["IPAddress"]?.ToString();
                 var port = json["Port"]?.ToObject<int?>();
                 var udpPort = json["UdpPort"]?.ToObject<int?>();
-                if (!string.IsNullOrWhiteSpace(ip))
+                var onlineManager = OnlineManager.Instance;
+                if (onlineManager != null && !string.IsNullOrWhiteSpace(ip))
                 {
-                    OnlineManager.Instance.MatchServerInfo.IP = ip;
+                    onlineManager.MatchServerInfo.IP = ip;
                 }
 
-                if (port.HasValue)
+                if (onlineManager != null && port.HasValue)
                 {
-                    OnlineManager.Instance.MatchServerInfo.Port = port.Value;
+                    onlineManager.MatchServerInfo.Port = port.Value;
                 }
 
-                if (udpPort.HasValue)
+                if (onlineManager != null && udpPort.HasValue)
                 {
-                    OnlineManager.Instance.MatchServerInfo.UdpPort = udpPort.Value;
+                    onlineManager.MatchServerInfo.UdpPort = udpPort.Value;
                 }
 
                 if (onlineLoadingScene is OnlineLoadingScene concreteScene)
@@ -229,7 +270,7 @@ namespace OpenGS
             {
                 ResolveDependencies();
                 var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? string.Empty;
-                var progress = Mathf.Clamp01(json["Progress"]?.ToObject<float>() ?? 0f);
+                var progress = Mathf.Clamp01(ReadProgress(json["Progress"]));
                 if (!string.IsNullOrWhiteSpace(playerId))
                 {
                     onlineLoadingManager?.AddLoadingPlayer(playerId);
@@ -330,14 +371,32 @@ namespace OpenGS
 
         private static string ResolveLocalPlayerId()
         {
-            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            var playerId = AccountManager.Instance?.CurrentProfile?.GlobalUserId;
             return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
         }
 
         private static string ResolveLocalPlayerName()
         {
-            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            var playerName = AccountManager.Instance?.CurrentProfile?.DisplayName;
             return string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
+        }
+
+        private static float ReadProgress(JToken token)
+        {
+            if (token == null)
+            {
+                return 0f;
+            }
+
+            try
+            {
+                var value = token.ToObject<float>();
+                return float.IsFinite(value) ? value : 0f;
+            }
+            catch
+            {
+                return 0f;
+            }
         }
 
         public void ParseServerMessage(JObject json)

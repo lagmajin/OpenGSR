@@ -21,6 +21,14 @@ namespace OpenGS
     {
         [SerializeField] private List<Transform> targets = new();
         [SerializeField] private bool autoRefresh = true;
+        [SerializeField] private float cleanupInterval = 0.5f;
+        private float nextCleanupTime;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(cleanupInterval)) cleanupInterval = 0.5f;
+            cleanupInterval = Mathf.Max(0.05f, cleanupInterval);
+        }
 
         public int TargetCount => targets.Count;
 
@@ -36,6 +44,13 @@ namespace OpenGS
                 return;
             }
 
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f || now < nextCleanupTime)
+            {
+                return;
+            }
+
+            nextCleanupTime = now + cleanupInterval;
             targets.RemoveAll(target => target == null);
         }
 
@@ -56,7 +71,6 @@ namespace OpenGS
                 }
             }
 
-            Debug.Log($"[PlayerNameCanvas] TargetCount={targets.Count}");
         }
     }
 

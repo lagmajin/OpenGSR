@@ -65,6 +65,22 @@ namespace OpenGS
             UpdateCharacterPreview(selectedCharacter);
         }
 
+        private void OnDestroy()
+        {
+            if (okButton != null)
+            {
+                okButton.onClick.RemoveListener(OnOkButtonClicked);
+            }
+
+            if (cancelButton != null)
+            {
+                cancelButton.onClick.RemoveListener(OnCancelButtonClicked);
+            }
+
+            OnCharacterSelected = null;
+            OnDialogClosed = null;
+        }
+
         // ─── 初期化 ─────────────────────────────────────────────────
 
         /// <summary>
@@ -169,8 +185,18 @@ namespace OpenGS
         private void OnOkButtonClicked()
         {
             Debug.Log($"[CharacterSelectDialog] キャラクター選択: {selectedCharacter}");
-            OnCharacterSelected?.Invoke(selectedCharacter);
-            CloseDialog();
+            try
+            {
+                OnCharacterSelected?.Invoke(selectedCharacter);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[CharacterSelectDialog] Selection callback failed: {ex}");
+            }
+            finally
+            {
+                CloseDialog();
+            }
         }
 
         private void OnCancelButtonClicked()
@@ -340,8 +366,7 @@ namespace OpenGS
         /// </summary>
         private string GetCharacterStats(EPlayerCharacter character)
         {
-            // 実際の実装では、キャラクターごとのステータスをデータベースから取得
-            return "HP: 100\n攻撃力: 80\n防御力: 70\nスピード: 90";
+            return CharacterVisualResolver.GetStats(character);
         }
 
         /// <summary>
@@ -351,8 +376,7 @@ namespace OpenGS
         {
             if (starImages == null) return;
 
-            // 実際の実装では、キャラクターごとの評価を取得
-            int rating = 3; // 仮の評価
+            int rating = Mathf.Clamp(CharacterVisualResolver.GetRating(character), 0, starImages.Length);
 
             for (int i = 0; i < starImages.Length; i++)
             {

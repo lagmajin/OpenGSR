@@ -38,6 +38,12 @@ namespace OpenGS
         /// </summary>
         public void SetService(ISoundService service)
         {
+            if (service == null)
+            {
+                Debug.LogWarning("[SoundManager] Ignoring null sound service.");
+                return;
+            }
+
             _service = service;
         }
 

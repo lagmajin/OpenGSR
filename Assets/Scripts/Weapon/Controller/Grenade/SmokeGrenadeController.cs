@@ -13,6 +13,12 @@ namespace OpenGS
 
         public override void Exp()
         {
+            if (explosionTriggered)
+            {
+                return;
+            }
+
+            explosionTriggered = true;
             var effectPrefab = smokePrefab != null ? smokePrefab : expEffect;
             if (effectPrefab != null)
             {
@@ -22,7 +28,8 @@ namespace OpenGS
                 }
                 else
                 {
-                    Instantiate(effectPrefab, transform.position, Quaternion.identity);
+                    var spawnedEffect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
+                    Destroy(spawnedEffect, 5f);
                 }
             }
 
@@ -31,7 +38,9 @@ namespace OpenGS
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            var tags = collision.gameObject.GetComponent<MultipleTags>();
+            var tags = collision != null && collision.collider != null
+                ? collision.collider.GetComponentInParent<IMultipleTags>()
+                : null;
             if (tags == null)
             {
                 return;

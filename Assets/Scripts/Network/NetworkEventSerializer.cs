@@ -11,6 +11,16 @@ namespace OpenGS
     /// </summary>
     public static class NetworkEventSerializer
     {
+        private static Vector2 SafeVector(Vector2 value, Vector2 fallback)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) ? value : fallback;
+        }
+
+        private static float SafeFloat(float value, float fallback = 0f)
+        {
+            return float.IsFinite(value) ? value : fallback;
+        }
+
         /// <summary>
         /// ゲームイベントをRUDPメッセージ（JObject）に変換
         /// </summary>
@@ -54,6 +64,14 @@ namespace OpenGS
             else if (eventType == typeof(ScoreUpdateEvent))
             {
                 json = SerializeScoreUpdateEvent((ScoreUpdateEvent)gameEvent);
+            }
+            else if (eventType == typeof(FlagScoreUpdateEvent))
+            {
+                json = SerializeFlagScoreUpdateEvent((FlagScoreUpdateEvent)gameEvent);
+            }
+            else if (eventType == typeof(StreakUpdateEvent))
+            {
+                json = SerializeStreakUpdateEvent((StreakUpdateEvent)gameEvent);
             }
             else if (eventType == typeof(FlagEvent))
             {
@@ -179,7 +197,7 @@ namespace OpenGS
                 };
             }
 
-            return json;
+            return NormalizeOutgoingKeys(json);
         }
 
         /// <summary>
@@ -229,13 +247,15 @@ namespace OpenGS
         /// </summary>
         private static JObject SerializePlayerShotEvent(PlayerShotEvent e)
         {
+            var position = SafeVector(e.Position(), Vector2.zero);
+            var direction = SafeVector(e.Direction(), Vector2.right);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerShot;
             json["PlayerId"] = e.PlayerID();
-            json["PosX"] = e.Position().x;
-            json["PosY"] = e.Position().y;
-            json["DirX"] = e.Direction().x;
-            json["DirY"] = e.Direction().y;
+            json["PosX"] = position.x;
+            json["PosY"] = position.y;
+            json["DirX"] = direction.x;
+            json["DirY"] = direction.y;
             json["WeaponType"] = e.WeaponType() ?? "Unknown";
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
@@ -250,8 +270,8 @@ namespace OpenGS
             json["MessageType"] = RUDPMessageTypes.PlayerDamage;
             json["TargetId"] = e.TargetID();
             json["AttackerId"] = e.AttackerID();
-            json["Damage"] = e.Damage();
-            json["RemainingHp"] = e.RemainingHp();
+            json["Damage"] = Mathf.Max(0, e.Damage());
+            json["RemainingHp"] = Mathf.Max(0, e.RemainingHp());
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
         }
@@ -264,9 +284,9 @@ namespace OpenGS
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.KillScoreUpdate;
             json["PlayerId"] = e.PlayerID();
-            json["Kills"] = e.Kills();
-            json["Deaths"] = e.Deaths();
-            json["Score"] = e.Score();
+            json["Kills"] = Mathf.Max(0, e.Kills());
+            json["Deaths"] = Mathf.Max(0, e.Deaths());
+            json["Score"] = Mathf.Max(0, e.Score());
             json["Team"] = e.Team().ToString();
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
@@ -277,6 +297,7 @@ namespace OpenGS
         /// </summary>
         private static JObject SerializeFlagEvent(FlagEvent e)
         {
+            var position = SafeVector(e.Position(), Vector2.zero);
             string messageType = e.FlagEventType() switch
             {
                 EFlagEventType.Captured => RUDPMessageTypes.FlagCaptured,
@@ -293,8 +314,8 @@ namespace OpenGS
                 ["PlayerId"] = e.PlayerID(),
                 ["Team"] = e.Team().ToString(),
                 ["FlagEventType"] = e.FlagEventType().ToString(),
-                ["PosX"] = e.Position().x,
-                ["PosY"] = e.Position().y,
+                ["PosX"] = position.x,
+                ["PosY"] = position.y,
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
         }
@@ -348,22 +369,24 @@ namespace OpenGS
                 ["MessageType"] = RUDPMessageTypes.AmmoUpdate,
                 ["PlayerId"] = e.PlayerID(),
                 ["WeaponType"] = e.WeaponType(),
-                ["CurrentAmmo"] = e.CurrentAmmo(),
-                ["MaxAmmo"] = e.MaxAmmo(),
+                ["CurrentAmmo"] = Mathf.Max(0, e.CurrentAmmo()),
+                ["MaxAmmo"] = Mathf.Max(0, e.MaxAmmo()),
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
         }
 
         private static JObject SerializePlayerMeleeEvent(PlayerMeleeEvent e)
         {
+            var position = SafeVector(e.Position(), Vector2.zero);
+            var direction = SafeVector(e.Direction(), Vector2.right);
             return new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.PlayerMelee,
                 ["PlayerId"] = e.PlayerID(),
-                ["PosX"] = e.Position().x,
-                ["PosY"] = e.Position().y,
-                ["DirX"] = e.Direction().x,
-                ["DirY"] = e.Direction().y,
+                ["PosX"] = position.x,
+                ["PosY"] = position.y,
+                ["DirX"] = direction.x,
+                ["DirY"] = direction.y,
                 ["WeaponId"] = e.WeaponID(),
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
@@ -371,13 +394,15 @@ namespace OpenGS
 
         private static JObject SerializeBuffEvent(BuffEvent e)
         {
+            var duration = e.Duration();
+            var value = e.Value();
             return new JObject
             {
                 ["MessageType"] = e.IsDebuff() ? RUDPMessageTypes.PlayerDebuff : RUDPMessageTypes.PlayerBuff,
                 ["PlayerId"] = e.PlayerID(),
                 ["BuffType"] = e.BuffType(),
-                ["Duration"] = e.Duration(),
-                ["Value"] = e.Value(),
+                ["Duration"] = duration < 0 ? 0 : duration,
+                ["Value"] = SafeFloat(value),
                 ["IsDebuff"] = e.IsDebuff(),
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
@@ -385,27 +410,29 @@ namespace OpenGS
 
         private static JObject SerializeObjectSpawnedEvent(ObjectSpawnedEvent e)
         {
+            var position = SafeVector(e.Position(), Vector2.zero);
             return new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.ObjectSpawned,
                 ["ObjectId"] = e.ObjectID(),
                 ["ObjectType"] = e.ObjectType(),
-                ["PosX"] = e.Position().x,
-                ["PosY"] = e.Position().y,
-                ["Rotation"] = e.Rotation(),
+                ["PosX"] = position.x,
+                ["PosY"] = position.y,
+                ["Rotation"] = SafeFloat(e.Rotation()),
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
         }
 
         private static JObject SerializeObjectDestroyedEvent(ObjectDestroyedEvent e)
         {
+            var position = SafeVector(e.Position(), Vector2.zero);
             return new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.ObjectDestroyed,
                 ["ObjectId"] = e.ObjectID(),
                 ["DestroyedBy"] = e.DestroyedBy(),
-                ["PosX"] = e.Position().x,
-                ["PosY"] = e.Position().y,
+                ["PosX"] = position.x,
+                ["PosY"] = position.y,
                 ["Timestamp"] = e.Timestamp.ToString("o")
             };
         }
@@ -440,11 +467,12 @@ namespace OpenGS
         /// </summary>
         private static JObject SerializePlayerRespawnEvent(PlayerRespawnEvent e)
         {
+            var position = SafeVector(e.Position(), Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerRespawn;
             json["PlayerId"] = e.PlayerID();
-            json["PosX"] = e.Position().x;
-            json["PosY"] = e.Position().y;
+            json["PosX"] = position.x;
+            json["PosY"] = position.y;
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
         }
@@ -457,7 +485,7 @@ namespace OpenGS
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.RespawnCountdown;
             json["PlayerId"] = e.PlayerID();
-            json["Countdown"] = e.CountdownSeconds();
+            json["Countdown"] = Mathf.Max(0, e.CountdownSeconds());
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
         }
@@ -524,17 +552,73 @@ namespace OpenGS
         /// </summary>
         private static JObject SerializeGrenadeThrowEvent(GrenadeThrowEvent e)
         {
+            var position = SafeVector(e.Position(), Vector2.zero);
+            var direction = SafeVector(e.Direction(), Vector2.right);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.GrenadeThrow;
-            json["PlayerId"] = e.PlayerID();
-            json["PosX"] = e.Position().x;
-            json["PosY"] = e.Position().y;
-            json["DirX"] = e.Direction().x;
-            json["DirY"] = e.Direction().y;
+            json["PlayerID"] = e.PlayerID();
+            json["PosX"] = position.x;
+            json["PosY"] = position.y;
+            json["DirX"] = direction.x;
+            json["DirY"] = direction.y;
             json["GrenadeType"] = e.GrenadeType();
-            json["Power"] = e.Power();
+            json["Power"] = Mathf.Max(0f, SafeFloat(e.Power(), 1f));
             json["Timestamp"] = e.Timestamp.ToString("o");
+            return NormalizeOutgoingKeys(json);
+        }
+
+        /// <summary>
+        /// 送信境界で、旧来の単数形キーを正規プロトコル名へ寄せる。
+        /// 受信側の互換読み取りは維持しつつ、新規送信は常に canonical key を使う。
+        /// </summary>
+        private static JObject NormalizeOutgoingKeys(JObject json)
+        {
+            if (json == null)
+            {
+                return new JObject();
+            }
+
+            if (json["PlayerID"] == null && json["PlayerId"] != null)
+            {
+                json["PlayerID"] = json["PlayerId"];
+                json.Remove("PlayerId");
+            }
+
+            if (json["RoomID"] == null && json["RoomId"] != null)
+            {
+                json["RoomID"] = json["RoomId"];
+                json.Remove("RoomId");
+            }
+
             return json;
+        }
+
+        private static JObject SerializeFlagScoreUpdateEvent(FlagScoreUpdateEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.FlagScoreUpdate,
+                ["EventKey"] = e.EventKey(),
+                ["RedTeamScore"] = Mathf.Max(0, e.RedTeamScore()),
+                ["BlueTeamScore"] = Mathf.Max(0, e.BlueTeamScore()),
+                ["RedTeamFlagScore"] = Mathf.Max(0, e.RedTeamScore()),
+                ["BlueTeamFlagScore"] = Mathf.Max(0, e.BlueTeamScore()),
+                ["RedTeamFlags"] = Mathf.Max(0, e.RedTeamFlags()),
+                ["BlueTeamFlags"] = Mathf.Max(0, e.BlueTeamFlags()),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
+        }
+
+        private static JObject SerializeStreakUpdateEvent(StreakUpdateEvent e)
+        {
+            return new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.StreakUpdate,
+                ["PlayerId"] = e.PlayerID(),
+                ["StreakCount"] = Mathf.Max(0, e.StreakCount()),
+                ["StreakType"] = e.StreakType(),
+                ["Timestamp"] = e.Timestamp.ToString("o")
+            };
         }
 
         /// <summary>
@@ -544,7 +628,7 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerReload;
-            json["PlayerId"] = e.PlayerID();
+            json["PlayerID"] = e.PlayerID();
             json["WeaponType"] = e.WeaponType();
             json["IsEmpty"] = e.IsEmpty();
             json["Timestamp"] = e.Timestamp.ToString("o");
@@ -592,7 +676,7 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerSpectating;
-            json["PlayerId"] = e.PlayerID();
+            json["PlayerID"] = e.PlayerID();
             json["IsSpectating"] = e.IsSpectating();
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
@@ -602,7 +686,7 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerPose;
-            json["PlayerId"] = e.PlayerID();
+            json["PlayerID"] = e.PlayerID();
             json["PoseState"] = e.PoseState().ToString();
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
@@ -613,12 +697,13 @@ namespace OpenGS
         /// </summary>
         private static JObject SerializePlayerReviveEvent(PlayerReviveEvent e)
         {
+            var position = SafeVector(e.Position(), Vector2.zero);
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.PlayerRevive;
             json["PlayerId"] = e.PlayerID();
             json["RevivedBy"] = e.RevivedByPlayerID();
-            json["PosX"] = e.Position().x;
-            json["PosY"] = e.Position().y;
+            json["PosX"] = position.x;
+            json["PosY"] = position.y;
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
         }
@@ -668,7 +753,7 @@ namespace OpenGS
         {
             var json = new JObject();
             json["MessageType"] = RUDPMessageTypes.MatchTimeSync;
-            json["RemainingTime"] = e.RemainingTime();
+            json["RemainingTime"] = Mathf.Max(0, e.RemainingTime());
             json["ServerTimestamp"] = e.ServerTimestamp();
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
@@ -690,7 +775,6 @@ namespace OpenGS
                     if (networkManager != null && networkManager.IsConnected())
                     {
                         networkManager.SendToServer(json);
-                        Debug.Log($"[NetworkEventSerializer] Sent: {json["MessageType"]}");
                     }
                 }
                 catch (Exception ex)

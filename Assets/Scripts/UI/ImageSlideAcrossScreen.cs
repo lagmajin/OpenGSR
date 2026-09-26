@@ -45,6 +45,11 @@ namespace OpenGS
 
         private void Awake()
         {
+            enterDuration = NormalizeNonNegative(enterDuration);
+            holdDuration = NormalizeNonNegative(holdDuration);
+            exitDuration = NormalizeNonNegative(exitDuration);
+            fadeDuration = NormalizeNonNegative(fadeDuration);
+
             if (targetRect == null)
             {
                 targetRect = GetComponent<RectTransform>();
@@ -189,6 +194,11 @@ namespace OpenGS
                 color.a = alpha;
                 targetImage.color = color;
             }
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
         }
     }
 }

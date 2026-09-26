@@ -9,45 +9,199 @@ namespace OpenGS
     {
         private ClientNetworkManager _networkManager;
         private string _playerId;
-        [SerializeField] private KeyCode grenadeKey = KeyCode.G;
         [Inject] private IInputService inputService;
 
         private float _lastMoveSendTime;
+        private byte _moveSequenceNumber;
+        private bool _positionSynchronized;
+        private float _nextNetworkManagerLookupTime;
         [SerializeField] private float moveSendInterval = 0.05f; // 20回/秒
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(moveSendInterval)) moveSendInterval = 0.05f;
+            moveSendInterval = Mathf.Max(0.01f, moveSendInterval);
+        }
 
         private void Awake()
         {
-            _networkManager = FindFirstObjectByType<ClientNetworkManager>();
-            if (_networkManager == null)
+            if (!float.IsFinite(moveSendInterval)) moveSendInterval = 0.05f;
+            moveSendInterval = Mathf.Max(0.01f, moveSendInterval);
+
+            if (inputService == null)
             {
-                Debug.LogWarning("[PlayerInputSender] ClientNetworkManager not found in scene. Input sending is disabled in this scene.");
-                enabled = false;
-                return;
+                inputService = new UnityInputService();
+                Debug.LogWarning("[PlayerInputSender] IInputService was not injected. Falling back to UnityInputService.");
             }
-            _playerId = _networkManager.ClientPlayerId;
+
+            TryResolveNetworkManager(true);
+        }
+
+        private void OnDestroy()
+        {
+            if (inputService is VirtualInputService virtualInput)
+            {
+                virtualInput.ReleaseAll();
+            }
+            if (_networkManager != null)
+            {
+                _networkManager.MatchUdpConnectionChanged -= OnMatchUdpConnectionChanged;
+            }
+        }
+
+        private void OnDisable()
+        {
+            ReleaseTransientInputState();
+        }
+
+        private void OnEnable()
+        {
+            _positionSynchronized = false;
+        }
+
+        private void OnApplicationFocus(bool hasFocus)
+        {
+            if (!hasFocus)
+            {
+                ReleaseTransientInputState();
+            }
+            else
+            {
+                _positionSynchronized = false;
+            }
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused)
+            {
+                ReleaseTransientInputState();
+            }
+            else
+            {
+                _positionSynchronized = false;
+            }
+        }
+
+        private void ReleaseTransientInputState()
+        {
+            _positionSynchronized = false;
+            if (inputService is VirtualInputService virtualInput)
+            {
+                virtualInput.ReleaseAll();
+            }
+        }
+
+        private void OnMatchUdpConnectionChanged(bool connected, string reason)
+        {
+            if (!connected)
+            {
+                _positionSynchronized = false;
+                if (inputService is VirtualInputService virtualInput)
+                {
+                    virtualInput.ReleaseAll();
+                }
+            }
         }
 
         private void Update()
         {
+            TryResolveNetworkManager();
+
+            if (_networkManager != null && !_networkManager.IsMatchUdpConnected)
+            {
+                _positionSynchronized = false;
+            }
+
             SendMovementInput();
-            SendActionInput();
+        }
+
+        private void TryResolveNetworkManager(bool force = false)
+        {
+            var now = Time.unscaledTime;
+            if (!force && IsFinite(now) && now < _nextNetworkManagerLookupTime)
+            {
+                return;
+            }
+
+            _nextNetworkManagerLookupTime = IsFinite(now) ? now + 1f : 1f;
+            if (_networkManager != null)
+            {
+                return;
+            }
+
+            _networkManager = FindFirstObjectByType<ClientNetworkManager>();
+            if (_networkManager == null)
+            {
+                return;
+            }
+
+            _playerId = _networkManager.ClientPlayerId;
+            _networkManager.MatchUdpConnectionChanged -= OnMatchUdpConnectionChanged;
+            _networkManager.MatchUdpConnectionChanged += OnMatchUdpConnectionChanged;
         }
 
         private void SendMovementInput()
         {
-            if (Time.time - _lastMoveSendTime < moveSendInterval)
+            // Login can replace the provisional client id. Keep movement
+            // input associated with the authenticated player after that
+            // response arrives.
+            if (_networkManager != null && !string.IsNullOrWhiteSpace(_networkManager.ClientPlayerId)
+                && _playerId != _networkManager.ClientPlayerId)
+            {
+                _playerId = _networkManager.ClientPlayerId;
+                _positionSynchronized = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(_playerId))
+            {
+                _playerId = _networkManager != null ? _networkManager.ClientPlayerId : string.Empty;
+                if (string.IsNullOrWhiteSpace(_playerId))
+                {
+                    return;
+                }
+            }
+
+            if (_networkManager == null)
+            {
+                return;
+            }
+
+            if (!_networkManager.IsMatchUdpConnected)
+            {
+                return;
+            }
+
+            bool needsPositionSync = !_positionSynchronized;
+
+            var now = Time.time;
+            if (!IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            if (!needsPositionSync && now - _lastMoveSendTime < moveSendInterval)
             {
                 return;
             }
 
             float horizontalInput = inputService != null ? inputService.GetHorizontalAxis() : Input.GetAxis("Horizontal");
             float verticalInput = inputService != null ? inputService.GetVerticalAxis() : Input.GetAxis("Vertical");
+            if (!IsFinite(transform.position) || !IsFinite(horizontalInput) || !IsFinite(verticalInput))
+            {
+                Debug.LogWarning("[PlayerInputSender] Skipping movement packet with non-finite state.");
+                return;
+            }
 
-            // 入力がない場合は送信しない
-            if (Mathf.Approximately(horizontalInput, 0f) && Mathf.Approximately(verticalInput, 0f))
+            horizontalInput = Mathf.Clamp(horizontalInput, -1f, 1f);
+            verticalInput = Mathf.Clamp(verticalInput, -1f, 1f);
+
+            var deltaTime = Mathf.Clamp(now - _lastMoveSendTime, 0.001f, 0.25f);
+            if (!IsFinite(deltaTime))
             {
                 return;
             }
+            _moveSequenceNumber++;
 
             // 現在の位置と、入力から予測される速度をJObjectにまとめる
             JObject moveInput = new JObject
@@ -56,69 +210,36 @@ namespace OpenGS
                 ["PlayerID"] = _playerId,
                 ["PosX"] = transform.position.x,
                 ["PosY"] = transform.position.y,
+                ["PosZ"] = transform.position.z,
                 ["VelX"] = horizontalInput, // 簡単な例として入力値を速度として扱う
                 ["VelY"] = verticalInput,
-                ["Timestamp"] = System.DateTime.UtcNow.Ticks
+                ["SequenceNumber"] = _moveSequenceNumber,
+                ["DeltaTime"] = deltaTime,
+                ["Timestamp"] = now
             };
 
-            _networkManager.SendUdpInput(moveInput, DeliveryMethod.Unreliable);
-            _lastMoveSendTime = Time.time;
-        }
-
-        private void SendActionInput()
-        {
-            if ((inputService != null && inputService.IsFireJustPressed()) || Input.GetButtonDown("Fire1")) // マウス左クリックまたはCtrlキー
+            var sent = _networkManager.SendUdpInput(
+                moveInput,
+                needsPositionSync ? DeliveryMethod.ReliableOrdered : DeliveryMethod.Unreliable);
+            if (sent)
             {
-                var aimDirection = GetAimDirection();
-                _networkManager.SendShootRequest(transform.position, aimDirection, ResolveWeaponType());
-            }
-
-            if (Input.GetKeyDown(grenadeKey))
-            {
-                var aimDirection = GetAimDirection();
-                _networkManager.SendGrenadeThrow(transform.position, aimDirection, ResolveGrenadeType());
-            }
-        }
-
-        private Vector2 GetAimDirection()
-        {
-            if (inputService != null)
-            {
-                var aimWorld = inputService.GetAimWorldPosition();
-                var dirFromService = (aimWorld - (Vector2)transform.position);
-                if (dirFromService.sqrMagnitude > Mathf.Epsilon)
+                _lastMoveSendTime = now;
+                if (needsPositionSync)
                 {
-                    return dirFromService.normalized;
+                    _positionSynchronized = true;
                 }
             }
-
-            var camera = Camera.main;
-            if (camera == null)
-            {
-                return transform.localScale.x < 0f ? Vector2.left : Vector2.right;
-            }
-
-            var worldMouse = camera.ScreenToWorldPoint(Input.mousePosition);
-            var dir = (Vector2)(worldMouse - transform.position);
-            if (dir.sqrMagnitude <= Mathf.Epsilon)
-            {
-                dir = transform.localScale.x < 0f ? Vector2.left : Vector2.right;
-            }
-
-            return dir.normalized;
         }
 
-        private string ResolveWeaponType()
+        private static bool IsFinite(Vector3 value)
         {
-            var weaponSlots = GetComponentInChildren<WeaponSlots>();
-            var currentGun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
-            return currentGun != null ? currentGun.Name : "Unknown";
+            return IsFinite(value.x) && IsFinite(value.y) && IsFinite(value.z);
         }
 
-        private string ResolveGrenadeType()
+        private static bool IsFinite(float value)
         {
-            var grenadeComponent = GetComponent<PlayerGrenadeComponent>();
-            return grenadeComponent != null ? grenadeComponent.CurrentGrenadeType.ToString() : "Normal";
+            return !float.IsNaN(value) && !float.IsInfinity(value);
         }
+
     }
 }

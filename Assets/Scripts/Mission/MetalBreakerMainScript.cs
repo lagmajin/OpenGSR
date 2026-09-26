@@ -10,6 +10,7 @@ namespace OpenGS
         [SerializeField] public GameObject respawnPoints;
         [SerializeField] public GameObject PlayerPrefabStorage;
         [SerializeField] public float time = 0.0f;
+        private bool transitionRequested;
 
         private void Start()
         {
@@ -24,7 +25,14 @@ namespace OpenGS
                 return;
             }
 
-            time += Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            time = Mathf.Max(0f, (float.IsFinite(time) ? time : 0f) + deltaTime);
 
             if (Input.GetKeyDown(KeyCode.F1))
             {
@@ -61,7 +69,8 @@ namespace OpenGS
         {
             var prefab = PlayerPrefabStorage != null
                 ? PlayerPrefabStorage
-                : Resources.Load<GameObject>("Prefabs/Player/Misty");
+                : Resources.Load<PlayerPrefabMasterData>("MasterData/Player/PlayerPrefabMasterData")
+                    ?.SearchPlayerPrefab(OpenGSCore.EPlayerCharacter.Misty);
 
             if (prefab == null)
             {
@@ -108,14 +117,27 @@ namespace OpenGS
 
         private void EndGame()
         {
-            if (endFlag)
+            if (endFlag || transitionRequested)
             {
                 return;
             }
 
             endFlag = true;
-            var nextScene = "MetalBreakerResultScene";
-            SceneManager.LoadSceneAsync(nextScene);
+            var nextScene = GeneralSceneMasterData.Instance()?.MissionResultScene();
+            if (string.IsNullOrWhiteSpace(nextScene))
+            {
+                Debug.LogError("[MetalBreakerMainScript] Mission result scene is not configured.");
+                endFlag = false;
+                return;
+            }
+
+            transitionRequested = true;
+            if (SceneManager.LoadSceneAsync(nextScene) == null)
+            {
+                transitionRequested = false;
+                endFlag = false;
+                Debug.LogError($"[MetalBreakerMainScript] Failed to load scene: {nextScene}");
+            }
         }
 
         public void OnPlayerDead()
@@ -130,8 +152,24 @@ namespace OpenGS
 
         private void BackToLobby()
         {
+            if (transitionRequested)
+            {
+                return;
+            }
+
             var nextScene = GeneralSceneMasterData.Instance().LobbyScene();
-            SceneManager.LoadSceneAsync(nextScene);
+            if (string.IsNullOrWhiteSpace(nextScene))
+            {
+                Debug.LogError("[MetalBreakerMainScript] Lobby scene is not configured.");
+                return;
+            }
+
+            transitionRequested = true;
+            if (SceneManager.LoadSceneAsync(nextScene) == null)
+            {
+                transitionRequested = false;
+                Debug.LogError($"[MetalBreakerMainScript] Failed to load scene: {nextScene}");
+            }
         }
 
         public override void PostEvent(AbstractGameEvent e)

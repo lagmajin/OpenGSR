@@ -12,6 +12,11 @@ namespace OpenGS
         private Coroutine lifetimeCoroutine;
         private Action<GameObject> releaseAction;
 
+        private void Awake()
+        {
+            defaultLifetime = float.IsFinite(defaultLifetime) ? Mathf.Max(0f, defaultLifetime) : 0.2f;
+        }
+
         private void OnDisable()
         {
             if (lifetimeCoroutine != null)
@@ -25,7 +30,7 @@ namespace OpenGS
 
         public void Play(float lifetime, Action<GameObject> onRelease = null)
         {
-            var activeLifetime = lifetime > 0f ? lifetime : defaultLifetime;
+            var activeLifetime = float.IsFinite(lifetime) && lifetime > 0f ? lifetime : defaultLifetime;
             releaseAction = onRelease;
 
             if (!isActiveAndEnabled)

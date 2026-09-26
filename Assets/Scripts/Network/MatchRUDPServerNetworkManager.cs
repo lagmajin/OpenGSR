@@ -50,10 +50,11 @@ namespace OpenGS
             if (localServer != null)
             {
                 localServer.MessageProduced -= OnServerProducedMessage;
+                localServer = null;
             }
 
             Debug.Log("[MatchRUDPServerNetworkManager] Disconnect");
-            disconnectedSubject.OnNext(Unit.Default);
+            PublishConnectionEvent(disconnectedSubject, "disconnected");
         }
 
         public void SendToServer(in JObject json)
@@ -63,6 +64,12 @@ namespace OpenGS
 
         public void SendToServer(JObject json)
         {
+            if (json == null)
+            {
+                Debug.LogWarning("[MatchRUDPServerNetworkManager] SendToServer ignored because message is null.");
+                return;
+            }
+
             if (!connected)
             {
                 Debug.LogWarning($"[MatchRUDPServerNetworkManager] SendToServer ignored because not connected: {json?["MessageType"]}");
@@ -71,7 +78,6 @@ namespace OpenGS
 
             var messageType = MessageType.Normalize(json?["MessageType"]?.ToString());
             json["MessageType"] = messageType;
-            Debug.Log($"[MatchRUDPServerNetworkManager] SendToServer: {messageType}");
 
             if (localServer != null)
             {
@@ -92,6 +98,21 @@ namespace OpenGS
 
         private void ConnectInternal(int port, bool isLocal)
         {
+            if (connected || localServer != null || networkClient != null)
+            {
+                Disconnect();
+            }
+
+            // LocalTestMatchRUDPServer uses port 0 as an in-process
+            // connection sentinel. Real network connections still require
+            // a valid TCP/UDP port.
+            if ((!isLocal && port < 1) || port > 65535)
+            {
+                Debug.LogWarning($"[MatchRUDPServerNetworkManager] Invalid port: {port}");
+                connected = false;
+                return;
+            }
+
             Debug.Log($"[MatchRUDPServerNetworkManager] {(isLocal ? "ConnectToLocalServer" : "ConnectToServer")} port={port}");
 
             localServer = null;
@@ -127,8 +148,15 @@ namespace OpenGS
                 }
             }
 
+            if ((isLocal && localServer == null) || (!isLocal && networkClient == null))
+            {
+                connected = false;
+                Debug.LogWarning("[MatchRUDPServerNetworkManager] Connection was not established because no transport is available.");
+                return;
+            }
+
             connected = true;
-            connectedSubject.OnNext(Unit.Default);
+            PublishConnectionEvent(connectedSubject, "connected");
         }
 
         private void OnServerProducedMessage(JObject json)
@@ -161,7 +189,14 @@ namespace OpenGS
                 }
             }
 
-            dataReceivedSubject.OnNext(json);
+            try
+            {
+                dataReceivedSubject.OnNext(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[MatchRUDPServerNetworkManager] RUDP subscriber failed: {ex}");
+            }
         }
 
         private void OnNetworkClientMessage(JObject json)
@@ -172,6 +207,18 @@ namespace OpenGS
             }
 
             OnServerProducedMessage(json);
+        }
+
+        private static void PublishConnectionEvent(ISubject<Unit> subject, string eventName)
+        {
+            try
+            {
+                subject.OnNext(Unit.Default);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[MatchRUDPServerNetworkManager] {eventName} subscriber failed: {ex}");
+            }
         }
     }
 }

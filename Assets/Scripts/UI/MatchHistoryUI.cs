@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenGS
@@ -44,6 +45,10 @@ namespace OpenGS
         private string currentGameMode = null;
         private string currentResult = null;
         private string playerName = "Player";
+        private MatchHistoryManager historyManager;
+        private Coroutine historyBindRoutine;
+        private Coroutine historyRefreshRoutine;
+        private bool clearConfirmationPending;
 
         // ─── デリゲート ─────────────────────────────────────────────
 
@@ -59,7 +64,73 @@ namespace OpenGS
 
         private void OnEnable()
         {
+            historyBindRoutine = StartCoroutine(BindHistoryManagerWhenReady());
+        }
+
+        private void OnDisable()
+        {
+            CancelInvoke();
+            if (historyManager != null)
+            {
+                historyManager.OnHistoryUpdated -= HandleHistoryUpdated;
+            }
+
+            historyManager = null;
+            if (historyBindRoutine != null)
+            {
+                StopCoroutine(historyBindRoutine);
+                historyBindRoutine = null;
+            }
+            if (historyRefreshRoutine != null)
+            {
+                StopCoroutine(historyRefreshRoutine);
+                historyRefreshRoutine = null;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            gameModeDropdown?.onValueChanged.RemoveListener(OnGameModeChanged);
+            resultDropdown?.onValueChanged.RemoveListener(OnResultChanged);
+            refreshButton?.onClick.RemoveListener(OnRefreshButtonClicked);
+            closeButton?.onClick.RemoveListener(OnCloseButtonClicked);
+            clearButton?.onClick.RemoveListener(OnClearButtonClicked);
+        }
+
+        private IEnumerator BindHistoryManagerWhenReady()
+        {
+            while (isActiveAndEnabled && MatchHistoryManager.Instance == null)
+            {
+                yield return null;
+            }
+
+            if (!isActiveAndEnabled || MatchHistoryManager.Instance == null)
+            {
+                yield break;
+            }
+
+            historyManager = MatchHistoryManager.Instance;
+            historyManager.OnHistoryUpdated += HandleHistoryUpdated;
+            historyBindRoutine = null;
             RefreshHistory();
+        }
+
+        private void HandleHistoryUpdated(List<MatchHistoryEntry> history)
+        {
+            QueueHistoryRefresh();
+        }
+
+        private void QueueHistoryRefresh()
+        {
+            if (!isActiveAndEnabled || historyRefreshRoutine != null) return;
+            historyRefreshRoutine = StartCoroutine(RefreshHistoryNextFrame());
+        }
+
+        private IEnumerator RefreshHistoryNextFrame()
+        {
+            yield return null;
+            historyRefreshRoutine = null;
+            if (isActiveAndEnabled) RefreshHistory();
         }
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -201,10 +272,24 @@ namespace OpenGS
 
         private void OnClearButtonClicked()
         {
-            // 確認ダイアログを表示（実装は省略）
-            MatchHistoryManager.Instance.ClearHistory(playerName);
+            if (!clearConfirmationPending)
+            {
+                clearConfirmationPending = true;
+                ShowStatus("もう一度押すと履歴を削除します", true);
+                CancelInvoke(nameof(ResetClearConfirmation));
+                Invoke(nameof(ResetClearConfirmation), 3f);
+                return;
+            }
+
+            ResetClearConfirmation();
+            historyManager?.ClearHistory(playerName);
             RefreshHistory();
             ShowStatus("履歴をクリアしました", false);
+        }
+
+        private void ResetClearConfirmation()
+        {
+            clearConfirmationPending = false;
         }
 
         // ─── 履歴更新 ─────────────────────────────────────────────
@@ -214,10 +299,20 @@ namespace OpenGS
         /// </summary>
         private void RefreshHistory()
         {
+            var manager = historyManager ?? MatchHistoryManager.Instance;
+            if (manager == null)
+            {
+                currentHistory = new List<MatchHistoryEntry>();
+                ClearHistoryList();
+                UpdateStatistics();
+                return;
+            }
+
             // 履歴データを取得
-            var allHistory = MatchHistoryManager.Instance.GetPlayerHistory(playerName, 50);
+            var allHistory = manager.GetPlayerHistory(playerName, 50) ?? new List<MatchHistoryEntry>();
 
             // フィルタリング
+            allHistory.RemoveAll(entry => entry == null);
             currentHistory = allHistory;
 
             if (!string.IsNullOrEmpty(currentGameMode))
@@ -304,7 +399,15 @@ namespace OpenGS
         /// </summary>
         private void UpdateStatistics()
         {
-            var stats = MatchHistoryManager.Instance.GetStatistics(playerName, currentGameMode);
+            var manager = historyManager ?? MatchHistoryManager.Instance;
+            if (manager == null)
+            {
+                if (totalMatchesText != null) totalMatchesText.text = "総試合数: 0";
+                if (winRateText != null) winRateText.text = "勝率: 0.0%";
+                return;
+            }
+
+            var stats = manager.GetStatistics(playerName, currentGameMode);
 
             // 総試合数
             if (totalMatchesText != null)

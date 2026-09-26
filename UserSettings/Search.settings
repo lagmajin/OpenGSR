@@ -80,6 +80,26 @@ providers = {
 		priority = 210
 		defaultAction = null
 	}
+	lightmaps = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	uiengine = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	uicustom = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
+	"project-auditor-issues" = {
+		active = true
+		priority = 100
+		defaultAction = null
+	}
 }
 objectSelectors = {
 }
@@ -101,3 +121,4 @@ disabledIndexers = ""
 minIndexVariations = 2
 findProviderIndexHelper = true
 itemIconSize = 32
+version = 1

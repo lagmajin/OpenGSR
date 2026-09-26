@@ -1,4 +1,3 @@
-﻿using UnityEditor;
 using UnityEngine;
 
 namespace OpenGS
@@ -8,37 +7,18 @@ namespace OpenGS
     {
         public SpriteRenderer render;
         public Color wallColor = Color.green;
+
         private void Start()
         {
 #if UNITY_EDITOR
             Debug.Log("Unity Editor");
-#else
-    Debug.Log("Any other platform");
-
-#endif
-
-#if UNITY_EDITOR
-
-            if (EditorApplication.isPlaying)
+            if (UnityEditor.EditorApplication.isPlaying && render != null)
             {
-
                 render.sprite = null;
-
-
             }
-
+#else
+            Debug.Log("Any other platform");
 #endif
-
-        }
-
-        private void Update()
-        {
-
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-
         }
 
     }

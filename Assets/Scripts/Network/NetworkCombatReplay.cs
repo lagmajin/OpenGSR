@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UniRx;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using OpenGSCore;
 
 namespace OpenGS
@@ -18,11 +19,76 @@ namespace OpenGS
         [SerializeField] private float grenadeFlashLifetime = 0.18f;
         [Tooltip("Enable detailed replay logs for spawned and destroyed network objects. Warnings are always shown.")]
         [SerializeField] private bool verboseReplayLogs = false;
+        [SerializeField] private float spawnedObjectCleanupInterval = 0.25f;
 
         private readonly CompositeDisposable disposables = new CompositeDisposable();
         private readonly Dictionary<string, GameObject> spawnedObjects = new Dictionary<string, GameObject>();
         private readonly Dictionary<string, ShotPrediction> recentShots = new Dictionary<string, ShotPrediction>();
         private readonly Dictionary<string, GrenadePrediction> recentGrenades = new Dictionary<string, GrenadePrediction>();
+        private readonly List<string> cleanupKeys = new List<string>(16);
+        private static Sprite fallbackReplaySprite;
+        private float nextSpawnedObjectCleanupTime;
+
+        private void Awake()
+        {
+            remotePredictedBulletLifetime = float.IsFinite(remotePredictedBulletLifetime)
+                ? Mathf.Max(0f, remotePredictedBulletLifetime)
+                : 2f;
+            shotFlashLifetime = float.IsFinite(shotFlashLifetime) ? Mathf.Max(0f, shotFlashLifetime) : 0.12f;
+            grenadeFlashLifetime = float.IsFinite(grenadeFlashLifetime) ? Mathf.Max(0f, grenadeFlashLifetime) : 0.18f;
+            spawnedObjectCleanupInterval = float.IsFinite(spawnedObjectCleanupInterval)
+                ? Mathf.Max(0.05f, spawnedObjectCleanupInterval)
+                : 0.25f;
+        }
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(remotePredictedBulletLifetime) || remotePredictedBulletLifetime < 0f)
+                remotePredictedBulletLifetime = 2f;
+            if (!float.IsFinite(shotFlashLifetime) || shotFlashLifetime < 0f)
+                shotFlashLifetime = 0.12f;
+            if (!float.IsFinite(grenadeFlashLifetime) || grenadeFlashLifetime < 0f)
+                grenadeFlashLifetime = 0.18f;
+            if (!float.IsFinite(spawnedObjectCleanupInterval) || spawnedObjectCleanupInterval < 0.05f)
+                spawnedObjectCleanupInterval = 0.25f;
+        }
+
+        private void Update()
+        {
+            if (spawnedObjects.Count == 0)
+            {
+                return;
+            }
+
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f || now < nextSpawnedObjectCleanupTime)
+            {
+                return;
+            }
+
+            nextSpawnedObjectCleanupTime = now + Mathf.Max(0.05f, spawnedObjectCleanupInterval);
+
+            cleanupKeys.Clear();
+            foreach (var pair in spawnedObjects)
+            {
+                if (pair.Value != null)
+                {
+                    continue;
+                }
+
+                cleanupKeys.Add(pair.Key);
+            }
+
+            if (cleanupKeys.Count == 0)
+            {
+                return;
+            }
+
+            foreach (var objectId in cleanupKeys)
+            {
+                spawnedObjects.Remove(objectId);
+            }
+        }
 
         private readonly struct ShotPrediction
         {
@@ -58,17 +124,59 @@ namespace OpenGS
             public float Timestamp { get; }
         }
 
-        private void Start()
+        private void OnEnable()
         {
+            SceneManager.sceneLoaded += OnSceneLoaded;
             GameEventBroker.Subscribe<PlayerShotEvent>(HandlePlayerShot).AddTo(disposables);
             GameEventBroker.Subscribe<GrenadeThrowEvent>(HandleGrenadeThrow).AddTo(disposables);
             GameEventBroker.Subscribe<ObjectSpawnedEvent>(HandleObjectSpawned).AddTo(disposables);
             GameEventBroker.Subscribe<ObjectDestroyedEvent>(HandleObjectDestroyed).AddTo(disposables);
         }
 
+        private void OnDisable()
+        {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            disposables.Clear();
+
+            foreach (var pair in spawnedObjects)
+            {
+                if (pair.Value != null)
+                {
+                    Destroy(pair.Value);
+                }
+            }
+
+            spawnedObjects.Clear();
+            recentShots.Clear();
+            recentGrenades.Clear();
+            nextSpawnedObjectCleanupTime = 0f;
+        }
+
         private void OnDestroy()
         {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
+            ClearSpawnedObjects();
             disposables.Dispose();
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            ClearSpawnedObjects();
+            recentShots.Clear();
+            recentGrenades.Clear();
+        }
+
+        private void ClearSpawnedObjects()
+        {
+            foreach (var pair in spawnedObjects)
+            {
+                if (pair.Value != null)
+                {
+                    Destroy(pair.Value);
+                }
+            }
+
+            spawnedObjects.Clear();
         }
 
         private void HandlePlayerShot(PlayerShotEvent e)
@@ -78,7 +186,17 @@ namespace OpenGS
                 return;
             }
 
-            recentShots[e.PlayerID()] = new ShotPrediction(e.Position(), e.Direction(), e.WeaponType(), Time.time);
+            if (!IsFinite(e.Position()) || !IsFinite(e.Direction()) || e.Direction().sqrMagnitude <= Mathf.Epsilon)
+            {
+                return;
+            }
+
+            if (!TryGetSafeTime(out var now))
+            {
+                return;
+            }
+
+            recentShots[e.PlayerID()] = new ShotPrediction(e.Position(), e.Direction(), e.WeaponType(), now);
             CleanupExpiredShotCache();
 
             var position = new Vector3(e.Position().x, e.Position().y, 0f);
@@ -101,12 +219,22 @@ namespace OpenGS
                 return;
             }
 
+            if (!IsFinite(e.Position()) || !IsFinite(e.Direction()) || e.Direction().sqrMagnitude <= Mathf.Epsilon)
+            {
+                return;
+            }
+
+            if (!TryGetSafeTime(out var now))
+            {
+                return;
+            }
+
             recentGrenades[e.PlayerID()] = new GrenadePrediction(
                 e.Position(),
                 e.Direction(),
                 ResolveGrenadeTypeFromEvent(e.GrenadeType()),
-                Mathf.Max(0f, e.Power()),
-                Time.time);
+                Mathf.Max(0f, SafeFinite(e.Power(), 1f)),
+                now);
             CleanupExpiredGrenadeCache();
 
             var position = new Vector3(e.Position().x, e.Position().y, 0f);
@@ -122,10 +250,47 @@ namespace OpenGS
             }
         }
 
+        private static float SafeFinite(float value, float fallback)
+        {
+            return float.IsFinite(value) ? value : fallback;
+        }
+
+        private static bool TryGetSafeTime(out float now)
+        {
+            now = Time.time;
+            return float.IsFinite(now) && now >= 0f;
+        }
+
+        private static bool IsFinite(Vector2 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y);
+        }
+
         private void HandleObjectSpawned(ObjectSpawnedEvent e)
         {
             if (e == null)
             {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(e.ObjectID()))
+            {
+                LogReplayWarning("Ignored empty object id", e.ObjectType(), string.Empty);
+                return;
+            }
+
+            if (!IsFinite(e.Position()))
+            {
+                LogReplayWarning("Ignored non-finite position", e.ObjectType(), e.ObjectID());
+                return;
+            }
+
+            // LiteNetLib can deliver the same reliable event more than once
+            // across reconnect/rejoin boundaries. Do not respawn an object that
+            // is already represented locally.
+            if (spawnedObjects.TryGetValue(e.ObjectID(), out var alreadySpawned) && alreadySpawned != null)
+            {
+                LogReplayEvent("Ignored duplicate", e.ObjectType(), e.ObjectID());
                 return;
             }
 
@@ -150,18 +315,61 @@ namespace OpenGS
             }
 
             var prefab = ResolveSpawnPrefab(e.ObjectType());
+            var usingFallbackPrefab = false;
             if (prefab == null)
             {
-                LogReplayWarning("Missing prefab", e.ObjectType(), e.ObjectID());
-                return;
+                LogReplayWarning("Missing prefab; using fallback visual", e.ObjectType(), e.ObjectID());
+                prefab = CreateFallbackProjectilePrefab(e.ObjectType());
+                usingFallbackPrefab = prefab != null;
+                if (prefab == null)
+                {
+                    return;
+                }
             }
 
             var position = new Vector3(e.Position().x, e.Position().y, 0f);
-            var rotation = Quaternion.Euler(0f, 0f, e.Rotation());
+            var rotation = Quaternion.Euler(0f, 0f, float.IsFinite(e.Rotation()) ? e.Rotation() : 0f);
             var spawned = Instantiate(prefab, position, rotation);
+            if (usingFallbackPrefab)
+            {
+                Destroy(prefab);
+            }
             spawnedObjects[e.ObjectID()] = spawned;
             LogReplayEvent("Spawned", e.ObjectType(), e.ObjectID(), position);
             Destroy(spawned, ResolveLifetime(e.ObjectType()));
+        }
+
+        private static GameObject CreateFallbackProjectilePrefab(string objectType)
+        {
+            var normalized = objectType ?? string.Empty;
+            var isGrenade = IsGrenadeObjectType(normalized);
+            var primitive = GameObject.CreatePrimitive(isGrenade ? PrimitiveType.Sphere : PrimitiveType.Capsule);
+            primitive.name = $"ReplayFallback_{normalized}";
+            primitive.transform.localScale = isGrenade
+                ? Vector3.one * 0.18f
+                : new Vector3(0.06f, 0.28f, 0.06f);
+
+            var renderer = primitive.GetComponent<Renderer>();
+            if (renderer != null)
+            {
+                var shader = Shader.Find("Standard") ?? Shader.Find("Sprites/Default");
+                if (shader != null)
+                {
+                    var material = new Material(shader);
+                    material.color = isGrenade
+                        ? new Color(1f, 0.35f, 0.1f, 0.9f)
+                        : new Color(1f, 0.9f, 0.25f, 0.95f);
+                    renderer.sharedMaterial = material;
+                }
+            }
+
+            var collider = primitive.GetComponent<Collider>();
+            if (collider != null)
+            {
+                Destroy(collider);
+            }
+
+            return primitive;
         }
 
         private void HandleObjectDestroyed(ObjectDestroyedEvent e)
@@ -192,7 +400,7 @@ namespace OpenGS
             go.transform.position = position;
 
             var sr = go.AddComponent<SpriteRenderer>();
-            sr.sprite = Resources.Load<Sprite>("Sprites/Bullet/Circle");
+            sr.sprite = ResolveReplaySprite();
             if (sr.sprite == null)
             {
                 Destroy(go);
@@ -218,17 +426,29 @@ namespace OpenGS
             }
 
             var position = e.Position();
-            var direction = Quaternion.Euler(0f, 0f, e.Rotation()) * Vector2.right;
+            if (!IsFinite(position))
+            {
+                return false;
+            }
+
+            var direction = Quaternion.Euler(0f, 0f, float.IsFinite(e.Rotation()) ? e.Rotation() : 0f) * Vector2.right;
             var weaponType = ResolveWeaponTypeFromCache(ownerId);
             var speed = ResolvePredictedBulletSpeed(weaponType);
             var lifetime = remotePredictedBulletLifetime;
 
-            if (recentShots.TryGetValue(ownerId, out var shot))
+            if (TryGetSafeTime(out var now) && recentShots.TryGetValue(ownerId, out var shot))
             {
-                if (Time.time - shot.Timestamp <= 1.25f)
+                if (now - shot.Timestamp <= 1.25f)
                 {
-                    position = shot.Position;
-                    direction = shot.Direction.sqrMagnitude > Mathf.Epsilon ? shot.Direction.normalized : direction;
+                    if (IsFinite(shot.Position))
+                    {
+                        position = shot.Position;
+                    }
+
+                    if (IsFinite(shot.Direction) && shot.Direction.sqrMagnitude > Mathf.Epsilon)
+                    {
+                        direction = shot.Direction.normalized;
+                    }
                 }
             }
 
@@ -242,7 +462,7 @@ namespace OpenGS
             bullet.transform.position = position;
 
             var spriteRenderer = bullet.AddComponent<SpriteRenderer>();
-            spriteRenderer.sprite = Resources.Load<Sprite>("Sprites/Bullet/Circle");
+            spriteRenderer.sprite = ResolveReplaySprite();
             if (spriteRenderer.sprite == null)
             {
                 Destroy(bullet);
@@ -254,6 +474,27 @@ namespace OpenGS
 
             var mover = bullet.AddComponent<RemoteShotVisual>();
             mover.Initialize(direction, speed, lifetime);
+        }
+
+        private static Sprite ResolveReplaySprite()
+        {
+            var sprite = Resources.Load<Sprite>("Sprites/Bullet/Circle");
+            if (sprite != null)
+            {
+                return sprite;
+            }
+
+            if (fallbackReplaySprite == null && Texture2D.whiteTexture != null)
+            {
+                fallbackReplaySprite = Sprite.Create(
+                    Texture2D.whiteTexture,
+                    new Rect(0f, 0f, 1f, 1f),
+                    new Vector2(0.5f, 0.5f),
+                    1f);
+                fallbackReplaySprite.name = "ReplayFallbackSprite";
+            }
+
+            return fallbackReplaySprite;
         }
 
         private bool TrySpawnPredictedGrenade(ObjectSpawnedEvent e)
@@ -271,16 +512,24 @@ namespace OpenGS
 
             var ownerId = ExtractOwnerId(e.ObjectID());
             var position = e.Position();
-            var direction = Quaternion.Euler(0f, 0f, e.Rotation()) * Vector2.right;
+            if (!IsFinite(position))
+            {
+                return false;
+            }
+
+            var direction = Quaternion.Euler(0f, 0f, float.IsFinite(e.Rotation()) ? e.Rotation() : 0f) * Vector2.right;
             var power = 1f;
 
-            if (recentGrenades.TryGetValue(ownerId, out var grenade))
+            if (TryGetSafeTime(out var now) && recentGrenades.TryGetValue(ownerId, out var grenade))
             {
-                if (Time.time - grenade.Timestamp <= 3f)
+                if (now - grenade.Timestamp <= 3f)
                 {
-                    position = grenade.Position;
+                    if (IsFinite(grenade.Position))
+                    {
+                        position = grenade.Position;
+                    }
 
-                    if (grenade.Direction.sqrMagnitude > Mathf.Epsilon)
+                    if (IsFinite(grenade.Position) && IsFinite(grenade.Direction) && grenade.Direction.sqrMagnitude > Mathf.Epsilon)
                     {
                         direction = grenade.Direction.normalized;
                     }
@@ -321,7 +570,8 @@ namespace OpenGS
             grenade.transform.position = position;
 
             var spriteRenderer = grenade.AddComponent<SpriteRenderer>();
-            spriteRenderer.sprite = ResolveGrenadeSprite(grenadeType) ?? Resources.Load<Sprite>("Sprites/Bullet/Circle");
+            spriteRenderer.sprite = ResolveGrenadeSprite(grenadeType) ?? ResolveReplaySprite();
+            spriteRenderer.sortingOrder = 10;
             if (spriteRenderer.sprite == null)
             {
                 Destroy(grenade);
@@ -350,17 +600,20 @@ namespace OpenGS
                 return;
             }
 
-            var now = Time.time;
-            var staleKeys = new List<string>();
+            if (!TryGetSafeTime(out var now))
+            {
+                return;
+            }
+            cleanupKeys.Clear();
             foreach (var kv in recentShots)
             {
                 if (now - kv.Value.Timestamp > 1.5f)
                 {
-                    staleKeys.Add(kv.Key);
+                    cleanupKeys.Add(kv.Key);
                 }
             }
 
-            foreach (var key in staleKeys)
+            foreach (var key in cleanupKeys)
             {
                 recentShots.Remove(key);
             }
@@ -373,17 +626,20 @@ namespace OpenGS
                 return;
             }
 
-            var now = Time.time;
-            var staleKeys = new List<string>();
+            if (!TryGetSafeTime(out var now))
+            {
+                return;
+            }
+            cleanupKeys.Clear();
             foreach (var kv in recentGrenades)
             {
                 if (now - kv.Value.Timestamp > 4f)
                 {
-                    staleKeys.Add(kv.Key);
+                    cleanupKeys.Add(kv.Key);
                 }
             }
 
-            foreach (var key in staleKeys)
+            foreach (var key in cleanupKeys)
             {
                 recentGrenades.Remove(key);
             }
@@ -565,10 +821,21 @@ namespace OpenGS
 
         private static GameObject ResolveSpawnPrefab(string objectType)
         {
+            var grenadeType = ResolveGrenadeTypeFromObjectType(objectType);
+            if (grenadeType != EGrenadeType.Empty)
+            {
+                var grenadeMasterData = Resources.Load<AllGrenadeListMasterData>("MasterData/Grenade/AllGrenadeListMasterData");
+                var grenadePrefab = GrenadeVisualResolver.GetProjectilePrefab(grenadeType, grenadeMasterData);
+                if (grenadePrefab != null)
+                {
+                    return grenadePrefab;
+                }
+            }
+
             switch (objectType)
             {
                 case "Bullet":
-                    return Resources.Load<GameObject>("Prefabs/Weapon/Projectile/Bullet");
+                    return ResolveBulletReplayPrefab();
                 case "NormalGrenade":
                     return Resources.Load<GameObject>("Prefabs/Weapon/Projectile/NormalGrenade");
                 case "PowerGrenade":
@@ -588,6 +855,30 @@ namespace OpenGS
                 default:
                     return null;
             }
+        }
+
+        private static GameObject ResolveBulletReplayPrefab()
+        {
+            var resourcePrefab = Resources.Load<GameObject>("Prefabs/Weapon/Projectile/Bullet");
+            if (resourcePrefab != null)
+            {
+                return resourcePrefab;
+            }
+
+            foreach (var gun in FindObjectsByType<AbstractGunController>(FindObjectsSortMode.None))
+            {
+                if (gun == null || gun.bulletPrefab == null)
+                {
+                    continue;
+                }
+
+                if (gun.bulletPrefab.GetComponent<BulletController>() != null)
+                {
+                    return gun.bulletPrefab;
+                }
+            }
+
+            return null;
         }
 
         private static float ResolveLifetime(string objectType)

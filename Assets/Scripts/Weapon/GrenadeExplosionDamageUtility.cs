@@ -22,6 +22,12 @@ namespace OpenGS
                 return;
             }
 
+            if (!float.IsFinite(origin.x) || !float.IsFinite(origin.y)
+                || !float.IsFinite(damageMultiplier) || damageMultiplier <= 0f)
+            {
+                return;
+            }
+
             const float defaultBaseDamage = 100f;
             const float radius = 2.5f;
             const float minDamageMultiplier = 0.35f;
@@ -42,6 +48,12 @@ namespace OpenGS
                     continue;
                 }
 
+                var playerPosition = player.transform.position;
+                if (!float.IsFinite(playerPosition.x) || !float.IsFinite(playerPosition.y) || !float.IsFinite(playerPosition.z))
+                {
+                    continue;
+                }
+
                 var playerId = player.UniqueID().ToString();
                 if (!processed.Add(playerId))
                 {
@@ -58,14 +70,14 @@ namespace OpenGS
                     continue;
                 }
 
-                float distance = Vector2.Distance(origin, player.transform.position);
+                float distance = Vector2.Distance(origin, playerPosition);
                 float normalized = Mathf.Clamp01(distance / radius);
                 float curveMultiplier = Mathf.Lerp(1f, minDamageMultiplier, normalized);
                 float finalDamage = Mathf.Max(1f, defaultBaseDamage * curveMultiplier * damageMultiplier);
 
                 PlayerRegistry.Instance.ApplyDamage(
                     player.UniqueID(),
-                    player.transform.position - (Vector3)origin,
+                    playerPosition - (Vector3)origin,
                     finalDamage,
                     eDamageType.Explosion,
                     ownerPlayerId,

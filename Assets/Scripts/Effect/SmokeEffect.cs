@@ -28,6 +28,19 @@ namespace OpenGS
         private readonly List<float> puffBaseAlphas = new List<float>();
         private float age;
 
+        private void Awake()
+        {
+            count = Mathf.Max(1, count);
+            riseStep = SanitizeNonNegative(riseStep, 0.12f);
+            sidewaysJitter = SanitizeNonNegative(sidewaysJitter, 0.05f);
+            scaleStep = SanitizeNonNegative(scaleStep, 0.08f);
+            alphaStep = Mathf.Clamp01(float.IsFinite(alphaStep) ? alphaStep : 0.12f);
+            lifetime = SanitizePositive(lifetime, 1.8f);
+            driftSpeed = SanitizeFinite(driftSpeed, 0.15f);
+            driftJitter = SanitizeNonNegative(driftJitter, 0.03f);
+            spinSpeed = SanitizeFinite(spinSpeed, 8f);
+        }
+
         private void Start()
         {
             if (sourceRenderer == null)
@@ -47,10 +60,20 @@ namespace OpenGS
 
         private void Update()
         {
-            age += Time.deltaTime;
-            var fade = 1f - Mathf.Clamp01(age / Mathf.Max(0.1f, lifetime));
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
 
-            for (var i = 0; i < smokePuffs.Count; i++)
+            age = Mathf.Min(lifetime, age + deltaTime);
+            var fade = 1f - Mathf.Clamp01(age / lifetime);
+
+            var puffCount = Mathf.Min(
+                smokePuffs.Count,
+                Mathf.Min(puffVelocities.Count, Mathf.Min(puffRenderers.Count, puffBaseAlphas.Count)));
+            for (var i = 0; i < puffCount; i++)
             {
                 var puff = smokePuffs[i];
                 if (puff == null)
@@ -59,8 +82,8 @@ namespace OpenGS
                 }
 
                 var velocity = puffVelocities[i];
-                puff.localPosition += velocity * Time.deltaTime;
-                puff.Rotate(Vector3.forward, spinSpeed * Time.deltaTime, Space.Self);
+                puff.localPosition += velocity * deltaTime;
+                puff.Rotate(Vector3.forward, spinSpeed * deltaTime, Space.Self);
 
                 var sr = puffRenderers[i];
                 if (sr != null)
@@ -70,6 +93,21 @@ namespace OpenGS
                     sr.color = color;
                 }
             }
+        }
+
+        private static float SanitizeFinite(float value, float fallback)
+        {
+            return float.IsFinite(value) ? value : fallback;
+        }
+
+        private static float SanitizeNonNegative(float value, float fallback)
+        {
+            return Mathf.Max(0f, SanitizeFinite(value, fallback));
+        }
+
+        private static float SanitizePositive(float value, float fallback)
+        {
+            return Mathf.Max(0.1f, SanitizeFinite(value, fallback));
         }
 
         private void BuildSmokeStack()

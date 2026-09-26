@@ -53,12 +53,38 @@ namespace OpenGS
 
         private void Awake()
         {
+            bobAmplitude = NormalizeNonNegative(bobAmplitude);
+            bobFrequency = NormalizeNonNegative(bobFrequency);
+            swayDegrees = NormalizeNonNegative(swayDegrees);
+            standingDuration = NormalizePositive(standingDuration, 1.6f);
+            jumpDuration = NormalizePositive(jumpDuration, 0.85f);
+            rollDuration = NormalizePositive(rollDuration, 0.65f);
+            jumpHeight = NormalizeNonNegative(jumpHeight);
+            rollSpinDegrees = NormalizeNonNegative(rollSpinDegrees);
+            rollTiltDegrees = NormalizeNonNegative(rollTiltDegrees);
+            poseBlend = Normalize01(poseBlend, 0.2f);
+            animatorSpeed = NormalizePositive(animatorSpeed, 1f);
             CacheReferences();
             CaptureBasePose();
             phaseOffset = Random.Range(0f, 10f);
             motionSeed = Random.Range(0f, 10f);
             currentMotion = ShowcaseMotion.Standing;
             motionTimer = 0f;
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
+        }
+
+        private static float NormalizePositive(float value, float fallback)
+        {
+            return float.IsFinite(value) && value > 0f ? value : fallback;
+        }
+
+        private static float Normalize01(float value, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Clamp01(value) : fallback;
         }
 
         private void OnEnable()
@@ -82,7 +108,13 @@ namespace OpenGS
         /// </summary>
         public void SyncFromGamePlayer()
         {
-            SetCharacter(GamePlayerManager.Instance.SelectedPlayerCharacter());
+            var gamePlayerManager = GamePlayerManager.Instance;
+            if (gamePlayerManager == null)
+            {
+                return;
+            }
+
+            SetCharacter(gamePlayerManager.SelectedPlayerCharacter());
         }
 
         /// <summary>
@@ -146,7 +178,13 @@ namespace OpenGS
                 CaptureBasePose();
             }
 
-            var t = Time.unscaledTime + phaseOffset + motionSeed;
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now))
+            {
+                return;
+            }
+
+            var t = now + phaseOffset + motionSeed;
             var bob = Mathf.Sin(t * bobFrequency) * bobAmplitude;
             var sway = Mathf.Sin(t * bobFrequency * 0.7f) * swayDegrees;
 
@@ -183,7 +221,17 @@ namespace OpenGS
 
         private void UpdateMotionState(float deltaTime)
         {
-            motionTimer += Mathf.Max(0f, deltaTime);
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+
+            motionTimer += Mathf.Min(deltaTime, 0.1f);
+            if (!float.IsFinite(motionTimer))
+            {
+                motionTimer = 0f;
+                return;
+            }
             var currentDuration = GetCurrentMotionDuration();
 
             if (motionTimer < currentDuration)

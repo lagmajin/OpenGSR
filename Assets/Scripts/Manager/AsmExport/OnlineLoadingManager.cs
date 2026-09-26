@@ -13,10 +13,32 @@ namespace OpenGS
 
     public class OnlineLoadingManager
     {
-        public static OnlineLoadingManager Instance { get; } = new OnlineLoadingManager();
+        private static OnlineLoadingManager sharedInstance = new OnlineLoadingManager();
+
+        /// <summary>
+        /// Returns the DI-owned instance after startup, with a lightweight fallback before DI is ready.
+        /// </summary>
+        public static OnlineLoadingManager Instance => sharedInstance;
+
+        internal static void SetSharedInstance(OnlineLoadingManager instance)
+        {
+            if (instance != null)
+            {
+                sharedInstance = instance;
+            }
+        }
+
+        internal static void ResetSharedInstance()
+        {
+            sharedInstance = new OnlineLoadingManager();
+        }
 
         private readonly Dictionary<string, LoadingGauge> gaugeList = new();
         private string loadingMessage = string.Empty;
+
+        public event Action<string, float>? LoadingProgressUpdated;
+        public event Action<string>? LoadingMessageUpdated;
+        public event Action<LoadingInfo>? LoadingInfoUpdated;
 
         public LoadingInfo LoadingInfo { get; set; } = new();
         public string LoadingMessage => loadingMessage;
@@ -47,6 +69,7 @@ namespace OpenGS
 
             AddLoadingPlayer(id);
             gaugeList[id].SetRatio(gauge);
+            InvokeSafely(LoadingProgressUpdated, id, gaugeList[id].Gauge, nameof(LoadingProgressUpdated));
         }
 
         [Obsolete("UI-bound Gauge support is not implemented. Use GetLoadingGauge() for data access.")]
@@ -96,9 +119,17 @@ namespace OpenGS
             LoadingInfo = new LoadingInfo();
         }
 
+        public void SetLoadingInfo(string mapName, EGameMode gameMode)
+        {
+            LoadingInfo.MapName = mapName ?? string.Empty;
+            LoadingInfo.GameMode = gameMode;
+            InvokeSafely(LoadingInfoUpdated, LoadingInfo, nameof(LoadingInfoUpdated));
+        }
+
         public void SetLoadingMessage(in string message)
         {
             loadingMessage = message ?? string.Empty;
+            InvokeSafely(LoadingMessageUpdated, loadingMessage, nameof(LoadingMessageUpdated));
         }
 
         public void MarkPlayerLoaded(in string id)
@@ -110,6 +141,67 @@ namespace OpenGS
 
             AddLoadingPlayer(id);
             gaugeList[id].Full();
+            InvokeSafely(LoadingProgressUpdated, id, 1f, nameof(LoadingProgressUpdated));
+        }
+
+        private static void InvokeSafely(Action<string, float>? handlers, string id, float value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<string, float> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(id, value);
+                }
+                catch (Exception ex)
+                {
+                    UnityEngine.Debug.LogError($"[OnlineLoadingManager] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<string>? handlers, string value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<string> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value);
+                }
+                catch (Exception ex)
+                {
+                    UnityEngine.Debug.LogError($"[OnlineLoadingManager] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<LoadingInfo>? handlers, LoadingInfo value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<LoadingInfo> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value);
+                }
+                catch (Exception ex)
+                {
+                    UnityEngine.Debug.LogError($"[OnlineLoadingManager] {eventName} subscriber failed: {ex}");
+                }
+            }
         }
     }
 }

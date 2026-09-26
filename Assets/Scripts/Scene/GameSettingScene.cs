@@ -18,10 +18,6 @@ namespace OpenGS
             mainThread = SynchronizationContext.Current;
         }
 
-        private void Start()
-        {
-        }
-
         protected override void Update()
         {
             base.Update();
@@ -36,14 +32,21 @@ namespace OpenGS
             }
         }
 
-        private void OnApplicationQuit()
-        {
-        }
-
         private void ApplyGameSetting()
         {
-            var manager = GameGeneralManager.GetInstance;
-            Debug.Log("[GameSettingScene] ApplyGameSetting");
+            try
+            {
+                var settingsManager = SettingsManager.Instance;
+                var settings = settingsManager.GetSettings();
+                settingsManager.ApplyGraphicsSettings(settings.Graphics);
+                settingsManager.ApplySoundSettings(settings.Sound);
+                settingsManager.ApplyControlSettings(settings.Control);
+                Debug.Log("[GameSettingScene] Settings applied and saved.");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"[GameSettingScene] Failed to apply settings: {ex.Message}");
+            }
         }
 
         public override SynchronizationContext MainThread()

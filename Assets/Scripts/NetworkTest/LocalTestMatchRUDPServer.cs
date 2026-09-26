@@ -28,6 +28,10 @@ namespace OpenGS
         private bool _matchEnded;
         private int _totalDeathEvents;
         private readonly Dictionary<string, int> _teamKills = new();
+        private readonly HashSet<string> _connectedPlayerIds = new();
+        private readonly Dictionary<string, string> _playerTeams = new();
+        private readonly HashSet<string> _processedFlagEventKeys = new();
+        private readonly Dictionary<string, int> _flagScores = new();
         private readonly ServerReplayTape _replayTape = new ServerReplayTape();
         private string _lastReplayPath = string.Empty;
 
@@ -40,8 +44,9 @@ namespace OpenGS
         private System.Random random = new System.Random();
 
         public LocalTestMatchRUDPServer()
-        { 
-            
+        {
+            ResetMatchState();
+            ResetDummyPlayerState();
         }
 
         public bool IsRunning()
@@ -52,6 +57,7 @@ namespace OpenGS
 
         private void SendJson(in JObject json)
         {
+            CanonicalizeOutgoingFields(json);
             MessageProduced?.Invoke(json);
             _replayTape.RecordOutbound(json);
 
@@ -106,6 +112,12 @@ namespace OpenGS
             _matchEnded = false;
             _totalDeathEvents = 0;
             _teamKills.Clear();
+            _connectedPlayerIds.Clear();
+            _playerTeams.Clear();
+            _processedFlagEventKeys.Clear();
+            _flagScores.Clear();
+            _flagScores["Red"] = 0;
+            _flagScores["Blue"] = 0;
             _teamKills["Red"] = 0;
             _teamKills["Blue"] = 0;
         }
@@ -174,6 +186,7 @@ namespace OpenGS
                 return;
             }
 
+            AddLegacyFieldAliasesForHandlers(json);
             _replayTape.RecordInbound(json);
             var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
             PrettyLogger.Bold("RUDP Server", $"Received: {messageType}");
@@ -241,6 +254,40 @@ namespace OpenGS
             }
         }
 
+        private static void AddLegacyFieldAliasesForHandlers(JObject json)
+        {
+            if (json["PlayerId"] == null && json["PlayerID"] != null)
+            {
+                json["PlayerId"] = json["PlayerID"];
+            }
+
+            if (json["RoomId"] == null && json["RoomID"] != null)
+            {
+                json["RoomId"] = json["RoomID"];
+            }
+        }
+
+        private static void CanonicalizeOutgoingFields(JObject json)
+        {
+            if (json == null)
+            {
+                return;
+            }
+
+            if (json["PlayerID"] == null && json["PlayerId"] != null)
+            {
+                json["PlayerID"] = json["PlayerId"];
+            }
+
+            if (json["RoomID"] == null && json["RoomId"] != null)
+            {
+                json["RoomID"] = json["RoomId"];
+            }
+
+            json.Remove("PlayerId");
+            json.Remove("RoomId");
+        }
+
         private void HandlePlayerInput(JObject json)
         {
             // プレイヤー入力を受け取ったら、他のクライアントにブロードキャスト（今は自分に返す）
@@ -250,6 +297,9 @@ namespace OpenGS
         private void HandleClientConnect(JObject json)
         {
             var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "unknown";
+            var team = json["Team"]?.ToString() ?? "Red";
+            _connectedPlayerIds.Add(playerId);
+            _playerTeams[playerId] = team;
             PrettyLogger.Bold("RUDP Server", $"ClientConnect from {playerId}");
 
             SendJson(new JObject
@@ -263,6 +313,11 @@ namespace OpenGS
         private void HandlePlayerMove(JObject json)
         {
             var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "unknown";
+            if (!_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected PlayerMove from unknown player {playerId}");
+                return;
+            }
             var posX = json["PosX"]?.ToObject<float>() ?? testPlayerX;
             var posY = json["PosY"]?.ToObject<float>() ?? testPlayerY;
             var velX = json["VelX"]?.ToObject<float>() ?? 0f;
@@ -283,6 +338,11 @@ namespace OpenGS
         {
             // 射撃リクエストを受け取ったら、射撃イベントを全クライアントに通知
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            if (!_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected ShootRequest from unknown player {playerId}");
+                return;
+            }
             var posX = json["PosX"]?.ToObject<float>() ?? 0f;
             var posY = json["PosY"]?.ToObject<float>() ?? 0f;
             var dirX = json["DirX"]?.ToObject<float>() ?? 0f;
@@ -301,6 +361,11 @@ namespace OpenGS
         private void HandlePlayerShot(JObject json)
         {
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            if (!_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected PlayerShot from unknown player {playerId}");
+                return;
+            }
             var posX = json["PosX"]?.ToObject<float>() ?? 0f;
             var posY = json["PosY"]?.ToObject<float>() ?? 0f;
             var dirX = json["DirX"]?.ToObject<float>() ?? 0f;
@@ -317,6 +382,11 @@ namespace OpenGS
         private void HandleGrenadeThrow(JObject json)
         {
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            if (!_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected GrenadeThrow from unknown player {playerId}");
+                return;
+            }
             var posX = json["PosX"]?.ToObject<float>() ?? 0f;
             var posY = json["PosY"]?.ToObject<float>() ?? 0f;
             var dirX = json["DirX"]?.ToObject<float>() ?? 0f;
@@ -340,6 +410,18 @@ namespace OpenGS
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
             var killerId = json["KillerId"]?.ToString() ?? "";
 
+            if (!_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected PlayerDeath for unknown player {playerId}");
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(killerId) && !_connectedPlayerIds.Contains(killerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected PlayerDeath with unknown killer {killerId}");
+                return;
+            }
+
             PrettyLogger.Bold("RUDP Server", $"PlayerDeath: {playerId} killed by {killerId}");
 
             // テスト：死亡イベントをブロードキャスト
@@ -347,8 +429,13 @@ namespace OpenGS
             SendJson(deathMsg);
 
             // テスト：キルスコア更新を送信
-            var killerTeam = "Red";
-            var victimTeam = "Blue";
+            var killerTeam = ResolvePlayerTeam(killerId, "Red");
+            var victimTeam = ResolvePlayerTeam(playerId, "Blue");
+            if (!_teamKills.ContainsKey(killerTeam))
+            {
+                _teamKills[killerTeam] = 0;
+            }
+            _teamKills[killerTeam]++;
             
             var killScoreMsg = RUDPMessageBuilder.CreateKillScoreUpdate(
                 killerId, 
@@ -375,8 +462,23 @@ namespace OpenGS
 
         private void HandleTeamKill(JObject json)
         {
-            var killerTeam = json["KillerTeam"]?.ToString() ?? "Red";
-            var victimTeam = json["VictimTeam"]?.ToString() ?? "Blue";
+            var killerId = json["KillerID"]?.ToString() ?? json["KillerId"]?.ToString() ?? "";
+            var victimId = json["VictimID"]?.ToString() ?? json["VictimId"]?.ToString() ?? "";
+            if (string.IsNullOrWhiteSpace(killerId) || string.IsNullOrWhiteSpace(victimId) ||
+                !_connectedPlayerIds.Contains(killerId) || !_connectedPlayerIds.Contains(victimId))
+            {
+                PrettyLogger.Bold("RUDP Server", "Rejected TeamKill without two connected player identities");
+                return;
+            }
+
+            var killerTeam = ResolvePlayerTeam(killerId, "");
+            var victimTeam = ResolvePlayerTeam(victimId, "");
+
+            if (!IsPlayableTeam(killerTeam) || !IsPlayableTeam(victimTeam))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected invalid TeamKill: {killerTeam} -> {victimTeam}");
+                return;
+            }
 
             if (!_teamKills.ContainsKey(killerTeam))
             {
@@ -404,6 +506,11 @@ namespace OpenGS
         {
             var killerId = json["KillerId"]?.ToString() ?? "unknown";
             var victimId = json["VictimId"]?.ToString() ?? "unknown";
+            if (!_connectedPlayerIds.Contains(killerId) || !_connectedPlayerIds.Contains(victimId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected PlayerKill with unknown player: {killerId} -> {victimId}");
+                return;
+            }
             var weaponType = json["WeaponType"]?.ToString() ?? "Unknown";
             var headshot = json["Headshot"]?.ToObject<bool>() ?? false;
 
@@ -423,10 +530,16 @@ namespace OpenGS
         private void HandleKillScoreUpdate(JObject json)
         {
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
-            var kills = json["Kills"]?.ToObject<int>() ?? 0;
-            var deaths = json["Deaths"]?.ToObject<int>() ?? 0;
-            var score = json["Score"]?.ToObject<int>() ?? 0;
-            var team = json["Team"]?.ToString() ?? "Unknown";
+            if (!_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected KillScoreUpdate from unknown player {playerId}");
+                return;
+            }
+
+            var team = ResolvePlayerTeam(playerId, "Red");
+            var kills = _teamKills.TryGetValue(team, out var teamKillCount) ? teamKillCount : 0;
+            var deaths = 0;
+            var score = kills * 100;
 
             PrettyLogger.Bold("RUDP Server", $"KillScoreUpdate: {playerId} K={kills} D={deaths} S={score} Team={team}");
 
@@ -441,9 +554,20 @@ namespace OpenGS
             });
         }
 
+        private static bool IsPlayableTeam(string team)
+        {
+            return string.Equals(team, "Red", StringComparison.OrdinalIgnoreCase) ||
+                   string.Equals(team, "Blue", StringComparison.OrdinalIgnoreCase);
+        }
+
         private void HandlePlayerRespawn(JObject json)
         {
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            if (!_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected PlayerRespawn from unknown player {playerId}");
+                return;
+            }
             var posX = json["PosX"]?.ToObject<float>() ?? 0f;
             var posY = json["PosY"]?.ToObject<float>() ?? 0f;
 
@@ -458,15 +582,64 @@ namespace OpenGS
             });
         }
 
+        private string ResolvePlayerTeam(string playerId, string fallback)
+        {
+            return !string.IsNullOrWhiteSpace(playerId) && _playerTeams.TryGetValue(playerId, out var team)
+                ? team
+                : fallback;
+        }
+
         private void HandleFlagScoreUpdate(JObject json)
         {
-            PrettyLogger.Bold("RUDP Server", $"FlagScoreUpdate: {json}");
-            SendJson(json);
+            var eventKey = json["EventKey"]?.ToString() ?? string.Empty;
+            var authoritative = RUDPMessageBuilder.CreateFlagScoreUpdate(
+                _flagScores["Red"],
+                _flagScores["Blue"],
+                0,
+                0,
+                string.IsNullOrWhiteSpace(eventKey) ? null : eventKey);
+            PrettyLogger.Bold("RUDP Server", $"FlagScoreUpdate accepted as authoritative state: {authoritative}");
+            SendJson(authoritative);
         }
 
         private void HandleFlagEvent(JObject json)
         {
-            PrettyLogger.Bold("RUDP Server", $"FlagEvent: {json}");
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            var playerId = json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString() ?? string.Empty;
+            if ((messageType == RUDPMessageTypes.FlagCaptured ||
+                 messageType == RUDPMessageTypes.FlagPickup ||
+                 messageType == RUDPMessageTypes.FlagLost) &&
+                !_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected flag event from unknown player {playerId}");
+                return;
+            }
+
+            var eventKey = json["EventKey"]?.ToString();
+            if (string.IsNullOrWhiteSpace(eventKey))
+            {
+                eventKey = $"{messageType}|{json["PlayerID"]?.ToString() ?? json["PlayerId"]?.ToString()}|{json["Team"]?.ToString()}|{json["PosX"]?.ToString()}|{json["PosY"]?.ToString()}";
+            }
+
+            if (messageType == RUDPMessageTypes.FlagCaptured && _processedFlagEventKeys.Add(eventKey))
+            {
+                var team = json["Team"]?.ToString() ?? "Red";
+                if (!_flagScores.ContainsKey(team))
+                {
+                    _flagScores[team] = 0;
+                }
+
+                _flagScores[team]++;
+                SendJson(RUDPMessageBuilder.CreateFlagScoreUpdate(
+                    _flagScores["Red"],
+                    _flagScores["Blue"],
+                    0,
+                    0,
+                    eventKey));
+                TryBroadcastMatchEnd();
+            }
+
+            PrettyLogger.Bold("RUDP Server", $"Authoritative flag event: {json}");
             SendJson(json);
         }
 
@@ -479,17 +652,21 @@ namespace OpenGS
 
             var redKills = _teamKills.TryGetValue("Red", out var red) ? red : 0;
             var blueKills = _teamKills.TryGetValue("Blue", out var blue) ? blue : 0;
+            var redFlags = _flagScores.TryGetValue("Red", out var redFlagScore) ? redFlagScore : 0;
+            var blueFlags = _flagScores.TryGetValue("Blue", out var blueFlagScore) ? blueFlagScore : 0;
 
-            if (redKills < 3 && blueKills < 3 && _totalDeathEvents < 3)
+            if (redKills < 3 && blueKills < 3 && _totalDeathEvents < 3 && redFlags < 3 && blueFlags < 3)
             {
                 return;
             }
 
             _matchEnded = true;
 
-            var winningTeam = redKills == blueKills
-                ? "Draw"
-                : (redKills > blueKills ? "Red" : "Blue");
+            var winningTeam = redFlags != blueFlags && (redFlags >= 3 || blueFlags >= 3)
+                ? (redFlags > blueFlags ? "Red" : "Blue")
+                : redKills == blueKills
+                    ? "Draw"
+                    : (redKills > blueKills ? "Red" : "Blue");
 
             var result = new JObject
             {
@@ -498,6 +675,8 @@ namespace OpenGS
                 ["MyTeam"] = "Blue",
                 ["RedTeamKills"] = redKills,
                 ["BlueTeamKills"] = blueKills,
+                ["RedTeamFlagScore"] = redFlags,
+                ["BlueTeamFlagScore"] = blueFlags,
                 ["TotalDeaths"] = _totalDeathEvents,
                 ["Players"] = new JArray()
             };
@@ -511,6 +690,11 @@ namespace OpenGS
             PrettyLogger.Bold("RUDP Server", $"ItemUseRequest received: {json}");
 
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
+            if (!_connectedPlayerIds.Contains(playerId))
+            {
+                PrettyLogger.Bold("RUDP Server", $"Rejected ItemUseRequest from unknown player {playerId}");
+                return;
+            }
             var itemId = json["ItemId"]?.ToString() ?? "";
             var itemType = json["ItemType"]?.ToString() ?? "";
             var effect = json["Effect"]?.ToString() ?? "";

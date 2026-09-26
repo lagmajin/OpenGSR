@@ -54,8 +54,33 @@ namespace OpenGS
 
         private void Awake()
         {
+            matchDuration = NormalizeNonNegative(matchDuration, 600f);
+            killLimit = Mathf.Max(1, killLimit);
+            scorePopDuration = NormalizeNonNegative(scorePopDuration, 0.3f);
+            scorePopScale = NormalizePositive(scorePopScale, 1.3f);
+
             if (victoryPanel != null)
                 victoryPanel.SetActive(false);
+        }
+
+        private static float NormalizeNonNegative(float value, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : fallback;
+        }
+
+        private static float NormalizePositive(float value, float fallback)
+        {
+            return float.IsFinite(value) && value > 0f ? value : fallback;
+        }
+
+        private static int SaturatingAdd(int value, int amount)
+        {
+            return value > int.MaxValue - amount ? int.MaxValue : value + amount;
+        }
+
+        private static int SaturatingMultiply(int value, int multiplier)
+        {
+            return value > int.MaxValue / multiplier ? int.MaxValue : value * multiplier;
         }
 
         private void OnDestroy()
@@ -93,7 +118,14 @@ namespace OpenGS
         {
             if (!isMatchActive) return;
 
-            remainingTime -= Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            remainingTime = Mathf.Max(0f, remainingTime - deltaTime);
             UpdateTimerDisplay();
 
             // 時間警告色の更新
@@ -104,7 +136,7 @@ namespace OpenGS
                 EndMatch();
             }
 
-            OnTimeUpdated?.Invoke();
+            InvokeSafely(OnTimeUpdated, nameof(OnTimeUpdated));
         }
 
         private void UpdateTimerDisplay()
@@ -141,8 +173,8 @@ namespace OpenGS
         /// </summary>
         public void AddRedKill()
         {
-            redKills++;
-            redScore += 100; // キルスコア
+            if (redKills < int.MaxValue) redKills++;
+            redScore = SaturatingAdd(redScore, 100); // キルスコア
             UpdateKillCountDisplay();
             UpdateScoreDisplay();
             AnimateScorePop(redKillCountText);
@@ -154,8 +186,8 @@ namespace OpenGS
         /// </summary>
         public void AddBlueKill()
         {
-            blueKills++;
-            blueScore += 100; // キルスコア
+            if (blueKills < int.MaxValue) blueKills++;
+            blueScore = SaturatingAdd(blueScore, 100); // キルスコア
             UpdateKillCountDisplay();
             UpdateScoreDisplay();
             AnimateScorePop(blueKillCountText);
@@ -167,10 +199,10 @@ namespace OpenGS
         /// </summary>
         public void UpdateScoreFromServer(int redKills, int blueKills)
         {
-            this.redKills = redKills;
-            this.blueKills = blueKills;
-            this.redScore = redKills * 100;
-            this.blueScore = blueKills * 100;
+            this.redKills = Mathf.Max(0, redKills);
+            this.blueKills = Mathf.Max(0, blueKills);
+            this.redScore = SaturatingMultiply(this.redKills, 100);
+            this.blueScore = SaturatingMultiply(this.blueKills, 100);
             UpdateKillCountDisplay();
             UpdateScoreDisplay();
         }
@@ -208,7 +240,7 @@ namespace OpenGS
                 winner = ETeam.NoTeam; // 引き分け
 
             ShowVictoryPanel(winner);
-            OnMatchEnded?.Invoke(winner);
+            InvokeSafely(OnMatchEnded, winner, nameof(OnMatchEnded));
         }
 
         /// <summary>
@@ -218,7 +250,47 @@ namespace OpenGS
         {
             isMatchActive = false;
             ShowVictoryPanel(winner);
-            OnMatchEnded?.Invoke(winner);
+            InvokeSafely(OnMatchEnded, winner, nameof(OnMatchEnded));
+        }
+
+        private static void InvokeSafely(Action handlers, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[TDMScoreUIManager] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<ETeam> handlers, ETeam winner, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<ETeam> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(winner);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[TDMScoreUIManager] {eventName} subscriber failed: {ex}");
+                }
+            }
         }
 
         /// <summary>
@@ -282,10 +354,12 @@ namespace OpenGS
 
             text.transform.DOScale(scorePopScale, scorePopDuration)
                 .SetEase(Ease.OutQuad)
+                .SetLink(text.gameObject)
                 .OnComplete(() =>
                 {
                     text.transform.DOScale(1f, scorePopDuration)
-                        .SetEase(Ease.InQuad);
+                        .SetEase(Ease.InQuad)
+                        .SetLink(text.gameObject);
                 });
         }
 

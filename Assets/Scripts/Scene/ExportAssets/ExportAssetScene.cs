@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 //using System.Windows.Forms;
 using Sirenix.OdinInspector;
-using UnityEditor;
 using UnityEngine;
 using Application = UnityEngine.Application;
 using System.IO;

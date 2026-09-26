@@ -23,6 +23,7 @@ namespace OpenGS
         [Header("Waiting Room")]
         [SerializeField] private SceneObject onlineWaitRoomScene = "OnlineWaitRoom";
         [SerializeField] private SceneObject offlineWaitRoomScene = "OfflineWaitRoom";
+        [SerializeField] private SceneObject offlineMissionWaitRoomScene = "MissionWaitroom";
 
         [Header("Loading & Result")]
         [SerializeField] private SceneObject offlineLoadingScene = "OfflineLoadingScene";
@@ -55,6 +56,7 @@ namespace OpenGS
         public string ShopScene() => shopScene;
         public string OnlineWaitRoomScene() => onlineWaitRoomScene;
         public string OfflineWaitRoomScene() => offlineWaitRoomScene;
+        public string OfflineMissionWaitRoomScene() => offlineMissionWaitRoomScene;
         public string OfflineLoadingScene() => offlineLoadingScene;
         public string OnlineLoadingScene() => onlineLoadingScene;
         public string ResultScene() => resultScene;

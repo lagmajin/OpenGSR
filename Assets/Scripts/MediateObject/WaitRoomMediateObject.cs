@@ -7,25 +7,39 @@ namespace OpenGS
     public class WaitRoomMediateObject : AbstractMediateObject
     {
         [SerializeField] private MonoBehaviour waitRoomUiManagerBehaviour;
+        private IWaitRoomUiManager cachedWaitRoomUiManager;
 
         public IWaitRoomUiManager WaitRoomUiManager()
         {
+            if (cachedWaitRoomUiManager is MonoBehaviour cachedBehaviour && cachedBehaviour == null)
+            {
+                cachedWaitRoomUiManager = null;
+            }
+
+            if (cachedWaitRoomUiManager != null)
+            {
+                return cachedWaitRoomUiManager;
+            }
+
             if (waitRoomUiManagerBehaviour is IWaitRoomUiManager typed)
             {
-                return typed;
+                cachedWaitRoomUiManager = typed;
+                return cachedWaitRoomUiManager;
             }
 
             var local = GetComponent<IWaitRoomUiManager>();
             if (local != null)
             {
-                return local;
+                cachedWaitRoomUiManager = local;
+                return cachedWaitRoomUiManager;
             }
 
             foreach (var behaviour in GetComponentsInParent<MonoBehaviour>(true))
             {
                 if (behaviour is IWaitRoomUiManager parentTyped)
                 {
-                    return parentTyped;
+                    cachedWaitRoomUiManager = parentTyped;
+                    return cachedWaitRoomUiManager;
                 }
             }
 
@@ -33,7 +47,8 @@ namespace OpenGS
             {
                 if (behaviour is IWaitRoomUiManager sceneTyped)
                 {
-                    return sceneTyped;
+                    cachedWaitRoomUiManager = sceneTyped;
+                    return cachedWaitRoomUiManager;
                 }
             }
 

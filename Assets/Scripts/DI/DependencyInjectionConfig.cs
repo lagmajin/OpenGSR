@@ -14,11 +14,16 @@ namespace OpenGS
         private static IContainer _container;
         private static IContainer _serverContainer;
         private static IContainer _testContainer;
+        private static LocalTestTcpServer _applicationQuitServer;
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         private static void ResetStaticForDomainReloadless()
         {
+            Application.quitting -= StopApplicationQuitServer;
+            _applicationQuitServer = null;
             _container = null;
+            OnlineLoadingManager.ResetSharedInstance();
+            GameGeneralManager.ResetSharedInstance();
         }
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSplashScreen)]
         private static void InitializeDI( )
@@ -78,6 +83,25 @@ namespace OpenGS
 
             _container = builder.Build();
 
+            // Make static fallbacks and injected consumers share the same loading state.
+            try
+            {
+                OnlineLoadingManager.SetSharedInstance(_container.Resolve<OnlineLoadingManager>());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"DependencyInjectionConfig: Failed to publish OnlineLoadingManager instance: {ex.Message}");
+            }
+
+            try
+            {
+                GameGeneralManager.SetSharedInstance(_container.Resolve<GameGeneralManager>());
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"DependencyInjectionConfig: Failed to publish GameGeneralManager instance: {ex.Message}");
+            }
+
             // Eagerly resolve critical singletons so they are created now and can be traced in logs.
             try
             {
@@ -109,10 +133,9 @@ namespace OpenGS
                 var localTestServer = _testContainer.Resolve<LocalTestTcpServer>();
                 if (localTestServer != null)
                 {
-                    Application.quitting += () =>
-                    {
-                        try { localTestServer.Stop(); } catch { }
-                    };
+                    Application.quitting -= StopApplicationQuitServer;
+                    _applicationQuitServer = localTestServer;
+                    Application.quitting += StopApplicationQuitServer;
                 }
             }
             catch (Exception ex)
@@ -132,8 +155,27 @@ namespace OpenGS
             //Debug.Log($"{className}.{functionName}() - {System.IO.Path.GetFileName(file)}:{line} - Autofac Container Initialized");
         }
 
+        private static void StopApplicationQuitServer()
+        {
+            try
+            {
+                _applicationQuitServer?.Stop();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"DependencyInjectionConfig: Failed to stop local test server: {ex.Message}");
+            }
+            finally
+            {
+                _applicationQuitServer = null;
+                Application.quitting -= StopApplicationQuitServer;
+            }
+        }
+
         public static void RecreateServerContainer()
         {
+            Application.quitting -= StopApplicationQuitServer;
+            _applicationQuitServer = null;
             _testContainer?.Dispose();
 
             // 新しいコンテナを作る

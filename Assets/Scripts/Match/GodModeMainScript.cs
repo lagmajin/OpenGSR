@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using OpenGSCore;
 using UnityEngine;
 
 namespace OpenGS
@@ -19,8 +21,34 @@ namespace OpenGS
 
             if (Input.GetKeyDown(KeyCode.R))
             {
-                GoToResult();
+                EndMatch();
             }
+        }
+
+        private void EndMatch()
+        {
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
+
+            StoreOfflineMatchResult();
+            ScheduleResultSceneTransition(0f);
+        }
+
+        private void StoreOfflineMatchResult()
+        {
+            if (GameManager != null && GameManager.IsOnlineGameMode)
+            {
+                return;
+            }
+
+            var manager = matchRoomManager ?? MatchRoomManager();
+            var players = manager?.WaitRoom?.AllPlayers() ?? new List<PlayerInfo>();
+            var evaluator = MatchResultEvaluatorFactory.CreateEvaluator(EGameMode.DeathMatch);
+            var result = evaluator.Evaluate(null, players);
+            result["GodMode"] = true;
+            manager?.StoreOfflineMatchResult(result);
         }
 
         public override void PostEvent(AbstractGameEvent e)

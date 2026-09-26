@@ -78,6 +78,9 @@ namespace OpenGS
 
         private void Awake()
         {
+            autoCloseDelaySeconds = float.IsFinite(autoCloseDelaySeconds)
+                ? Mathf.Max(0f, autoCloseDelaySeconds)
+                : 5f;
             ResolveDependencies();
             SetupListeners();
         }
@@ -403,7 +406,15 @@ namespace OpenGS
 
         private bool EquipWeaponForPlayer(EWeaponType weapon)
         {
-            var player = FindFirstObjectByType<PlayerAgent>();
+            PlayerAgent player = null;
+            foreach (var candidate in FindObjectsByType<PlayerAgent>(FindObjectsSortMode.None))
+            {
+                if (candidate != null && candidate.PlayerType() == EPlayerType.MyPlayer)
+                {
+                    player = candidate;
+                    break;
+                }
+            }
             if (player == null)
             {
                 Debug.LogWarning("[WeaponSelectDialog] PlayerAgent is not present; weapon remains selected in the dialog.");
@@ -568,8 +579,18 @@ namespace OpenGS
                 group.blocksRaycasts = false;
             }
 
-            OnDialogClosed?.Invoke();
-            gameObject.SetActive(false);
+            try
+            {
+                OnDialogClosed?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[WeaponSelectDialog] close listener failed: {ex}");
+            }
+            finally
+            {
+                gameObject.SetActive(false);
+            }
         }
 
         private void UpdateStatusText()

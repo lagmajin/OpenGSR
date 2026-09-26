@@ -51,6 +51,11 @@ namespace OpenGS
         private Transform carrier;
         private GameObject activeDroppedEffect;
 
+        private void Awake()
+        {
+            autoReturnTime = Mathf.Max(0.1f, float.IsFinite(autoReturnTime) ? autoReturnTime : 30f);
+        }
+
         private void Start()
         {
             if (spriteRenderer == null)
@@ -65,7 +70,14 @@ namespace OpenGS
         {
             if (currentState == EFlagState.Dropped)
             {
-                returnTimer -= Time.deltaTime;
+                var deltaTime = Time.deltaTime;
+                if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+                {
+                    return;
+                }
+                deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+                returnTimer = Mathf.Max(0f, returnTimer - deltaTime);
                 if (returnTimer <= 0)
                 {
                     ReturnToBase();
@@ -114,7 +126,7 @@ namespace OpenGS
                 carrier = player.transform;
                 player.EnemyFlagCaptured();
                 player.BindEnemyFlag(this);
-                EnemyPickedUp?.Invoke(this, player);
+                InvokeSafely(EnemyPickedUp, this, player, nameof(EnemyPickedUp));
             }
         }
 
@@ -129,7 +141,7 @@ namespace OpenGS
             carrier = null;
             returnTimer = autoReturnTime;
             PlayDroppedEffect();
-            Dropped?.Invoke(this);
+            InvokeSafely(Dropped, this, nameof(Dropped));
         }
 
         public void ReturnToBase(AbstractPlayer player = null, EFlagReturnReason reason = EFlagReturnReason.AutoReturn)
@@ -141,12 +153,72 @@ namespace OpenGS
             ClearDroppedEffect();
             PlayReturnEffect();
 
-            ReturnedToBase?.Invoke(this, player, reason);
+            InvokeSafely(ReturnedToBase, this, player, reason, nameof(ReturnedToBase));
             if (myFlagStand != null)
             {
                 myFlagStand.SetFlag();
             }
             Destroy(gameObject);
+        }
+
+        private static void InvokeSafely(Action<FlagController, AbstractPlayer> handlers, FlagController flag, AbstractPlayer player, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<FlagController, AbstractPlayer> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(flag, player);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[FlagController] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<FlagController> handlers, FlagController flag, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<FlagController> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(flag);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[FlagController] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<FlagController, AbstractPlayer, EFlagReturnReason> handlers, FlagController flag, AbstractPlayer player, EFlagReturnReason reason, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<FlagController, AbstractPlayer, EFlagReturnReason> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(flag, player, reason);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[FlagController] {eventName} subscriber failed: {ex}");
+                }
+            }
         }
 
         private void OnDestroy()
@@ -188,7 +260,8 @@ namespace OpenGS
                 return;
             }
 
-            Instantiate(prefab, transform.position, Quaternion.identity);
+            var spawnedEffect = Instantiate(prefab, transform.position, Quaternion.identity);
+            Destroy(spawnedEffect, 5f);
         }
 
         private GameObject GetDroppedSmokeEffectPrefab()
@@ -215,7 +288,8 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.TryGetComponent(out AbstractPlayer player))
+            var player = other != null ? other.GetComponentInParent<AbstractPlayer>() : null;
+            if (player != null)
             {
                 if (currentState == EFlagState.Carried)
                 {

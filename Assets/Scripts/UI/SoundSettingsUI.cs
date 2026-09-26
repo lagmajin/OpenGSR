@@ -56,6 +56,19 @@ namespace OpenGS
             LoadCurrentSettings();
         }
 
+        private void OnDestroy()
+        {
+            masterVolumeSlider?.onValueChanged.RemoveListener(OnMasterVolumeChanged);
+            muteAllToggle?.onValueChanged.RemoveListener(OnMuteAllChanged);
+            bgmVolumeSlider?.onValueChanged.RemoveListener(OnBGMVolumeChanged);
+            seVolumeSlider?.onValueChanged.RemoveListener(OnSEVolumeChanged);
+            reverbToggle?.onValueChanged.RemoveListener(OnReverbChanged);
+            voiceVolumeSlider?.onValueChanged.RemoveListener(OnVoiceVolumeChanged);
+            testBGMButton?.onClick.RemoveListener(OnTestBGMClicked);
+            testSEButton?.onClick.RemoveListener(OnTestSEClicked);
+            testVoiceButton?.onClick.RemoveListener(OnTestVoiceClicked);
+        }
+
         // ─── 初期化 ─────────────────────────────────────────────────
 
         /// <summary>
@@ -152,6 +165,7 @@ namespace OpenGS
         /// </summary>
         public void ApplySettings()
         {
+            if (SettingsManager.Instance == null) return;
             SettingsManager.Instance.ApplySoundSettings(currentSettings);
             Debug.Log("[SoundSettingsUI] サウンド設定を適用しました");
         }
@@ -163,6 +177,7 @@ namespace OpenGS
         /// </summary>
         private void LoadCurrentSettings()
         {
+            if (SettingsManager.Instance == null) return;
             currentSettings = SettingsManager.Instance.GetSoundSettings();
             UpdateUI();
         }
@@ -172,6 +187,11 @@ namespace OpenGS
         /// </summary>
         private void UpdateUI()
         {
+            currentSettings.MasterVolume = Normalize01(currentSettings.MasterVolume, 1f);
+            currentSettings.BGMVolume = Normalize01(currentSettings.BGMVolume, 0.8f);
+            currentSettings.SEVolume = Normalize01(currentSettings.SEVolume, 1f);
+            currentSettings.VoiceVolume = Normalize01(currentSettings.VoiceVolume, 1f);
+
             // マスター設定
             if (masterVolumeSlider != null)
             {
@@ -300,22 +320,32 @@ namespace OpenGS
             }
         }
 
+        private static float Normalize01(float value, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Clamp01(value) : fallback;
+        }
+
         private void OnTestBGMClicked()
         {
             Debug.Log("[SoundSettingsUI] BGMテスト再生");
-            // 実際のBGM再生処理は別途実装
+            if (SoundManager.Instance == null) return;
+            SoundManager.Instance.PlayBGM(EBgm.WaitRoom, 0.15f);
         }
 
         private void OnTestSEClicked()
         {
             Debug.Log("[SoundSettingsUI] SEテスト再生");
-            // 実際のSE再生処理は別途実装
+            if (SoundManager.Instance == null) return;
+            SoundManager.Instance.PlaySystemSound(ESystemSound.Click);
         }
 
         private void OnTestVoiceClicked()
         {
             Debug.Log("[SoundSettingsUI] ボイステスト再生");
-            // 実際のボイス再生処理は別途実装
+            if (SoundManager.Instance == null) return;
+            // 現在のサウンドサービスに独立したボイスカテゴリがないため、
+            // 利用可能なプレイヤーボイスで動作確認する。
+            SoundManager.Instance.PlayPlayerSound(EPlayerSound.DamageMale1);
         }
     }
 }

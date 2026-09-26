@@ -32,42 +32,55 @@ namespace OpenGS
         public IReadOnlyReactiveProperty<float> Progress => progress;
 
         private AsyncOperation _sceneLoadOp;
+        private Coroutine loadingCoroutine;
         private readonly HashSet<string> completedPlayerIds = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private bool localLoadingCompleted;
         private bool enterMapAllowed;
+        private bool loadingStarted;
+        private bool returningToWaitRoom;
 
         protected override void Awake()
         {
             base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
-            Application.targetFrameRate = 30;
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
             AutoBindIfNeeded();
         }
 
         private void Start()
         {
+            if (onlineLoadingManager == null)
+            {
+                onlineLoadingManager = OnlineLoadingManager.Instance;
+                Debug.LogWarning("[OnlineLoadingScene] OnlineLoadingManager was not injected; using shared fallback instance.");
+            }
+
             loadingErrorFlag = false;
             completedPlayerIds.Clear();
             localLoadingCompleted = false;
             enterMapAllowed = false;
+            loadingStarted = false;
+            returningToWaitRoom = false;
             count = 0f;
             EnsureLoadingBgm();
 
+            onlineLoadingManager?.Clear();
             networkManager?.BeginLoadingSession(GetExpectedPlayerCount());
             networkManager?.SendLoadingSceneEntered();
             TryConnectToMatchServer();
 
-            SceneManager.sceneLoaded += OnSceneLoaded;
-            StartCoroutine(Loading());
+            StartLoadingCoroutine();
         }
 
-        void OnDisable()
+        protected override void OnDestroy()
         {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
-        }
-
-        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-        {
+            if (loadingCoroutine != null)
+            {
+                StopCoroutine(loadingCoroutine);
+                loadingCoroutine = null;
+            }
+            progress.Dispose();
+            base.OnDestroy();
         }
 
         void Reset()
@@ -78,8 +91,18 @@ namespace OpenGS
         protected override void Update()
         {
             base.Update();
-            count += Time.deltaTime;
-            if (count >= timeout)
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            count = (float.IsFinite(count) ? count : 0f) + deltaTime;
+            // The pre-load timeout protects against a stalled connection or room setup.
+            // Once Unity owns an AsyncOperation, map loading may legitimately exceed
+            // the short handshake timeout on slower devices.
+            if (!returningToWaitRoom && _sceneLoadOp == null && count >= timeout)
             {
                 BackToWaitRoom();
             }
@@ -87,6 +110,12 @@ namespace OpenGS
 
         private void EnsureLoadingBgm()
         {
+            if (SoundManager.Instance == null)
+            {
+                Debug.LogWarning("[OnlineLoadingScene] SoundManager is not ready; skipping loading BGM.");
+                return;
+            }
+
             if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
             {
                 return;
@@ -102,7 +131,14 @@ namespace OpenGS
         {
             PrettyLogger.Bold("Network", "LoadingStart");
 
-            MatchRoomManager().CreateNewOnlineMatchRoom();
+            var roomManager = MatchRoomManager();
+            if (roomManager == null)
+            {
+                OnLoadingFailed();
+                yield break;
+            }
+
+            roomManager.CreateNewOnlineMatchRoom();
             yield return new WaitForSecondsRealtime(1);
 
             var onlineSelection = ResolveOnlineSelection();
@@ -116,8 +152,22 @@ namespace OpenGS
                 yield break;
             }
 
-            onlineLoadingManager.LoadingInfo.MapName = mapInfo.MapScene();
-            onlineLoadingManager.LoadingInfo.GameMode = selectedMode;
+            var mapSceneName = mapInfo.MapScene();
+            if (string.IsNullOrWhiteSpace(mapSceneName) || !Application.CanStreamedLevelBeLoaded(mapSceneName))
+            {
+                Debug.LogError($"[OnlineLoadingScene] Map scene is not available in build settings: {mapSceneName}");
+                OnLoadingFailed();
+                yield break;
+            }
+
+            if (onlineLoadingManager == null)
+            {
+                Debug.LogError("[OnlineLoadingScene] OnlineLoadingManager is not available.");
+                OnLoadingFailed();
+                yield break;
+            }
+
+            onlineLoadingManager.SetLoadingInfo(mapSceneName, selectedMode);
             if (GameModeSelectManager.Instance != null)
             {
                 GameModeSelectManager.Instance.OnlineGameSelect = new OnlineGameModeSelect
@@ -128,7 +178,7 @@ namespace OpenGS
                 };
             }
 
-            _sceneLoadOp = SceneManager.LoadSceneAsync(mapInfo.MapScene(), LoadSceneMode.Single);
+            _sceneLoadOp = SceneManager.LoadSceneAsync(mapSceneName, LoadSceneMode.Single);
             if (_sceneLoadOp == null)
             {
                 OnLoadingFailed();
@@ -163,6 +213,12 @@ namespace OpenGS
                 return;
             }
 
+            if (OnlineManager.Instance == null)
+            {
+                Debug.LogWarning("[OnlineLoadingScene] OnlineManager is not ready; skipping match server request.");
+                return;
+            }
+
             if (!OnlineManager.Instance.MatchServerInfo.HasEndpoint())
             {
                 networkManager.SendMatchServerInfoRequest();
@@ -191,6 +247,12 @@ namespace OpenGS
 
         public void OnLoadingFailed()
         {
+            if (loadingCoroutine != null)
+            {
+                StopCoroutine(loadingCoroutine);
+                loadingCoroutine = null;
+            }
+            loadingStarted = false;
             BackToWaitRoom();
         }
 
@@ -201,9 +263,33 @@ namespace OpenGS
 
         void BackToWaitRoom()
         {
+            if (returningToWaitRoom)
+            {
+                return;
+            }
+
+            returningToWaitRoom = true;
             loadingErrorFlag = true;
             var sceneName = GeneralSceneMasterData.Instance().OnlineWaitRoomScene();
-            SceneManager.LoadSceneAsync(sceneName);
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                returningToWaitRoom = false;
+                Debug.LogError("[OnlineLoadingScene] Online wait room scene is not configured.");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                returningToWaitRoom = false;
+                Debug.LogError($"[OnlineLoadingScene] Online wait room scene is not in build settings: {sceneName}");
+                return;
+            }
+
+            if (SceneManager.LoadSceneAsync(sceneName) == null)
+            {
+                returningToWaitRoom = false;
+                Debug.LogError($"[OnlineLoadingScene] Failed to load wait room scene: {sceneName}");
+            }
         }
 
         void SendChat(string message)
@@ -225,8 +311,25 @@ namespace OpenGS
                 Map = map
             };
 
+            if (GameModeSelectManager.Instance == null)
+            {
+                Debug.LogWarning("[OnlineLoadingScene] GameModeSelectManager is not ready.");
+                return;
+            }
+
             GameModeSelectManager.Instance.OnlineGameSelect = select;
-            StartCoroutine(Loading());
+            StartLoadingCoroutine();
+        }
+
+        private void StartLoadingCoroutine()
+        {
+            if (loadingStarted)
+            {
+                return;
+            }
+
+            loadingStarted = true;
+            loadingCoroutine = StartCoroutine(Loading());
         }
 
         [Button("デバッグ選択")]
@@ -249,7 +352,20 @@ namespace OpenGS
             var mapInfo = ResolveMapInfo(ResolveSelectedMap());
             if (mapInfo != null)
             {
-                SceneManager.LoadScene(mapInfo.MapScene());
+                var sceneName = mapInfo.MapScene();
+                if (string.IsNullOrWhiteSpace(sceneName))
+                {
+                    Debug.LogError("[OnlineLoadingScene] Test map scene is not configured.");
+                    return;
+                }
+
+                if (!Application.CanStreamedLevelBeLoaded(sceneName))
+                {
+                    Debug.LogError($"[OnlineLoadingScene] Test map scene is not in build settings: {sceneName}");
+                    return;
+                }
+
+                SceneManager.LoadScene(sceneName);
             }
         }
 
@@ -257,11 +373,6 @@ namespace OpenGS
         {
             AutoBindIfNeeded();
             EnsureLoadingBgm();
-        }
-
-        protected override void OnQuitUnityEditor()
-        {
-            SceneManager.sceneLoaded -= OnSceneLoaded;
         }
 
         protected override void OnStartFromEditorDirectly()
@@ -305,8 +416,9 @@ namespace OpenGS
                     return waitRoom.PlayerCount;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.LogWarning($"[OnlineLoadingScene] Failed to resolve expected player count: {ex.Message}");
             }
 
             return 1;

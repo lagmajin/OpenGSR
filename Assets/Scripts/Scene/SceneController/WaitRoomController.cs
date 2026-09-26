@@ -12,14 +12,5 @@ namespace OpenGS
     {
         [SerializeField] [Required] private WaitRoomMediateObject mediateObject;
 
-        void Update()
-        {
-
-
-        }
-
-
-
-
     }
 }

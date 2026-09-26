@@ -47,6 +47,13 @@ namespace OpenGS
         {
             canvasGroup = GetComponent<CanvasGroup>();
             canvasGroup.alpha = 0f;
+
+            delay = NormalizeNonNegative(delay);
+            holdTime = NormalizeNonNegative(holdTime);
+            moveRange = NormalizeNonNegative(moveRange);
+            fadeDuration = NormalizeNonNegative(fadeDuration);
+            normalFontSize = NormalizePositive(normalFontSize, 1f);
+            criticalFontSize = NormalizePositive(criticalFontSize, normalFontSize);
         }
 
         // ─── 公開メソッド ─────────────────────────────────────────────
@@ -100,6 +107,16 @@ namespace OpenGS
         private void OnDestroy()
         {
             currentSequence?.Kill();
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
+        }
+
+        private static float NormalizePositive(float value, float fallback)
+        {
+            return float.IsFinite(value) && value > 0f ? value : fallback;
         }
     }
 }

@@ -61,6 +61,14 @@ namespace OpenGS
             Initialize();
         }
 
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
+        }
+
         // ─── 初期化 ─────────────────────────────────────────────────
 
         /// <summary>
@@ -90,6 +98,25 @@ namespace OpenGS
                 return;
             }
 
+            historyData ??= new MatchHistoryData();
+            historyData.Entries ??= new List<MatchHistoryEntry>();
+
+            NormalizeHistoryData();
+
+            entry.PlayerName = entry.PlayerName?.Trim();
+            if (string.IsNullOrWhiteSpace(entry.PlayerName))
+            {
+                Debug.LogWarning("[MatchHistoryManager] プレイヤー名が空の履歴は記録できません");
+                return;
+            }
+
+            entry.GameMode = string.IsNullOrWhiteSpace(entry.GameMode) ? "Unknown" : entry.GameMode.Trim();
+            entry.Result = string.IsNullOrWhiteSpace(entry.Result) ? "Unknown" : entry.Result.Trim();
+            entry.MapName = entry.MapName?.Trim() ?? string.Empty;
+            entry.Score = Mathf.Max(0, entry.Score);
+            entry.Kills = Mathf.Max(0, entry.Kills);
+            entry.Deaths = Mathf.Max(0, entry.Deaths);
+
             // タイムスタンプが設定されていない場合は現在時刻を設定
             if (string.IsNullOrEmpty(entry.Timestamp))
             {
@@ -109,8 +136,8 @@ namespace OpenGS
             SaveHistoryData();
 
             // イベント発火
-            OnMatchRecorded?.Invoke(entry);
-            OnHistoryUpdated?.Invoke(GetRecentHistory(DISPLAY_HISTORY_COUNT));
+            InvokeSafely(OnMatchRecorded, entry, nameof(OnMatchRecorded));
+            InvokeSafely(OnHistoryUpdated, GetRecentHistory(DISPLAY_HISTORY_COUNT), nameof(OnHistoryUpdated));
 
             Debug.Log($"[MatchHistoryManager] マッチ結果を記録しました: {entry.GameMode} - {entry.Result}");
         }
@@ -156,6 +183,11 @@ namespace OpenGS
         /// <returns>履歴リスト</returns>
         public List<MatchHistoryEntry> GetRecentHistory(int count = DISPLAY_HISTORY_COUNT)
         {
+            if (count <= 0)
+            {
+                return new List<MatchHistoryEntry>();
+            }
+
             return historyData.Entries.Take(count).ToList();
         }
 
@@ -167,8 +199,13 @@ namespace OpenGS
         /// <returns>履歴リスト</returns>
         public List<MatchHistoryEntry> GetPlayerHistory(string playerName, int count = DISPLAY_HISTORY_COUNT)
         {
+            if (count <= 0)
+            {
+                return new List<MatchHistoryEntry>();
+            }
+
             return historyData.Entries
-                .Where(e => e.PlayerName == playerName)
+                .Where(e => e != null && e.PlayerName == playerName)
                 .Take(count)
                 .ToList();
         }
@@ -181,8 +218,13 @@ namespace OpenGS
         /// <returns>履歴リスト</returns>
         public List<MatchHistoryEntry> GetHistoryByGameMode(string gameMode, int count = DISPLAY_HISTORY_COUNT)
         {
+            if (count <= 0)
+            {
+                return new List<MatchHistoryEntry>();
+            }
+
             return historyData.Entries
-                .Where(e => e.GameMode == gameMode)
+                .Where(e => e != null && e.GameMode == gameMode)
                 .Take(count)
                 .ToList();
         }
@@ -196,8 +238,8 @@ namespace OpenGS
         public MatchStatistics GetStatistics(string playerName, string gameMode = null)
         {
             var entries = string.IsNullOrEmpty(gameMode)
-                ? historyData.Entries.Where(e => e.PlayerName == playerName)
-                : historyData.Entries.Where(e => e.PlayerName == playerName && e.GameMode == gameMode);
+                ? historyData.Entries.Where(e => e != null && e.PlayerName == playerName)
+                : historyData.Entries.Where(e => e != null && e.PlayerName == playerName && e.GameMode == gameMode);
 
             var entriesList = entries.ToList();
 
@@ -232,12 +274,12 @@ namespace OpenGS
             }
             else
             {
-                historyData.Entries.RemoveAll(e => e.PlayerName == playerName);
+                historyData.Entries.RemoveAll(e => e == null || e.PlayerName == playerName);
                 Debug.Log($"[MatchHistoryManager] {playerName}の履歴をクリアしました");
             }
 
             SaveHistoryData();
-            OnHistoryUpdated?.Invoke(GetRecentHistory(DISPLAY_HISTORY_COUNT));
+            InvokeSafely(OnHistoryUpdated, GetRecentHistory(DISPLAY_HISTORY_COUNT), nameof(OnHistoryUpdated));
         }
 
         /// <summary>
@@ -261,14 +303,35 @@ namespace OpenGS
                 if (importedData != null && importedData.Entries != null)
                 {
                     historyData = importedData;
+                    NormalizeHistoryData();
                     SaveHistoryData();
-                    OnHistoryUpdated?.Invoke(GetRecentHistory(DISPLAY_HISTORY_COUNT));
+                    InvokeSafely(OnHistoryUpdated, GetRecentHistory(DISPLAY_HISTORY_COUNT), nameof(OnHistoryUpdated));
                     Debug.Log("[MatchHistoryManager] 履歴データをインポートしました");
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[MatchHistoryManager] インポートエラー: {ex.Message}");
+            }
+        }
+
+        private static void InvokeSafely<T>(Action<T> handlers, T value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<T> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[MatchHistoryManager] {eventName} subscriber failed: {ex}");
+                }
             }
         }
 
@@ -285,6 +348,8 @@ namespace OpenGS
                 try
                 {
                     historyData = JsonConvert.DeserializeObject<MatchHistoryData>(json) ?? new MatchHistoryData();
+                    historyData.Entries ??= new List<MatchHistoryEntry>();
+                    NormalizeHistoryData();
                     Debug.Log($"[MatchHistoryManager] 履歴データを読み込みました: {historyData.Entries.Count}件");
                 }
                 catch (Exception ex)
@@ -297,6 +362,28 @@ namespace OpenGS
             {
                 historyData = new MatchHistoryData();
             }
+        }
+
+        private void NormalizeHistoryData()
+        {
+            historyData ??= new MatchHistoryData();
+            historyData.Entries ??= new List<MatchHistoryEntry>();
+
+            historyData.Entries = historyData.Entries
+                .Where(entry => entry != null && !string.IsNullOrWhiteSpace(entry.PlayerName))
+                .Select(entry =>
+                {
+                    entry.PlayerName = entry.PlayerName.Trim();
+                    entry.GameMode = string.IsNullOrWhiteSpace(entry.GameMode) ? "Unknown" : entry.GameMode.Trim();
+                    entry.Result = string.IsNullOrWhiteSpace(entry.Result) ? "Unknown" : entry.Result.Trim();
+                    entry.MapName = entry.MapName?.Trim() ?? string.Empty;
+                    entry.Score = Mathf.Max(0, entry.Score);
+                    entry.Kills = Mathf.Max(0, entry.Kills);
+                    entry.Deaths = Mathf.Max(0, entry.Deaths);
+                    return entry;
+                })
+                .Take(MAX_HISTORY_ENTRIES)
+                .ToList();
         }
 
         /// <summary>

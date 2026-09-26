@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace OpenGS
 {
-    public static class FieldItemVisualResolver
+    public static class WorldItemVisualResolver
     {
         public static string GetDisplayName(OpenGSCore.EFieldItemType type)
         {
@@ -141,5 +141,16 @@ namespace OpenGS
                     return false;
             }
         }
+    }
+
+    [System.Obsolete("Use WorldItemVisualResolver instead.")]
+    public static class FieldItemVisualResolver
+    {
+        public static string GetDisplayName(OpenGSCore.EFieldItemType type) => WorldItemVisualResolver.GetDisplayName(type);
+        public static string GetDisplayName(eFieldItemType type) => WorldItemVisualResolver.GetDisplayName(type);
+        public static bool TryParse(string value, out OpenGSCore.EFieldItemType type) => WorldItemVisualResolver.TryParse(value, out type);
+        public static OpenGSCore.EFieldItemType ToCoreType(eFieldItemType type) => WorldItemVisualResolver.ToCoreType(type);
+        public static eFieldItemType ToLegacyType(OpenGSCore.EFieldItemType type) => WorldItemVisualResolver.ToLegacyType(type);
+        public static bool TryParseLegacy(string value, out eFieldItemType type) => WorldItemVisualResolver.TryParseLegacy(value, out type);
     }
 }

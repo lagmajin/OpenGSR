@@ -21,7 +21,7 @@ namespace OpenGS
 
         protected override void OnUpdate()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (inputService != null && inputService.IsFireJustPressed())
             {
                 Shot();
             }
@@ -83,6 +83,10 @@ namespace OpenGS
                 impactBullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam, owner != null ? owner.transform : null);
                 impactBullet.EnableGravity();
                 bullet.enabled = false;
+            }
+            else
+            {
+                Destroy(grenadeObj);
             }
         }
     }

@@ -20,7 +20,9 @@ namespace OpenGS
         [Header("Flight")]
         [SerializeField] private float gravity = 18f;
         [SerializeField] private float collisionRadius = 0.08f;
+        [SerializeField] private float armingTime = 0.15f;
         [SerializeField] private LayerMask hitMask = ~0;
+        [SerializeField] private bool detonateOnStageHit = false;
         [SerializeField] private float spriteAngleOffset = 0f;
         [SerializeField] private bool alignToVelocity = true;
         [Header("Cluster")]
@@ -44,6 +46,30 @@ namespace OpenGS
         private IEffectService effectService;
         private readonly ProjectileBallistics2D ballistics = new ProjectileBallistics2D();
 
+        private void OnValidate()
+        {
+            if (!float.IsFinite(damage)) damage = 0f;
+            if (!float.IsFinite(fuseTime)) fuseTime = 3f;
+            if (!float.IsFinite(gravity)) gravity = 18f;
+            if (!float.IsFinite(collisionRadius)) collisionRadius = 0.08f;
+            if (!float.IsFinite(armingTime)) armingTime = 0.15f;
+            if (!float.IsFinite(childLaunchSpeed)) childLaunchSpeed = 8f;
+            if (!float.IsFinite(childSpreadAngle)) childSpreadAngle = 45f;
+            if (!float.IsFinite(childDamageMultiplier)) childDamageMultiplier = 0.35f;
+            if (!float.IsFinite(childFuseTime)) childFuseTime = 1.25f;
+
+            damage = Mathf.Max(0f, damage);
+            fuseTime = Mathf.Max(0f, fuseTime);
+            gravity = Mathf.Max(0f, gravity);
+            collisionRadius = Mathf.Max(0.01f, collisionRadius);
+            armingTime = Mathf.Max(0f, armingTime);
+            childProjectileCount = Mathf.Clamp(childProjectileCount, 0, 128);
+            childLaunchSpeed = Mathf.Max(0f, childLaunchSpeed);
+            childSpreadAngle = Mathf.Max(0f, childSpreadAngle);
+            childDamageMultiplier = Mathf.Max(0f, childDamageMultiplier);
+            childFuseTime = Mathf.Max(0f, childFuseTime);
+        }
+
         [Inject]
         private void Construct([InjectOptional] IEffectService effectService)
         {
@@ -52,6 +78,16 @@ namespace OpenGS
 
         private void Awake()
         {
+            damage = float.IsFinite(damage) ? Mathf.Max(0f, damage) : 0f;
+            fuseTime = float.IsFinite(fuseTime) ? Mathf.Max(0f, fuseTime) : 3f;
+            gravity = float.IsFinite(gravity) ? Mathf.Max(0f, gravity) : 18f;
+            collisionRadius = float.IsFinite(collisionRadius) ? Mathf.Max(0.01f, collisionRadius) : 0.08f;
+            armingTime = float.IsFinite(armingTime) ? Mathf.Max(0f, armingTime) : 0.15f;
+            childProjectileCount = Mathf.Clamp(childProjectileCount, 0, 128);
+            childLaunchSpeed = float.IsFinite(childLaunchSpeed) ? Mathf.Max(0f, childLaunchSpeed) : 8f;
+            childSpreadAngle = float.IsFinite(childSpreadAngle) ? Mathf.Clamp(childSpreadAngle, 0f, 180f) : 45f;
+            childDamageMultiplier = float.IsFinite(childDamageMultiplier) ? Mathf.Max(0f, childDamageMultiplier) : 0.35f;
+            childFuseTime = float.IsFinite(childFuseTime) ? Mathf.Max(0f, childFuseTime) : 1.25f;
             spriteRenderer = GetComponent<SpriteRenderer>();
         }
 
@@ -89,12 +125,12 @@ namespace OpenGS
 
         public void SetDamage(float value)
         {
-            damage = Mathf.Max(0f, value);
+            damage = float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
         }
 
         public void SetFuseTime(float value)
         {
-            fuseTime = Mathf.Max(0f, value);
+            fuseTime = float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
         }
 
         public void SetExplosionEffect(GameObject effect)
@@ -118,11 +154,11 @@ namespace OpenGS
         {
             spawnChildProjectiles = enabled;
             childProjectilePrefab = projectilePrefab;
-            childProjectileCount = Mathf.Max(0, projectileCount);
-            childLaunchSpeed = Mathf.Max(0f, launchSpeed);
-            childSpreadAngle = Mathf.Max(0f, spreadAngle);
-            childDamageMultiplier = Mathf.Max(0f, damageMultiplier);
-            childFuseTime = Mathf.Max(0f, childFuse);
+            childProjectileCount = Mathf.Clamp(projectileCount, 0, 128);
+            childLaunchSpeed = float.IsFinite(launchSpeed) ? Mathf.Max(0f, launchSpeed) : 0f;
+            childSpreadAngle = float.IsFinite(spreadAngle) ? Mathf.Clamp(spreadAngle, 0f, 180f) : 0f;
+            childDamageMultiplier = float.IsFinite(damageMultiplier) ? Mathf.Max(0f, damageMultiplier) : 0f;
+            childFuseTime = float.IsFinite(childFuse) ? Mathf.Max(0f, childFuse) : 0f;
         }
 
         private void Update()
@@ -133,7 +169,19 @@ namespace OpenGS
             }
 
             var dt = Time.deltaTime;
+            if (!float.IsFinite(dt) || dt < 0f || !float.IsFinite(transform.position.x) ||
+                !float.IsFinite(transform.position.y) || !float.IsFinite(transform.position.z))
+            {
+                Destroy(gameObject);
+                return;
+            }
+            dt = Mathf.Min(dt, 0.1f);
             lifeTime += dt;
+            if (!float.IsFinite(lifeTime))
+            {
+                Destroy(gameObject);
+                return;
+            }
             if (fuseTime > 0f && lifeTime >= fuseTime)
             {
                 Explode(transform.position);
@@ -144,6 +192,13 @@ namespace OpenGS
             var step = ballistics.Step(dt);
             if (step.sqrMagnitude <= Mathf.Epsilon)
             {
+                UpdateRotation();
+                return;
+            }
+
+            if (lifeTime < armingTime)
+            {
+                transform.position = currentPosition + step;
                 UpdateRotation();
                 return;
             }
@@ -198,10 +253,10 @@ namespace OpenGS
 
             if (ProjectileHitUtility.IsStageHit(collider.gameObject))
             {
-                return true;
+                return detonateOnStageHit;
             }
 
-            return collider.gameObject.TryGetComponent<IMultipleTags>(out var tags) && tags.HasPlayerTag();
+            return collider.GetComponentInParent<IMultipleTags>() is IMultipleTags tags && tags.HasPlayerTag();
         }
 
         private float GetCollisionRadius()
@@ -237,7 +292,7 @@ namespace OpenGS
             var explosionSound = grenadeType == EGrenadeType.Fire
                 ? EGrenadeSound.ExplosionFireGrenade
                 : EGrenadeSound.ExplosionGrenade;
-            SoundManager.Instance.PlayGrenadeExplosionSound(explosionSound);
+            SoundManager.Instance?.PlayGrenadeExplosionSound(explosionSound);
 
             if (explosionEffect == null)
             {
@@ -252,7 +307,8 @@ namespace OpenGS
                 }
                 else
                 {
-                    Instantiate(explosionEffect, position, Quaternion.identity);
+                    var spawnedEffect = Instantiate(explosionEffect, position, Quaternion.identity);
+                    Destroy(spawnedEffect, 5f);
                 }
             }
 

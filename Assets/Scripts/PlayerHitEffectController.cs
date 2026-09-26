@@ -41,6 +41,7 @@ namespace OpenGS
 
             var effect = Instantiate(hitEffect);
             effect.transform.position = player.transform.position;
+            Destroy(effect, 5f);
         }
     }
 }

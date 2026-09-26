@@ -70,9 +70,12 @@ namespace OpenGS
 
         public bool TestMode => testMode;
 
-        private void Start()
+        private void Awake()
         {
-
+            if (player == null)
+            {
+                player = GetComponent<AbstractPlayer>();
+            }
         }
 
         private void Update()
@@ -90,7 +93,6 @@ namespace OpenGS
                 {
                     dash.key = EKey.None;
 
-                    Debug.Log("Expire");
                 }
 
             }
@@ -102,7 +104,6 @@ namespace OpenGS
                 if (grenade.frame == 0)
                 {
                     grenade.key = EKey.None;
-                    Debug.Log("Grenade Expire");
                 }
             }
 
@@ -117,15 +118,11 @@ namespace OpenGS
             }
 
 
-            var spaceKey = current.spaceKey;
-
             if (Input.GetKeyDown(KeyCode.LeftArrow))
             {
 
                 if (dash.key == EKey.Left)
                 {
-
-                    Debug.Log("Left Dash");
 
                     //player.LeftDash();
 
@@ -145,8 +142,6 @@ namespace OpenGS
             {
                 if (dash.key == EKey.Right)
                 {
-
-                    Debug.Log("Right Dash");
 
                     //player.RightDash();
 
@@ -168,7 +163,6 @@ namespace OpenGS
                 dash.key = EKey.Left;
                 dash.frame = 20;
 
-                Debug.Log("Left");
             }
 
 
@@ -177,7 +171,6 @@ namespace OpenGS
                 dash.key = EKey.Right;
                 dash.frame = 20;
 
-                Debug.Log("Right");
 
             }
 
@@ -191,7 +184,6 @@ namespace OpenGS
             {
                 grenade.key = EKey.Space;
                 grenade.frame = 20;
-                Debug.Log("Grenade");
             }
 
         }
@@ -199,7 +191,6 @@ namespace OpenGS
         public void ToggleTestMode()
         {
             testMode = !testMode;
-            Debug.Log($"PlayerInput testMode={testMode}");
         }
 
         public void SetTestMode(bool enabled)

@@ -662,7 +662,7 @@ namespace OpenGS
             {
                 playersArray.Add(new JObject
                 {
-                    ["PlayerId"] = player.PlayerId,
+                    ["PlayerID"] = player.PlayerId,
                     ["PlayerName"] = player.PlayerName,
                     ["IsReady"] = player.IsReady
                 });
@@ -1123,8 +1123,8 @@ namespace OpenGS
             // ルームに参加
             HandleWaitRoomEnter(new JObject
             {
-                ["PlayerId"] = playerId,
-                ["RoomId"] = roomId
+                ["PlayerID"] = playerId,
+                ["RoomID"] = roomId
             });
         }
 

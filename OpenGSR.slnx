@@ -52,8 +52,10 @@
   <Project Path="Unity.CollabProxy.Editor.csproj" />
   <Project Path="UniTask.Editor.csproj" />
   <Project Path="DOTweenPro.Scripts.csproj" />
+  <Project Path="OpenGS.EmbeddedWebView.csproj" />
   <Project Path="Unity.InputSystem.DocCodeSamples.csproj" />
   <Project Path="MessagePack.UnityEditor.csproj" />
+  <Project Path="unity-webview.csproj" />
   <Project Path="Unity.VisualScripting.DocCodeExamples.csproj" />
   <Project Path="MessagePack.Annotations.csproj" />
   <Project Path="Unity.PlasticSCM.Editor.Entities.csproj" />

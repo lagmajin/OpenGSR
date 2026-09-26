@@ -52,6 +52,7 @@ namespace OpenGS
             public string Map { get; set; } = "";
             public string Password { get; set; } = "";
             public bool TeamBalance { get; set; } = true;
+            public List<string> BannedWeapons { get; } = new List<string>();
             public int PlayerCount { get; set; } = 0;
             public List<RoomPlayerRecord> Players { get; } = new List<RoomPlayerRecord>();
         }
@@ -74,6 +75,8 @@ namespace OpenGS
         private readonly List<RoomRecord> localRooms = new List<RoomRecord>();
         private readonly Dictionary<string, AccountRecord> accounts = new Dictionary<string, AccountRecord>();
         private readonly Dictionary<string, GuildRecord> localGuilds = new Dictionary<string, GuildRecord>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, HashSet<string>> friendsByPlayer = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, HashSet<string>> incomingFriendRequestsByTarget = new Dictionary<string, HashSet<string>>(StringComparer.OrdinalIgnoreCase);
         private readonly HashSet<string> loadingCompletedPlayers = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private int localRoomSequence = 1;
         private string currentAccountId = "";
@@ -116,11 +119,12 @@ namespace OpenGS
 
             ResetTransientSessionState();
             Online = true;
-            var resolvedAccountName = string.IsNullOrWhiteSpace(AccountManager.Instance.CurrentProfile.DisplayName)
+            var profile = AccountManager.Instance?.CurrentProfile;
+            var resolvedAccountName = string.IsNullOrWhiteSpace(profile?.DisplayName)
                 ? "Player"
-                : AccountManager.Instance.CurrentProfile.DisplayName;
+                : profile.DisplayName;
             var resolvedAccountId = string.IsNullOrWhiteSpace(id)
-                ? AccountManager.Instance.CurrentProfile.GlobalUserId
+                ? profile?.GlobalUserId
                 : id;
 
             if (string.IsNullOrWhiteSpace(resolvedAccountId))
@@ -129,12 +133,12 @@ namespace OpenGS
             }
 
             SetCurrentAccount(resolvedAccountName, resolvedAccountId);
-            connectedSubject.OnNext(Unit.Default);
+            PublishConnectionEvent(connectedSubject, "connected");
         }
 
         public void TryConnectToServer(string ip, int port)
         {
-            ConnectToGeneralServerSync(ip, port, AccountManager.Instance.CurrentProfile.GlobalUserId, "");
+            ConnectToGeneralServerSync(ip, port, AccountManager.Instance?.CurrentProfile?.GlobalUserId, "");
         }
 
         public void Disconnect()
@@ -142,8 +146,8 @@ namespace OpenGS
             ClearCurrentRoom();
             SaveLocalServerState();
             Online = false;
-            AccountManager.Instance.Logout();
-            disconnectedSubject.OnNext(Unit.Default);
+            AccountManager.Instance?.Logout();
+            PublishConnectionEvent(disconnectedSubject, "disconnected");
         }
 
         public void ResetTransientSessionState()
@@ -175,6 +179,8 @@ namespace OpenGS
                 localRooms.Clear();
                 accounts.Clear();
                 localGuilds.Clear();
+                friendsByPlayer.Clear();
+                incomingFriendRequestsByTarget.Clear();
 
                 localRoomSequence = root.Value<int?>("LocalRoomSequence") ?? 1;
                 currentAccountId = root.Value<string>("CurrentAccountId") ?? string.Empty;
@@ -216,10 +222,14 @@ namespace OpenGS
                     }
                 }
 
+                LoadFriendState(root["Friends"], friendsByPlayer);
+                LoadFriendState(root["FriendRequests"], incomingFriendRequestsByTarget);
+
                 if (!string.IsNullOrWhiteSpace(currentAccountId) && accounts.TryGetValue(currentAccountId, out var currentAccount))
                 {
                     AccountManager.Instance.LoginData(currentAccount.AccountName, "", currentAccount.GlobalUserId);
                     AccountManager.Instance.SetCredits(currentAccount.Credits);
+                    ApplyAccountEquipmentToLocalSave(currentAccount);
                 }
                 else if (!string.IsNullOrWhiteSpace(currentAccountId))
                 {
@@ -249,7 +259,9 @@ namespace OpenGS
                     ["CurrentRoomId"] = currentRoomId ?? string.Empty,
                     ["Accounts"] = new JArray(accounts.Values.Select(BuildAccountJson)),
                     ["Rooms"] = new JArray(localRooms.Select(BuildRoomJson)),
-                    ["Guilds"] = new JArray(localGuilds.Values.Select(BuildGuildJson))
+                    ["Guilds"] = new JArray(localGuilds.Values.Select(BuildGuildJson)),
+                    ["Friends"] = BuildFriendStateJson(friendsByPlayer),
+                    ["FriendRequests"] = BuildFriendStateJson(incomingFriendRequestsByTarget)
                 };
 
                 File.WriteAllText(LocalServerStatePath, JsonConvert.SerializeObject(root, Formatting.Indented));
@@ -287,7 +299,7 @@ namespace OpenGS
             {
                 GlobalUserId = json["GlobalUserId"]?.ToString() ?? string.Empty,
                 AccountName = json["AccountName"]?.ToString() ?? string.Empty,
-                Credits = json["Credits"]?.ToObject<long>() ?? 1000
+                Credits = Math.Max(0L, ReadLongValue(json["Credits"], 1000L))
             };
 
             if (json["PurchasedItems"] is JArray purchasedItems)
@@ -318,7 +330,13 @@ namespace OpenGS
             {
                 foreach (var item in instantItems.OfType<JObject>())
                 {
-                    var slot = item["Slot"]?.ToObject<int>() ?? 0;
+                    var slot = ReadIntValue(item["Slot"], 0);
+                    if (slot < 0 || slot >= 3)
+                    {
+                        Debug.LogWarning($"[GeneralServerNetworkManager] Ignoring invalid instant item slot: {slot}");
+                        continue;
+                    }
+
                     account.EquippedInstantItems[slot] = item["ItemId"]?.ToString() ?? string.Empty;
                 }
             }
@@ -330,7 +348,7 @@ namespace OpenGS
         {
             return new JObject
             {
-                ["RoomId"] = room.RoomId,
+                ["RoomID"] = room.RoomId,
                 ["RoomName"] = room.RoomName,
                 ["OwnerId"] = room.OwnerId,
                 ["Capacity"] = room.Capacity,
@@ -338,10 +356,11 @@ namespace OpenGS
                 ["Map"] = room.Map,
                 ["Password"] = room.Password,
                 ["TeamBalance"] = room.TeamBalance,
+                ["BannedWeapons"] = new JArray(room.BannedWeapons),
                 ["PlayerCount"] = room.PlayerCount,
                 ["Players"] = new JArray(room.Players.Select(player => new JObject
                 {
-                    ["PlayerId"] = player.PlayerId,
+                    ["PlayerID"] = player.PlayerId,
                     ["PlayerName"] = player.PlayerName,
                     ["IsReady"] = player.IsReady,
                     ["PlayerCharacter"] = player.PlayerCharacter
@@ -356,13 +375,21 @@ namespace OpenGS
                 RoomId = json["RoomId"]?.ToString() ?? string.Empty,
                 RoomName = json["RoomName"]?.ToString() ?? string.Empty,
                 OwnerId = json["OwnerId"]?.ToString() ?? string.Empty,
-                Capacity = json["Capacity"]?.ToObject<int>() ?? 8,
+                Capacity = Mathf.Clamp(ReadIntValue(json["Capacity"], 8), 2, 32),
                 GameMode = json["GameMode"]?.ToString() ?? "TeamDeathMatch",
                 Map = json["Map"]?.ToString() ?? string.Empty,
                 Password = json["Password"]?.ToString() ?? string.Empty,
-                TeamBalance = json["TeamBalance"]?.ToObject<bool>() ?? true,
-                PlayerCount = json["PlayerCount"]?.ToObject<int>() ?? 0
+                TeamBalance = ReadBoolValue(json["TeamBalance"], true),
+                PlayerCount = Mathf.Max(0, ReadIntValue(json["PlayerCount"], 0))
             };
+
+            if (json["BannedWeapons"] is JArray bannedWeapons)
+            {
+                foreach (var weapon in bannedWeapons.Values<string>().Where(value => !string.IsNullOrWhiteSpace(value)).Distinct(StringComparer.OrdinalIgnoreCase))
+                {
+                    room.BannedWeapons.Add(weapon);
+                }
+            }
 
             if (json["Players"] is JArray players)
             {
@@ -372,7 +399,7 @@ namespace OpenGS
                     {
                         PlayerId = token["PlayerId"]?.ToString() ?? string.Empty,
                         PlayerName = token["PlayerName"]?.ToString() ?? string.Empty,
-                        IsReady = token["IsReady"]?.ToObject<bool>() ?? false,
+                        IsReady = ReadBoolValue(token["IsReady"], false),
                         PlayerCharacter = token["PlayerCharacter"]?.ToString() ?? EPlayerCharacter.Misty.ToString()
                     });
                 }
@@ -395,7 +422,7 @@ namespace OpenGS
                 ["CreationTime"] = guild.CreationTime,
                 ["Members"] = new JArray(guild.Members.Values.Select(member => new JObject
                 {
-                    ["PlayerId"] = member.PlayerId,
+                    ["PlayerID"] = member.PlayerId,
                     ["Role"] = member.Role,
                     ["JoinedAt"] = member.JoinedAt
                 }))
@@ -410,8 +437,8 @@ namespace OpenGS
                 GuildName = json["GuildName"]?.ToString() ?? string.Empty,
                 GuildShortName = json["GuildShortName"]?.ToString() ?? string.Empty,
                 LeaderId = json["LeaderId"]?.ToString() ?? string.Empty,
-                Level = json["Level"]?.ToObject<int>() ?? 1,
-                Experience = json["Experience"]?.ToObject<long>() ?? 0,
+                Level = Mathf.Max(1, ReadIntValue(json["Level"], 1)),
+                Experience = Math.Max(0L, ReadLongValue(json["Experience"], 0L)),
                 CreationTime = json["CreationTime"]?.ToString() ?? DateTime.UtcNow.ToString("o")
             };
 
@@ -448,13 +475,55 @@ namespace OpenGS
                     return;
                 }
 
+                if (HandleFriendMessage(json))
+                {
+                    return;
+                }
+
                 HandleAccountAndShopMessage(json);
                 CacheLastMatchResult(json);
 
                 var messageType = json["MessageType"]?.ToString();
                 if (ShouldForwardToClients(messageType))
                 {
-                    dataReceivedSubject.OnNext(json);
+                    PublishClientMessage(json);
+                }
+            }
+        }
+
+        private static void ApplyAccountEquipmentToLocalSave(AccountRecord account)
+        {
+            if (account == null)
+            {
+                return;
+            }
+
+            foreach (var itemId in account.PurchasedItems)
+            {
+                if (!string.IsNullOrWhiteSpace(itemId))
+                {
+                    UserSaveManager.SetPurchased(itemId, true);
+                }
+            }
+
+            foreach (var equipped in account.EquippedItems)
+            {
+                if (string.IsNullOrWhiteSpace(equipped.Value))
+                {
+                    continue;
+                }
+
+                if (equipped.Key == EShopCategory.Character || equipped.Key == EShopCategory.Booster)
+                {
+                    UserSaveManager.EquipItem(equipped.Value, equipped.Key);
+                }
+            }
+
+            foreach (var equipped in account.EquippedInstantItems)
+            {
+                if (!string.IsNullOrWhiteSpace(equipped.Value))
+                {
+                    UserSaveManager.EquipToSlot(equipped.Value, EShopCategory.InstantItem, equipped.Key);
                 }
             }
         }
@@ -544,6 +613,13 @@ namespace OpenGS
         public void SendGuildChat(string guildName, string message)
         {
             if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(message)) return;
+            guildName = guildName.Trim();
+            message = message.Trim();
+            if (message.Length > 200)
+            {
+                message = message.Substring(0, 200);
+            }
+
             SendMessage(new JObject
             {
                 ["MessageType"] = OpenGSCore.MessageType.GuildChatRequest,
@@ -688,7 +764,31 @@ namespace OpenGS
         {
             NormalizeMessageType(json);
             CacheLastMatchResult(json);
-            dataReceivedSubject.OnNext(json);
+            PublishClientMessage(json);
+        }
+
+        private void PublishClientMessage(JObject json)
+        {
+            try
+            {
+                dataReceivedSubject.OnNext(json);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[GeneralServerNetworkManager] Client message subscriber failed: {ex}");
+            }
+        }
+
+        private static void PublishConnectionEvent(ISubject<Unit> subject, string eventName)
+        {
+            try
+            {
+                subject.OnNext(Unit.Default);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[GeneralServerNetworkManager] {eventName} subscriber failed: {ex}");
+            }
         }
 
         private void CacheLastMatchResult(JObject json)
@@ -711,6 +811,7 @@ namespace OpenGS
                 GameMode = room.GameMode,
                 Map = room.Map,
                 TeamBalance = room.TeamBalance,
+                BannedWeapons = room.BannedWeapons.ToList(),
                 PlayerCount = room.Players.Count
             };
         }
@@ -794,6 +895,11 @@ namespace OpenGS
 
             if (category == EShopCategory.InstantItem)
             {
+                if (slot < 0 || slot >= 3)
+                {
+                    return false;
+                }
+
                 account.EquippedInstantItems[slot] = itemId;
                 UserSaveManager.EquipToSlot(itemId, category, slot);
             }
@@ -812,6 +918,11 @@ namespace OpenGS
             var account = EnsureCurrentAccount();
             if (category == EShopCategory.InstantItem)
             {
+                if (slot < 0 || slot >= 3)
+                {
+                    return false;
+                }
+
                 account.EquippedInstantItems[slot] = "";
                 UserSaveManager.EquipToSlot("", category, slot);
             }
@@ -842,11 +953,27 @@ namespace OpenGS
             return account.EquippedItems.TryGetValue(category, out var equippedItem) && equippedItem == itemId;
         }
 
+        public string GetEquippedItemId(EShopCategory category, int slot = 0)
+        {
+            var account = EnsureCurrentAccount();
+            if (category == EShopCategory.InstantItem)
+            {
+                return account.EquippedInstantItems.TryGetValue(slot, out var equipped)
+                    ? equipped ?? string.Empty
+                    : string.Empty;
+            }
+
+            return account.EquippedItems.TryGetValue(category, out var equippedItem)
+                ? equippedItem ?? string.Empty
+                : string.Empty;
+        }
+
         private AccountRecord EnsureCurrentAccount()
         {
+            var profile = AccountManager.Instance?.CurrentProfile;
             if (string.IsNullOrWhiteSpace(currentAccountId))
             {
-                currentAccountId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+                currentAccountId = profile?.GlobalUserId;
             }
 
             if (string.IsNullOrWhiteSpace(currentAccountId))
@@ -854,7 +981,7 @@ namespace OpenGS
                 currentAccountId = "local-account";
             }
 
-            return EnsureAccount(currentAccountId, AccountManager.Instance.CurrentProfile.DisplayName);
+            return EnsureAccount(currentAccountId, profile?.DisplayName);
         }
 
         private AccountRecord EnsureAccount(string globalUserId, string accountName)
@@ -880,6 +1007,202 @@ namespace OpenGS
             }
 
             return account;
+        }
+
+        private bool HandleFriendMessage(JObject json)
+        {
+            var messageType = MessageType.Normalize(json?["MessageType"]?.ToString());
+            if (messageType != MessageType.FriendRequest &&
+                messageType != MessageType.FriendApproveRequest &&
+                messageType != MessageType.FriendListRequest)
+            {
+                return false;
+            }
+
+            var playerId = json["PlayerID"]?.ToString() ?? currentAccountId;
+            if (messageType == MessageType.FriendRequest)
+            {
+                var targetId = json["TargetPlayerID"]?.ToString() ?? json["TargetPlayerId"]?.ToString();
+                var success = TryCreateFriendRequest(playerId, targetId, out var error);
+                EmitToClient(new JObject
+                {
+                    ["MessageType"] = MessageType.FriendRequestResponse,
+                    ["PlayerID"] = playerId ?? string.Empty,
+                    ["TargetPlayerID"] = targetId ?? string.Empty,
+                    ["Success"] = success,
+                    ["Error"] = error ?? string.Empty,
+                    ["ErrorMessage"] = error ?? string.Empty
+                });
+
+                if (success)
+                {
+                    EmitToClient(new JObject
+                    {
+                        ["MessageType"] = MessageType.FriendRequestNotification,
+                        ["PlayerID"] = targetId,
+                        ["FromPlayerID"] = playerId
+                    });
+                }
+
+                return true;
+            }
+
+            if (messageType == MessageType.FriendApproveRequest)
+            {
+                var requestPlayerId = json["RequestPlayerID"]?.ToString() ?? json["RequestPlayerId"]?.ToString();
+                var approve = ReadBoolValue(json["Approve"], true);
+                var success = TryHandleFriendRequest(playerId, requestPlayerId, approve, out var error);
+                EmitToClient(new JObject
+                {
+                    ["MessageType"] = MessageType.FriendApproveResponse,
+                    ["PlayerID"] = playerId ?? string.Empty,
+                    ["RequestPlayerID"] = requestPlayerId ?? string.Empty,
+                    ["Approved"] = approve,
+                    ["Success"] = success,
+                    ["Error"] = error ?? string.Empty,
+                    ["ErrorMessage"] = error ?? string.Empty
+                });
+                return true;
+            }
+
+            EnsureFriendStorage(playerId);
+            var friends = new JArray(friendsByPlayer[playerId].Select(friendId => new JObject
+            {
+                ["PlayerID"] = friendId,
+                ["PlayerName"] = ResolveFriendPlayerName(friendId)
+            }));
+            var pending = new JArray(incomingFriendRequestsByTarget[playerId].Select(requesterId => new JObject
+            {
+                ["FromPlayerID"] = requesterId,
+                ["FromPlayerName"] = ResolveFriendPlayerName(requesterId)
+            }));
+            EmitToClient(new JObject
+            {
+                ["MessageType"] = MessageType.FriendListResponse,
+                ["PlayerID"] = playerId ?? string.Empty,
+                ["Success"] = true,
+                ["Friends"] = friends,
+                ["PendingRequests"] = pending
+            });
+            return true;
+        }
+
+        private bool TryCreateFriendRequest(string requesterId, string targetId, out string error)
+        {
+            error = string.Empty;
+            if (string.IsNullOrWhiteSpace(requesterId) || string.IsNullOrWhiteSpace(targetId))
+            {
+                error = "PlayerID and TargetPlayerID are required.";
+                return false;
+            }
+
+            if (string.Equals(requesterId, targetId, StringComparison.OrdinalIgnoreCase))
+            {
+                error = "Cannot send a friend request to yourself.";
+                return false;
+            }
+
+            EnsureFriendStorage(requesterId);
+            EnsureFriendStorage(targetId);
+            if (friendsByPlayer[requesterId].Contains(targetId))
+            {
+                error = "Players are already friends.";
+                return false;
+            }
+
+            if (!incomingFriendRequestsByTarget[targetId].Add(requesterId))
+            {
+                error = "Friend request already sent.";
+                return false;
+            }
+
+            SaveLocalServerState();
+            return true;
+        }
+
+        private bool TryHandleFriendRequest(string approverId, string requesterId, bool approve, out string error)
+        {
+            error = string.Empty;
+            if (string.IsNullOrWhiteSpace(approverId) || string.IsNullOrWhiteSpace(requesterId))
+            {
+                error = "PlayerID and RequestPlayerID are required.";
+                return false;
+            }
+
+            EnsureFriendStorage(approverId);
+            EnsureFriendStorage(requesterId);
+            if (!incomingFriendRequestsByTarget[approverId].Remove(requesterId))
+            {
+                error = "No pending friend request.";
+                return false;
+            }
+
+            if (approve)
+            {
+                friendsByPlayer[approverId].Add(requesterId);
+                friendsByPlayer[requesterId].Add(approverId);
+            }
+
+            SaveLocalServerState();
+            return true;
+        }
+
+        private void EnsureFriendStorage(string playerId)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return;
+            }
+
+            if (!friendsByPlayer.ContainsKey(playerId))
+            {
+                friendsByPlayer[playerId] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            }
+
+            if (!incomingFriendRequestsByTarget.ContainsKey(playerId))
+            {
+                incomingFriendRequestsByTarget[playerId] = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            }
+        }
+
+        private string ResolveFriendPlayerName(string playerId)
+        {
+            if (accounts.TryGetValue(playerId ?? string.Empty, out var account) && !string.IsNullOrWhiteSpace(account.AccountName))
+            {
+                return account.AccountName;
+            }
+
+            return playerId ?? string.Empty;
+        }
+
+        private static JArray BuildFriendStateJson(Dictionary<string, HashSet<string>> state)
+        {
+            return new JArray(state.Select(entry => new JObject
+            {
+                ["PlayerID"] = entry.Key,
+                ["Values"] = new JArray(entry.Value.OrderBy(value => value))
+            }));
+        }
+
+        private static void LoadFriendState(JToken token, Dictionary<string, HashSet<string>> state)
+        {
+            if (!(token is JArray entries))
+            {
+                return;
+            }
+
+            foreach (var entry in entries.OfType<JObject>())
+            {
+                var playerId = entry["PlayerID"]?.ToString() ?? entry["PlayerId"]?.ToString();
+                if (string.IsNullOrWhiteSpace(playerId))
+                {
+                    continue;
+                }
+
+                state[playerId] = new HashSet<string>(
+                    (entry["Values"] as JArray)?.Values<string>() ?? Enumerable.Empty<string>(),
+                    StringComparer.OrdinalIgnoreCase);
+            }
         }
 
         private void HandleAccountAndShopMessage(JObject json)
@@ -935,7 +1258,7 @@ namespace OpenGS
                 case MessageType.ShopPurchaseRequest:
                 {
                     var itemId = json["ItemId"]?.ToString() ?? "";
-                    var price = json["Price"]?.ToObject<int>() ?? 0;
+                    var price = ReadIntValue(json["Price"], 0);
                     var success = PurchaseItem(itemId, price);
                     EmitToClient(new JObject
                     {
@@ -951,7 +1274,7 @@ namespace OpenGS
                     var itemId = json["ItemId"]?.ToString() ?? "";
                     var categoryText = json["Category"]?.ToString() ?? EShopCategory.Weapon.ToString();
                     Enum.TryParse(categoryText, true, out EShopCategory category);
-                    var slot = json["Slot"]?.ToObject<int>() ?? 0;
+                    var slot = ReadIntValue(json["Slot"], 0);
                     var success = EquipItem(itemId, category, slot);
                     EmitToClient(new JObject
                     {
@@ -967,7 +1290,7 @@ namespace OpenGS
                 {
                     var categoryText = json["Category"]?.ToString() ?? EShopCategory.Weapon.ToString();
                     Enum.TryParse(categoryText, true, out EShopCategory category);
-                    var slot = json["Slot"]?.ToObject<int>() ?? 0;
+                    var slot = ReadIntValue(json["Slot"], 0);
                     var success = UnequipItem(category, slot);
                     EmitToClient(new JObject
                     {
@@ -1025,7 +1348,7 @@ namespace OpenGS
                 }
                 case MessageType.LoadingProgress:
                 {
-                    var progress = json["Progress"]?.ToObject<float>() ?? 0f;
+                    var progress = ReadFloatValue(json["Progress"], 0f);
                     EmitToClient(new JObject
                     {
                         ["MessageType"] = MessageType.LoadingProgressNotification,
@@ -1416,6 +1739,19 @@ namespace OpenGS
                 case MessageType.GameStartRequest:
                     if (!string.IsNullOrWhiteSpace(currentRoomId))
                     {
+                        var room = localRooms.Find(candidate => string.Equals(candidate.RoomId, currentRoomId, StringComparison.OrdinalIgnoreCase));
+                        if (room == null || room.Players.Count == 0 || !room.Players.TrueForAll(candidate => candidate.IsReady))
+                        {
+                            EmitToClient(new JObject
+                            {
+                                ["MessageType"] = MessageType.ErrorNotification,
+                                ["Success"] = false,
+                                ["ErrorMessage"] = "All players must be ready before starting",
+                                ["RoomID"] = currentRoomId
+                            });
+                            return true;
+                        }
+
                         EmitToClient(new JObject
                         {
                             ["MessageType"] = MessageType.MatchServerInfoResponse,
@@ -1497,7 +1833,7 @@ namespace OpenGS
 
             EmitToClient(new JObject
             {
-                ["MessageType"] = ready ? MessageType.WaitRoomPlayerReady : MessageType.WaitRoomPlayerUnready,
+                ["MessageType"] = ready ? MessageType.PlayerReadyNotification : MessageType.PlayerUnready,
                 ["PlayerID"] = playerId,
                 ["RoomID"] = roomId
             });
@@ -1539,12 +1875,27 @@ namespace OpenGS
 
             if (settings["Capacity"] != null)
             {
-                room.Capacity = settings["Capacity"]!.ToObject<int>();
+                if (TryReadInt(settings["Capacity"], out var capacity))
+                {
+                    room.Capacity = Mathf.Clamp(capacity, 2, 32);
+                }
             }
 
             if (settings["TeamBalance"] != null)
             {
-                room.TeamBalance = settings["TeamBalance"]!.ToObject<bool>();
+                if (TryReadBool(settings["TeamBalance"], out var teamBalance))
+                {
+                    room.TeamBalance = teamBalance;
+                }
+            }
+
+            if (settings["BannedWeapons"] is JArray bannedWeapons)
+            {
+                room.BannedWeapons.Clear();
+                foreach (var weapon in bannedWeapons.Values<string>().Where(value => !string.IsNullOrWhiteSpace(value)).Distinct(StringComparer.OrdinalIgnoreCase))
+                {
+                    room.BannedWeapons.Add(weapon);
+                }
             }
 
             if (settings["PlayerCharacter"] != null)
@@ -1561,6 +1912,74 @@ namespace OpenGS
             EmitToClient(BuildWaitRoomPlayerListMessage(room));
             SaveLocalServerState();
             return true;
+        }
+
+        private static bool TryReadInt(JToken token, out int value)
+        {
+            try
+            {
+                value = token?.ToObject<int>() ?? 0;
+                return true;
+            }
+            catch (Exception)
+            {
+                value = 0;
+                return false;
+            }
+        }
+
+        private static bool TryReadBool(JToken token, out bool value)
+        {
+            try
+            {
+                value = token?.ToObject<bool>() ?? false;
+                return true;
+            }
+            catch (Exception)
+            {
+                value = false;
+                return false;
+            }
+        }
+
+        private static int ReadIntValue(JToken token, int fallback)
+        {
+            return TryReadInt(token, out var value) ? value : fallback;
+        }
+
+        private static bool ReadBoolValue(JToken token, bool fallback)
+        {
+            return TryReadBool(token, out var value) ? value : fallback;
+        }
+
+        private static long ReadLongValue(JToken token, long fallback)
+        {
+            try
+            {
+                return token?.ToObject<long>() ?? fallback;
+            }
+            catch (Exception)
+            {
+                return fallback;
+            }
+        }
+
+        private static float ReadFloatValue(JToken token, float fallback)
+        {
+            if (token == null)
+            {
+                return fallback;
+            }
+
+            try
+            {
+                var value = token.ToObject<float>();
+                return float.IsFinite(value) ? value : fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
         }
 
         private static JObject BuildWaitRoomPlayerListMessage(RoomRecord room)
@@ -1601,19 +2020,21 @@ namespace OpenGS
                 return currentAccountId;
             }
 
-            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            var playerId = AccountManager.Instance?.CurrentProfile?.GlobalUserId;
             return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
         }
 
         private static string ResolveLocalPlayerName()
         {
-            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            var playerName = AccountManager.Instance?.CurrentProfile?.DisplayName;
             return string.IsNullOrWhiteSpace(playerName) ? "Player" : playerName;
         }
 
         private static string ResolveLocalPlayerCharacter()
         {
-            return GamePlayerManager.Instance.SelectedPlayerCharacter().ToString();
+            return (GamePlayerManager.Instance != null
+                ? GamePlayerManager.Instance.SelectedPlayerCharacter()
+                : EPlayerCharacter.Misty).ToString();
         }
 
         private static RoomRecord.RoomPlayerRecord CreateLocalRoomPlayerRecord(string playerId, string playerName, bool isReady)
@@ -1645,7 +2066,9 @@ namespace OpenGS
                 return parsedCharacter;
             }
 
-            return GamePlayerManager.Instance.SelectedPlayerCharacter();
+            return GamePlayerManager.Instance != null
+                ? GamePlayerManager.Instance.SelectedPlayerCharacter()
+                : EPlayerCharacter.Misty;
         }
 
         private static void ApplyPlayerCharacter(RoomRecord room, string playerId, EPlayerCharacter character)

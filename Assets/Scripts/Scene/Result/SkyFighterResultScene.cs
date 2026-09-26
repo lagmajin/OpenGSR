@@ -23,11 +23,6 @@ namespace OpenGS
             mainThread = SynchronizationContext.Current;
 
         }
-        private void Start()
-        {
-
-        }
-
         protected override void Update()
         {
             base.Update();

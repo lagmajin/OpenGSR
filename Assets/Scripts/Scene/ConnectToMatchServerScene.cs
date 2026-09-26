@@ -24,7 +24,8 @@ namespace OpenGS
         [SerializeField] private int connectTimeoutMilliseconds = 2000;
 
         private bool connectSucceeded = false;
-        private static TcpClient client = null;
+        private bool isShuttingDown;
+        private TcpClient client = null;
 
         private updateFunc up;
 
@@ -34,6 +35,15 @@ namespace OpenGS
         }
         private void Awake()
         {
+            serverAddress = serverAddress?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(serverAddress))
+            {
+                serverAddress = "127.0.0.1";
+            }
+
+            serverPort = Mathf.Clamp(serverPort, 1, 65535);
+            maxRetryCount = Mathf.Max(1, maxRetryCount);
+            connectTimeoutMilliseconds = Mathf.Max(100, connectTimeoutMilliseconds);
 
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
 
@@ -47,14 +57,23 @@ namespace OpenGS
 
 
 
-            var task = Task.Run(() =>
-                {
-                    ConnectToMatchServer();
-                });
+            _ = ConnectToMatchServerAsync();
         }
 
         private void OnApplicationQuit()
         {
+            isShuttingDown = true;
+            up = null;
+            connectSucceeded = false;
+            client?.Close();
+            client = null;
+        }
+
+        private void OnDestroy()
+        {
+            isShuttingDown = true;
+            up = null;
+            connectSucceeded = false;
             client?.Close();
             client = null;
         }
@@ -78,7 +97,22 @@ namespace OpenGS
         // Update is called once per frame
         void Update()
         {
-            up?.Invoke();
+            if (up == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in up.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[ConnectToMatchServerScene] update callback failed: {ex}");
+                }
+            }
         }
 
         private void ConnectError()
@@ -86,40 +120,97 @@ namespace OpenGS
             Debug.LogError($"[ConnectToMatchServerScene] Failed to connect to {serverAddress}:{serverPort} after {maxRetryCount} attempts.");
         }
 
-        private void ConnectToMatchServer()
+        private async Task ConnectToMatchServerAsync()
         {
             int tryCount = 0;
 
-            while (tryCount < Mathf.Max(1, maxRetryCount))
+            while (!isShuttingDown && tryCount < Math.Max(1, maxRetryCount))
             {
                 var candidate = new TcpClient();
-                if (!candidate.ConnectAsync(serverAddress, serverPort).Wait(Mathf.Max(100, connectTimeoutMilliseconds)))
+                try
+                {
+                    var connectTask = candidate.ConnectAsync(serverAddress, serverPort);
+                    var timeoutTask = Task.Delay(Math.Max(100, connectTimeoutMilliseconds));
+                    if (await Task.WhenAny(connectTask, timeoutTask) != connectTask)
+                    {
+                        _ = connectTask.ContinueWith(
+                            task => _ = task.Exception,
+                            TaskContinuationOptions.OnlyOnFaulted);
+                        candidate.Close();
+                        candidate.Dispose();
+                        tryCount++;
+                    }
+                    else
+                    {
+                        await connectTask;
+                        if (isShuttingDown)
+                        {
+                            candidate.Close();
+                            candidate.Dispose();
+                            return;
+                        }
+
+                        client = candidate;
+                        connectSucceeded = true;
+                        up = ClientUpdate;
+                        break;
+                    }
+                }
+                catch (SocketException)
                 {
                     candidate.Close();
+                    candidate.Dispose();
                     tryCount++;
                 }
-                else
+                catch (ObjectDisposedException)
                 {
-                    client = candidate;
-                    connectSucceeded = true;
-                    up = ClientUpdate;
-                    break;
+                    candidate.Close();
+                    candidate.Dispose();
+                    tryCount++;
+                }
+                catch (AggregateException)
+                {
+                    candidate.Close();
+                    candidate.Dispose();
+                    tryCount++;
+                }
+                catch (Exception ex)
+                {
+                    candidate.Close();
+                    candidate.Dispose();
+                    tryCount++;
+                    Debug.LogWarning($"[ConnectToMatchServerScene] Connection attempt failed: {ex.Message}");
+                }
+
+                if (!connectSucceeded)
+                {
+                    await Task.Delay(50);
                 }
 
             }
 
-            if (connectSucceeded)
+            if (!isShuttingDown && connectSucceeded && client != null)
             {
-                var json = new JObject
+                try
                 {
-                    ["MessageType"] = "ConnectionTest",
-                    ["id"] = "",
-                    ["TimeStamp"] = DateTime.UtcNow
-                };
-                var payload = Encoding.UTF8.GetBytes(json.ToString(Formatting.None) + "\n");
-                var stream = client.GetStream();
-                stream.Write(payload, 0, payload.Length);
-                stream.Flush();
+                    var json = new JObject
+                    {
+                        ["MessageType"] = "ConnectionTest",
+                        ["id"] = "",
+                        ["TimeStamp"] = DateTime.UtcNow
+                    };
+                    var payload = Encoding.UTF8.GetBytes(json.ToString(Formatting.None) + "\n");
+                    var stream = client.GetStream();
+                    stream.Write(payload, 0, payload.Length);
+                    stream.Flush();
+                }
+                catch (Exception ex)
+                {
+                    connectSucceeded = false;
+                    Debug.LogWarning($"[ConnectToMatchServerScene] Connection test failed: {ex.Message}");
+                    client?.Close();
+                    client = null;
+                }
             }
             else
             {

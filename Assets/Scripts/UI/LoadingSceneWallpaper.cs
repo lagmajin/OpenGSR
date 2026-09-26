@@ -26,6 +26,12 @@ namespace OpenGS
 
         private void Start()
         {
+            if (viewer == null)
+            {
+                Debug.LogWarning("[LoadingSceneWallpaper] Viewer image is not assigned.");
+                return;
+            }
+
             if (images != null && images.Length > 0)
             {
                 var r = new System.Random();

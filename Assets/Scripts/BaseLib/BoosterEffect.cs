@@ -28,18 +28,22 @@ namespace OpenGS
 
         public float time = 0.0f;
 
+        private void OnValidate()
+        {
+            if (!float.IsFinite(time)) time = 0f;
+            time = Mathf.Max(0f, time);
+        }
+
         private void Start()
         {
              DOVirtual.DelayedCall(time, () =>
             {
                 deleteThis();
-            });
+            }).SetLink(gameObject);
 
             if(""==boosterColorName)
             {
                 boosterColorName = "Red";
-
-                var resource = Resources.Load("");
             }
 
             if("Spark"==boosterColorName)
@@ -57,11 +61,6 @@ namespace OpenGS
 
             }
 
-        }
-
-        private void Update()
-        {
-            
         }
 
         private void deleteThis()

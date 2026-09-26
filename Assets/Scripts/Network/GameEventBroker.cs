@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Reflection;
 using UnityEngine;
 
 namespace OpenGS
@@ -13,6 +14,7 @@ namespace OpenGS
     {
         private static readonly object Locker = new object();
         private static readonly Dictionary<Type, List<Delegate>> Handlers = new Dictionary<Type, List<Delegate>>();
+        private static readonly Dictionary<Type, MethodInfo> PublishMethods = new Dictionary<Type, MethodInfo>();
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         public static void InitializeMessagePipe()
@@ -20,6 +22,7 @@ namespace OpenGS
             lock (Locker)
             {
                 Handlers.Clear();
+                PublishMethods.Clear();
             }
         }
 
@@ -48,6 +51,37 @@ namespace OpenGS
                 }
             }
         }
+
+        public static void PublishUntyped(object message)
+        {
+            if (message == null) return;
+
+            try
+            {
+                var messageType = message.GetType();
+                MethodInfo publish;
+                lock (Locker)
+                {
+                    if (!PublishMethods.TryGetValue(messageType, out publish))
+                    {
+                        publish = typeof(GameEventBroker).GetMethod(
+                            nameof(Publish), BindingFlags.Public | BindingFlags.Static)
+                            ?.MakeGenericMethod(messageType);
+                        if (publish != null)
+                        {
+                            PublishMethods[messageType] = publish;
+                        }
+                    }
+                }
+
+                publish?.Invoke(null, new[] { message });
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[GameEventBroker] Untyped publish failed for {message.GetType().Name}: {ex.Message}");
+            }
+        }
+
 
         public static IDisposable Subscribe<T>(Action<T> onMessageReceived)
         {

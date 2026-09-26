@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace OpenGS
@@ -44,8 +45,10 @@ namespace OpenGS
                 return;
             }
 
+            var validPlayers = playersData.Where(player => player != null).ToList();
+
             // スコアが高い順（同じスコアならキル数順）にソート
-            playersData.Sort((a, b) => 
+            validPlayers.Sort((a, b) => 
             {
                 int scoreCompare = b.Score.CompareTo(a.Score);
                 if (scoreCompare == 0) return b.Kills.CompareTo(a.Kills);
@@ -53,7 +56,7 @@ namespace OpenGS
             });
 
             // プレハブを生成してデータを流し込む
-            foreach (var playerData in playersData)
+            foreach (var playerData in validPlayers)
             {
                 var go = Instantiate(resultRowPrefab, contentContainer);
                 var rowUI = go.GetComponent<MatchResultRowUI>();

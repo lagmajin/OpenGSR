@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using OpenGSCore;
 
 namespace OpenGS
@@ -10,7 +11,10 @@ namespace OpenGS
 
         public static void Save(List<EWeaponType> weapons)
         {
-            JsonStorage.SaveVersioned(FILE_NAME, weapons, SAVE_VERSION);
+            var normalized = (weapons ?? new List<EWeaponType>())
+                .Distinct()
+                .ToList();
+            JsonStorage.SaveVersioned(FILE_NAME, normalized, SAVE_VERSION);
         }
 
         public static List<EWeaponType> Load()
@@ -29,18 +33,26 @@ namespace OpenGS
 
             if (loaded != null)
             {
-                return loaded;
+                return Normalize(loaded);
             }
 
             // Backward compatibility for non-versioned legacy files.
             loaded = JsonStorage.Load<List<EWeaponType>>(FILE_NAME, new List<EWeaponType>());
+            loaded = Normalize(loaded);
             JsonStorage.SaveVersioned(FILE_NAME, loaded, SAVE_VERSION);
             return loaded;
         }
 
         private static List<EWeaponType> Migrate(int fromVersion, List<EWeaponType> oldData)
         {
-            return oldData ?? new List<EWeaponType>() { EWeaponType.AK47 };
+            return Normalize(oldData ?? new List<EWeaponType>() { EWeaponType.AK47 });
+        }
+
+        private static List<EWeaponType> Normalize(List<EWeaponType> weapons)
+        {
+            return (weapons ?? new List<EWeaponType>())
+                .Distinct()
+                .ToList();
         }
     }
 }

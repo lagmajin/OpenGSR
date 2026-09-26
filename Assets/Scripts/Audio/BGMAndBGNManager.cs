@@ -72,22 +72,23 @@ namespace OpenGS
 
         public void PlayBGM()
         {
-            if (bgm)
+            var soundManager = SoundManager.Instance;
+            if (bgm && soundManager != null)
             {
-                if (playBGMOnlyIfNotPlaying && SoundManager.Instance.IsBgmPlaying())
+                if (playBGMOnlyIfNotPlaying && soundManager.IsBgmPlaying())
                 {
                     return;
                 }
 
                 if (overridePlayingBGM)
                 {
-                    SoundManager.Instance.PlayBgm(bgm, bgmVolume, loopBgm);
+                    soundManager.PlayBgm(bgm, bgmVolume, loopBgm);
                 }
                 else
                 {
-                    if (!SoundManager.Instance.IsBgmPlaying())
+                    if (!soundManager.IsBgmPlaying())
                     {
-                        SoundManager.Instance.PlayBgm(bgm, bgmVolume, loopBgm);
+                        soundManager.PlayBgm(bgm, bgmVolume, loopBgm);
                     }
                 }
             }
@@ -95,37 +96,43 @@ namespace OpenGS
 
         public void StopBGM()
         {
-            if (SoundManager.Instance.IsBgmPlaying())
+            var soundManager = SoundManager.Instance;
+            if (soundManager != null && soundManager.IsBgmPlaying())
             {
-                SoundManager.Instance.StopBgm();
+                soundManager.StopBgm();
             }
         }
 
         public void StopBGMAll()
         {
-            if (SoundManager.Instance.IsBgmPlaying())
+            var soundManager = SoundManager.Instance;
+            if (soundManager != null && soundManager.IsBgmPlaying())
             {
-                SoundManager.Instance.StopBgm();
+                soundManager.StopBgm();
             }
         }
 
         public void PlayBGN()
         {
-            if (bgn)
+            var soundManager = SoundManager.Instance;
+            if (bgn && soundManager != null)
             {
-                SoundManager.Instance.PlayBgm(bgn, bgnVolume, true);
+                soundManager.PlayBgm(bgn, bgnVolume, true);
             }
         }
 
         public bool IsPlayBGMNow()
         {
-            return SoundManager.Instance.IsBgmPlaying();
+            return SoundManager.Instance != null && SoundManager.Instance.IsBgmPlaying();
         }
 
         [Button("自動セット")]
         public void AutoSet()
         {
-
+            if (masterdata == null)
+            {
+                Debug.LogWarning("[BGMAndBGNManager] SystemSoundMasterData is not assigned. Assign the ScriptableObject in the inspector.");
+            }
         }
 
 

@@ -60,6 +60,14 @@ namespace OpenGS
             Initialize();
         }
 
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
+        }
+
         // ─── 初期化 ─────────────────────────────────────────────────
 
         /// <summary>
@@ -83,6 +91,7 @@ namespace OpenGS
         /// <returns>ゲーム設定</returns>
         public GameSettings GetSettings()
         {
+            NormalizeSettings();
             return settings;
         }
 
@@ -92,6 +101,7 @@ namespace OpenGS
         /// <returns>グラフィックス設定</returns>
         public GraphicsSettings GetGraphicsSettings()
         {
+            NormalizeSettings();
             return settings.Graphics;
         }
 
@@ -101,6 +111,7 @@ namespace OpenGS
         /// <returns>サウンド設定</returns>
         public SoundSettings GetSoundSettings()
         {
+            NormalizeSettings();
             return settings.Sound;
         }
 
@@ -110,11 +121,13 @@ namespace OpenGS
         /// <returns>操作設定</returns>
         public ControlSettings GetControlSettings()
         {
+            NormalizeSettings();
             return settings.Control;
         }
 
         public GameplaySettings GetGameplaySettings()
         {
+            NormalizeSettings();
             return settings.Gameplay;
         }
 
@@ -124,12 +137,13 @@ namespace OpenGS
         /// <param name="graphicsSettings">グラフィックス設定</param>
         public void ApplyGraphicsSettings(GraphicsSettings graphicsSettings)
         {
-            settings.Graphics = graphicsSettings;
+            settings.Graphics = graphicsSettings ?? new GraphicsSettings();
+            NormalizeSettings();
             ApplyGraphicsSettings();
             SaveSettings();
 
-            OnGraphicsSettingsChanged?.Invoke(graphicsSettings);
-            OnSettingsChanged?.Invoke(settings);
+            InvokeSafely(OnGraphicsSettingsChanged, settings.Graphics, nameof(OnGraphicsSettingsChanged));
+            InvokeSafely(OnSettingsChanged, settings, nameof(OnSettingsChanged));
 
             Debug.Log("[SettingsManager] グラフィックス設定を適用しました");
         }
@@ -140,12 +154,13 @@ namespace OpenGS
         /// <param name="soundSettings">サウンド設定</param>
         public void ApplySoundSettings(SoundSettings soundSettings)
         {
-            settings.Sound = soundSettings;
+            settings.Sound = soundSettings ?? new SoundSettings();
+            NormalizeSettings();
             ApplySoundSettings();
             SaveSettings();
 
-            OnSoundSettingsChanged?.Invoke(soundSettings);
-            OnSettingsChanged?.Invoke(settings);
+            InvokeSafely(OnSoundSettingsChanged, settings.Sound, nameof(OnSoundSettingsChanged));
+            InvokeSafely(OnSettingsChanged, settings, nameof(OnSettingsChanged));
 
             Debug.Log("[SettingsManager] サウンド設定を適用しました");
         }
@@ -156,11 +171,12 @@ namespace OpenGS
         /// <param name="controlSettings">操作設定</param>
         public void ApplyControlSettings(ControlSettings controlSettings)
         {
-            settings.Control = controlSettings;
+            settings.Control = controlSettings ?? new ControlSettings();
+            NormalizeSettings();
             SaveSettings();
 
-            OnControlSettingsChanged?.Invoke(controlSettings);
-            OnSettingsChanged?.Invoke(settings);
+            InvokeSafely(OnControlSettingsChanged, settings.Control, nameof(OnControlSettingsChanged));
+            InvokeSafely(OnSettingsChanged, settings, nameof(OnSettingsChanged));
 
             Debug.Log("[SettingsManager] 操作設定を適用しました");
         }
@@ -174,7 +190,10 @@ namespace OpenGS
             ApplyAllSettings();
             SaveSettings();
 
-            OnSettingsChanged?.Invoke(settings);
+            InvokeSafely(OnGraphicsSettingsChanged, settings.Graphics, nameof(OnGraphicsSettingsChanged));
+            InvokeSafely(OnSoundSettingsChanged, settings.Sound, nameof(OnSoundSettingsChanged));
+            InvokeSafely(OnControlSettingsChanged, settings.Control, nameof(OnControlSettingsChanged));
+            InvokeSafely(OnSettingsChanged, settings, nameof(OnSettingsChanged));
 
             Debug.Log("[SettingsManager] 設定をリセットしました");
         }
@@ -200,16 +219,40 @@ namespace OpenGS
                 if (importedSettings != null)
                 {
                     settings = importedSettings;
+                    NormalizeSettings();
                     ApplyAllSettings();
                     SaveSettings();
 
-                    OnSettingsChanged?.Invoke(settings);
+            InvokeSafely(OnGraphicsSettingsChanged, settings.Graphics, nameof(OnGraphicsSettingsChanged));
+            InvokeSafely(OnSoundSettingsChanged, settings.Sound, nameof(OnSoundSettingsChanged));
+            InvokeSafely(OnControlSettingsChanged, settings.Control, nameof(OnControlSettingsChanged));
+            InvokeSafely(OnSettingsChanged, settings, nameof(OnSettingsChanged));
                     Debug.Log("[SettingsManager] 設定をインポートしました");
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[SettingsManager] インポートエラー: {ex.Message}");
+            }
+        }
+
+        private static void InvokeSafely<T>(Action<T> handlers, T value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<T> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[SettingsManager] {eventName} subscriber failed: {ex}");
+                }
             }
         }
 
@@ -226,6 +269,7 @@ namespace OpenGS
                 try
                 {
                     settings = JsonConvert.DeserializeObject<GameSettings>(json) ?? new GameSettings();
+                    NormalizeSettings();
                     Debug.Log("[SettingsManager] 設定を読み込みました");
                 }
                 catch (Exception ex)
@@ -240,6 +284,72 @@ namespace OpenGS
             }
 
             ApplyAllSettings();
+        }
+
+        private void NormalizeSettings()
+        {
+            settings ??= new GameSettings();
+            settings.Graphics ??= new GraphicsSettings();
+            settings.Sound ??= new SoundSettings();
+            settings.Control ??= new ControlSettings();
+            settings.Gameplay ??= new GameplaySettings();
+            settings.Control.KeyBindings ??= new Dictionary<string, string>();
+
+            var normalizedBindings = new Dictionary<string, string>();
+            foreach (var pair in settings.Control.KeyBindings)
+            {
+                var action = pair.Key?.Trim();
+                var binding = pair.Value?.Trim();
+                if (string.IsNullOrWhiteSpace(action) || string.IsNullOrWhiteSpace(binding))
+                {
+                    continue;
+                }
+
+                if (!normalizedBindings.ContainsKey(action))
+                {
+                    normalizedBindings[action] = binding;
+                }
+            }
+
+            settings.Control.KeyBindings = normalizedBindings;
+
+            // Tab is a hold-to-show scoreboard key.  Older defaults assigned
+            // it to Inventory as well, which could drop the equipped weapon
+            // whenever the scoreboard was opened.  Migrate only that exact
+            // conflict and preserve all other user bindings.
+            if (settings.Control.KeyBindings.TryGetValue("Inventory", out var inventoryBinding) &&
+                settings.Control.KeyBindings.TryGetValue("Scoreboard", out var scoreboardBinding) &&
+                string.Equals(inventoryBinding, "Tab", StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(scoreboardBinding, "Tab", StringComparison.OrdinalIgnoreCase))
+            {
+                settings.Control.KeyBindings["Inventory"] = "G";
+            }
+
+            settings.Graphics.ResolutionWidth = Mathf.Max(320, settings.Graphics.ResolutionWidth);
+            settings.Graphics.ResolutionHeight = Mathf.Max(240, settings.Graphics.ResolutionHeight);
+            settings.Graphics.QualityLevel = Mathf.Clamp(settings.Graphics.QualityLevel, 0, 3);
+            settings.Graphics.TargetFrameRate = settings.Graphics.TargetFrameRate == -1
+                ? -1
+                : Mathf.Clamp(settings.Graphics.TargetFrameRate, 15, 240);
+            settings.Graphics.Brightness = NormalizeFinite01(settings.Graphics.Brightness, 1f);
+            settings.Graphics.ShadowQuality = Mathf.Clamp(settings.Graphics.ShadowQuality, 0, 2);
+
+            settings.Sound.MasterVolume = NormalizeFinite01(settings.Sound.MasterVolume, 1f);
+            settings.Sound.BGMVolume = NormalizeFinite01(settings.Sound.BGMVolume, 0.8f);
+            settings.Sound.SEVolume = NormalizeFinite01(settings.Sound.SEVolume, 1f);
+            settings.Sound.VoiceVolume = NormalizeFinite01(settings.Sound.VoiceVolume, 1f);
+            settings.Control.MouseSensitivity = NormalizeFiniteMin(settings.Control.MouseSensitivity, 0.01f, 1f);
+            settings.Gameplay.RespawnDelaySeconds = NormalizeFiniteMin(settings.Gameplay.RespawnDelaySeconds, 0f, 5f);
+        }
+
+        private static float NormalizeFinite01(float value, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Clamp01(value) : fallback;
+        }
+
+        private static float NormalizeFiniteMin(float value, float minimum, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Max(minimum, value) : fallback;
         }
 
         /// <summary>
@@ -274,6 +384,7 @@ namespace OpenGS
         /// </summary>
         private void ApplyGraphicsSettings()
         {
+            NormalizeSettings();
             // 解像度設定
             Screen.SetResolution(
                 settings.Graphics.ResolutionWidth,
@@ -287,6 +398,26 @@ namespace OpenGS
             // VSync設定
             QualitySettings.vSyncCount = settings.Graphics.VSync ? 1 : 0;
 
+            // 詳細な描画設定
+            QualitySettings.antiAliasing = settings.Graphics.AntiAliasing
+                ? settings.Graphics.QualityLevel switch
+                {
+                    0 => 2,
+                    1 => 2,
+                    2 => 4,
+                    _ => 8
+                }
+                : 0;
+            QualitySettings.shadows = settings.Graphics.Shadows
+                ? ShadowQuality.All
+                : ShadowQuality.Disable;
+            QualitySettings.shadowResolution = settings.Graphics.ShadowQuality switch
+            {
+                0 => ShadowResolution.Low,
+                1 => ShadowResolution.Medium,
+                _ => ShadowResolution.High
+            };
+
             // フレームレート設定
             Application.targetFrameRate = settings.Graphics.TargetFrameRate;
 
@@ -298,11 +429,27 @@ namespace OpenGS
         /// </summary>
         private void ApplySoundSettings()
         {
-            // マスターボリューム
-            AudioListener.volume = settings.Sound.MasterVolume;
+            NormalizeSettings();
+            // マスターボリュームと個別ミキサー音量を実際の再生系へ反映する。
+            // MuteAll は保存値を壊さず、再生時の有効音量だけを 0 にする。
+            var sound = settings.Sound;
+            var muteMultiplier = sound.MuteAll ? 0f : 1f;
+            AudioListener.volume = sound.MasterVolume * muteMultiplier;
+
+            try
+            {
+                var audioManager = OpenGSR.Audio.SimpleAudioManager.Instance;
+                audioManager.SetBGMVolume(sound.BGMVolume * muteMultiplier);
+                audioManager.SetSEVolume(sound.SEVolume * muteMultiplier);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[SettingsManager] BGM/SE音量適用をスキップ: {ex.Message}");
+            }
+
             TryApplyReverb(settings.Sound.Reverb);
 
-            Debug.Log($"[SettingsManager] サウンド設定を適用: MasterVolume={settings.Sound.MasterVolume}");
+            Debug.Log($"[SettingsManager] サウンド設定を適用: MasterVolume={sound.MasterVolume}, BGM={sound.BGMVolume}, SE={sound.SEVolume}, MuteAll={sound.MuteAll}");
         }
 
         private void TryApplyReverb(bool enabled)

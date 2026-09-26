@@ -3,22 +3,28 @@ using UnityEngine;
 
 namespace OpenGS
 {
-    public class FlameThrower : AbstractFieldItem
+    public class FlameThrower : WorldItem
     {
         [SerializeField] private GameObject weaponPrefab; // 装備される武器のプレハブ
         [SerializeField] private int initialAmmo = 100;
+        private bool consumed;
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var weaponSlots = collision.GetComponentInChildren<WeaponSlots>();
-            if (weaponSlots != null)
+            if (consumed || collision == null || weaponPrefab == null)
             {
-                // 特殊武器として装備
-                weaponSlots.EquipSpecialWeapon(weaponPrefab, initialAmmo);
-                
-                // アイテム自体は削除
-                Destroy(gameObject);
+                return;
             }
+
+            var weaponSlots = collision.GetComponentInParent<WeaponSlots>();
+            if (weaponSlots == null)
+            {
+                return;
+            }
+
+            consumed = true;
+            weaponSlots.EquipSpecialWeapon(weaponPrefab, Mathf.Max(0, initialAmmo));
+            Destroy(gameObject);
         }
     }
 

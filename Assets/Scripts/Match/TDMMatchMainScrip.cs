@@ -34,8 +34,13 @@ namespace OpenGS
         private new void Start()
         {
             base.Start();
-            Application.targetFrameRate = 30;
-
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
+            if (Instance != null && Instance != this)
+            {
+                Debug.LogWarning("[TDM] Duplicate main script found; destroying duplicate.");
+                Destroy(gameObject);
+                return;
+            }
             Instance = this;
 
             try
@@ -52,6 +57,12 @@ namespace OpenGS
             Invoke("GameSetup", 0.1f);
         }
 
+        protected override void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
+            base.OnDestroy();
+        }
+
         private void GameSetup()
         {
             PlayGameStartVoice();
@@ -59,9 +70,18 @@ namespace OpenGS
             CreateMyPlayerLocally();
             CreateOtherPlayers();
 
+            if (scoreUIManager == null)
+            {
+                scoreUIManager = FindObjectOfType<TDMScoreUIManager>();
+            }
+
             if (scoreUIManager != null)
             {
                 scoreUIManager.StartMatch();
+            }
+            else
+            {
+                Debug.LogWarning("[TDM] TDMScoreUIManager is not present in the active scene. Team score HUD is disabled.", this);
             }
         }
 
@@ -229,6 +249,7 @@ namespace OpenGS
             }
 
             linker.SetPlayerId(playerId ?? string.Empty);
+            playerObj.GetComponent<PlayerAgent>()?.SetPlayerID(playerId ?? string.Empty);
         }
 
         private static ETeam ResolveLocalTeam(OpenGSCore.WaitRoom room)
@@ -330,8 +351,8 @@ namespace OpenGS
                 });
             }
 
-            OnPlayerKilled?.Invoke(victimTeam);
-            OnTeamKill?.Invoke(killerTeam, victimTeam);
+            InvokeSafely(OnPlayerKilled, victimTeam, nameof(OnPlayerKilled));
+            InvokeSafely(OnTeamKill, killerTeam, victimTeam, nameof(OnTeamKill));
 
             if (GameManager != null && GameManager.IsOnlineGameMode)
             {
@@ -410,6 +431,11 @@ namespace OpenGS
 
         private void OnlineEventParser(AbstractMatchEvent e)
         {
+            if (e == null)
+            {
+                return;
+            }
+
             var eventName = e.EventName;
 
             if ("FlagReturnEvent" == eventName)
@@ -423,14 +449,26 @@ namespace OpenGS
 
         private void OfflineEventParser(AbstractGameEvent e)
         {
-        }
+            if (e == null)
+            {
+                return;
+            }
 
-        public override void PostEvent(AbstractGameEvent e)
-        {
             if (e is PlayerKillEvent killEvent)
             {
                 ProcessKillEvent(killEvent);
             }
+        }
+
+        public override void PostEvent(AbstractGameEvent e)
+        {
+            if (e == null)
+            {
+                return;
+            }
+
+            OfflineEventParser(e);
+            OnlineEventParser(e as AbstractMatchEvent);
 
             if (GameManager != null && GameManager.IsOnlineGameMode)
             {
@@ -514,14 +552,16 @@ namespace OpenGS
                 scoreUIManager?.AddBlueKill();
             }
 
-            OnTeamKill?.Invoke(killerTeam, victimTeam);
+            InvokeSafely(OnTeamKill, killerTeam, victimTeam, nameof(OnTeamKill));
             Debug.Log($"[TDM] Received team kill from server: {killerTeam} killed {victimTeam}");
         }
 
         private void HandleScoreUpdate(JObject json)
         {
-            var redKills = json["RedTeamKills"]?.ToObject<int>() ?? 0;
-            var blueKills = json["BlueTeamKills"]?.ToObject<int>() ?? 0;
+            var redKills = ReadInt(json, "RedTeamKills");
+            var blueKills = ReadInt(json, "BlueTeamKills");
+            redKills = Math.Max(0, redKills);
+            blueKills = Math.Max(0, blueKills);
 
             scoreUIManager?.UpdateScoreFromServer(redKills, blueKills);
             Debug.Log($"[TDM] Score update: Red={redKills}, Blue={blueKills}");
@@ -531,7 +571,7 @@ namespace OpenGS
         {
             var killerId = json["KillerId"]?.ToString();
             var victimId = json["VictimId"]?.ToString();
-            var headshot = json["Headshot"]?.ToObject<bool>() ?? false;
+            var headshot = ReadBool(json, "Headshot");
 
             Debug.Log($"[TDM] Player kill: {killerId} killed {victimId} (headshot: {headshot})");
         }
@@ -551,8 +591,48 @@ namespace OpenGS
             {
                 StoreOfflineMatchResult(winningTeam, myTeam);
             }
-            OnMatchEnded?.Invoke(Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam);
+            InvokeSafely(OnMatchEnded, Enum.TryParse(winningTeam, out ETeam team) ? team : ETeam.NoTeam, nameof(OnMatchEnded));
             ScheduleResultSceneTransition(0f);
+        }
+
+        private static void InvokeSafely(Action<ETeam> handlers, ETeam team, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<ETeam> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(team);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[TDMMatchMainScrip] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<ETeam, ETeam> handlers, ETeam killerTeam, ETeam victimTeam, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<ETeam, ETeam> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(killerTeam, victimTeam);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[TDMMatchMainScrip] {eventName} subscriber failed: {ex}");
+                }
+            }
         }
 
         private void StoreOfflineMatchResult(string winningTeam, string myTeam)

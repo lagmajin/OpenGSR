@@ -40,10 +40,14 @@ namespace OpenGS
                 // ゲームプレイ系
                 RUDPMessageTypes.PlayerDeath     => DeserializePlayerDead(json),
                 RUDPMessageTypes.PlayerKill      => DeserializePlayerKill(json),
+                RUDPMessageTypes.PlayerKilled    => DeserializePlayerKill(json),
                 RUDPMessageTypes.PlayerAssist    => DeserializePlayerAssist(json),
                 RUDPMessageTypes.PlayerShot      => DeserializePlayerShot(json),
                 RUDPMessageTypes.PlayerDamage    => DeserializePlayerDamage(json),
+                RUDPMessageTypes.PlayerDamaged  => DeserializePlayerDamage(json),
                 RUDPMessageTypes.KillScoreUpdate => DeserializeScoreUpdate(json),
+                RUDPMessageTypes.FlagScoreUpdate => DeserializeFlagScoreUpdate(json),
+                RUDPMessageTypes.StreakUpdate => DeserializeStreakUpdate(json),
 
                 // リスポーン
                 RUDPMessageTypes.PlayerRespawn     => DeserializePlayerRespawn(json),
@@ -99,9 +103,15 @@ namespace OpenGS
                 RUDPMessageTypes.FlagBurst => DeserializeFlagEvent(json, EFlagEventType.Burst),
                 RUDPMessageTypes.FlagPickup => DeserializeFlagEvent(json, EFlagEventType.Pickup),
 
-                // 未対応
-                _ => null
+                // 未対応イベントは無言で捨てず、サーバー・クライアントの仕様ずれを検知できるようにする。
+                _ => DeserializeUnsupported(json, messageType)
             };
+        }
+
+        private static AbstractGameEvent DeserializeUnsupported(JObject json, string messageType)
+        {
+            Debug.LogWarning($"[NetworkEventDeserializer] Unsupported network event '{messageType}'. Payload: {json}");
+            return null;
         }
 
         // ─── 個別デシリアライズメソッド ──────────────────────────────
@@ -123,8 +133,8 @@ namespace OpenGS
         private static PlayerKillEvent DeserializePlayerKill(JObject json)
         {
             return new PlayerKillEvent(
-                S(json, "KillerId"),
-                S(json, "VictimId"),
+                S(json, "KillerId", S(json, "KillerID")),
+                S(json, "VictimId", S(json, "KilledPlayerID")),
                 S(json, "WeaponType", "Unknown"),
                 B(json, "Headshot")
             );
@@ -148,8 +158,8 @@ namespace OpenGS
         private static PlayerDamageEvent DeserializePlayerDamage(JObject json)
         {
             return new PlayerDamageEvent(
-                S(json, "TargetId"),
-                S(json, "AttackerId"),
+                S(json, "TargetId", S(json, "DamagedPlayerID")),
+                S(json, "AttackerId", S(json, "AttackerID")),
                 I(json, "Damage"),
                 I(json, "RemainingHp")
             );
@@ -169,9 +179,33 @@ namespace OpenGS
 
         private static PlayerRespawnEvent DeserializePlayerRespawn(JObject json)
         {
+            var spawnPosition = json["SpawnPosition"] as JObject;
+            var posX = F(json, "PosX", F(spawnPosition, "X"));
+            var posY = F(json, "PosY", F(spawnPosition, "Y"));
+
             return new PlayerRespawnEvent(
-                S(json, "PlayerId"),
-                new Vector2(F(json, "PosX"), F(json, "PosY"))
+                S(json, "PlayerId", S(json, "PlayerID")),
+                new Vector2(posX, posY)
+            );
+        }
+
+        private static FlagScoreUpdateEvent DeserializeFlagScoreUpdate(JObject json)
+        {
+            return new FlagScoreUpdateEvent(
+                I(json, "RedTeamScore", I(json, "RedTeamFlagScore")),
+                I(json, "BlueTeamScore", I(json, "BlueTeamFlagScore")),
+                I(json, "RedTeamFlags"),
+                I(json, "BlueTeamFlags"),
+                S(json, "EventKey")
+            );
+        }
+
+        private static StreakUpdateEvent DeserializeStreakUpdate(JObject json)
+        {
+            return new StreakUpdateEvent(
+                S(json, "PlayerId", S(json, "PlayerID")),
+                I(json, "StreakCount"),
+                S(json, "StreakType", "kill")
             );
         }
 
@@ -370,18 +404,114 @@ namespace OpenGS
         // ─── JSON ヘルパー (null-safe) ──────────────────────────────
 
         private static string S(JObject json, string key, string fallback = "")
-            => json[key]?.ToString() ?? fallback;
+        {
+            if (json == null || string.IsNullOrWhiteSpace(key))
+            {
+                return fallback;
+            }
+
+            var exact = json[key];
+            if (exact != null)
+            {
+                return exact.ToString();
+            }
+
+            // The server historically emits both PlayerID and PlayerId (and
+            // similar casing variants). JObject lookup is case-sensitive, so
+            // resolve the protocol field case-insensitively at the boundary.
+            foreach (var property in json.Properties())
+            {
+                if (string.Equals(property.Name, key, StringComparison.OrdinalIgnoreCase))
+                {
+                    return property.Value?.ToString() ?? fallback;
+                }
+            }
+
+            return fallback;
+        }
 
         private static int I(JObject json, string key, int fallback = 0)
-            => json[key]?.ToObject<int>() ?? fallback;
+        {
+            try
+            {
+                return GetToken(json, key)?.ToObject<int>() ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
 
         private static float F(JObject json, string key, float fallback = 0f)
-            => json[key]?.ToObject<float>() ?? fallback;
+        {
+            if (float.IsNaN(fallback) || float.IsInfinity(fallback))
+            {
+                fallback = 0f;
+            }
+
+            try
+            {
+                var token = GetToken(json, key);
+                var value = token?.ToObject<float>();
+                if (!value.HasValue || float.IsNaN(value.Value) || float.IsInfinity(value.Value))
+                {
+                    return fallback;
+                }
+
+                return value.Value;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
 
         private static long L(JObject json, string key, long fallback = 0)
-            => json[key]?.ToObject<long>() ?? fallback;
+        {
+            try
+            {
+                return GetToken(json, key)?.ToObject<long>() ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
 
         private static bool B(JObject json, string key, bool fallback = false)
-            => json[key]?.ToObject<bool>() ?? fallback;
+        {
+            try
+            {
+                return GetToken(json, key)?.ToObject<bool>() ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
+
+        private static JToken GetToken(JObject json, string key)
+        {
+            if (json == null || string.IsNullOrWhiteSpace(key))
+            {
+                return null;
+            }
+
+            var token = json[key];
+            if (token != null)
+            {
+                return token;
+            }
+
+            foreach (var property in json.Properties())
+            {
+                if (string.Equals(property.Name, key, StringComparison.OrdinalIgnoreCase))
+                {
+                    return property.Value;
+                }
+            }
+
+            return null;
+        }
     }
 }

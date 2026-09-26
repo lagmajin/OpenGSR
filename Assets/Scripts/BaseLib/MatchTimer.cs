@@ -34,6 +34,18 @@ namespace OpenGS
         // Ping同期用（オプション）
         private float pingOffset = 0f; // サーバーとクライアントの時間差
 
+        private void Awake()
+        {
+            matchDuration = float.IsFinite(matchDuration) ? Mathf.Max(0f, matchDuration) : 0f;
+            syncInterval = float.IsFinite(syncInterval) ? Mathf.Max(0.1f, syncInterval) : 1f;
+        }
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(matchDuration) || matchDuration < 0f) matchDuration = 0f;
+            if (!float.IsFinite(syncInterval) || syncInterval < 0.1f) syncInterval = 0.1f;
+        }
+
         // 後方互換性プロパティ
         /// <summary>
         /// 後方互換性のため残しています。localRemainingTime を使用してしてください。
@@ -49,24 +61,39 @@ namespace OpenGS
             localRemainingTime = matchDuration;
         }
 
+        private void OnDisable()
+        {
+            isStart = false;
+        }
+
         private void Update()
         {
             if (isStart)
             {
                 // ローカルのdeltaTimeを使用
                 float delta = Time.deltaTime;
+                if (!float.IsFinite(delta) || delta < 0f) return;
 
                 if (useServerTime && receivedServerTime)
                 {
                     // サーバー時間を使用する場合：サーバーから受け取った時間から経過を引き算
                     // サーバーと同期してからの経過時間を計算
                     float elapsedSinceSync = Time.time - lastSyncTime;
-                    localRemainingTime = serverRemainingTime - pingOffset - elapsedSinceSync;
+                    if (!float.IsFinite(elapsedSinceSync) || elapsedSinceSync < 0f) elapsedSinceSync = 0f;
+                    var syncedRemainingTime = serverRemainingTime - pingOffset - elapsedSinceSync;
+                    localRemainingTime = float.IsFinite(syncedRemainingTime)
+                        ? Mathf.Max(0f, syncedRemainingTime)
+                        : 0f;
                 }
                 else
                 {
                     // オフラインまたはサーバー時間未受信の場合：ローカルでカウントダウン
-                    localRemainingTime -= delta;
+                    localRemainingTime -= Mathf.Min(delta, 0.1f);
+                }
+
+                if (!float.IsFinite(localRemainingTime))
+                {
+                    localRemainingTime = 0f;
                 }
 
                 // 時間が0以下になった場合
@@ -77,7 +104,24 @@ namespace OpenGS
                 }
 
                 // 時間更新イベント
-                onTimeUpdated?.Invoke(localRemainingTime);
+                InvokeSafely(onTimeUpdated, localRemainingTime, nameof(onTimeUpdated));
+            }
+        }
+
+        private static void InvokeSafely(UnityEvent<float> handlers, float value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            try
+            {
+                handlers.Invoke(value);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[MatchTimer] {eventName} listener failed: {ex}");
             }
         }
 
@@ -88,14 +132,16 @@ namespace OpenGS
         /// <param name="serverTimestamp">サーバーのタイムスタンプ</param>
         public void SyncServerTime(int remainingTime, long serverTimestamp)
         {
-            serverRemainingTime = remainingTime;
+            serverRemainingTime = Mathf.Max(0, remainingTime);
+            if (!float.IsFinite(pingOffset)) pingOffset = 0f;
             receivedServerTime = true;
-            lastSyncTime = Time.time;
+            var now = Time.time;
+            lastSyncTime = float.IsFinite(now) && now >= 0f ? now : 0f;
 
             // 最初の同期の場合、ローカル時間をサーバー時間に合わせる
             if (!isStart || localRemainingTime <= 0)
             {
-                localRemainingTime = remainingTime;
+                localRemainingTime = serverRemainingTime;
             }
 
             Debug.Log($"[MatchTimer] Server time synced: {remainingTime}s, local: {localRemainingTime}s");
@@ -116,8 +162,9 @@ namespace OpenGS
         /// </summary>
         public void SetTime(float t)
         {
-            matchDuration = t;
-            localRemainingTime = t;
+            matchDuration = float.IsFinite(t) ? Mathf.Max(0f, t) : 0f;
+            localRemainingTime = matchDuration;
+            pingOffset = 0f;
         }
 
         /// <summary>
@@ -184,7 +231,7 @@ namespace OpenGS
         /// </summary>
         public void SetSyncInterval(float interval)
         {
-            syncInterval = Mathf.Max(0.1f, interval);
+            syncInterval = float.IsFinite(interval) ? Mathf.Max(0.1f, interval) : 1f;
         }
 
         /// <summary>
@@ -192,7 +239,7 @@ namespace OpenGS
         /// </summary>
         public void SetPingOffset(float offset)
         {
-            pingOffset = offset;
+            pingOffset = float.IsFinite(offset) ? offset : 0f;
         }
 
         /// <summary>
@@ -200,8 +247,8 @@ namespace OpenGS
         /// </summary>
         public void SetMatchDuration(float duration)
         {
-            matchDuration = duration;
-            localRemainingTime = duration;
+            matchDuration = float.IsFinite(duration) ? Mathf.Max(0f, duration) : 0f;
+            localRemainingTime = matchDuration;
         }
 
         private void TimeUp()
@@ -209,7 +256,17 @@ namespace OpenGS
             isStart = false;
             localRemainingTime = 0f;
 
-            timeupEvent.Invoke();
+            if (timeupEvent != null)
+            {
+                try
+                {
+                    timeupEvent.Invoke();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[MatchTimer] timeup listener failed: {ex}");
+                }
+            }
             Debug.Log("[MatchTimer] Time up!");
         }
 
@@ -221,6 +278,7 @@ namespace OpenGS
             isStart = false;
             localRemainingTime = matchDuration;
             receivedServerTime = false;
+            pingOffset = 0f;
         }
     }
 }

@@ -94,6 +94,7 @@ namespace OpenGS.EditorTools
         private void OnGUI()
         {
             DrawToolbar();
+            DrawSceneDropArea();
 
             EditorGUILayout.Space(4);
             scroll = EditorGUILayout.BeginScrollView(scroll);
@@ -119,6 +120,67 @@ namespace OpenGS.EditorTools
             }
 
             EditorGUILayout.EndScrollView();
+        }
+
+        private void DrawSceneDropArea()
+        {
+            using (new EditorGUILayout.VerticalScope(EditorStyles.helpBox))
+            {
+                EditorGUILayout.LabelField("Scene Import", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField("Drag a scene object here to create a prefab asset under the current folder.", EditorStyles.wordWrappedMiniLabel);
+
+                var dropRect = GUILayoutUtility.GetRect(0f, 42f, GUILayout.ExpandWidth(true));
+                GUI.Box(dropRect, "Drop scene objects here", EditorStyles.centeredGreyMiniLabel);
+
+                HandleSceneDragAndDrop(dropRect);
+
+                using (new EditorGUILayout.HorizontalScope())
+                {
+                    GUI.enabled = Selection.activeGameObject != null;
+                    if (GUILayout.Button("Create Prefab From Selection", GUILayout.Height(24f)))
+                    {
+                        CreatePrefabFromGameObject(Selection.activeGameObject);
+                    }
+                    GUI.enabled = true;
+
+                    GUILayout.FlexibleSpace();
+                }
+            }
+        }
+
+        private void HandleSceneDragAndDrop(Rect dropRect)
+        {
+            var evt = Event.current;
+            if (evt == null || !dropRect.Contains(evt.mousePosition))
+            {
+                return;
+            }
+
+            if (evt.type != EventType.DragUpdated && evt.type != EventType.DragPerform)
+            {
+                return;
+            }
+
+            var dragged = DragAndDrop.objectReferences;
+            if (dragged == null || dragged.Length == 0)
+            {
+                return;
+            }
+
+            var sceneObject = dragged.Select(GetBestSceneObject).FirstOrDefault(go => go != null);
+            if (sceneObject == null)
+            {
+                return;
+            }
+
+            DragAndDrop.visualMode = DragAndDropVisualMode.Copy;
+            if (evt.type == EventType.DragPerform)
+            {
+                DragAndDrop.AcceptDrag();
+                CreatePrefabFromGameObject(sceneObject);
+            }
+
+            evt.Use();
         }
 
         private void DrawToolbar()
@@ -295,6 +357,71 @@ namespace OpenGS.EditorTools
         {
             Selection.activeObject = entry.Asset;
             EditorGUIUtility.PingObject(entry.Asset);
+        }
+
+        private void CreatePrefabFromGameObject(GameObject source)
+        {
+            if (source == null)
+            {
+                return;
+            }
+
+            var root = source;
+            if (!EditorUtility.IsPersistent(root))
+            {
+                root = source.transform.root != null ? source.transform.root.gameObject : source;
+            }
+
+            var folder = string.IsNullOrWhiteSpace(folderFilter) ? RootFolder : folderFilter;
+            if (!AssetDatabase.IsValidFolder(folder))
+            {
+                folder = RootFolder;
+            }
+
+            var assetPath = AssetDatabase.GenerateUniqueAssetPath($"{folder}/{SanitizePrefabName(root.name)}.prefab");
+            var prefab = PrefabUtility.SaveAsPrefabAsset(root, assetPath);
+            if (prefab == null)
+            {
+                Debug.LogWarning($"[PrefabAssetBrowserWindow] Failed to create prefab from {root.name}.");
+                return;
+            }
+
+            AssetDatabase.SaveAssets();
+            AssetDatabase.Refresh();
+            Refresh();
+            Selection.activeObject = prefab;
+            EditorGUIUtility.PingObject(prefab);
+            Debug.Log($"[PrefabAssetBrowserWindow] Created prefab: {assetPath}");
+        }
+
+        private static GameObject GetBestSceneObject(UnityEngine.Object obj)
+        {
+            if (obj is GameObject go)
+            {
+                return go;
+            }
+
+            if (obj is Component component)
+            {
+                return component.gameObject;
+            }
+
+            return null;
+        }
+
+        private static string SanitizePrefabName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                return "NewPrefab";
+            }
+
+            foreach (var invalid in System.IO.Path.GetInvalidFileNameChars())
+            {
+                name = name.Replace(invalid, '_');
+            }
+
+            return name;
         }
 
         private sealed class PrefabEntry

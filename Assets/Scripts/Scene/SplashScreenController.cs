@@ -28,6 +28,14 @@ namespace OpenGS
 
         private ISoundService soundService;
         private AbstractScene parentScene;
+        private bool transitionRequested;
+
+        private void OnValidate()
+        {
+            preDelayDuration = float.IsFinite(preDelayDuration) ? Mathf.Max(0f, preDelayDuration) : 0f;
+            displayDuration = float.IsFinite(displayDuration) ? Mathf.Max(0f, displayDuration) : 0f;
+            fadeDuration = float.IsFinite(fadeDuration) ? Mathf.Max(0f, fadeDuration) : 0f;
+        }
 
         [Inject]
         public void Construct(ISoundService soundService)
@@ -37,6 +45,10 @@ namespace OpenGS
 
         private void Awake()
         {
+            preDelayDuration = float.IsFinite(preDelayDuration) ? Mathf.Max(0f, preDelayDuration) : 0f;
+            displayDuration = float.IsFinite(displayDuration) ? Mathf.Max(0f, displayDuration) : 0f;
+            fadeDuration = float.IsFinite(fadeDuration) ? Mathf.Max(0f, fadeDuration) : 0f;
+
             // 自動注入に失敗している場合、手動で解決を試みる
             if (soundService == null)
             {
@@ -61,6 +73,15 @@ namespace OpenGS
         private void Start()
         {
             StartCoroutine(SplashScreenSequence());
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            if (splashMediate != null && splashMediate.SplashCanvasGroup != null)
+            {
+                DOTween.Kill(splashMediate.SplashCanvasGroup);
+            }
         }
 
         private IEnumerator SplashScreenSequence()
@@ -116,10 +137,17 @@ namespace OpenGS
 
         private void TransitionToNextScene()
         {
+            if (transitionRequested)
+            {
+                return;
+            }
+
             if (stopBgmOnTransition && soundService != null)
             {
                 soundService.StopBGM(fadeDuration);
             }
+
+            transitionRequested = true;
 
             if (parentScene != null)
             {
@@ -128,6 +156,14 @@ namespace OpenGS
             else
             {
                 var title = GeneralSceneMasterData.Instance().TitleScene();
+                if (string.IsNullOrWhiteSpace(title) || !Application.CanStreamedLevelBeLoaded(title))
+                {
+                    Debug.LogError($"[SplashScreenController] Title scene is not available in build settings: {title}");
+                    transitionRequested = false;
+                    return;
+                }
+
+                transitionRequested = true;
                 UnityEngine.SceneManagement.SceneManager.LoadScene(title);
             }
         }

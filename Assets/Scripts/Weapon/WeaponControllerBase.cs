@@ -18,15 +18,22 @@ namespace OpenGS
         Vector2 direction;
 
         private AudioSource aSource = null;
-
-        void Start()
-        {
-
-        }
+        private Camera cachedCamera;
 
         void Update()
         {
-            var screenPos = Camera.main.WorldToScreenPoint(transform.position);
+            if (cachedCamera == null)
+            {
+                cachedCamera = Camera.main;
+            }
+
+            var camera = cachedCamera;
+            if (camera == null)
+            {
+                return;
+            }
+
+            var screenPos = camera.WorldToScreenPoint(transform.position);
             var direction = Input.mousePosition - screenPos;
 
             var trans = transform.localScale;
@@ -46,11 +53,6 @@ namespace OpenGS
             }
 
             transform.localScale = trans;
-        }
-
-        private void OnCollisionEnter2D(Collision2D collision)
-        {
-
         }
 
         public void shot()

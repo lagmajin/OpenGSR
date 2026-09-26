@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Globalization;
 
 namespace OpenGS
 {
@@ -32,6 +33,7 @@ namespace OpenGS
 
         private FriendEntry friend;
         private Action<FriendEntry> onSelected;
+        private Action<FriendEntry> onActionRequested;
         private bool isSelected = false;
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -43,8 +45,31 @@ namespace OpenGS
         /// <param name="onSelectedCallback">選択時のコールバック</param>
         public void Setup(FriendEntry friend, Action<FriendEntry> onSelectedCallback)
         {
+            Setup(friend, onSelectedCallback, null);
+        }
+
+        /// <summary>
+        /// フレンド情報と選択・アクションのコールバックをセットアップする。
+        /// </summary>
+        public void Setup(
+            FriendEntry friend,
+            Action<FriendEntry> onSelectedCallback,
+            Action<FriendEntry> onActionRequestedCallback)
+        {
+            if (friend == null)
+            {
+                this.friend = null;
+                onSelected = null;
+                onActionRequested = null;
+                if (selectButton != null) selectButton.interactable = false;
+                if (actionButton != null) actionButton.interactable = false;
+                return;
+            }
+
             this.friend = friend;
             this.onSelected = onSelectedCallback;
+            this.onActionRequested = onActionRequestedCallback;
+            isSelected = false;
 
             UpdateUI();
             SetupListeners();
@@ -94,11 +119,13 @@ namespace OpenGS
         {
             if (selectButton != null)
             {
+                selectButton.onClick.RemoveListener(OnSelectButtonClicked);
                 selectButton.onClick.AddListener(OnSelectButtonClicked);
             }
 
             if (actionButton != null)
             {
+                actionButton.onClick.RemoveListener(OnActionButtonClicked);
                 actionButton.onClick.AddListener(OnActionButtonClicked);
             }
         }
@@ -108,13 +135,34 @@ namespace OpenGS
         private void OnSelectButtonClicked()
         {
             isSelected = !isSelected;
-            onSelected?.Invoke(friend);
+            try
+            {
+                onSelected?.Invoke(friend);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[FriendItem] Selection callback failed: {ex}");
+            }
         }
 
         private void OnActionButtonClicked()
         {
-            // アクションメニューを表示（実装は省略）
-            Debug.Log($"[FriendItem] アクションボタンがクリックされました: {friend.PlayerName}");
+            if (friend == null) return;
+
+            if (onActionRequested != null)
+            {
+                try
+                {
+                    onActionRequested.Invoke(friend);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[FriendItem] Action callback failed: {ex}");
+                }
+                return;
+            }
+
+            Debug.LogWarning($"[FriendItem] アクション処理が未接続です: {friend.PlayerName}");
         }
 
         // ─── ユーティリティ ─────────────────────────────────────────
@@ -127,9 +175,9 @@ namespace OpenGS
             if (string.IsNullOrEmpty(dateString))
                 return "不明";
 
-            try
+            if (DateTime.TryParse(dateString, CultureInfo.InvariantCulture,
+                DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.RoundtripKind, out var lastOnline))
             {
-                var lastOnline = DateTime.Parse(dateString);
                 var now = DateTime.Now;
                 var diff = now - lastOnline;
 
@@ -144,10 +192,8 @@ namespace OpenGS
                 else
                     return lastOnline.ToString("MM/dd HH:mm");
             }
-            catch
-            {
-                return dateString;
-            }
+
+            return dateString;
         }
 
         // ─── 公開メソッド ───────────────────────────────────────────

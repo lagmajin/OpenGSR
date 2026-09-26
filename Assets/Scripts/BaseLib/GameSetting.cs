@@ -44,11 +44,11 @@ namespace OpenGS
 
         public void EnableReverb()
         {
-
+            isOnReverb = true;
         }
         public void DisableReverb()
         {
-
+            isOnReverb = false;
         }
     }
 

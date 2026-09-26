@@ -12,15 +12,5 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class GameSettingSceneController : AbstractSceneController
     {
-        void Start()
-        {
-
-        }
-
-        void Update()
-        {
-
-        }
-
     }
 }

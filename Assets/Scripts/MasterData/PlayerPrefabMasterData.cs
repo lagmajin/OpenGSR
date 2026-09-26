@@ -24,7 +24,7 @@ namespace OpenGS
             if (string.IsNullOrWhiteSpace(charId))
             {
                 Debug.LogWarning("[PlayerPrefabMasterData] Character id is empty.");
-                return null;
+                return defaultPrefab != null ? defaultPrefab : mistyPrefab;
             }
 
             if (string.Equals(charId, EPlayerCharacter.Misty.ToString(), System.StringComparison.OrdinalIgnoreCase))

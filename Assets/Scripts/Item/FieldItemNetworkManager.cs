@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using Newtonsoft.Json.Linq;
 
 namespace OpenGS
@@ -10,7 +11,7 @@ namespace OpenGS
     /// フィールドアイテムのネットワーク同期管理
     /// サーバー&クライアント両方で使用
     /// </summary>
-    public class FieldItemNetworkManager : MonoBehaviour
+    public class WorldItemNetworkManager : MonoBehaviour
     {
         /// <summary>
         /// フィールドアイテムの状態
@@ -26,7 +27,7 @@ namespace OpenGS
         /// フィールドアイテムのデータ
         /// </summary>
         [Serializable]
-        public class FieldItemData
+        public class WorldItemData
         {
             public string ItemId;
             public eFieldItemType ItemType;
@@ -37,13 +38,13 @@ namespace OpenGS
             public float RespawnTime;
             public bool IsActive;
 
-            public FieldItemData(string itemId, eFieldItemType type, Vector3 position)
+            public WorldItemData(string itemId, eFieldItemType type, Vector3 position)
             {
                 ItemId = itemId;
                 ItemType = type;
                 Position = position;
                 State = ItemState.Spawned;
-                SpawnTime = Time.time;
+                SpawnTime = GetSafeTime();
                 RespawnTime = 0;
                 IsActive = true;
             }
@@ -52,12 +53,12 @@ namespace OpenGS
         /// <summary>
         /// シングルトン
         /// </summary>
-        public static FieldItemNetworkManager? Instance { get; private set; }
+        public static WorldItemNetworkManager? Instance { get; private set; }
 
         /// <summary>
         /// フィールドアイテムの辞書
         /// </summary>
-        private readonly Dictionary<string, FieldItemData> _fieldItems = new();
+        private readonly Dictionary<string, WorldItemData> _fieldItems = new();
 
         /// <summary>
         /// アイテム取得イベント
@@ -82,14 +83,21 @@ namespace OpenGS
                 return;
             }
             Instance = this;
+            SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
         private void OnDestroy()
         {
+            SceneManager.sceneLoaded -= OnSceneLoaded;
             if (Instance == this)
             {
                 Instance = null;
             }
+        }
+
+        private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+        {
+            ClearAll();
         }
 
         /// <summary>
@@ -99,10 +107,10 @@ namespace OpenGS
         {
             string itemId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
-            var itemData = new FieldItemData(itemId, itemType, position);
+            var itemData = new WorldItemData(itemId, itemType, position);
             _fieldItems[itemId] = itemData;
 
-            OnItemSpawned?.Invoke(itemId, itemType, position);
+            InvokeSafely(OnItemSpawned, itemId, itemType, position, nameof(OnItemSpawned));
 
             return itemId;
         }
@@ -120,7 +128,7 @@ namespace OpenGS
                     itemData.PickedUpByPlayerId = playerId;
                     itemData.IsActive = false;
 
-                    OnItemPickedUp?.Invoke(itemId, playerId, itemData.ItemType);
+                    InvokeSafely(OnItemPickedUp, itemId, playerId, itemData.ItemType, nameof(OnItemPickedUp));
 
                     Debug.Log($"[FieldItem] Picked up: {itemId} by {playerId} ({itemData.ItemType})");
                 }
@@ -132,12 +140,14 @@ namespace OpenGS
         /// </summary>
         public void DespawnItem(string itemId)
         {
-            if (_fieldItems.TryGetValue(itemId, out var itemData))
+            if (_fieldItems.TryGetValue(itemId, out var itemData)
+                && itemData.IsActive
+                && itemData.State != ItemState.Despawned)
             {
                 itemData.State = ItemState.Despawned;
                 itemData.IsActive = false;
 
-                OnItemDespawned?.Invoke(itemId);
+                InvokeSafely(OnItemDespawned, itemId, nameof(OnItemDespawned));
             }
         }
 
@@ -151,17 +161,17 @@ namespace OpenGS
                 itemData.Position = newPosition;
                 itemData.State = ItemState.Spawned;
                 itemData.IsActive = true;
-                itemData.SpawnTime = Time.time;
+                itemData.SpawnTime = GetSafeTime();
                 itemData.PickedUpByPlayerId = "";
 
-                OnItemSpawned?.Invoke(itemId, itemData.ItemType, newPosition);
+                InvokeSafely(OnItemSpawned, itemId, itemData.ItemType, newPosition, nameof(OnItemSpawned));
             }
         }
 
         /// <summary>
         /// アイテムデータを取得
         /// </summary>
-        public FieldItemData? GetItemData(string itemId)
+        public WorldItemData? GetItemData(string itemId)
         {
             return _fieldItems.TryGetValue(itemId, out var data) ? data : null;
         }
@@ -169,9 +179,9 @@ namespace OpenGS
         /// <summary>
         /// 全てのアクティブなアイテムを取得
         /// </summary>
-        public List<FieldItemData> GetActiveItems()
+        public List<WorldItemData> GetActiveItems()
         {
-            var activeItems = new List<FieldItemData>();
+            var activeItems = new List<WorldItemData>();
             foreach (var kvp in _fieldItems)
             {
                 if (kvp.Value.IsActive && kvp.Value.State == ItemState.Spawned)
@@ -198,35 +208,163 @@ namespace OpenGS
             _fieldItems.Clear();
         }
 
+        private static float GetSafeTime()
+        {
+            var now = Time.time;
+            return float.IsFinite(now) && now >= 0f ? now : 0f;
+        }
+
         /// <summary>
         /// アイテムをJSONから復元
         /// </summary>
         public void LoadFromJson(JArray itemsArray)
         {
             _fieldItems.Clear();
+            if (itemsArray == null)
+            {
+                return;
+            }
 
             foreach (var itemToken in itemsArray)
             {
                 var item = itemToken as JObject;
                 if (item == null) continue;
 
-                var data = new FieldItemData(
-                    item["ItemId"]?.ToString() ?? "",
-                    FieldItemVisualResolver.TryParseLegacy(item["ItemType"]?.ToString() ?? "PowerUp", out var parsedType)
+                var itemId = item["ItemId"]?.ToString() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(itemId))
+                {
+                    Debug.LogWarning("[WorldItemNetworkManager] Ignoring item data without an ItemId.");
+                    continue;
+                }
+
+                var stateText = item["State"]?.ToString() ?? "Spawned";
+                if (!Enum.TryParse<ItemState>(stateText, true, out var parsedState))
+                {
+                    Debug.LogWarning($"[WorldItemNetworkManager] Ignoring item with invalid state: {stateText}");
+                    continue;
+                }
+
+                var positionX = ReadFloat(item["PositionX"]);
+                var positionY = ReadFloat(item["PositionY"]);
+                var positionZ = ReadFloat(item["PositionZ"]);
+                if (!IsFinite(positionX) || !IsFinite(positionY) || !IsFinite(positionZ))
+                {
+                    Debug.LogWarning($"[WorldItemNetworkManager] Ignoring item with invalid position: {itemId}");
+                    continue;
+                }
+
+                var data = new WorldItemData(
+                    itemId,
+                    WorldItemVisualResolver.TryParseLegacy(item["ItemType"]?.ToString() ?? "PowerUp", out var parsedType)
                         ? parsedType
                         : eFieldItemType.PowerUpItem,
-                    new Vector3(
-                        item["PositionX"]?.Value<float>() ?? 0,
-                        item["PositionY"]?.Value<float>() ?? 0,
-                        item["PositionZ"]?.Value<float>() ?? 0
-                    )
+                    new Vector3(positionX, positionY, positionZ)
                 );
 
-                data.State = Enum.Parse<ItemState>(item["State"]?.ToString() ?? "Spawned");
+                data.State = parsedState;
                 data.PickedUpByPlayerId = item["PickedUpByPlayerId"]?.ToString() ?? "";
-                data.IsActive = item["IsActive"]?.Value<bool>() ?? true;
+                data.IsActive = ReadBool(item["IsActive"], true);
 
                 _fieldItems[data.ItemId] = data;
+            }
+        }
+
+        private static void InvokeSafely(Action<string, string, eFieldItemType> handlers, string itemId, string playerId, eFieldItemType itemType, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<string, string, eFieldItemType> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(itemId, playerId, itemType);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[WorldItemNetworkManager] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<string, eFieldItemType, Vector3> handlers, string itemId, eFieldItemType itemType, Vector3 position, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<string, eFieldItemType, Vector3> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(itemId, itemType, position);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[WorldItemNetworkManager] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<string> handlers, string itemId, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<string> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(itemId);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[WorldItemNetworkManager] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return !float.IsNaN(value) && !float.IsInfinity(value);
+        }
+
+        private static float ReadFloat(JToken token)
+        {
+            if (token == null)
+            {
+                return 0f;
+            }
+
+            try
+            {
+                return token.ToObject<float>();
+            }
+            catch
+            {
+                return float.NaN;
+            }
+        }
+
+        private static bool ReadBool(JToken token, bool fallback)
+        {
+            if (token == null)
+            {
+                return fallback;
+            }
+
+            try
+            {
+                return token.ToObject<bool>();
+            }
+            catch
+            {
+                return fallback;
             }
         }
 
@@ -256,5 +394,10 @@ namespace OpenGS
 
             return array;
         }
+    }
+
+    [System.Obsolete("Use WorldItemNetworkManager instead.")]
+    public class FieldItemNetworkManager : WorldItemNetworkManager
+    {
     }
 }

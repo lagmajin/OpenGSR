@@ -8,6 +8,7 @@ using UnityEngine;
 namespace OpenGS
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(Rigidbody2D))]
     public class Character : MonoBehaviour
     {
         private bool spaceKeyDown = false;
@@ -51,6 +52,18 @@ namespace OpenGS
 
         public AudioClip boostStartSound;
         public AudioClip boostLoopSound;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(jumpDelay) || jumpDelay < 0f) jumpDelay = 2f;
+            if (!float.IsFinite(jumpPower)) jumpPower = 120f;
+            if (!float.IsFinite(boosterPower)) boosterPower = 60f;
+            if (!float.IsFinite(maxBoosterSpeed) || maxBoosterSpeed < 0f) maxBoosterSpeed = 60f;
+            if (!float.IsFinite(moveSpeed) || moveSpeed < 0f) moveSpeed = 0.08f;
+            if (!float.IsFinite(blinkInterval) || blinkInterval < 0.02f) blinkInterval = 0.1f;
+            if (!float.IsFinite(throwGranadePower) || throwGranadePower < 0f) throwGranadePower = 0f;
+            if (!float.IsFinite(inviTime) || inviTime < 0f) inviTime = 0f;
+        }
 
         private AudioSource aSource = null;
         private bool granadeOpend;
@@ -114,6 +127,13 @@ namespace OpenGS
             ChangeTransparency(1.0f);
         }
 
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            isInvincible = false;
+            ChangeTransparency(1.0f);
+        }
+
         void ChangeTransparency(float alpha)
         {
             if (_spriteRenderer != null)
@@ -122,6 +142,14 @@ namespace OpenGS
 
         void Start()
         {
+            jumpDelay = float.IsFinite(jumpDelay) ? Mathf.Max(0f, jumpDelay) : 2f;
+            jumpPower = float.IsFinite(jumpPower) ? jumpPower : 120f;
+            boosterPower = float.IsFinite(boosterPower) ? boosterPower : 60f;
+            maxBoosterSpeed = float.IsFinite(maxBoosterSpeed) ? Mathf.Max(0f, maxBoosterSpeed) : 60f;
+            moveSpeed = float.IsFinite(moveSpeed) ? Mathf.Max(0f, moveSpeed) : 0.08f;
+            blinkInterval = float.IsFinite(blinkInterval) ? Mathf.Max(0.02f, blinkInterval) : 0.1f;
+            throwGranadePower = float.IsFinite(throwGranadePower) ? Mathf.Max(0f, throwGranadePower) : 0f;
+            inviTime = float.IsFinite(inviTime) ? Mathf.Max(0f, inviTime) : 0f;
             _spriteRenderer = GetComponent<SpriteRenderer>();
             _rigidbody = GetComponent<Rigidbody2D>();
         }
@@ -156,7 +184,7 @@ namespace OpenGS
                     if (granadeOpend) throwGranade();
                 }
 
-                if (Input.GetKeyDown(KeyCode.LeftShift)) dropWeapon();
+                if (Input.GetKeyDown(KeyCode.Tab)) dropWeapon();
 
                 if (gameObject.transform.position.y <= -100) burst();
 
@@ -168,12 +196,13 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (collision.gameObject.tag == "GameOverArea") burst();
+            if (collision != null && collision.CompareTag("GameOverArea")) burst();
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            if (collision.gameObject.tag == "Ground")
+            if (collision == null || collision.gameObject == null) return;
+            if (collision.gameObject.CompareTag("Ground"))
             {
                 isGround = true;
             }
@@ -184,7 +213,7 @@ namespace OpenGS
         {
             if (boost > 0)
             {
-                _rigidbody.AddForce(Vector2.up * 60);
+                _rigidbody?.AddForce(Vector2.up * 60);
                 boost -= 1;
                 if (boost < 0) boost = 0;
                 isGround = false;
@@ -193,7 +222,7 @@ namespace OpenGS
 
         private void jump()
         {
-            _rigidbody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            _rigidbody?.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             isGround = false;
         }
 
@@ -213,13 +242,26 @@ namespace OpenGS
 
         private void shot()
         {
-            if (ball == null) return;
+            var camera = Camera.main;
+            if (ball == null || camera == null) return;
             var clone = Instantiate(ball, transform.position, Quaternion.identity);
-            var mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var mouseWorldPos = camera.ScreenToWorldPoint(Input.mousePosition);
             var shotForward = Vector3.Scale((mouseWorldPos - transform.position), new Vector3(1, 1, 0)).normalized;
-            clone.GetComponent<Rigidbody2D>().linearVelocity = shotForward * 10f;
+            if (!float.IsFinite(shotForward.x) || !float.IsFinite(shotForward.y) || shotForward.sqrMagnitude <= Mathf.Epsilon)
+            {
+                Destroy(clone);
+                return;
+            }
+            var body = clone.GetComponent<Rigidbody2D>();
+            if (body == null)
+            {
+                Destroy(clone);
+                return;
+            }
 
-            var ScreenPos = Camera.main.WorldToScreenPoint(transform.position);
+            body.linearVelocity = shotForward * 10f;
+
+            var ScreenPos = camera.WorldToScreenPoint(transform.position);
             var angle = Angle(Vector3.zero, Input.mousePosition - ScreenPos);
             var cloneAngles = clone.transform.localEulerAngles;
             cloneAngles.z = angle;
@@ -230,7 +272,7 @@ namespace OpenGS
         {
             if (!isDead)
             {
-                _rigidbody.AddForce(Vector2.up * 600, ForceMode2D.Impulse);
+                _rigidbody?.AddForce(Vector2.up * 600, ForceMode2D.Impulse);
                 isDead = true;
             }
         }
@@ -274,8 +316,13 @@ namespace OpenGS
         private void dropWeapon()
         {
             var prefab = Resources.Load("Prefabs/MX1014");
-            if (prefab != null)
-                Instantiate(prefab, _rigidbody.position, Quaternion.identity);
+            if (prefab == null)
+            {
+                return;
+            }
+
+            var spawnPosition = _rigidbody != null ? _rigidbody.position : (Vector2)transform.position;
+            Instantiate(prefab, spawnPosition, Quaternion.identity);
         }
     }
 }

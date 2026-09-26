@@ -39,6 +39,9 @@ namespace OpenGS
 
         [ShowInInspector, ReadOnly]
         private int playerLifeCount = 3;
+        private bool missionRequestSent;
+        private bool missionTransitionRequested;
+        private readonly SerialDisposable missionSubscription = new();
 
         private readonly Subject<JObject> onCompleteNotification = new();
         private readonly Subject<JObject> onFailNotification = new();
@@ -56,6 +59,11 @@ namespace OpenGS
             if (generalSceneMasterData == null)
             {
                 generalSceneMasterData = UnityEngine.Object.FindFirstObjectByType<GeneralSceneMasterData>();
+                if (generalSceneMasterData == null)
+                {
+                    generalSceneMasterData = Resources.Load<GeneralSceneMasterData>("MasterData/GeneralSceneMasterData")
+                        ?? Resources.Load<GeneralSceneMasterData>("MasterData/Scene/GeneralSceneMasterData");
+                }
             }
         }
 
@@ -90,6 +98,9 @@ namespace OpenGS
             var roomName = manager.RoomName();
             var capacity = manager.Capacity();
             currentRoomId = Guid.NewGuid().ToString("N");
+            missionRequestSent = false;
+            missionTransitionRequested = false;
+            currentPhase = EMissionPhase.WaitingForPlayers;
 
             Debug.Log($"[MissionWaitRoomController] Initialized mission room: {roomName}, capacity: {capacity}");
 
@@ -101,9 +112,10 @@ namespace OpenGS
 
         private void SubscribeToMissionServer()
         {
+            missionSubscription.Disposable = null;
             if (generalServer == null) return;
 
-            generalServer.DataReceivedStream
+            missionSubscription.Disposable = generalServer.DataReceivedStream
                 .ObserveOnMainThread()
                 .Where(json =>
                 {
@@ -120,7 +132,7 @@ namespace OpenGS
                         OnMissionServerMessage(json);
                     }
                 })
-                .AddTo(this);
+                ;
         }
 
         private void OnMissionServerMessage(JObject json)
@@ -137,11 +149,13 @@ namespace OpenGS
                     Debug.Log("[MissionWaitRoomController] Mission started.");
                     break;
                 case MessageType.MissionCompleteNotification:
+                    if (currentPhase == EMissionPhase.Completed) break;
                     currentPhase = EMissionPhase.Completed;
                     onCompleteNotification.OnNext(json);
                     Debug.Log("[MissionWaitRoomController] Mission completed.");
                     break;
                 case MessageType.MissionFailedNotification:
+                    if (currentPhase == EMissionPhase.Failed) break;
                     currentPhase = EMissionPhase.Failed;
                     onFailNotification.OnNext(json);
                     Debug.Log("[MissionWaitRoomController] Mission failed.");
@@ -160,6 +174,11 @@ namespace OpenGS
 
         public async Task<bool> StartMissionAsync(CancellationToken ct = default)
         {
+            if (missionRequestSent)
+            {
+                return false;
+            }
+
             if (matchRoomManager?.WaitRoom == null)
             {
                 Debug.LogWarning("[MissionWaitRoomController] WaitRoom not available for mission start.");
@@ -174,6 +193,7 @@ namespace OpenGS
             }
 
             currentPhase = EMissionPhase.Countdown;
+            missionRequestSent = true;
 
             var request = new JObject
             {
@@ -187,8 +207,20 @@ namespace OpenGS
                 generalServer.SendMessage(request);
             }
 
-            await Task.Delay(TimeSpan.FromSeconds(3), ct);
-            return true;
+            try
+            {
+                await Task.Delay(TimeSpan.FromSeconds(3), ct);
+                return true;
+            }
+            catch (OperationCanceledException) when (ct.IsCancellationRequested)
+            {
+                missionRequestSent = false;
+                if (currentPhase == EMissionPhase.Countdown)
+                {
+                    currentPhase = EMissionPhase.WaitingForPlayers;
+                }
+                return false;
+            }
         }
 
         public void UpdateLifeCount(int life)
@@ -199,6 +231,12 @@ namespace OpenGS
 
         public void AddBotToMission()
         {
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[MissionWaitRoomController] MissionRoomManager is not ready.");
+                return;
+            }
+
             var bot = new PlayerInfo($"bot_{Guid.NewGuid():N}", $"Bot_{MissionRoomManager.Instance.Capacity() + 1}")
             {
                 IsBot = true
@@ -216,6 +254,17 @@ namespace OpenGS
 
         public void ProceedToMissionScene()
         {
+            if (missionTransitionRequested)
+            {
+                return;
+            }
+
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[MissionWaitRoomController] MissionRoomManager is not ready.");
+                return;
+            }
+
             var missionIndex = MissionRoomManager.Instance.MissionIndex();
             var questIndex = MissionRoomManager.Instance.QuestIndex();
 
@@ -231,6 +280,7 @@ namespace OpenGS
 
             if (!string.IsNullOrWhiteSpace(nextScene))
             {
+                missionTransitionRequested = true;
                 RequestSceneTransition(nextScene, "MissionWaitRoomToMission");
             }
             else
@@ -296,7 +346,29 @@ namespace OpenGS
                 return;
             }
 
+            if (!Application.CanStreamedLevelBeLoaded(nextSceneName))
+            {
+                Debug.LogError($"[MissionWaitRoomController] Scene is not in build settings: {nextSceneName}. reason={reason}");
+                return;
+            }
+
+            if (missionTransitionRequested)
+            {
+                Debug.Log($"[MissionWaitRoomController] Scene transition already requested. reason={reason}");
+                return;
+            }
+
+            missionTransitionRequested = true;
             SceneManager.LoadScene(nextSceneName);
+        }
+
+        private void OnDestroy()
+        {
+            missionSubscription.Dispose();
+            onCompleteNotification.Dispose();
+            onFailNotification.Dispose();
+            onPlayerJoined.Dispose();
+            onPlayerLeft.Dispose();
         }
     }
 }

@@ -55,19 +55,21 @@ namespace OpenGS
         }
         public PlayerWaitRoomInfo(string name)
         {
-
+            Name = name ?? string.Empty;
+            ResetUUID();
         }
 
         public PlayerWaitRoomInfo(string name, string id)
         {
-            Name = name;
-            //Id = id;
-
+            Name = name ?? string.Empty;
+            LocalID = string.IsNullOrWhiteSpace(id)
+                ? Guid.NewGuid().ToString("N")
+                : id;
         }
 
         public void ResetUUID()
         {
-
+            LocalID = Guid.NewGuid().ToString("N");
         }
 
         public void AddKill(int i = 1)

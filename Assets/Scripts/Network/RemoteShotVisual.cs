@@ -14,16 +14,35 @@ namespace OpenGS
 
         public void Initialize(Vector2 shotDirection, float shotSpeed, float shotLifetime)
         {
-            direction = shotDirection.sqrMagnitude > Mathf.Epsilon ? shotDirection.normalized : Vector2.right;
-            speed = Mathf.Max(0f, shotSpeed);
-            lifetime = Mathf.Max(0.01f, shotLifetime);
+            direction = IsFinite(shotDirection) && shotDirection.sqrMagnitude > Mathf.Epsilon
+                ? shotDirection.normalized
+                : Vector2.right;
+            speed = IsFinite(shotSpeed) ? Mathf.Max(0f, shotSpeed) : 0f;
+            lifetime = IsFinite(shotLifetime) ? Mathf.Max(0.01f, shotLifetime) : 0.01f;
             age = 0f;
         }
 
         private void Update()
         {
+            if (!IsFinite(transform.position))
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             var dt = Time.deltaTime;
+            if (!IsFinite(dt) || dt <= 0f)
+            {
+                return;
+            }
+            // Keep a hitch from advancing the visual projectile through an entire room.
+            dt = Mathf.Min(dt, 0.1f);
             age += dt;
+            if (!IsFinite(age))
+            {
+                Destroy(gameObject);
+                return;
+            }
 
             if (direction.sqrMagnitude <= Mathf.Epsilon || speed <= 0f)
             {
@@ -55,6 +74,11 @@ namespace OpenGS
             }
 
             transform.position += (Vector3)step;
+            if (!IsFinite(transform.position))
+            {
+                Destroy(gameObject);
+                return;
+            }
 
             if (direction.sqrMagnitude > Mathf.Epsilon)
             {
@@ -66,6 +90,21 @@ namespace OpenGS
             {
                 Destroy(gameObject);
             }
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return float.IsFinite(value);
+        }
+
+        private static bool IsFinite(Vector2 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y);
+        }
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z);
         }
     }
 }

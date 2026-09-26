@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Globalization;
 
 namespace OpenGS
 {
@@ -193,15 +194,13 @@ namespace OpenGS
             if (string.IsNullOrEmpty(timestamp))
                 return "-";
 
-            try
+            if (DateTime.TryParse(timestamp, CultureInfo.InvariantCulture,
+                DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.RoundtripKind, out var dateTime))
             {
-                var dateTime = DateTime.Parse(timestamp);
-                return dateTime.ToString("MM/dd HH:mm");
+                return dateTime.ToLocalTime().ToString("MM/dd HH:mm");
             }
-            catch
-            {
-                return timestamp;
-            }
+
+            return timestamp;
         }
 
         // ─── 公開メソッド ───────────────────────────────────────────

@@ -11,12 +11,6 @@ namespace OpenGS
         [Required]
         [SceneObjectsOnly]
         private AbstractBattleSceneMediateObject battleSceneMediateObject;
-        void Start()
-        {
-
-        }
-
-
         void Reset()
         {
             battleSceneMediateObject = GetComponent<AbstractBattleSceneMediateObject>();

@@ -32,6 +32,8 @@ namespace OpenGS
 
         private void Awake()
         {
+            fadeTime = NormalizeNonNegative(fadeTime);
+            delayTime = NormalizeNonNegative(delayTime);
             if (group == null)
             {
                 group = GetComponent<CanvasGroup>();
@@ -46,9 +48,16 @@ namespace OpenGS
             }
         }
 
+        private void OnDestroy()
+        {
+            group?.DOKill();
+        }
+
         public void Play()
         {
             if (group == null) return;
+
+            group.DOKill();
 
             // フェードアウト実行
             group.DOFade(0f, fadeTime)
@@ -68,6 +77,11 @@ namespace OpenGS
                     Destroy(gameObject);
                     break;
             }
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
         }
     }
 }

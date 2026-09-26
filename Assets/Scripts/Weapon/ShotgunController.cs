@@ -13,12 +13,30 @@ namespace OpenGS
         [SerializeField] private int pelletCount = 8;
         [SerializeField] private float spreadWidth = 15f;
 
+        private void Awake()
+        {
+            pelletCount = Mathf.Clamp(pelletCount, 1, 32);
+            spreadWidth = Mathf.Clamp(float.IsFinite(spreadWidth) ? spreadWidth : 15f, 0f, 180f);
+        }
+
+        private void OnValidate()
+        {
+            pelletCount = Mathf.Clamp(pelletCount, 1, 32);
+            if (!float.IsFinite(spreadWidth) || spreadWidth < 0f) spreadWidth = 15f;
+            spreadWidth = Mathf.Clamp(spreadWidth, 0f, 180f);
+        }
+
         protected override void CreateBullet(OpenGSCore.EBulletType type = OpenGSCore.EBulletType.Normal)
         {
             if (bulletPrefab == null || muzzle == null) return;
 
             // 基準となるエイム方向
             Vector2 baseDir = GetShotDirection();
+            if (!float.IsFinite(baseDir.x) || !float.IsFinite(baseDir.y) || baseDir.sqrMagnitude <= Mathf.Epsilon)
+            {
+                baseDir = muzzle.right;
+            }
+            baseDir.Normalize();
             float baseAngle = Mathf.Atan2(baseDir.y, baseDir.x) * Mathf.Rad2Deg;
             var owner = GetOwnerPlayer();
             var ownerTeam = owner != null ? owner.Team() : ETeam.NoTeam;
@@ -59,6 +77,11 @@ namespace OpenGS
                         Name,
                         ownerTeam
                     );
+                }
+
+                if (bullet == null && shotgunBullet == null)
+                {
+                    Destroy(pellet);
                 }
             }
         }

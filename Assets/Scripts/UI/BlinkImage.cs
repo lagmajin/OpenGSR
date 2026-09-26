@@ -18,6 +18,7 @@ namespace OpenGS
         // Start is called before the first frame update
         void Start()
         {
+            speed = float.IsFinite(speed) ? Mathf.Max(0f, speed) : 1f;
             if (img == null)
             {
                 img = GetComponent<Image>();
@@ -37,8 +38,15 @@ namespace OpenGS
                 return;
             }
 
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
             Color color = img.color;
-            time += Time.deltaTime * speed;
+            time = Mathf.Repeat(time + deltaTime * speed, Mathf.PI * 2f);
             // Mathf.Sin()��-1�`1��Ԃ�
             // color��0�`1�Ŏw�肷��
             color.a = Mathf.Sin(time) * 0.5f + 0.5f;

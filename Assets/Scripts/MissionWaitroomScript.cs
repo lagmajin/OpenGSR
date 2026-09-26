@@ -11,28 +11,7 @@ namespace OpenGS
 
     public class MissionWaitroomScript : MonoBehaviour
     {
-        // Start is called before the first frame update
-
-
         [TabGroup("")][SerializeField][Required] public MissionWaitroomScript script;
-
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
-
-        void OnApplicationQuit()
-        {
-
-        }
-        
     }
 
 

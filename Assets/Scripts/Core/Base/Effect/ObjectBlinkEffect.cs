@@ -29,6 +29,12 @@ namespace OpenGS
         public BlinkEaseType blinkEase = BlinkEaseType.InOutSine;
         private Tween blinkTween;
 
+        private void Awake()
+        {
+            blinkInterval = Mathf.Max(0.01f, float.IsFinite(blinkInterval) ? blinkInterval : 0.5f);
+            deleteTime = Mathf.Max(0.01f, float.IsFinite(deleteTime) ? deleteTime : 5f);
+        }
+
 
         private void Start()
         {
@@ -42,6 +48,10 @@ namespace OpenGS
         private void StartBlinking()
         {
             SpriteRenderer spriteRenderer = targetObject.GetComponent<SpriteRenderer>();
+            if (spriteRenderer == null)
+            {
+                return;
+            }
 
             blinkTween = spriteRenderer
                 .DOFade(0f, blinkInterval * 0.5f)          // 点滅の透明度を設定
@@ -57,13 +67,19 @@ namespace OpenGS
 
         public void Restart()
         {
-            blinkTween.Kill();
+            if (blinkTween != null && blinkTween.IsActive())
+            {
+                blinkTween.Kill();
+            }
             StartBlinking();
         }
 
         private void OnDestroy()
         {
-            blinkTween.Kill();
+            if (blinkTween != null && blinkTween.IsActive())
+            {
+                blinkTween.Kill();
+            }
         }
 
         // enumに対応するEaseを返すメソッド

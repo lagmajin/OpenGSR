@@ -17,6 +17,12 @@ namespace OpenGS
 {
     public class ClientNetworkManager : MonoBehaviour
     {
+        public event Action<JObject> UdpMessageReceived;
+        /// <summary>Lobby TCP messages, including room and loading notifications not yet mapped to a dedicated event.</summary>
+        public event Action<JObject> TcpMessageReceived;
+        /// <summary>試合UDPの接続状態。切断中UIや入力停止処理から購読する。</summary>
+        public event Action<bool, string> MatchUdpConnectionChanged;
+
         [Header("Server Settings")]
         [SerializeField] private string serverIp = "127.0.0.1";
         [SerializeField] private int tcpPort = 60000; // Lobby TCP
@@ -38,12 +44,16 @@ namespace OpenGS
         private EventBasedNetListener _listener;
         private NetPeer _serverPeer;
 
+        public bool IsMatchUdpConnected =>
+            _serverPeer != null && _serverPeer.ConnectionState == ConnectionState.Connected;
+
         // TCP Client (Lobby/Match 初期接続用)
         private TcpClient _tcpClient;
         private NetworkStream _tcpStream;
-        private byte[] _tcpReceiveBuffer;
         private const int TcpBufferSize = 8192; // 8KB
         private readonly StringBuilder _tcpMessageBuffer = new StringBuilder();
+        private int _tcpSessionVersion;
+        private Coroutine _tcpReconnectRoutine;
 
         public event Action<JObject> FriendRequestResponseReceived;
         public event Action<JObject> FriendApproveResponseReceived;
@@ -69,18 +79,48 @@ namespace OpenGS
         private NetworkRequestClient _requestClient;
         private Coroutine _matchConnectRoutine;
         private bool _matchUdpConnectAttempted;
+        private bool _isShuttingDown;
+        private bool _udpClientStarted;
+        private float _lastUdpUnavailableWarningTime = -1f;
+        private OpenGS.Network.LagCompensationManager _lagCompensationManager;
+        private float _nextLagManagerLookupTime;
+
+        private void OnValidate()
+        {
+            if (string.IsNullOrWhiteSpace(serverIp)) serverIp = "127.0.0.1";
+            tcpPort = Mathf.Clamp(tcpPort, 1, 65535);
+            udpPort = Mathf.Clamp(udpPort, 1, 65535);
+        }
 
         private void Awake()
         {
+            serverIp = serverIp?.Trim() ?? string.Empty;
+            if (string.IsNullOrWhiteSpace(serverIp))
+            {
+                serverIp = "127.0.0.1";
+            }
+
+            tcpPort = Mathf.Clamp(tcpPort, 1, 65535);
+            udpPort = Mathf.Clamp(udpPort, 1, 65535);
             _listener = new EventBasedNetListener();
             _netClient = new NetManager(_listener);
+
+            // These runtime services are intentionally created here instead of
+            // relying on every match scene to carry a hidden helper object.
+            // This keeps production and test scenes on the same receive path.
+            EnsureRuntimeNetworkServices();
+            FriendListResponseReceived += HandleFriendListResponse;
+            FriendRequestNotificationReceived += HandleFriendRequestNotification;
+            if (GetComponent<OpenGS.OnlineMetaStateStore>() == null)
+            {
+                gameObject.AddComponent<OpenGS.OnlineMetaStateStore>();
+            }
             
             _listener.NetworkReceiveEvent += OnNetworkReceive;
             _listener.PeerConnectedEvent += OnPeerConnected;
             _listener.PeerDisconnectedEvent += OnPeerDisconnected;
             _listener.NetworkErrorEvent += OnNetworkError;
 
-            _tcpReceiveBuffer = new byte[TcpBufferSize];
             _requestClient = new NetworkRequestClient(TrySendTcpMessage);
             try
             {
@@ -98,7 +138,12 @@ namespace OpenGS
 
         private void Start()
         {
-            ConnectToLobbyTcpServer();
+            if (_isShuttingDown) return;
+            if (string.IsNullOrWhiteSpace(ClientPlayerId))
+            {
+                ClientPlayerId = Guid.NewGuid().ToString("N");
+            }
+            _ = ConnectToLobbyTcpServer();
             _matchConnectRoutine = StartCoroutine(ConnectToMatchUdpWhenReady());
         }
 
@@ -110,64 +155,152 @@ namespace OpenGS
 
         private void OnDestroy()
         {
+            FriendListResponseReceived -= HandleFriendListResponse;
+            FriendRequestNotificationReceived -= HandleFriendRequestNotification;
+            if (_listener != null)
+            {
+                _listener.NetworkReceiveEvent -= OnNetworkReceive;
+                _listener.PeerConnectedEvent -= OnPeerConnected;
+                _listener.PeerDisconnectedEvent -= OnPeerDisconnected;
+                _listener.NetworkErrorEvent -= OnNetworkError;
+            }
+            _isShuttingDown = true;
             DisconnectAll();
         }
 
         #region TCP Lobby Connection
 
-        private async void ConnectToLobbyTcpServer()
+        private async System.Threading.Tasks.Task ConnectToLobbyTcpServer()
         {
+            var sessionVersion = 0;
+            TcpClient connectingClient = null;
             try
             {
-                _tcpClient = new TcpClient();
+                // A previous connection may have ended halfway through a
+                // packet. Never prepend that stale fragment to a new session.
+                _tcpMessageBuffer.Clear();
+                sessionVersion = ++_tcpSessionVersion;
+                _requestClient?.FailPendingRequests("Lobby TCP session was replaced.");
+                _tcpStream?.Dispose();
+                _tcpClient?.Close();
+                _tcpClient?.Dispose();
+                connectingClient = new TcpClient();
+                _tcpClient = connectingClient;
                 Debug.Log($"[ClientNetwork] Connecting to Lobby TCP {serverIp}:{tcpPort}...");
-                await _tcpClient.ConnectAsync(serverIp, tcpPort);
-                _tcpStream = _tcpClient.GetStream();
+                await connectingClient.ConnectAsync(serverIp, tcpPort);
+
+                if (_isShuttingDown || sessionVersion != _tcpSessionVersion || !ReferenceEquals(_tcpClient, connectingClient))
+                {
+                    connectingClient.Close();
+                    connectingClient.Dispose();
+                    return;
+                }
+
+                _tcpStream = connectingClient.GetStream();
                 Debug.Log("[ClientNetwork] Connected to Lobby TCP server.");
 
                 // サーバーからの非同期受信を開始
-                _ = ReceiveTcpDataAsync();
+                _ = ReceiveTcpDataAsync(_tcpClient, _tcpStream, sessionVersion);
 
                 // ログイン要求などを送信する（簡略化のためここでは省略）
                 SendTcpMessage(new JObject
                 {
                     ["MessageType"] = MessageType.LoginRequest, // MessageTypeを使用
                     ["PlayerID"] = ClientPlayerId,
-                    ["PlayerName"] = "UnityClient_" + ClientPlayerId.Substring(0, 4)
+                    ["PlayerName"] = CreateClientPlayerName()
                 });
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[ClientNetwork] Failed to connect to Lobby TCP server: {ex.Message}");
+                if (connectingClient != null && ReferenceEquals(_tcpClient, connectingClient))
+                {
+                    _tcpStream = null;
+                    _tcpClient = null;
+                    connectingClient.Dispose();
+                }
+
+                if (!_isShuttingDown && sessionVersion == _tcpSessionVersion)
+                {
+                    ScheduleLobbyTcpReconnect();
+                }
             }
         }
 
-        private async System.Threading.Tasks.Task ReceiveTcpDataAsync()
+        private static void HandleFriendListResponse(JObject response)
+        {
+            FriendManager.Instance?.ApplyServerFriendList(response);
+        }
+
+        private static void HandleFriendRequestNotification(JObject notification)
+        {
+            FriendManager.Instance?.ApplyServerFriendRequestNotification(notification);
+        }
+
+        private void EnsureRuntimeNetworkServices()
+        {
+            _lagCompensationManager = GetComponent<OpenGS.Network.LagCompensationManager>();
+            if (_lagCompensationManager == null)
+            {
+                _lagCompensationManager = gameObject.AddComponent<OpenGS.Network.LagCompensationManager>();
+            }
+
+            if (GetComponent<OpenGS.NetworkCombatReplay>() == null)
+            {
+                gameObject.AddComponent<OpenGS.NetworkCombatReplay>();
+            }
+        }
+
+        private string CreateClientPlayerName()
+        {
+            var playerId = ClientPlayerId ?? string.Empty;
+            var suffixLength = Math.Min(4, playerId.Length);
+            var suffix = suffixLength > 0 ? playerId.Substring(0, suffixLength) : "anonymous";
+            return "UnityClient_" + suffix;
+        }
+
+        private async System.Threading.Tasks.Task ReceiveTcpDataAsync(
+            TcpClient tcpClient,
+            NetworkStream tcpStream,
+            int sessionVersion)
         {
             try
             {
-                while (_tcpClient != null && _tcpClient.Connected)
+                var receiveBuffer = new byte[TcpBufferSize];
+                while (sessionVersion == _tcpSessionVersion &&
+                       ReferenceEquals(_tcpClient, tcpClient) &&
+                       tcpClient.Connected)
                 {
-                    int bytesRead = await _tcpStream.ReadAsync(_tcpReceiveBuffer, 0, _tcpReceiveBuffer.Length);
+                    int bytesRead = await tcpStream.ReadAsync(receiveBuffer, 0, receiveBuffer.Length);
                     if (bytesRead == 0)
                     {
                         Debug.Log("[ClientNetwork] Lobby TCP server disconnected.");
                         break;
                     }
 
-                    string chunk = Encoding.UTF8.GetString(_tcpReceiveBuffer, 0, bytesRead);
+                    if (sessionVersion != _tcpSessionVersion ||
+                        !ReferenceEquals(_tcpClient, tcpClient))
+                    {
+                        break;
+                    }
+
+                    string chunk = Encoding.UTF8.GetString(receiveBuffer, 0, bytesRead);
                     _tcpMessageBuffer.Append(chunk);
+
+                    if (_tcpMessageBuffer.Length > 1024 * 1024)
+                    {
+                        Debug.LogWarning("[ClientNetwork] TCP receive buffer exceeded 1 MiB; dropping incomplete data.");
+                        _tcpMessageBuffer.Clear();
+                        continue;
+                    }
 
                     string fullBuffer = _tcpMessageBuffer.ToString();
                     string[] parts = fullBuffer.Split('\x1F');
 
                     if (parts.Length == 1)
                     {
-                        if (TryParseTcpPacket(parts[0], out JObject singleMessage))
-                        {
-                            ProcessTcpMessage(singleMessage);
-                            _tcpMessageBuffer.Clear();
-                        }
+                        // TCP is a stream: without the delimiter this is only
+                        // an incomplete frame, even if it currently resembles JSON.
                         continue;
                     }
 
@@ -175,7 +308,7 @@ namespace OpenGS
                     {
                         if (TryParseTcpPacket(parts[i], out JObject message))
                         {
-                            ProcessTcpMessage(message);
+                            TryProcessTcpMessage(message);
                         }
                     }
 
@@ -186,6 +319,37 @@ namespace OpenGS
             catch (Exception ex)
             {
                 Debug.LogError($"[ClientNetwork] Error receiving TCP data: {ex.Message}");
+            }
+            finally
+            {
+                if (!_isShuttingDown &&
+                    sessionVersion == _tcpSessionVersion &&
+                    ReferenceEquals(_tcpClient, tcpClient))
+                {
+                    _requestClient?.FailPendingRequests("Lobby TCP connection was lost.");
+                    ScheduleLobbyTcpReconnect();
+                }
+            }
+        }
+
+        private void ScheduleLobbyTcpReconnect()
+        {
+            if (_isShuttingDown || _tcpReconnectRoutine != null)
+            {
+                return;
+            }
+
+            _tcpReconnectRoutine = StartCoroutine(ReconnectLobbyTcpAfterDisconnect());
+        }
+
+        private IEnumerator ReconnectLobbyTcpAfterDisconnect()
+        {
+            yield return new WaitForSecondsRealtime(1f);
+            _tcpReconnectRoutine = null;
+
+            if (!_isShuttingDown)
+            {
+                _ = ConnectToLobbyTcpServer();
             }
         }
 
@@ -224,6 +388,14 @@ namespace OpenGS
         
         private void ProcessTcpMessage(JObject message)
         {
+            if (message == null)
+            {
+                Debug.LogWarning("[ClientNetwork] Ignoring null TCP message.");
+                return;
+            }
+
+            InvokeSafely(TcpMessageReceived, message, nameof(TcpMessageReceived));
+
             if (_requestClient != null && _requestClient.HandleIncomingMessage(message))
             {
                 return;
@@ -232,8 +404,11 @@ namespace OpenGS
             string messageType = MessageType.Normalize(message.GetStringOrNull("MessageType"));
             switch (messageType)
             {
+                case MessageType.EncryptKey:
+                    HandleEncryptionKey(message);
+                    break;
                 case MessageType.LoginResponse:
-                    bool success = message["Success"]?.ToObject<bool>() ?? true;
+                    bool success = ReadBool(message, "Success", true);
                     if (success)
                     {
                         string resolvedPlayerId = message.GetStringOrNull("PlayerID") ?? message.GetStringOrNull("GlobalUserId");
@@ -244,6 +419,7 @@ namespace OpenGS
                         Debug.Log($"[ClientNetwork] Login successful. PlayerID: {ClientPlayerId}");
                         RequestDailyList();
                         RequestGuildList();
+                        RequestFriendList();
                     }
                     else
                     {
@@ -254,71 +430,117 @@ namespace OpenGS
                     HandlePlayerInfoResponse(message);
                     break;
                 case MessageType.MatchServerInfoResponse:
+                case "MatchServerInformationNotification":
                     HandleMatchServerInfoResponse(message);
                     break;
                 case MessageType.FriendRequestResponse:
-                    FriendRequestResponseReceived?.Invoke(message);
+                    InvokeSafely(FriendRequestResponseReceived, message, nameof(FriendRequestResponseReceived));
                     break;
                 case MessageType.FriendApproveResponse:
-                    FriendApproveResponseReceived?.Invoke(message);
+                    InvokeSafely(FriendApproveResponseReceived, message, nameof(FriendApproveResponseReceived));
+                    if (ReadBool(message, "Success"))
+                    {
+                        RequestFriendList();
+                    }
                     break;
                 case MessageType.FriendListResponse:
-                    FriendListResponseReceived?.Invoke(message);
+                    InvokeSafely(FriendListResponseReceived, message, nameof(FriendListResponseReceived));
                     break;
                 case MessageType.FriendRequestNotification:
-                    FriendRequestNotificationReceived?.Invoke(message);
+                    InvokeSafely(FriendRequestNotificationReceived, message, nameof(FriendRequestNotificationReceived));
                     break;
                 case MessageType.DailyListResponse:
                     LastDailyListResponse = message;
-                    DailyListResponseReceived?.Invoke(message);
+                    InvokeSafely(DailyListResponseReceived, message, nameof(DailyListResponseReceived));
                     break;
                 case MessageType.DailyProgressResponse:
-                    DailyProgressResponseReceived?.Invoke(message);
+                    InvokeSafely(DailyProgressResponseReceived, message, nameof(DailyProgressResponseReceived));
                     break;
                 case MessageType.DailyClaimResponse:
                     LastDailyClaimResponse = message;
-                    DailyClaimResponseReceived?.Invoke(message);
+                    InvokeSafely(DailyClaimResponseReceived, message, nameof(DailyClaimResponseReceived));
                     break;
                 case MessageType.GuildRoleResponse:
                     LastGuildRoleResponse = message;
-                    GuildRoleResponseReceived?.Invoke(message);
+                    InvokeSafely(GuildRoleResponseReceived, message, nameof(GuildRoleResponseReceived));
                     break;
                 case MessageType.GuildListResponse:
                     LastGuildListResponse = message;
-                    GuildListResponseReceived?.Invoke(message);
+                    InvokeSafely(GuildListResponseReceived, message, nameof(GuildListResponseReceived));
                     break;
                 case MessageType.GuildInfoResponse:
                     LastGuildInfoResponse = message;
-                    GuildInfoResponseReceived?.Invoke(message);
+                    InvokeSafely(GuildInfoResponseReceived, message, nameof(GuildInfoResponseReceived));
                     break;
                 case MessageType.GuildCreateResponse:
-                    GuildCreateResponseReceived?.Invoke(message);
+                    InvokeSafely(GuildCreateResponseReceived, message, nameof(GuildCreateResponseReceived));
                     break;
                 case MessageType.GuildJoinResponse:
-                    GuildJoinResponseReceived?.Invoke(message);
+                    InvokeSafely(GuildJoinResponseReceived, message, nameof(GuildJoinResponseReceived));
                     break;
                 case MessageType.GuildLeaveResponse:
-                    GuildLeaveResponseReceived?.Invoke(message);
+                    InvokeSafely(GuildLeaveResponseReceived, message, nameof(GuildLeaveResponseReceived));
                     break;
                 case MessageType.GuildInviteResponse:
-                    GuildInviteResponseReceived?.Invoke(message);
+                    InvokeSafely(GuildInviteResponseReceived, message, nameof(GuildInviteResponseReceived));
                     break;
                 case MessageType.GuildInviteNotification:
-                    GuildInviteNotificationReceived?.Invoke(message);
+                    InvokeSafely(GuildInviteNotificationReceived, message, nameof(GuildInviteNotificationReceived));
                     break;
                 case MessageType.GuildKickResponse:
-                    GuildKickResponseReceived?.Invoke(message);
+                    InvokeSafely(GuildKickResponseReceived, message, nameof(GuildKickResponseReceived));
                     break;
                 case MessageType.GuildKickNotification:
-                    GuildKickNotificationReceived?.Invoke(message);
+                    InvokeSafely(GuildKickNotificationReceived, message, nameof(GuildKickNotificationReceived));
                     break;
                 case MessageType.GuildChatNotification:
-                    GuildChatNotificationReceived?.Invoke(message);
+                    InvokeSafely(GuildChatNotificationReceived, message, nameof(GuildChatNotificationReceived));
                     break;
                 // 他のTCPメッセージタイプをここで処理
                 default:
-                    Debug.Log($"[ClientNetwork] Received unknown TCP message: {message}");
+                    var gameEvent = NetworkEventDeserializer.Deserialize(message);
+                    if (gameEvent != null)
+                    {
+                        PublishGameEvent(gameEvent);
+                    }
+                    else
+                    {
+                        Debug.Log($"[ClientNetwork] Received unknown TCP message: {message}");
+                    }
                     break;
+            }
+        }
+
+        private static void HandleEncryptionKey(JObject message)
+        {
+            var publicKey = message.GetStringOrNull("RSAPublicKey");
+            if (string.IsNullOrWhiteSpace(publicKey))
+            {
+                Debug.LogWarning("[ClientNetwork] EncryptKey response did not contain RSAPublicKey.");
+                return;
+            }
+
+            try
+            {
+                EncryptManager.Instance.SetRSAPublicKey(publicKey);
+                Debug.Log("[ClientNetwork] Lobby RSA public key accepted.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[ClientNetwork] Failed to apply lobby RSA public key: {ex.Message}");
+            }
+        }
+
+        private void TryProcessTcpMessage(JObject message)
+        {
+            try
+            {
+                ProcessTcpMessage(message);
+            }
+            catch (Exception ex)
+            {
+                var messageType = message.GetStringOrNull("MessageType") ?? "<missing>";
+                Debug.LogError($"[ClientNetwork] TCP listener failed for {messageType}: {ex}");
             }
         }
 
@@ -440,6 +662,12 @@ namespace OpenGS
         public void SendGuildChat(string guildName, string message)
         {
             if (string.IsNullOrWhiteSpace(guildName) || string.IsNullOrWhiteSpace(message)) return;
+            message = message.Trim();
+            if (message.Length > 200)
+            {
+                message = message.Substring(0, 200);
+            }
+
             SendTcpMessage(new JObject
             {
                 ["MessageType"] = MessageType.GuildChatRequest,
@@ -451,15 +679,48 @@ namespace OpenGS
 
         private bool TrySendTcpMessage(JObject message)
         {
+            if (_isShuttingDown)
+            {
+                return false;
+            }
+
+            if (message == null)
+            {
+                Debug.LogWarning("[ClientNetwork] Ignoring null TCP message.");
+                return false;
+            }
+
             if (_tcpStream != null && _tcpStream.CanWrite)
             {
+                var messageType = MessageType.Normalize(message.GetStringOrNull("MessageType"));
+                if (string.IsNullOrWhiteSpace(messageType))
+                {
+                    Debug.LogWarning("[ClientNetwork] Ignoring TCP message without MessageType.");
+                    return false;
+                }
+
+                message["MessageType"] = messageType;
                 string jsonString = message.ToString(Formatting.None);
+                // ClientSession parses TCP frames as: "JS" + JSON + 0x1F.
+                // Sending JSON without the identifier makes the server reject
+                // every request as an unknown transport frame.
+                byte[] prefix = Encoding.UTF8.GetBytes("JS");
                 byte[] payload = Encoding.UTF8.GetBytes(jsonString);
                 byte[] separator = { 0x1F };
-                byte[] data = new byte[payload.Length + separator.Length];
-                Buffer.BlockCopy(payload, 0, data, 0, payload.Length);
-                Buffer.BlockCopy(separator, 0, data, payload.Length, separator.Length);
-                _tcpStream.Write(data, 0, data.Length);
+                byte[] data = new byte[prefix.Length + payload.Length + separator.Length];
+                Buffer.BlockCopy(prefix, 0, data, 0, prefix.Length);
+                Buffer.BlockCopy(payload, 0, data, prefix.Length, payload.Length);
+                Buffer.BlockCopy(separator, 0, data, prefix.Length + payload.Length, separator.Length);
+                try
+                {
+                    _tcpStream.Write(data, 0, data.Length);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[ClientNetwork] Failed to send TCP message {messageType}: {ex.Message}");
+                    ScheduleLobbyTcpReconnect();
+                    return false;
+                }
                 //Debug.Log($"[ClientNetwork] Sent TCP data: {jsonString}");
                 return true;
             }
@@ -473,6 +734,12 @@ namespace OpenGS
         /// </summary>
         public void RequestPlayerInfo(string targetPlayerId)
         {
+            if (string.IsNullOrWhiteSpace(targetPlayerId))
+            {
+                Debug.LogWarning("[ClientNetwork] PlayerInfoRequest requires a target player ID.");
+                return;
+            }
+
             JObject request = new JObject
             {
                 ["MessageType"] = MessageType.PlayerInfoRequest,
@@ -484,12 +751,12 @@ namespace OpenGS
 
         private void HandlePlayerInfoResponse(JObject response)
         {
-            bool success = response.Value<bool>("Success");
+            bool success = ReadBool(response, "Success");
             string targetPlayerId = response.GetStringOrNull("PlayerID") ?? response.GetStringOrNull("TargetPlayerID");
 
             if (success)
             {
-                Debug.Log($"[ClientNetwork] PlayerInfoResponse for {targetPlayerId}: DisplayName={response.GetStringOrNull("DisplayName")}, Level={response.Value<int>("Level")}, XP={response.Value<int>("XP")}");
+                Debug.Log($"[ClientNetwork] PlayerInfoResponse for {targetPlayerId}: DisplayName={response.GetStringOrNull("DisplayName")}, Level={ReadInt(response, "Level")}, XP={ReadInt(response, "XP")}");
                 // ここで受信したプレイヤー情報をUIに表示したり、データモデルに保存したりします
                 // 例: OnPlayerInfoReceived?.Invoke(response);
             }
@@ -502,8 +769,9 @@ namespace OpenGS
         private void HandleMatchServerInfoResponse(JObject response)
         {
             var ip = response.GetStringOrNull("IP") ?? response.GetStringOrNull("IPAddress");
-            var port = response["Port"]?.ToObject<int?>();
-            var udp = response["UdpPort"]?.ToObject<int?>();
+            var port = ReadNullableInt(response, "Port");
+            var udp = ReadNullableInt(response, "UdpPort");
+            var udpToken = response.GetStringOrNull("UdpToken");
             var roomId = response.GetStringOrNull("RoomID");
 
             if (!string.IsNullOrWhiteSpace(ip))
@@ -521,6 +789,11 @@ namespace OpenGS
                 OnlineManager.Instance.MatchServerInfo.UdpPort = udp.Value;
             }
 
+            if (!string.IsNullOrWhiteSpace(udpToken))
+            {
+                OnlineManager.Instance.MatchServerInfo.UdpToken = udpToken;
+            }
+
             if (!string.IsNullOrWhiteSpace(roomId))
             {
                 CurrentMatchRoomId = roomId;
@@ -536,6 +809,19 @@ namespace OpenGS
 
         public void SendFriendRequest(string targetPlayerId)
         {
+            targetPlayerId = targetPlayerId?.Trim();
+            if (string.IsNullOrWhiteSpace(targetPlayerId))
+            {
+                Debug.LogWarning("[ClientNetwork] FriendRequest requires a target player ID.");
+                return;
+            }
+
+            if (_isShuttingDown)
+            {
+                Debug.LogWarning("[ClientNetwork] FriendRequest ignored while network is shutting down.");
+                return;
+            }
+
             _ = SendFriendRequestWithFoundationFallbackAsync(targetPlayerId);
         }
 
@@ -568,17 +854,26 @@ namespace OpenGS
                     ["Error"] = envelopeResponse?.Error ?? string.Empty
                 };
 
-                FriendRequestResponseReceived?.Invoke(legacyResponse);
+                InvokeSafely(FriendRequestResponseReceived, legacyResponse, nameof(FriendRequestResponseReceived));
             }
-            catch (Exception ex)
+            catch (NetworkRequestException ex) when (string.Equals(ex.ErrorCode, "UnknownRoute", StringComparison.OrdinalIgnoreCase))
             {
                 Debug.LogWarning($"[ClientNetwork] Foundation friend request failed. Falling back to legacy request. {ex.Message}");
                 SendLegacyFriendRequest(targetPlayerId);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[ClientNetwork] Foundation friend request failed without fallback: {ex.Message}");
             }
         }
 
         private void SendLegacyFriendRequest(string targetPlayerId)
         {
+            if (_isShuttingDown)
+            {
+                return;
+            }
+
             JObject request = new JObject
             {
                 ["MessageType"] = MessageType.FriendRequest,
@@ -591,6 +886,19 @@ namespace OpenGS
 
         public void ApproveFriendRequest(string requestPlayerId, bool approve = true)
         {
+            requestPlayerId = requestPlayerId?.Trim();
+            if (string.IsNullOrWhiteSpace(requestPlayerId))
+            {
+                Debug.LogWarning("[ClientNetwork] FriendApproveRequest requires a request player ID.");
+                return;
+            }
+
+            if (_isShuttingDown)
+            {
+                Debug.LogWarning("[ClientNetwork] Friend approval ignored while network is shutting down.");
+                return;
+            }
+
             JObject request = new JObject
             {
                 ["MessageType"] = MessageType.FriendApproveRequest,
@@ -604,6 +912,11 @@ namespace OpenGS
 
         public void RequestFriendList()
         {
+            if (_isShuttingDown)
+            {
+                return;
+            }
+
             JObject request = new JObject
             {
                 ["MessageType"] = MessageType.FriendListRequest,
@@ -651,18 +964,21 @@ namespace OpenGS
             const float timeoutSeconds = 10f;
             var startTime = Time.realtimeSinceStartup;
 
-            while (!_matchUdpConnectAttempted && !OnlineManager.Instance.MatchServerInfo.HasEndpoint())
+            while (!_matchUdpConnectAttempted &&
+                   (!OnlineManager.Instance.MatchServerInfo.HasEndpoint() ||
+                    string.IsNullOrWhiteSpace(OnlineManager.Instance.MatchServerInfo.UdpToken)))
             {
                 if (Time.realtimeSinceStartup - startTime >= timeoutSeconds)
                 {
-                    Debug.LogWarning("[ClientNetwork] Match server info was not provided in time. Falling back to configured UDP endpoint.");
+                    Debug.LogWarning("[ClientNetwork] Match UDP authorization was not provided in time; UDP connection will remain disabled.");
                     break;
                 }
 
                 yield return null;
             }
 
-            if (!_matchUdpConnectAttempted)
+            if (!_matchUdpConnectAttempted &&
+                !string.IsNullOrWhiteSpace(OnlineManager.Instance.MatchServerInfo.UdpToken))
             {
                 ConnectToMatchUdpServer();
             }
@@ -684,28 +1000,77 @@ namespace OpenGS
             serverIp = resolvedIp;
             udpPort = resolvedUdpPort;
             _matchUdpConnectAttempted = true;
-            _netClient.Start();
+            if (!_udpClientStarted)
+            {
+                _udpClientStarted = _netClient.Start();
+                if (!_udpClientStarted)
+                {
+                    _matchUdpConnectAttempted = false;
+                    Debug.LogError("[ClientNetwork] Failed to start Match UDP client. Retrying shortly.");
+                    StartCoroutine(RetryMatchUdpAfterStartFailure());
+                    return;
+                }
+            }
             Debug.Log($"[ClientNetwork] Connecting to Match UDP {resolvedIp}:{resolvedUdpPort} with PlayerID: {ClientPlayerId}...");
             _netClient.Connect(resolvedIp, resolvedUdpPort, "OpenGS"); // "OpenGS"は接続キー
+        }
+
+        private IEnumerator RetryMatchUdpAfterStartFailure()
+        {
+            yield return new WaitForSecondsRealtime(1f);
+
+            if (!_isShuttingDown && !_matchUdpConnectAttempted)
+            {
+                ConnectToMatchUdpServer();
+            }
         }
 
         private void OnPeerConnected(NetPeer peer)
         {
             _serverPeer = peer;
             Debug.Log("[ClientNetwork] Connected to Match UDP server.");
+            InvokeSafely(MatchUdpConnectionChanged, true, string.Empty, nameof(MatchUdpConnectionChanged));
 
             // サーバーにクライアントのPlayerIDを通知 (サーバー側のOnPeerConnectedでID取得できない場合のため)
             SendUdpInput(new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.ClientConnect,
-                ["PlayerID"] = ClientPlayerId
+                ["PlayerID"] = ClientPlayerId,
+                ["RoomID"] = CurrentMatchRoomId ?? string.Empty,
+                ["UdpToken"] = OnlineManager.Instance.MatchServerInfo.UdpToken
             }, DeliveryMethod.ReliableOrdered);
         }
 
         private void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
         {
             Debug.Log($"[ClientNetwork] Disconnected from Match UDP server: {disconnectInfo.Reason}");
-            _serverPeer = null;
+            InvokeSafely(MatchUdpConnectionChanged, false, disconnectInfo.Reason.ToString(), nameof(MatchUdpConnectionChanged));
+            if (_serverPeer == peer)
+            {
+                _serverPeer = null;
+            }
+
+            // Keep the room identity for automatic rejoin. The match server
+            // removes its player-room mapping on UDP disconnect and needs the
+            // RoomID on the next ClientConnect packet to restore it.
+            _matchUdpConnectAttempted = false;
+
+            if (!_isShuttingDown && _matchConnectRoutine == null)
+            {
+                _matchConnectRoutine = StartCoroutine(ReconnectMatchUdpAfterDisconnect());
+            }
+        }
+
+        private IEnumerator ReconnectMatchUdpAfterDisconnect()
+        {
+            yield return new WaitForSecondsRealtime(1f);
+
+            if (!_isShuttingDown && !_matchUdpConnectAttempted)
+            {
+                ConnectToMatchUdpServer();
+            }
+
+            _matchConnectRoutine = null;
         }
 
         private void OnNetworkError(IPEndPoint endPoint, SocketError socketError)
@@ -734,7 +1099,22 @@ namespace OpenGS
 
         private void ProcessUdpMessage(JObject message)
         {
-            string messageType = message.GetStringOrNull("MessageType");
+            if (message == null)
+            {
+                Debug.LogWarning("[ClientNetwork] Ignoring null UDP message.");
+                return;
+            }
+
+            // Accept legacy casing/aliases consistently with the TCP path.
+            string messageType = MessageType.Normalize(message.GetStringOrNull("MessageType"));
+            if (string.IsNullOrWhiteSpace(messageType))
+            {
+                Debug.LogWarning("[ClientNetwork] Ignoring UDP message without MessageType.");
+                return;
+            }
+
+            InvokeSafely(UdpMessageReceived, message, nameof(UdpMessageReceived));
+
             switch (messageType)
             {
                 case RUDPMessageTypes.Snapshot:
@@ -774,12 +1154,17 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerPositionUpdate:
                     HandlePlayerPositionUpdate(message);
                     break;
+                case "ServerTransformState":
+                    HandleServerTransformState(message);
+                    break;
                 case RUDPMessageTypes.PlayerDeath:
                 case RUDPMessageTypes.PlayerKilled:
                 case RUDPMessageTypes.PlayerDamage:
                 case RUDPMessageTypes.PlayerDamaged:
                 case RUDPMessageTypes.PlayerKill:
+                case RUDPMessageTypes.PlayerAssist:
                 case RUDPMessageTypes.KillScoreUpdate:
+                case RUDPMessageTypes.StreakUpdate:
                 case RUDPMessageTypes.FlagCaptured:
                 case RUDPMessageTypes.FlagLost:
                 case RUDPMessageTypes.FlagReturn:
@@ -790,20 +1175,37 @@ namespace OpenGS
                 case RUDPMessageTypes.MatchEnd:
                 case RUDPMessageTypes.MatchPause:
                 case RUDPMessageTypes.MatchResume:
+                case RUDPMessageTypes.MatchTimeSync:
                 case RUDPMessageTypes.RoundStart:
                 case RUDPMessageTypes.RoundEnd:
+                case RUDPMessageTypes.WarmupStart:
+                case RUDPMessageTypes.WarmupEnd:
                 case RUDPMessageTypes.PlayerRespawn:
                 case RUDPMessageTypes.RespawnCountdown:
                 case RUDPMessageTypes.PlayerJoined:
                 case RUDPMessageTypes.PlayerLeft:
                 case RUDPMessageTypes.PlayerTeamSwitch:
+                case RUDPMessageTypes.PlayerSpectating:
+                case RUDPMessageTypes.PlayerRevive:
                 case RUDPMessageTypes.WeaponChange:
+                case RUDPMessageTypes.AmmoUpdate:
                 case RUDPMessageTypes.PlayerReload:
+                case RUDPMessageTypes.PlayerMelee:
+                case RUDPMessageTypes.PlayerBuff:
+                case RUDPMessageTypes.PlayerDebuff:
+                case RUDPMessageTypes.BuffExpired:
                 case RUDPMessageTypes.ItemPickup:
+                    if (messageType == RUDPMessageTypes.MatchEnd)
+                    {
+                        ForwardMatchResult(message);
+                    }
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                // これらは AbstractMatchMainScript が生JSON経路で処理する。
+                // ゲームイベントデシリアライズを通すと未対応イベント警告になるため、ここでは二重配信しない。
                 case RUDPMessageTypes.ItemUse:
                 case RUDPMessageTypes.ItemSpawn:
                 case RUDPMessageTypes.GameStateSync:
-                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
                 case RUDPMessageTypes.PingRequest:
                 {
@@ -813,6 +1215,9 @@ namespace OpenGS
                     SendUdpInput(pong);
                     break;
                 }
+                case RUDPMessageTypes.PingResponse:
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
                 // 他のUDPメッセージタイプをここで処理
                 default:
                     Debug.Log($"[ClientNetwork] Received unknown UDP message: {message}");
@@ -827,7 +1232,15 @@ namespace OpenGS
                 return;
             }
 
-            ProcessUdpMessage(message);
+            try
+            {
+                ProcessUdpMessage(message);
+            }
+            catch (Exception ex)
+            {
+                var messageType = message.GetStringOrNull("MessageType") ?? "<missing>";
+                Debug.LogError($"[ClientNetwork] Failed to replay UDP message {messageType}: {ex}");
+            }
         }
 
         private void HandlePlayerPositionUpdate(JObject message)
@@ -838,20 +1251,41 @@ namespace OpenGS
                 return;
             }
 
+            var position = message["Position"] as JObject;
+            var positionX = ReadFinite(message, "PosX", ReadFinite(message, "PositionX", ReadFinite(position, "X")));
+            var positionY = ReadFinite(message, "PosY", ReadFinite(message, "PositionY", ReadFinite(position, "Y")));
+            var positionZ = ReadFinite(message, "PosZ", ReadFinite(message, "PositionZ", ReadFinite(position, "Z")));
+            var rotation = ReadFinite(message, "Rotation", ReadFinite(message, "RotationZ"));
+
             var state = new OpenGS.Network.TransformState
             {
                 playerId = playerId,
                 position = new Vector3(
-                    message["PosX"]?.ToObject<float>() ?? 0f,
-                    message["PosY"]?.ToObject<float>() ?? 0f,
-                    0f),
-                rotation = Quaternion.Euler(0f, 0f, message["Rotation"]?.ToObject<float>() ?? 0f),
+                    positionX,
+                    positionY,
+                    positionZ),
+                rotation = Quaternion.Euler(0f, 0f, rotation),
                 velocity = Vector3.zero,
-                timestamp = Time.time,
-                sequenceNumber = message["SequenceNumber"]?.ToObject<byte>() ?? 0
+                timestamp = GetSafeUnityTime(),
+                sequenceNumber = ReadByte(message, "SequenceNumber")
             };
 
-            var lagManager = FindFirstObjectByType<OpenGS.Network.LagCompensationManager>();
+            if (!IsFinite(state.position) || !IsFinite(state.velocity) || !IsFinite(state.rotation))
+            {
+                Debug.LogWarning($"[ClientNetwork] Ignoring non-finite transform state for player '{playerId}'.");
+                return;
+            }
+
+            if (state.rotation.sqrMagnitude < 0.0001f)
+            {
+                state.rotation = Quaternion.identity;
+            }
+            else
+            {
+                state.rotation = Quaternion.Normalize(state.rotation);
+            }
+
+            var lagManager = ResolveLagCompensationManager();
             if (lagManager != null)
             {
                 lagManager.OnPlayerStateReceived(state);
@@ -861,6 +1295,255 @@ namespace OpenGS
             Debug.Log($"[ClientNetwork] PlayerPositionUpdate received for {playerId}: {state.position}");
         }
 
+        private void HandleServerTransformState(JObject message)
+        {
+            var playerId = message.GetStringOrNull("PlayerId") ?? message.GetStringOrNull("PlayerID");
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return;
+            }
+
+            var state = new OpenGS.Network.TransformState
+            {
+                networkId = ReadUInt(message, "NetworkId"),
+                playerId = playerId,
+                position = new Vector3(
+                    ReadFinite(message, "PositionX"),
+                    ReadFinite(message, "PositionY"),
+                    ReadFinite(message, "PositionZ")),
+                rotation = new Quaternion(
+                    ReadFinite(message, "RotationX"),
+                    ReadFinite(message, "RotationY"),
+                    ReadFinite(message, "RotationZ"),
+                    ReadFinite(message, "RotationW", 1f)),
+                velocity = new Vector3(
+                    ReadFinite(message, "VelX"),
+                    ReadFinite(message, "VelY"),
+                    ReadFinite(message, "VelZ")),
+                // NetworkInterpolation compares against Unity's local Time.time.
+                // The server timestamp uses a different clock/domain.
+                timestamp = GetSafeUnityTime(),
+                sequenceNumber = ReadByte(message, "SequenceNumber")
+            };
+
+            if (!IsFinite(state.position) || !IsFinite(state.velocity) || !IsFinite(state.rotation))
+            {
+                Debug.LogWarning($"[ClientNetwork] Ignoring non-finite server transform state for player '{playerId}'.");
+                return;
+            }
+
+            if (state.rotation.sqrMagnitude < 0.0001f)
+            {
+                state.rotation = Quaternion.identity;
+            }
+            else
+            {
+                state.rotation = Quaternion.Normalize(state.rotation);
+            }
+
+            var lagManager = ResolveLagCompensationManager();
+            if (lagManager != null)
+            {
+                lagManager.OnPlayerStateReceived(state);
+            }
+        }
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return IsFinite(value.x) && IsFinite(value.y) && IsFinite(value.z);
+        }
+
+        private static bool IsFinite(Vector2 value)
+        {
+            return IsFinite(value.x) && IsFinite(value.y);
+        }
+
+        private static bool IsFinite(Quaternion value)
+        {
+            return IsFinite(value.x) && IsFinite(value.y)
+                && IsFinite(value.z) && IsFinite(value.w);
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return !float.IsNaN(value) && !float.IsInfinity(value);
+        }
+
+        private static float GetSafeUnityTime()
+        {
+            var now = Time.time;
+            return IsFinite(now) && now >= 0f ? now : 0f;
+        }
+
+        private static float ReadFinite(JObject message, string key, float fallback = 0f)
+        {
+            if (message == null || string.IsNullOrWhiteSpace(key))
+            {
+                return fallback;
+            }
+
+            try
+            {
+                var value = message[key]?.ToObject<float>();
+                return value.HasValue && IsFinite(value.Value) ? value.Value : fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
+
+        private static uint ReadUInt(JObject message, string key)
+        {
+            if (message == null || string.IsNullOrWhiteSpace(key))
+            {
+                return 0;
+            }
+
+            try
+            {
+                return message[key]?.ToObject<uint>() ?? 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private static byte ReadByte(JObject message, string key)
+        {
+            if (message == null || string.IsNullOrWhiteSpace(key))
+            {
+                return 0;
+            }
+
+            try
+            {
+                return message[key]?.ToObject<byte>() ?? 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        private static bool ReadBool(JObject message, string key, bool fallback = false)
+        {
+            try
+            {
+                return message?[key]?.ToObject<bool>() ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
+
+        private static int ReadInt(JObject message, string key, int fallback = 0)
+        {
+            try
+            {
+                return message?[key]?.ToObject<int>() ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
+
+        private static int? ReadNullableInt(JObject message, string key)
+        {
+            try
+            {
+                return message?[key]?.ToObject<int?>();
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static void ForwardMatchResult(JObject message)
+        {
+            try
+            {
+                var generalServer = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+                generalServer?.SendMessage(message);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[ClientNetwork] Failed to forward match result: {ex.Message}");
+            }
+        }
+
+        private OpenGS.Network.LagCompensationManager ResolveLagCompensationManager()
+        {
+            if (_lagCompensationManager != null)
+            {
+                return _lagCompensationManager;
+            }
+
+            var now = Time.unscaledTime;
+            if (!IsFinite(now) || now < 0f)
+            {
+                return null;
+            }
+
+            if (now < _nextLagManagerLookupTime)
+            {
+                return null;
+            }
+
+            _nextLagManagerLookupTime = now + 1f;
+            _lagCompensationManager = OpenGS.Network.LagCompensationManager.Instance;
+            if (_lagCompensationManager == null)
+            {
+                _lagCompensationManager = FindFirstObjectByType<OpenGS.Network.LagCompensationManager>();
+            }
+
+            return _lagCompensationManager;
+        }
+
+        private static void InvokeSafely<T>(Action<T> handlers, T value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<T> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[ClientNetwork] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<bool, string> handlers, bool value, string reason, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<bool, string> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value, reason);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[ClientNetwork] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
         private static void PublishGameEvent(AbstractGameEvent gameEvent)
         {
             if (gameEvent == null)
@@ -868,7 +1551,7 @@ namespace OpenGS
                 return;
             }
 
-            GameEventBroker.Publish(gameEvent);
+            GameEventBroker.PublishUntyped(gameEvent);
         }
 
         private void LogUdpEvent(string eventType, string roomId, string primary, string secondary)
@@ -887,60 +1570,109 @@ namespace OpenGS
             return string.IsNullOrWhiteSpace(roomId) ? "no-room" : roomId;
         }
 
-        public void SendUdpInput(JObject input, DeliveryMethod method = DeliveryMethod.Unreliable)
+        public bool SendUdpInput(JObject input, DeliveryMethod method = DeliveryMethod.Unreliable)
         {
+            if (_isShuttingDown)
+            {
+                return false;
+            }
+
+            if (input == null)
+            {
+                Debug.LogWarning("[ClientNetwork] Ignoring null UDP input.");
+                return false;
+            }
+
             if (_serverPeer != null && _serverPeer.ConnectionState == ConnectionState.Connected)
             {
-                if (input["PlayerID"] == null) input["PlayerID"] = ClientPlayerId;
+                var messageType = MessageType.Normalize(input.GetStringOrNull("MessageType"));
+                if (string.IsNullOrWhiteSpace(messageType))
+                {
+                    Debug.LogWarning("[ClientNetwork] Ignoring UDP input without MessageType.");
+                    return false;
+                }
+
+                input["MessageType"] = messageType;
+                if (string.IsNullOrWhiteSpace(input["PlayerID"]?.ToString()))
+                {
+                    if (string.IsNullOrWhiteSpace(ClientPlayerId))
+                    {
+                        Debug.LogWarning("[ClientNetwork] Ignoring UDP input without PlayerID.");
+                        return false;
+                    }
+
+                    input["PlayerID"] = ClientPlayerId;
+                }
                 if (input["RoomID"] == null && !string.IsNullOrEmpty(CurrentMatchRoomId)) input["RoomID"] = CurrentMatchRoomId;
 
                 string jsonString = input.ToString(Formatting.None);
                 byte[] bytes = System.Text.Encoding.UTF8.GetBytes(jsonString);
-                _serverPeer.Send(bytes, 0, method);
+                try
+                {
+                    _serverPeer.Send(bytes, 0, method);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[ClientNetwork] UDP send failed; will retry when connected: {ex.Message}");
+                    return false;
+                }
+
                 //Debug.Log($"[ClientNetwork] Sent UDP Input: {jsonString}");
+                return true;
             }
             else
             {
-                Debug.LogWarning("[ClientNetwork] Not connected to UDP server. Input not sent.");
+                var now = Time.unscaledTime;
+                if (!IsFinite(now) || now < 0f)
+                {
+                    return false;
+                }
+                if (now - _lastUdpUnavailableWarningTime >= 1f)
+                {
+                    Debug.LogWarning("[ClientNetwork] Not connected to UDP server. Input not sent.");
+                    _lastUdpUnavailableWarningTime = now;
+                }
+
+                return false;
             }
         }
 
         public void SendShootRequest(Vector2 position, Vector2 direction, string weaponType)
         {
+            if (!IsFinite(position) || !IsFinite(direction))
+            {
+                Debug.LogWarning("[ClientNetwork] Ignoring shoot request with non-finite position or direction.");
+                return;
+            }
+
             SendUdpInput(new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.ShootRequest,
                 ["PlayerID"] = ClientPlayerId,
-                ["Position"] = new JObject
-                {
-                    ["X"] = position.x,
-                    ["Y"] = position.y
-                },
-                ["Direction"] = new JObject
-                {
-                    ["X"] = direction.x,
-                    ["Y"] = direction.y
-                },
+                ["PosX"] = position.x,
+                ["PosY"] = position.y,
+                ["DirX"] = direction.x,
+                ["DirY"] = direction.y,
                 ["WeaponType"] = string.IsNullOrWhiteSpace(weaponType) ? "Unknown" : weaponType
             }, DeliveryMethod.Unreliable);
         }
 
         public void SendGrenadeThrow(Vector2 position, Vector2 direction, string grenadeType)
         {
+            if (!IsFinite(position) || !IsFinite(direction))
+            {
+                Debug.LogWarning("[ClientNetwork] Ignoring grenade request with non-finite position or direction.");
+                return;
+            }
+
             SendUdpInput(new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.GrenadeThrow,
                 ["PlayerID"] = ClientPlayerId,
-                ["Position"] = new JObject
-                {
-                    ["X"] = position.x,
-                    ["Y"] = position.y
-                },
-                ["Direction"] = new JObject
-                {
-                    ["X"] = direction.x,
-                    ["Y"] = direction.y
-                },
+                ["PosX"] = position.x,
+                ["PosY"] = position.y,
+                ["DirX"] = direction.x,
+                ["DirY"] = direction.y,
                 ["GrenadeType"] = string.IsNullOrWhiteSpace(grenadeType) ? "Normal" : grenadeType
             }, DeliveryMethod.Unreliable);
         }
@@ -949,10 +1681,35 @@ namespace OpenGS
 
         public void DisconnectAll()
         {
+            _isShuttingDown = true;
+            StopAllCoroutines();
+            if (_tcpReconnectRoutine != null)
+            {
+                _tcpReconnectRoutine = null;
+            }
+            if (_matchConnectRoutine != null)
+            {
+                _matchConnectRoutine = null;
+            }
             _matchUdpConnectAttempted = false;
+            _tcpSessionVersion++;
+            _requestClient?.FailPendingRequests("Lobby TCP session was disconnected.");
+            CurrentMatchRoomId = string.Empty;
+            LastDailyListResponse = null;
+            LastDailyClaimResponse = null;
+            LastGuildListResponse = null;
+            LastGuildInfoResponse = null;
+            LastGuildRoleResponse = null;
+            OnlineMetaStateStore.Instance?.Clear();
+            _serverPeer = null;
+            InvokeSafely(MatchUdpConnectionChanged, false, "Client shutdown", nameof(MatchUdpConnectionChanged));
             _netClient?.Stop();
+            _udpClientStarted = false;
+            _tcpStream?.Dispose();
+            _tcpStream = null;
             _tcpClient?.Close();
             _tcpClient?.Dispose();
+            _tcpClient = null;
             Debug.Log("[ClientNetwork] Disconnected from all servers.");
         }
     }

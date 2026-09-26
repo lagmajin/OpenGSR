@@ -139,10 +139,17 @@ namespace OpenGS
         /// </summary>
         public static bool Delete(string fileName)
         {
-            if (storage.Delete(fileName))
+            try
             {
-                Debug.Log($"[JsonStorage] Deleted ({BuildContext(fileName)})");
-                return true;
+                if (storage.Delete(fileName))
+                {
+                    Debug.Log($"[JsonStorage] Deleted ({BuildContext(fileName)})");
+                    return true;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonStorage] Delete failed ({BuildContext(fileName)}): {e.Message}");
             }
 
             return false;
@@ -153,7 +160,15 @@ namespace OpenGS
         /// </summary>
         public static bool Exists(string fileName)
         {
-            return storage.Exists(fileName);
+            try
+            {
+                return storage.Exists(fileName);
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[JsonStorage] Exists failed ({BuildContext(fileName)}): {e.Message}");
+                return false;
+            }
         }
 
         private static string BuildContext(string fileName, int? version = null)

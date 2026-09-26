@@ -22,17 +22,6 @@ namespace OpenGS
         private TcpClient client = null;
 
 
-        void Start()
-        {
-
-
-        }
-
-        void Update()
-        {
-
-        }
-
         void registry(string name, string accountName, string pass)
         {
             var json = new JObject();

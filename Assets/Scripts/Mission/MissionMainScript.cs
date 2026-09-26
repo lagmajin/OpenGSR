@@ -23,7 +23,14 @@ namespace OpenGS
                 return;
             }
 
-            time += Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            time = Mathf.Max(0f, (float.IsFinite(time) ? time : 0f) + deltaTime);
 
             if (Input.GetKeyDown(KeyCode.F1))
             {
@@ -94,7 +101,7 @@ namespace OpenGS
             SpawnPlayer();
         }
 
-        private void MissionFail()
+        public void MissionFail()
         {
             if (endFlag)
             {
@@ -106,7 +113,7 @@ namespace OpenGS
             GoToMissionResult();
         }
 
-        private void MissionClear()
+        public void MissionClear()
         {
             if (endFlag)
             {

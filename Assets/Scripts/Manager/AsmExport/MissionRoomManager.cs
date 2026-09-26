@@ -8,6 +8,7 @@ namespace OpenGS
 
         private readonly object lockObj = new();
         private string currentRoomName = string.Empty;
+        private string currentRoomId = string.Empty;
         private int currentCapacity = 3;
         private int selectedMissionIndex = 1;
         private int selectedQuestIndex = 1;
@@ -34,6 +35,7 @@ namespace OpenGS
             lock (lockObj)
             {
                 currentRoomName = string.Empty;
+                currentRoomId = string.Empty;
                 currentCapacity = 3;
                 selectedMissionIndex = 1;
                 selectedQuestIndex = 1;
@@ -67,6 +69,22 @@ namespace OpenGS
             lock (lockObj)
             {
                 return currentRoomName;
+            }
+        }
+
+        public void SetRoomId(string roomId)
+        {
+            lock (lockObj)
+            {
+                currentRoomId = roomId ?? string.Empty;
+            }
+        }
+
+        public string RoomId()
+        {
+            lock (lockObj)
+            {
+                return currentRoomId;
             }
         }
 

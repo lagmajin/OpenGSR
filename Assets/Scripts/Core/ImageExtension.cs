@@ -8,8 +8,13 @@ namespace OpenGS
     {
         public static void SetOpacity(this Image image, float alpha)
         {
+            if (image == null)
+            {
+                return;
+            }
+
             var c = image.color;
-            image.color = new Color(c.r, c.g, c.b, alpha);
+            image.color = new Color(c.r, c.g, c.b, Mathf.Clamp01(alpha));
         }
 
     }
@@ -18,7 +23,13 @@ namespace OpenGS
     {
         public static void SetOpacity(this SpriteRenderer render,float alpha)
         {
+            if (render == null)
+            {
+                return;
+            }
 
+            var c = render.color;
+            render.color = new Color(c.r, c.g, c.b, Mathf.Clamp01(alpha));
         }
 
     }

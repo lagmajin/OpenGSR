@@ -37,7 +37,20 @@ namespace OpenGS
 
     public class GameGeneralManager
     {
-        private static GameGeneralManager instance;
+        private static GameGeneralManager instance = new GameGeneralManager();
+
+        internal static void SetSharedInstance(GameGeneralManager shared)
+        {
+            if (shared != null)
+            {
+                instance = shared;
+            }
+        }
+
+        internal static void ResetSharedInstance()
+        {
+            instance = new GameGeneralManager();
+        }
 
 
         public bool IsOnlineGameMode { get; set; } = false;
@@ -46,12 +59,6 @@ namespace OpenGS
         {
             get
             {
-                if (instance == null)
-                {
-                    instance = new GameGeneralManager();
-
-                }
-
                 return instance;
             }
 

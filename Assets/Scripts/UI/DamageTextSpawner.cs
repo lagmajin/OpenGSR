@@ -25,8 +25,10 @@ namespace OpenGS
 
         [Header("設定")]
         [SerializeField] private Vector2 randomOffset = new Vector2(20f, 10f); // ランダムずれ幅(px)
+        [SerializeField] private int maxActiveDamageTexts = 32;
 
         private readonly Dictionary<string, AbstractPlayer> playerCache = new();
+        private readonly List<GameObject> activeDamageTexts = new();
         private IDisposable damageSub;
 
         private void Awake()
@@ -36,19 +38,56 @@ namespace OpenGS
 
             if (spawnParent == null)
                 spawnParent = transform as RectTransform;
+
+            if (maxActiveDamageTexts < 1)
+            {
+                maxActiveDamageTexts = 1;
+            }
+
+            randomOffset.x = NormalizeNonNegative(randomOffset.x);
+            randomOffset.y = NormalizeNonNegative(randomOffset.y);
         }
 
         private void OnEnable()
         {
             damageSub?.Dispose();
             damageSub = GameEventBroker.Subscribe<PlayerDamageEvent>(HandlePlayerDamageEvent);
+
+            if (PlayerRegistry.Instance != null)
+            {
+                PlayerRegistry.Instance.OnPlayerUnregistered += HandlePlayerUnregistered;
+            }
         }
 
         private void OnDisable()
         {
             damageSub?.Dispose();
             damageSub = null;
+            if (PlayerRegistry.Instance != null)
+            {
+                PlayerRegistry.Instance.OnPlayerUnregistered -= HandlePlayerUnregistered;
+            }
             playerCache.Clear();
+
+            foreach (var damageText in activeDamageTexts)
+            {
+                if (damageText != null)
+                {
+                    Destroy(damageText);
+                }
+            }
+            activeDamageTexts.Clear();
+        }
+
+        private void HandlePlayerUnregistered(AbstractPlayer player)
+        {
+            if (player == null)
+            {
+                return;
+            }
+
+            var playerId = player.UniqueID().ToString();
+            playerCache.Remove(playerId);
         }
 
         /// <summary>
@@ -70,15 +109,37 @@ namespace OpenGS
 
             if (targetCamera == null)
             {
-                Debug.LogWarning("[DamageTextSpawner] targetCamera is not assigned.");
-                return;
+                targetCamera = Camera.main;
+                if (targetCamera == null)
+                {
+                    Debug.LogWarning("[DamageTextSpawner] targetCamera is not assigned.");
+                    return;
+                }
+            }
+
+            if (spawnParent == null)
+            {
+                spawnParent = transform as RectTransform;
+                if (spawnParent == null)
+                {
+                    Debug.LogWarning("[DamageTextSpawner] spawnParent is not assigned.");
+                    return;
+                }
             }
 
             var player = ResolvePlayer(evt.TargetID());
             if (player == null) return;
 
-            float currentHp = Mathf.Max(0, evt.RemainingHp());
-            float previousHp = currentHp + Mathf.Max(0, evt.Damage());
+            var remainingHp = evt.RemainingHp();
+            var incomingDamage = evt.Damage();
+            if (!float.IsFinite(remainingHp) || !float.IsFinite(incomingDamage))
+            {
+                Debug.LogWarning("[DamageTextSpawner] Ignoring non-finite damage event values.");
+                return;
+            }
+
+            float currentHp = Mathf.Max(0, remainingHp);
+            float previousHp = currentHp + Mathf.Max(0, incomingDamage);
             var feedback = DamageFeedbackCalculator.FromHealthSnapshot(
                 evt.TargetID(),
                 evt.AttackerID(),
@@ -136,6 +197,12 @@ namespace OpenGS
                 return;
             }
 
+            if (damagePrefab == null || targetCamera == null || spawnParent == null)
+            {
+                Debug.LogWarning("[DamageTextSpawner] Spawn dependencies are not ready.");
+                return;
+            }
+
             // プレイヤーのワールド座標をスクリーン座標に変換
             Vector3 worldPos = player.transform.position + new Vector3(0, 0.3f, 0); // 少し頭上
             Vector3 screenPos = targetCamera.WorldToScreenPoint(worldPos);
@@ -144,6 +211,17 @@ namespace OpenGS
 
             // Prefab を生成
             var obj = Instantiate(damagePrefab, spawnParent);
+            activeDamageTexts.RemoveAll(entry => entry == null);
+            while (activeDamageTexts.Count >= maxActiveDamageTexts)
+            {
+                var oldest = activeDamageTexts[0];
+                activeDamageTexts.RemoveAt(0);
+                if (oldest != null)
+                {
+                    Destroy(oldest);
+                }
+            }
+            activeDamageTexts.Add(obj);
             var rt = obj.GetComponent<RectTransform>();
 
             if (rt != null)
@@ -168,6 +246,11 @@ namespace OpenGS
             {
                 spriteUI.SetDamage(damage, isCritical);
             }
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
         }
     }
 }

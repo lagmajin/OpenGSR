@@ -21,7 +21,13 @@ namespace OpenGS
         private new void Start()
         {
             base.Start();
-            Application.targetFrameRate = 30;
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
+            if (Instance != null && Instance != this)
+            {
+                Debug.LogWarning("[SUV] Duplicate main script found; destroying duplicate.");
+                Destroy(gameObject);
+                return;
+            }
             Instance = this;
 
             try
@@ -36,6 +42,12 @@ namespace OpenGS
 
             Debug.Log("[SUV] Survival GameStart");
             Invoke(nameof(GameSetup), 0.1f);
+        }
+
+        protected override void OnDestroy()
+        {
+            if (Instance == this) Instance = null;
+            base.OnDestroy();
         }
 
         private void GameSetup()
@@ -153,8 +165,27 @@ namespace OpenGS
                 return;
             }
 
-            endFlag = true;
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
+
+            StoreOfflineMatchResult();
             Invoke(nameof(GoToResultScene), gotoResultSceneWaitTime);
+        }
+
+        private void StoreOfflineMatchResult()
+        {
+            if (GameManager != null && GameManager.IsOnlineGameMode)
+            {
+                return;
+            }
+
+            var manager = matchRoomManager ?? MatchRoomManager();
+            var players = manager?.WaitRoom?.AllPlayers() ?? new List<OpenGSCore.PlayerInfo>();
+            var evaluator = MatchResultEvaluatorFactory.CreateEvaluator(EGameMode.Survival);
+            var result = evaluator.Evaluate(null, players);
+            manager?.StoreOfflineMatchResult(result);
         }
 
         private void GoToResultScene()
@@ -177,6 +208,7 @@ namespace OpenGS
                 linker = playerObj.AddComponent<PlayerDataLinker>();
 
             linker.SetPlayerId(playerId ?? string.Empty);
+            playerObj.GetComponent<PlayerAgent>()?.SetPlayerID(playerId ?? string.Empty);
         }
     }
 }

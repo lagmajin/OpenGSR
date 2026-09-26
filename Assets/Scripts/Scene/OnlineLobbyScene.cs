@@ -36,6 +36,7 @@ namespace OpenGS
 
         [SerializeField] [Required] public LobbySceneMediateObject mediateObject;
         [SerializeField] private OnlineLobbySceneController lobbySceneController;
+        [SerializeField] private float lobbyChatCooldownSeconds = 0.5f;
 
         // ─── 内部状態 ───────────────────────────────────────────────
 
@@ -48,18 +49,39 @@ namespace OpenGS
         private JArray currentRoomList = new JArray();
         private string currentRoomFilter = "All";
         private string currentSelectedRoomId = "";
+        private bool sceneTransitionRequested;
+        private float nextLobbyChatSendTime;
         private readonly List<GameObject> spawnedRoomButtons = new List<GameObject>();
+        private Coroutine roomListRefreshRoutine;
+        private Coroutine periodicUpdateRoutine;
+        private Coroutine blockInputRoutine;
+        private Coroutine networkSubscriptionRoutine;
+        private bool networkSubscribed;
+        private Button allRoomsButton;
+        private Button deathMatchButton;
+        private Button survivalButton;
+        private Button captureTheFlagButton;
+        private Button settingButton;
 
         // ─── Unity ライフサイクル ────────────────────────────────────
 
         protected override void Awake()
         {
             base.Awake();
-            mainThread = SynchronizationContext.Current;
+            mainThread = SynchronizationContext.Current ?? new SynchronizationContext();
+            if (mediateObject == null)
+            {
+                mediateObject = FindFirstObjectByType<LobbySceneMediateObject>();
+            }
             EnsureNetworkDependencies();
+            BindRoomFilterButtons();
             if (lobbySceneController == null)
             {
                 lobbySceneController = GetComponent<OnlineLobbySceneController>();
+            }
+            if (lobbySceneController == null)
+            {
+                lobbySceneController = FindFirstObjectByType<OnlineLobbySceneController>();
             }
 
             if (DebugFlagManager.IsDebug())
@@ -73,26 +95,20 @@ namespace OpenGS
             SceneManager.sceneLoaded += OnGameSceneLoaded;
             EnsureTitleBgm();
 
-            var net = EnsureNetworkManager();
-            if (net != null)
-            {
-                net.DataReceivedStream
-                    .ObserveOnMainThread()
-                    .Subscribe(ParseMessageFromServer)
-                    .AddTo(this.gameObject);
-                Debug.Log("OnlineLobbyScene: Subscribed to GeneralServerNetworkManager.DataReceivedStream");
-            }
-            else
-            {
-                Debug.LogWarning("OnlineLobbyScene: GeneralServerNetworkManager is not available at Start.");
-            }
+            networkSubscriptionRoutine = StartCoroutine(SubscribeToNetworkWhenReady());
 
-            StartCoroutine(PeriodicUpdateCoroutine());
+            periodicUpdateRoutine = StartCoroutine(PeriodicUpdateCoroutine());
             ShowDefaultRooms();
         }
 
         private void EnsureTitleBgm()
         {
+            if (SoundManager.Instance == null)
+            {
+                Debug.LogWarning("[OnlineLobbyScene] SoundManager is not ready; skipping title BGM.");
+                return;
+            }
+
             if (SoundManager.Instance.IsBgmPlaying(EBgm.Title))
             {
                 Debug.Log("[OnlineLobbyScene] Title BGM is already playing.");
@@ -105,8 +121,66 @@ namespace OpenGS
 
         protected override void OnDestroy()
         {
+            allRoomsButton?.onClick.RemoveListener(ShowAllRooms);
+            deathMatchButton?.onClick.RemoveListener(ShowDMRooms);
+            survivalButton?.onClick.RemoveListener(ShowSUVRooms);
+            captureTheFlagButton?.onClick.RemoveListener(ShowCTFRooms);
+            settingButton?.onClick.RemoveListener(OpenSettings);
+            SceneManager.sceneLoaded -= OnGameSceneLoaded;
+            if (networkSubscriptionRoutine != null)
+            {
+                StopCoroutine(networkSubscriptionRoutine);
+                networkSubscriptionRoutine = null;
+            }
+            if (periodicUpdateRoutine != null)
+            {
+                StopCoroutine(periodicUpdateRoutine);
+                periodicUpdateRoutine = null;
+            }
+            if (roomListRefreshRoutine != null)
+            {
+                StopCoroutine(roomListRefreshRoutine);
+                roomListRefreshRoutine = null;
+            }
+            if (blockInputRoutine != null)
+            {
+                StopCoroutine(blockInputRoutine);
+                blockInputRoutine = null;
+            }
             networkManager?.UnSubscribe(this);
             base.OnDestroy();
+        }
+
+        private void BindRoomFilterButtons()
+        {
+            allRoomsButton = GameObject.Find("(Button)AllMatch")?.GetComponent<Button>();
+            deathMatchButton = GameObject.Find("DMButton")?.GetComponent<Button>();
+            survivalButton = GameObject.Find("SuvButton")?.GetComponent<Button>();
+            captureTheFlagButton = GameObject.Find("CTFButton")?.GetComponent<Button>();
+            settingButton = GameObject.Find("SettingButton")?.GetComponent<Button>();
+
+            allRoomsButton?.onClick.RemoveListener(ShowAllRooms);
+            allRoomsButton?.onClick.AddListener(ShowAllRooms);
+            deathMatchButton?.onClick.RemoveListener(ShowDMRooms);
+            deathMatchButton?.onClick.AddListener(ShowDMRooms);
+            survivalButton?.onClick.RemoveListener(ShowSUVRooms);
+            survivalButton?.onClick.AddListener(ShowSUVRooms);
+            captureTheFlagButton?.onClick.RemoveListener(ShowCTFRooms);
+            captureTheFlagButton?.onClick.AddListener(ShowCTFRooms);
+            settingButton?.onClick.RemoveListener(OpenSettings);
+            settingButton?.onClick.AddListener(OpenSettings);
+        }
+
+        public void OpenSettings()
+        {
+            var scene = GeneralSceneMasterData.Instance()?.GameSettingScene();
+            if (string.IsNullOrWhiteSpace(scene))
+            {
+                Debug.LogWarning("[OnlineLobbyScene] Game setting scene is not configured.");
+                return;
+            }
+
+            RequestSceneTransition(scene, "LobbyToGameSettings");
         }
 
         private void OnApplicationQuit()
@@ -146,12 +220,12 @@ namespace OpenGS
                 EnsureNetworkManager()?.SendUpdateRoomRequest();
             }
 
-            if (Input.GetKeyDown(KeyCode.F6) || Input.GetKey(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.F6) || Input.GetKeyDown(KeyCode.Escape))
             {
                 DisconnectAndBackToTitle();
             }
 
-            if (Input.GetKey(KeyCode.S))
+            if (Input.GetKeyDown(KeyCode.S))
             {
                 GoToShop();
             }
@@ -253,8 +327,8 @@ namespace OpenGS
             }
 
             currentSelectedRoomId = roomId;
-            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
-            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            var playerName = GetCurrentPlayerName();
+            var playerId = GetCurrentPlayerId();
             if (string.IsNullOrWhiteSpace(playerId))
             {
                 playerId = "local_player";
@@ -303,7 +377,7 @@ namespace OpenGS
             var sceneName = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
                 ? mediateObject.GeneralSceneMasterData().TitleScene()
                 : GeneralSceneMasterData.Instance().TitleScene();
-            SceneManager.LoadSceneAsync(sceneName);
+            LoadSceneIfConfigured(sceneName, "DisconnectAndBackToTitle");
         }
 
         public void GoToShop()
@@ -312,7 +386,7 @@ namespace OpenGS
                 ? mediateObject.GeneralSceneMasterData().ShopScene()
                 : GeneralSceneMasterData.Instance().ShopScene();
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(sceneName);
+            LoadSceneIfConfigured(sceneName, "GoToShop");
         }
 
         public void GotoOnlineWaitRoom()
@@ -323,7 +397,7 @@ namespace OpenGS
                 var sceneName = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
                     ? mediateObject.GeneralSceneMasterData().OnlineWaitRoomScene()
                     : GeneralSceneMasterData.Instance().OnlineWaitRoomScene();
-                SceneManager.LoadScene(sceneName);
+                LoadSceneIfConfigured(sceneName, "GotoOnlineWaitRoom");
             }, null);
         }
 
@@ -354,9 +428,9 @@ namespace OpenGS
                         var createdOwnerId = string.IsNullOrWhiteSpace(roomInfo.OwnerId) ? "local_player" : roomInfo.OwnerId;
                         var createdTeamBalance = roomInfo.TeamBalance;
                         var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, roomInfo.Capacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1, createdGameMode, createdOwnerId, createdTeamBalance);
-                        waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName)
+                        waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, GetCurrentPlayerName())
                         {
-                            playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                            playerCharacter = GetCurrentPlayerCharacter()
                         });
                         GotoOnlineWaitRoom();
                     },
@@ -370,7 +444,7 @@ namespace OpenGS
                         var rooms = roomListSnapshot?.ToRoomArray() ?? new JArray();
                         Debug.Log($"OnlineLobbyScene: Received {rooms.Count} rooms");
                         currentRoomList = rooms;
-                        RefreshRoomListView();
+                        QueueRoomListRefresh();
                     },
                     (roomId, roomName, capacity, playerCount) =>
                     {
@@ -383,10 +457,10 @@ namespace OpenGS
                         var selectedTeamBalance = roomInfo.TeamBalance;
                         var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, selectedCapacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
                         waitRoom.AddNewPlayer(new PlayerInfo(
-                            id: AccountManager.Instance.CurrentProfile.GlobalUserId,
-                            name: AccountManager.Instance.CurrentProfile.DisplayName)
+                            id: GetCurrentPlayerId(),
+                            name: GetCurrentPlayerName())
                         {
-                            playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                            playerCharacter = GetCurrentPlayerCharacter()
                         });
                         GotoOnlineWaitRoom();
                     },
@@ -405,11 +479,11 @@ namespace OpenGS
                 var rooms = roomListSnapshot.ToRoomArray();
                 Debug.Log($"OnlineLobbyScene: Received {rooms.Count} rooms");
                 currentRoomList = rooms;
-                RefreshRoomListView();
+                QueueRoomListRefresh();
             }
             else if (messageType == MessageType.CreateRoomResponse)
             {
-                var success = json["Success"]?.ToObject<bool>() ?? false;
+                var success = ReadSuccess(json["Success"]);
                 if (success)
                 {
                     var roomInfo = RoomInfoSnapshot.FromJson(json);
@@ -419,9 +493,9 @@ namespace OpenGS
                     var createdOwnerId = string.IsNullOrWhiteSpace(roomInfo.OwnerId) ? "local_player" : roomInfo.OwnerId;
                     var createdTeamBalance = roomInfo.TeamBalance;
                     var waitRoom = waitRoomManager.CreateNewWaitRoom(roomInfo.RoomName, roomInfo.RoomId, roomInfo.Capacity, roomInfo.PlayerCount > 0 ? roomInfo.PlayerCount : 1, createdGameMode, createdOwnerId, createdTeamBalance);
-                    waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, AccountManager.Instance.CurrentProfile.DisplayName)
+                    waitRoom.AddNewPlayer(new PlayerInfo(createdOwnerId, GetCurrentPlayerName())
                     {
-                        playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                        playerCharacter = GetCurrentPlayerCharacter()
                     });
                     GotoOnlineWaitRoom();
                 }
@@ -434,7 +508,7 @@ namespace OpenGS
             }
             else if (messageType == MessageType.JoinRoomResponse)
             {
-                var success = json["Success"]?.ToObject<bool>() ?? false;
+                var success = ReadSuccess(json["Success"]);
                 if (success)
                 {
                     var roomInfo = RoomInfoSnapshot.FromJson(json);
@@ -448,10 +522,10 @@ namespace OpenGS
                     var selectedTeamBalance = roomInfo.TeamBalance;
                     var waitRoom = waitRoomManager.CreateNewWaitRoom(roomName, roomId, selectedCapacity, playerCount, selectedGameMode, selectedOwnerId, selectedTeamBalance);
                     waitRoom.AddNewPlayer(new PlayerInfo(
-                        id: AccountManager.Instance.CurrentProfile.GlobalUserId,
-                        name: AccountManager.Instance.CurrentProfile.DisplayName)
+                        id: GetCurrentPlayerId(),
+                        name: GetCurrentPlayerName())
                     {
-                        playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                        playerCharacter = GetCurrentPlayerCharacter()
                     });
                     GotoOnlineWaitRoom();
                 }
@@ -527,7 +601,7 @@ namespace OpenGS
 
             var roomName = quickStartRoom["RoomName"]?.ToString() ?? "Room";
             var playerCount = GetRoomPlayerCount(quickStartRoom);
-            var capacity = quickStartRoom["Capacity"]?.ToObject<int>() ?? 0;
+            var capacity = ReadNonNegativeInt(quickStartRoom["Capacity"]);
             Debug.Log($"OnlineLobbyScene.OnQuickStart: joining {roomName} ({playerCount}/{capacity})");
 
             currentSelectedRoomId = roomId;
@@ -595,12 +669,40 @@ namespace OpenGS
         [Button("チャット送信テスト")]
         public void SendChat(string str)
         {
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f || now < nextLobbyChatSendTime)
+            {
+                return;
+            }
+
+            var message = str?.Replace("\r\n", " ").Replace('\n', ' ').Replace('\r', ' ').Trim()
+                ?? string.Empty;
+            if (message.Length == 0)
+            {
+                return;
+            }
+
+            if (message.Length > 200)
+            {
+                message = message.Substring(0, 200);
+            }
+
+            var manager = EnsureNetworkManager();
+            if (manager == null)
+            {
+                return;
+            }
+
             var json = new JObject
             {
                 ["MessageType"] = MessageType.AddLobbyChat,
-                ["Chat"] = str
+                ["Chat"] = message
             };
-            networkManager.SendMessage(json);
+            manager.SendMessage(json);
+            var cooldown = float.IsFinite(lobbyChatCooldownSeconds)
+                ? Mathf.Max(0f, lobbyChatCooldownSeconds)
+                : 0.5f;
+            nextLobbyChatSendTime = now + cooldown;
         }
 
         // ─── 入力ブロック ─────────────────────────────────────────────
@@ -608,7 +710,11 @@ namespace OpenGS
         [Button("入力ブロック")]
         public void BlockInput()
         {
-            StartCoroutine(BlockKeyInputCoroutine());
+            if (blockInputRoutine != null)
+            {
+                StopCoroutine(blockInputRoutine);
+            }
+            blockInputRoutine = StartCoroutine(BlockKeyInputCoroutine());
         }
 
         private IEnumerator BlockKeyInputCoroutine()
@@ -616,6 +722,7 @@ namespace OpenGS
             canInput = false;
             yield return new WaitForSeconds(30.0f);
             canInput = true;
+            blockInputRoutine = null;
         }
 
         // ─── プライベートユーティリティ ───────────────────────────────
@@ -633,6 +740,29 @@ namespace OpenGS
                 yield return new WaitForSeconds(1f);
                 EnsureNetworkManager()?.SendUpdateRoomRequest();
             }
+        }
+
+        private IEnumerator SubscribeToNetworkWhenReady()
+        {
+            while (isActiveAndEnabled && !networkSubscribed)
+            {
+                var net = EnsureNetworkManager();
+                if (net != null)
+                {
+                    net.DataReceivedStream
+                        .ObserveOnMainThread()
+                        .Subscribe(ParseMessageFromServer)
+                        .AddTo(this.gameObject);
+                    networkSubscribed = true;
+                    networkSubscriptionRoutine = null;
+                    Debug.Log("OnlineLobbyScene: Subscribed to GeneralServerNetworkManager.DataReceivedStream");
+                    yield break;
+                }
+
+                yield return null;
+            }
+
+            networkSubscriptionRoutine = null;
         }
 
         private void EnsureNetworkDependencies()
@@ -745,13 +875,60 @@ namespace OpenGS
             var sceneName = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
                 ? mediateObject.GeneralSceneMasterData().ConnectToServerScene()
                 : GeneralSceneMasterData.Instance().ConnectToServerScene();
-            SceneManager.LoadScene(sceneName);
+            LoadSceneIfConfigured(sceneName, "BackToConnectServerScene");
+        }
+
+        private void LoadSceneIfConfigured(string sceneName, string source)
+        {
+            if (sceneTransitionRequested)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogError($"[OnlineLobbyScene] Scene name is not configured. source={source}");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                Debug.LogError($"[OnlineLobbyScene] Scene is not in build settings: {sceneName}. source={source}");
+                return;
+            }
+
+            sceneTransitionRequested = true;
+            if (SceneManager.LoadSceneAsync(sceneName) == null)
+            {
+                sceneTransitionRequested = false;
+                Debug.LogError($"[OnlineLobbyScene] Failed to load scene: {sceneName}. source={source}");
+            }
         }
 
         private void SetRoomFilter(string filter)
         {
             currentRoomFilter = filter;
             RefreshRoomListView();
+        }
+
+        private void QueueRoomListRefresh()
+        {
+            if (!isActiveAndEnabled || roomListRefreshRoutine != null)
+            {
+                return;
+            }
+
+            roomListRefreshRoutine = StartCoroutine(RefreshRoomListNextFrame());
+        }
+
+        private IEnumerator RefreshRoomListNextFrame()
+        {
+            yield return null;
+            roomListRefreshRoutine = null;
+            if (isActiveAndEnabled)
+            {
+                RefreshRoomListView();
+            }
         }
 
         private void RefreshRoomListView()
@@ -790,8 +967,12 @@ namespace OpenGS
                 var roomId = room["RoomID"]?.ToString() ?? room["RoomId"]?.ToString() ?? "";
                 var roomName = room["RoomName"]?.ToString() ?? "Room";
                 var gameMode = room["GameMode"]?.ToString() ?? "";
-                var capacity = room["Capacity"]?.ToObject<int>() ?? 0;
-                var players = room["PlayerCount"]?.ToObject<int>() ?? room["Players"]?.ToObject<int>() ?? 0;
+                var capacity = ReadNonNegativeInt(room["Capacity"]);
+                var players = ReadNonNegativeInt(room["PlayerCount"]);
+                if (players == 0)
+                {
+                    players = ReadNonNegativeInt(room["Players"]);
+                }
                 var isSelected = string.Equals(roomId, currentSelectedRoomId, StringComparison.OrdinalIgnoreCase);
 
                 var instance = Instantiate(RoomButton, roomPanel.transform);
@@ -801,7 +982,6 @@ namespace OpenGS
                 var button = instance.GetComponent<Button>();
                 if (button != null)
                 {
-                    button.onClick.RemoveAllListeners();
                     button.onClick.AddListener(() =>
                     {
                         currentSelectedRoomId = roomId;
@@ -1016,7 +1196,7 @@ namespace OpenGS
                     continue;
                 }
 
-                var capacity = room["Capacity"]?.ToObject<int>() ?? 0;
+                var capacity = ReadNonNegativeInt(room["Capacity"]);
                 var playerCount = GetRoomPlayerCount(room);
                 if (capacity <= 0 || playerCount >= capacity)
                 {
@@ -1078,6 +1258,13 @@ namespace OpenGS
             return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
         }
 
+        private static EPlayerCharacter GetCurrentPlayerCharacter()
+        {
+            return GamePlayerManager.Instance != null
+                ? GamePlayerManager.Instance.SelectedPlayerCharacter()
+                : EPlayerCharacter.Misty;
+        }
+
         private static EGameMode ParseGameMode(string value)
         {
             return Enum.TryParse(value, out EGameMode parsed) ? parsed : EGameMode.DeathMatch;
@@ -1115,9 +1302,35 @@ namespace OpenGS
             return 1;
         }
 
+        private static int ReadNonNegativeInt(JToken token)
+        {
+            try
+            {
+                return Mathf.Max(0, token?.ToObject<int>() ?? 0);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[OnlineLobbyScene] Invalid room number: {ex.Message}");
+                return 0;
+            }
+        }
+
+        private static bool ReadSuccess(JToken token)
+        {
+            try
+            {
+                return token?.ToObject<bool>() ?? false;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[OnlineLobbyScene] Invalid success value: {ex.Message}");
+                return false;
+            }
+        }
+
         // ─── AbstractNonBattleScene の実装 ────────────────────────────
 
-        public override SynchronizationContext MainThread() => mainThread;
+        public override SynchronizationContext MainThread() => mainThread ?? SynchronizationContext.Current ?? new SynchronizationContext();
 
         protected override void OnStartUnityEditor()
         {
@@ -1136,4 +1349,3 @@ namespace OpenGS
         }
     }
 }
-

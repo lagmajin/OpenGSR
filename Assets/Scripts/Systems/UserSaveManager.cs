@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -52,6 +53,7 @@ namespace OpenGS
 
                 if (data != null)
                 {
+                    NormalizePurchasedItems(data);
                     NormalizeInstantItemSlots(data);
                     NormalizeGrenadeSlots(data);
                 }
@@ -60,6 +62,7 @@ namespace OpenGS
                 {
                     // Backward compatibility for non-versioned legacy files.
                     data = JsonStorage.Load<UserSaveData>(SAVE_FILE, new UserSaveData());
+                    NormalizePurchasedItems(data);
                     NormalizeInstantItemSlots(data);
                     NormalizeGrenadeSlots(data);
                     JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
@@ -81,9 +84,37 @@ namespace OpenGS
                 migrated.equippedCharacter = "";
             }
 
+            NormalizePurchasedItems(migrated);
             NormalizeInstantItemSlots(migrated);
             NormalizeGrenadeSlots(migrated);
             return migrated;
+        }
+
+        private static void NormalizePurchasedItems(UserSaveData saveData)
+        {
+            if (saveData == null)
+            {
+                return;
+            }
+
+            if (saveData.purchasedItems == null)
+            {
+                saveData.purchasedItems = new List<string>();
+                return;
+            }
+
+            for (var index = saveData.purchasedItems.Count - 1; index >= 0; index--)
+            {
+                var itemId = saveData.purchasedItems[index]?.Trim();
+                if (string.IsNullOrWhiteSpace(itemId))
+                {
+                    saveData.purchasedItems.RemoveAt(index);
+                }
+                else
+                {
+                    saveData.purchasedItems[index] = itemId;
+                }
+            }
         }
 
         private static void NormalizeInstantItemSlots(UserSaveData saveData)
@@ -171,6 +202,7 @@ namespace OpenGS
 
         public static void SetPurchased(string itemId, bool purchased = true)
         {
+            itemId = itemId?.Trim();
             if (string.IsNullOrEmpty(itemId)) return;
 
             LoadData();
@@ -192,6 +224,7 @@ namespace OpenGS
 
         public static void EquipToSlot(string itemId, EShopCategory category, int slotIndex)
         {
+            itemId = itemId?.Trim() ?? string.Empty;
             if (category == EShopCategory.Weapon)
             {
                 // Weaponは FavoriteWeaponMemoryStorage で複数管理する (トグル式)
@@ -295,11 +328,28 @@ namespace OpenGS
                 copy[index] = data.equippedInstantItems[index] ?? string.Empty;
             }
 
+            var hasEquippedItem = false;
+            foreach (var item in copy)
+            {
+                if (!string.IsNullOrWhiteSpace(item))
+                {
+                    hasEquippedItem = true;
+                    break;
+                }
+            }
+
+            if (!hasEquippedItem)
+            {
+                copy[0] = EInstantItemType.HealthKit.ToString();
+                copy[1] = EInstantItemType.PowerGrenadePack.ToString();
+            }
+
             return copy;
         }
 
         public static void EquipGrenadeToSlot(string grenadeType, int slotIndex)
         {
+            grenadeType = grenadeType?.Trim() ?? string.Empty;
             LoadData();
             NormalizeGrenadeSlots(data);
 
@@ -344,6 +394,7 @@ namespace OpenGS
         // --- Favorite Weapon Integration ---
         public static bool IsFavoriteWeapon(string itemId)
         {
+            itemId = itemId?.Trim();
             if (!Enum.TryParse(itemId, true, out OpenGSCore.EWeaponType wType)) return false;
 
             var favs = FavoriteWeaponMemoryStorage.Load();
@@ -352,6 +403,7 @@ namespace OpenGS
 
         public static void ToggleFavoriteWeapon(string itemId)
         {
+            itemId = itemId?.Trim();
             if (!Enum.TryParse(itemId, true, out OpenGSCore.EWeaponType wType))
             {
                 Debug.LogWarning($"Unknown weapon type: {itemId}. Cannot add to favorite.");

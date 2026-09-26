@@ -60,17 +60,20 @@ namespace OpenGS
                 var itemArray = jObj["InstantItemSlot"] as JArray;
                 var grenadeArray = jObj["GrenadeSlot"] as JArray ?? jObj["GrenadeSlots"] as JArray;
 
-                if (!Enum.TryParse(characterStr, out EPlayerCharacter playerCharacter))
+                if (!Enum.TryParse(characterStr, true, out EPlayerCharacter playerCharacter)
+                    || !Enum.IsDefined(typeof(EPlayerCharacter), playerCharacter))
                 {
                     return fallback;
                 }
 
                 var items = itemArray != null
-                    ? itemArray.Select(t => Enum.TryParse(t?.ToString(), out EInstantItemType type) ? type : default).ToArray()
+                    ? itemArray.Select(t => Enum.TryParse(t?.ToString(), true, out EInstantItemType type)
+                        && Enum.IsDefined(typeof(EInstantItemType), type) ? type : EInstantItemType.None).ToArray()
                     : Enumerable.Repeat(EInstantItemType.None, InstantItemSlotCount).ToArray();
 
                 var grenades = grenadeArray != null
-                    ? grenadeArray.Select(t => Enum.TryParse(t?.ToString(), true, out EGrenadeType type) ? type : EGrenadeType.Empty).ToArray()
+                    ? grenadeArray.Select(t => Enum.TryParse(t?.ToString(), true, out EGrenadeType type)
+                        && Enum.IsDefined(typeof(EGrenadeType), type) ? type : EGrenadeType.Empty).ToArray()
                     : Enumerable.Repeat(EGrenadeType.Normal, InstantItemSlotCount).ToArray();
 
                 if (items.Length != InstantItemSlotCount)

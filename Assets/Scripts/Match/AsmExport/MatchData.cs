@@ -40,6 +40,12 @@ namespace OpenGS
         // Method to add or update player status
         public void UpdatePlayerStatus(string playerId, PlayerStatus status)
         {
+            if (string.IsNullOrWhiteSpace(playerId) || status == null)
+            {
+                Debug.LogWarning("[MatchData] UpdatePlayerStatus ignored invalid player data.");
+                return;
+            }
+
             AllPlayers[playerId] = status;
         }
 
@@ -66,6 +72,11 @@ namespace OpenGS
         // Method to remove player
         public void RemovePlayer(string playerId)
         {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return;
+            }
+
             AllPlayers.Remove(playerId);
             // If it was my player, clear the cache
             if (_myPlayerId == playerId)
@@ -82,6 +93,12 @@ namespace OpenGS
         // Set my player ID (called when login succeeds or player spawns)
         public void SetMyPlayerId(string playerId)
         {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                Debug.LogWarning("[MatchData] SetMyPlayerId ignored empty playerId.");
+                return;
+            }
+
             _myPlayerId = playerId;
             Debug.Log($"MatchData: My player ID set to {playerId}");
         }
@@ -132,15 +149,19 @@ namespace OpenGS
             // kills/deaths/score を設定（PlayerStatusにこれらのプロパティが必要）
             // ※ PlayerStatus に Kills, Deaths, Score プロパティがある場合のみ
             // ここではDictionaryに保持するkills/deaths/scoreを管理
+
+            kills = Mathf.Max(0, kills);
+            deaths = Mathf.Max(0, deaths);
+            score = Mathf.Max(0, score);
             
             // チーム статистик 更新
             switch (team)
             {
                 case ETeam.Red:
-                    RedTeamKill += 1;
+                    RedTeamKill = SaturatingIncrement(RedTeamKill);
                     break;
                 case ETeam.Blue:
-                    BlueTeamKill += 1;
+                    BlueTeamKill = SaturatingIncrement(BlueTeamKill);
                     break;
             }
 
@@ -151,7 +172,7 @@ namespace OpenGS
 
             AllPlayers[playerId] = status;
             
-            AllKill += 1;
+            AllKill = SaturatingIncrement(AllKill);
             
             Debug.Log($"[MatchData] KillScore Update - Player: {playerId}, Kills: {kills}, Deaths: {deaths}, Score: {score}, Team: {team}");
         }
@@ -165,9 +186,14 @@ namespace OpenGS
                 return;
             }
 
-            AllDeath += 1;
+            AllDeath = SaturatingIncrement(AllDeath);
             
             Debug.Log($"[MatchData] Death Update - Player: {playerId}, Team: {team}");
+        }
+
+        private static int SaturatingIncrement(int value)
+        {
+            return value == int.MaxValue ? value : value + 1;
         }
 
         public void AddFlagScore(ETeam team, int delta = 1)

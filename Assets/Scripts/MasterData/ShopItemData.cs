@@ -29,5 +29,22 @@ namespace OpenGS
         public float power;
         public float weight;
         public Color itemColor = Color.white;
+
+        private void OnValidate()
+        {
+            id = id?.Trim() ?? string.Empty;
+            itemName = itemName?.Trim() ?? string.Empty;
+            price = Mathf.Max(0, price);
+
+            if (!float.IsFinite(power))
+            {
+                power = 0f;
+            }
+
+            if (!float.IsFinite(weight))
+            {
+                weight = 0f;
+            }
+        }
     }
 }

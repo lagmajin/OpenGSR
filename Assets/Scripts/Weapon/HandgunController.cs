@@ -32,7 +32,11 @@ namespace OpenGS
             var bullet = bulletObj.GetComponent<BulletController>();
             if (bullet != null)
             {
-                bullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam);
+                bullet.Init(shotDir, bulletSpeed, effectiveDamage, playerId, Name, ownerTeam, ResolveBulletDamageType());
+            }
+            else
+            {
+                Destroy(bulletObj);
             }
         }
     }

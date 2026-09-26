@@ -11,6 +11,19 @@ namespace OpenGS
         [SerializeField] private float rotationSpeed = 90f;
         private bool triggered;
 
+        private void Awake()
+        {
+            lifetime = Mathf.Max(0.01f, float.IsFinite(lifetime) ? lifetime : 4f);
+            rotationSpeed = float.IsFinite(rotationSpeed) ? rotationSpeed : 90f;
+        }
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(lifetime)) lifetime = 4f;
+            if (!float.IsFinite(rotationSpeed)) rotationSpeed = 90f;
+            lifetime = Mathf.Max(0.01f, lifetime);
+        }
+
         private void Start()
         {
             Destroy(gameObject, lifetime);
@@ -18,7 +31,14 @@ namespace OpenGS
 
         private void Update()
         {
-            transform.Rotate(0f, 0f, rotationSpeed * Time.deltaTime);
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            transform.Rotate(0f, 0f, rotationSpeed * deltaTime);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
@@ -38,7 +58,7 @@ namespace OpenGS
                 return;
             }
 
-            var tags = other.GetComponent<MultipleTags>();
+            var tags = other.GetComponentInParent<IMultipleTags>();
             if (tags == null)
             {
                 return;

@@ -28,6 +28,7 @@ namespace OpenGS
 
         private void Awake()
         {
+            framesPerSecond = float.IsFinite(framesPerSecond) ? Mathf.Max(1f, framesPerSecond) : 24f;
             if (targetImage == null)
             {
                 targetImage = GetComponentInChildren<Image>(true);

@@ -14,7 +14,7 @@ namespace OpenGS
         public static void Init()
         {
 
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
         }
 
 

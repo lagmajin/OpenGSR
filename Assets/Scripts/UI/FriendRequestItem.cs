@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Globalization;
 
 namespace OpenGS
 {
@@ -30,6 +31,7 @@ namespace OpenGS
         private FriendRequest request;
         private Action<FriendRequest> onAccepted;
         private Action<FriendRequest> onRejected;
+        private bool actionInProgress;
 
         // ─── 初期化 ─────────────────────────────────────────────────
 
@@ -41,9 +43,21 @@ namespace OpenGS
         /// <param name="onRejectedCallback">拒否時のコールバック</param>
         public void Setup(FriendRequest request, Action<FriendRequest> onAcceptedCallback, Action<FriendRequest> onRejectedCallback)
         {
+            if (request == null)
+            {
+                this.request = null;
+                onAccepted = null;
+                onRejected = null;
+                actionInProgress = false;
+                if (acceptButton != null) acceptButton.interactable = false;
+                if (rejectButton != null) rejectButton.interactable = false;
+                return;
+            }
+
             this.request = request;
             this.onAccepted = onAcceptedCallback;
             this.onRejected = onRejectedCallback;
+            actionInProgress = false;
 
             UpdateUI();
             SetupListeners();
@@ -92,11 +106,13 @@ namespace OpenGS
         {
             if (acceptButton != null)
             {
+                acceptButton.onClick.RemoveListener(OnAcceptButtonClicked);
                 acceptButton.onClick.AddListener(OnAcceptButtonClicked);
             }
 
             if (rejectButton != null)
             {
+                rejectButton.onClick.RemoveListener(OnRejectButtonClicked);
                 rejectButton.onClick.AddListener(OnRejectButtonClicked);
             }
         }
@@ -105,12 +121,48 @@ namespace OpenGS
 
         private void OnAcceptButtonClicked()
         {
-            onAccepted?.Invoke(request);
+            if (actionInProgress || request == null)
+            {
+                return;
+            }
+
+            actionInProgress = true;
+            if (acceptButton != null) acceptButton.interactable = false;
+            if (rejectButton != null) rejectButton.interactable = false;
+            try
+            {
+                onAccepted?.Invoke(request);
+            }
+            catch (Exception ex)
+            {
+                actionInProgress = false;
+                if (acceptButton != null) acceptButton.interactable = true;
+                if (rejectButton != null) rejectButton.interactable = true;
+                Debug.LogError($"[FriendRequestItem] Accept callback failed: {ex}");
+            }
         }
 
         private void OnRejectButtonClicked()
         {
-            onRejected?.Invoke(request);
+            if (actionInProgress || request == null)
+            {
+                return;
+            }
+
+            actionInProgress = true;
+            if (acceptButton != null) acceptButton.interactable = false;
+            if (rejectButton != null) rejectButton.interactable = false;
+            try
+            {
+                onRejected?.Invoke(request);
+            }
+            catch (Exception ex)
+            {
+                actionInProgress = false;
+                if (acceptButton != null) acceptButton.interactable = true;
+                if (rejectButton != null) rejectButton.interactable = true;
+                Debug.LogError($"[FriendRequestItem] Reject callback failed: {ex}");
+            }
         }
 
         // ─── ユーティリティ ─────────────────────────────────────────
@@ -123,9 +175,9 @@ namespace OpenGS
             if (string.IsNullOrEmpty(dateString))
                 return "不明";
 
-            try
+            if (DateTime.TryParse(dateString, CultureInfo.InvariantCulture,
+                DateTimeStyles.AllowWhiteSpaces | DateTimeStyles.RoundtripKind, out var requestDate))
             {
-                var requestDate = DateTime.Parse(dateString);
                 var now = DateTime.Now;
                 var diff = now - requestDate;
 
@@ -140,10 +192,8 @@ namespace OpenGS
                 else
                     return requestDate.ToString("MM/dd HH:mm");
             }
-            catch
-            {
-                return dateString;
-            }
+
+            return dateString;
         }
 
         // ─── 公開メソッド ───────────────────────────────────────────

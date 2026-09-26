@@ -26,6 +26,7 @@ namespace OpenGS
 
         private void Awake()
         {
+            flashDuration = float.IsFinite(flashDuration) ? Mathf.Max(0f, flashDuration) : 0.08f;
             if (backgroundImage == null)
                 backgroundImage = GetComponent<Image>();
         }
@@ -39,6 +40,7 @@ namespace OpenGS
         {
             if (backgroundImage == null) return;
 
+            backgroundImage.DOKill();
             backgroundImage.color = normalColor;
 
             DOTween.Sequence()

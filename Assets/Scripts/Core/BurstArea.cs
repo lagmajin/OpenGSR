@@ -3,14 +3,14 @@
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    [RequireComponent(typeof(IMultipleTags))]
+    [RequireComponent(typeof(MultipleTags))]
     public class BurstArea : MonoBehaviour, IBurstArea
     {
         private MultipleTags tags;
 
         public bool IsBurstArea => tags != null && tags.HasBurstAreaTag();
 
-        private void Start()
+        private void Awake()
         {
             tags = GetComponent<MultipleTags>();
             EnsureBurstAreaTag();
@@ -20,10 +20,6 @@ namespace OpenGS
         {
             tags = GetComponent<MultipleTags>();
             EnsureBurstAreaTag();
-        }
-
-        private void Update()
-        {
         }
 
         private void EnsureBurstAreaTag()

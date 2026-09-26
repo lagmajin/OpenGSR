@@ -49,6 +49,7 @@ namespace OpenGS
         private EGameMode selectedGameMode = EGameMode.TeamDeathMatch;
         private bool teamBalance = true;
         private bool isPasswordEnabled = false;
+        private bool isSubmitting;
         private TextMeshProUGUI fallbackTitleText;
         private TextMeshProUGUI fallbackSummaryText;
 
@@ -70,6 +71,18 @@ namespace OpenGS
         private void OnEnable()
         {
             ResetDialog();
+        }
+
+        private void OnDestroy()
+        {
+            roomNameInput?.onValueChanged.RemoveListener(OnRoomNameChanged);
+            maxPlayerDropdown?.onValueChanged.RemoveListener(OnMaxPlayerChanged);
+            passwordToggle?.onValueChanged.RemoveListener(OnPasswordToggleChanged);
+            passwordInput?.onValueChanged.RemoveListener(OnPasswordChanged);
+            gameModeDropdown?.onValueChanged.RemoveListener(OnGameModeChanged);
+            teamBalanceToggle?.onValueChanged.RemoveListener(OnTeamBalanceChanged);
+            createButton?.onClick.RemoveListener(OnCreateButtonClicked);
+            cancelButton?.onClick.RemoveListener(OnCancelButtonClicked);
         }
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -389,8 +402,18 @@ namespace OpenGS
 
         private void OnCreateButtonClicked()
         {
+            if (isSubmitting)
+            {
+                return;
+            }
+
             if (ValidateInput())
             {
+                isSubmitting = true;
+                if (createButton != null)
+                {
+                    createButton.interactable = false;
+                }
                 SubmitToLobby();
             }
         }
@@ -410,6 +433,11 @@ namespace OpenGS
             if (lobbyScene == null)
             {
                 ShowError("ロビーが見つかりません");
+                isSubmitting = false;
+                if (createButton != null)
+                {
+                    createButton.interactable = true;
+                }
                 return;
             }
 
@@ -545,6 +573,7 @@ namespace OpenGS
             selectedGameMode = EGameMode.TeamDeathMatch;
             teamBalance = true;
             isPasswordEnabled = false;
+            isSubmitting = false;
 
             if (roomNameInput != null) roomNameInput.text = "";
             if (maxPlayerDropdown != null) maxPlayerDropdown.value = 3;
@@ -553,6 +582,7 @@ namespace OpenGS
             if (gameModeDropdown != null) gameModeDropdown.value = 1; // TeamDeathMatch
             if (teamBalanceToggle != null) teamBalanceToggle.isOn = true;
             if (passwordPanel != null) passwordPanel.SetActive(false);
+            if (createButton != null) createButton.interactable = true;
 
             if (fallbackSummaryText != null)
             {

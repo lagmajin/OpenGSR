@@ -31,7 +31,7 @@ namespace OpenGS
 
         private void Start()
         {
-            Application.targetFrameRate = 30;
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
             Debug.Log("[MissionLobbyScene] Started");
         }
 
@@ -51,7 +51,16 @@ namespace OpenGS
 
         public void CreateNewRoom()
         {
-            Debug.Log("[MissionLobbyScene] CreateNewRoom");
+            const string roomName = "OfflineMissionRoom";
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[MissionLobbyScene] MissionRoomManager is not ready.");
+                return;
+            }
+
+            MissionRoomManager.Instance.CreateNewRoom(roomName);
+            Debug.Log($"[MissionLobbyScene] Created mission room: {roomName}");
+            ChangeToBattleLobby();
         }
 
         public void EnterRoom()
@@ -96,7 +105,17 @@ namespace OpenGS
         [Button("ミッション開始")]
         public void ChangeToBattleLobby()
         {
-            EnterMission1();
+            var waitRoomScene = mediateObject != null && mediateObject.GeneralSceneMasterData() != null
+                ? mediateObject.GeneralSceneMasterData().OfflineMissionWaitRoomScene()
+                : GeneralSceneMasterData.Instance().OfflineMissionWaitRoomScene();
+
+            if (string.IsNullOrWhiteSpace(waitRoomScene))
+            {
+                Debug.LogWarning("[MissionLobbyScene] Mission wait room scene is not configured.");
+                return;
+            }
+
+            RequestSceneTransition(waitRoomScene, "MissionLobbyToOfflineMissionWaitRoom");
         }
 
         private void LoadSceneFromStorage(SceneObject sceneObject, string reason)

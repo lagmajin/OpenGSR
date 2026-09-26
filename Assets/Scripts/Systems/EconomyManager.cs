@@ -32,13 +32,26 @@ namespace OpenGS
                 if (data == null)
                 {
                     data = JsonStorage.Load<EconomyData>(SAVE_FILE, new EconomyData());
-                    JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
                 }
+
+                NormalizeData();
+                JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
             }
+        }
+
+        private static void NormalizeData()
+        {
+            if (data == null)
+            {
+                data = new EconomyData();
+            }
+
+            data.credits = Mathf.Max(0, data.credits);
         }
 
         private static void SaveData()
         {
+            NormalizeData();
             JsonStorage.SaveVersioned(SAVE_FILE, data, SAVE_VERSION);
         }
 
@@ -55,8 +68,15 @@ namespace OpenGS
 
         public static void AddCredits(int amount)
         {
+            if (amount <= 0)
+            {
+                return;
+            }
+
             LoadData();
-            data.credits += amount;
+            data.credits = amount > int.MaxValue - data.credits
+                ? int.MaxValue
+                : Mathf.Max(0, data.credits + amount);
             SaveData();
         }
 
@@ -69,6 +89,11 @@ namespace OpenGS
 
         public static bool SpendCredits(int amount)
         {
+            if (amount <= 0)
+            {
+                return false;
+            }
+
             LoadData();
             if (data.credits >= amount)
             {
@@ -81,7 +106,7 @@ namespace OpenGS
 
         public static bool CanAfford(int amount)
         {
-            return GetCredits() >= amount;
+            return amount > 0 && GetCredits() >= amount;
         }
     }
 }

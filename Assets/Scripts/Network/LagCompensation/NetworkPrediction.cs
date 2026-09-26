@@ -21,7 +21,7 @@ namespace OpenGS.Network
         }
 
         /// <summary>予測履歴（サーバーからの確認を待つ）</summary>
-        private readonly List<PredictedState> m_PredictionHistory = new List<PredictedState>();
+        private readonly List<PredictedState> m_PredictionHistory = new List<PredictedState>(120);
 
         /// <summary>現在のシーケンス番号</summary>
         private byte m_CurrentSequence;
@@ -34,6 +34,10 @@ namespace OpenGS.Network
 
         /// <summary>ハード補正を行う誤差閾値</summary>
         private const float HardCorrectionThreshold = 1.0f;
+
+        // Keep this aligned with the authoritative movement simulation until the
+        // movement controller exposes a shared simulation profile.
+        private const float DefaultMoveSpeed = 10f;
 
         /// <summary>クライアント所有のオブジェクトかどうか</summary>
         private readonly bool m_IsLocalPlayer;
@@ -57,7 +61,29 @@ namespace OpenGS.Network
         /// <param name="input">プレイヤー入力</param>
         public void Predict(INetworkTransform transform, PlayerInput input)
         {
-            if (!m_IsLocalPlayer) return;
+            if (!m_IsLocalPlayer || transform == null)
+            {
+                return;
+            }
+
+            if (!IsFinite(input.moveInput)
+                || !IsFinite(input.lookInput)
+                || float.IsNaN(input.deltaTime)
+                || float.IsInfinity(input.deltaTime)
+                || !IsFinite(transform.Position)
+                || !IsFinite(transform.Velocity)
+                || !IsFinite(transform.Rotation))
+            {
+                return;
+            }
+
+            input.deltaTime = Mathf.Clamp(input.deltaTime, 0f, 0.25f);
+
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
 
             // シーケンス番号を進める
             m_CurrentSequence = (byte)((m_CurrentSequence + 1) % 256);
@@ -71,7 +97,7 @@ namespace OpenGS.Network
                 velocity = transform.Velocity,
                 input = input,
                 inputSequence = m_CurrentSequence,
-                timestamp = Time.time
+                timestamp = now
             };
 
             m_PredictionHistory.Add(currentState);
@@ -84,8 +110,8 @@ namespace OpenGS.Network
         }
 
         /// <summary>
-        /// 予測移動を適用（プレースホルダー実装）
-        /// 実際のプレイヤー移動ロジックに置き換えること
+        /// 予測移動を適用する。
+        /// サーバーと同じ入力・速度モデルを使い、補正後の再生結果を安定させる。
         /// </summary>
         private void ApplyPredictedMovement(INetworkTransform transform, PlayerInput input)
         {
@@ -97,8 +123,7 @@ namespace OpenGS.Network
                 moveInput.Normalize();
             }
 
-            const float moveSpeed = 10f;
-            Vector3 predictedVelocity = moveInput * moveSpeed;
+            Vector3 predictedVelocity = moveInput * DefaultMoveSpeed;
             Vector3 newPosition = transform.Position + predictedVelocity * dt;
             transform.Position = newPosition;
 
@@ -118,7 +143,26 @@ namespace OpenGS.Network
         public void Reconcile(INetworkTransform transform, TransformState serverState)
         {
             // 自分のプレイヤーだけ校正を行う
-            if (!m_IsLocalPlayer) return;
+            if (!m_IsLocalPlayer || transform == null)
+            {
+                return;
+            }
+
+            if (!IsFinite(serverState.position)
+                || !IsFinite(serverState.velocity)
+                || !IsFinite(serverState.rotation))
+            {
+                return;
+            }
+
+            if (serverState.rotation.sqrMagnitude < 0.0001f)
+            {
+                serverState.rotation = Quaternion.identity;
+            }
+            else
+            {
+                serverState.rotation = Quaternion.Normalize(serverState.rotation);
+            }
 
             if (!IsSequenceNewerOrEqual(serverState.sequenceNumber, m_LastConfirmedSequence))
             {
@@ -161,6 +205,7 @@ namespace OpenGS.Network
                 transform.Position = Vector3.Lerp(transform.Position, serverState.position, m_CorrectionFactor);
                 transform.Rotation = Quaternion.Slerp(transform.Rotation, serverState.rotation, m_CorrectionFactor);
                 TrimConfirmedHistory(matchedIndex);
+                ReplayPendingInputs(transform);
             }
 
             m_LastConfirmedSequence = serverState.sequenceNumber;
@@ -240,11 +285,22 @@ namespace OpenGS.Network
         }
 
         /// <summary>
+        /// マッチ開始時など、予測セッション全体を初期化する。
+        /// 履歴だけを消すと、前セッションのシーケンス判定が残る。
+        /// </summary>
+        public void Reset()
+        {
+            ClearHistory();
+            m_CurrentSequence = 0;
+            m_LastConfirmedSequence = 0;
+        }
+
+        /// <summary>
         /// 校正係数を設定する
         /// </summary>
         public void SetCorrectionFactor(float factor)
         {
-            m_CorrectionFactor = Mathf.Clamp01(factor);
+            m_CorrectionFactor = IsFinite(factor) ? Mathf.Clamp01(factor) : 0.1f;
         }
 
         /// <summary>
@@ -256,5 +312,15 @@ namespace OpenGS.Network
         /// 予測履歴の件数を取得
         /// </summary>
         public int HistoryCount => m_PredictionHistory.Count;
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return IsFinite(value.x) && IsFinite(value.y) && IsFinite(value.z);
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return !float.IsNaN(value) && !float.IsInfinity(value);
+        }
     }
 }

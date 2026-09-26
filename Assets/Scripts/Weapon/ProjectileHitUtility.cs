@@ -1,5 +1,6 @@
 using UnityEngine;
 using OpenGSCore;
+using System;
 
 namespace OpenGS
 {
@@ -16,17 +17,22 @@ namespace OpenGS
                 return false;
             }
 
-            if (target.CompareTag("StageObject") || target.CompareTag("BurstArea"))
+            // CompareTag throws when a project does not define the requested tag.
+            // Use the tag value comparison so optional tags do not spam the console.
+            if (target.tag == "StageObject" || target.tag == "BurstArea")
             {
                 return true;
             }
 
-            if (target.TryGetComponent<IMultipleTags>(out var tags))
+            var tags = target.GetComponentInParent<IMultipleTags>();
+            if (tags != null)
             {
                 return tags.HasStageObjectTag() || tags.HasBurstAreaTag();
             }
 
-            return target.layer == LayerMask.NameToLayer("Platforms");
+            var root = target.transform.root;
+            return target.layer == LayerMask.NameToLayer("Platforms")
+                || (root != null && root.gameObject.layer == LayerMask.NameToLayer("Platforms"));
         }
 
         public static bool TryGetTargetPlayer(Collider2D collision, out AbstractPlayer player)
@@ -42,7 +48,8 @@ namespace OpenGS
                 return true;
             }
 
-            if (!string.IsNullOrWhiteSpace(ownerPlayerId) && target.UniqueID().ToString() == ownerPlayerId)
+            if (!string.IsNullOrWhiteSpace(ownerPlayerId) &&
+                string.Equals(target.UniqueID().ToString(), ownerPlayerId, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
@@ -70,6 +77,11 @@ namespace OpenGS
                 return false;
             }
 
+            if (!IsFinite(impactOrigin) || !float.IsFinite(damage) || damage <= 0f)
+            {
+                return false;
+            }
+
             var registry = PlayerRegistry.Instance;
             if (registry == null)
             {
@@ -77,7 +89,7 @@ namespace OpenGS
             }
 
             var source = (Vector2)(target.transform.position - (Vector3)impactOrigin);
-            registry.ApplyDamage(
+            return registry.ApplyDamage(
                 target.UniqueID(),
                 source,
                 damage,
@@ -86,7 +98,11 @@ namespace OpenGS
                 weaponName,
                 false,
                 knockback);
-            return true;
+        }
+
+        private static bool IsFinite(Vector2 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y);
         }
     }
 }

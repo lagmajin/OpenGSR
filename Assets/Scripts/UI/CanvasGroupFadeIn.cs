@@ -21,6 +21,8 @@ namespace OpenGS
 
         private void Awake()
         {
+            fadeTime = NormalizeNonNegative(fadeTime);
+            delayTime = NormalizeNonNegative(delayTime);
             if (group == null)
             {
                 group = GetComponent<CanvasGroup>();
@@ -35,9 +37,16 @@ namespace OpenGS
             }
         }
 
+        private void OnDestroy()
+        {
+            group?.DOKill();
+        }
+
         public void Play()
         {
             if (group == null) return;
+
+            group.DOKill();
 
             // 再生前の初期状態をセット（アルファ0）
             group.alpha = 0f;
@@ -46,6 +55,11 @@ namespace OpenGS
             group.DOFade(1f, fadeTime)
                  .SetDelay(delayTime)
                  .SetEase(Ease.OutCubic);
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
         }
     }
 }

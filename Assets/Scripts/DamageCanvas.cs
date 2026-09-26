@@ -11,6 +11,14 @@ namespace OpenGS
         [SerializeField] private GameObject damageTextPrefab;
         [SerializeField] private GameObject misty;
 
+        private void OnValidate()
+        {
+            if (canvas == null)
+            {
+                canvas = GetComponent<Canvas>();
+            }
+        }
+
         void Start()
         {
             AutoSet();
@@ -19,10 +27,6 @@ namespace OpenGS
         void Reset()
         {
             canvas = GetComponent<Canvas>();
-        }
-
-        void Update()
-        {
         }
 
         void Set()
@@ -47,10 +51,13 @@ namespace OpenGS
 
             if (misty == null)
             {
-                var player = FindFirstObjectByType<AbstractPlayer>();
-                if (player != null)
+                foreach (var player in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
                 {
-                    misty = player.gameObject;
+                    if (player != null && player.PlayerType() == EPlayerType.MyPlayer)
+                    {
+                        misty = player.gameObject;
+                        break;
+                    }
                 }
             }
 
@@ -98,6 +105,7 @@ namespace OpenGS
                 return;
             }
 
+            time = float.IsFinite(time) ? Mathf.Max(0.1f, time) : 1f;
             var parent = canvas != null ? canvas.transform : transform;
             var obj = Instantiate(prefab, parent, false);
             if (target != null)
@@ -105,7 +113,7 @@ namespace OpenGS
                 obj.transform.position = target.position;
             }
 
-            Destroy(obj, Mathf.Max(0.1f, time));
+            Destroy(obj, time);
         }
     }
 }

@@ -48,11 +48,18 @@ namespace OpenGS
 
         [SerializeField] [Required] public FlagStand redTeamFlagStand, blueTeamFlagStand;
         private readonly Dictionary<FlagStand, FlagController> boundFlagControllers = new Dictionary<FlagStand, FlagController>();
+        private bool respawnPending;
 
         public new void Start()
         {
             base.Start();
             // Singleton設定
+            if (Instance != null && Instance != this)
+            {
+                Debug.LogWarning("[CTF] Duplicate main script found; destroying duplicate.");
+                Destroy(gameObject);
+                return;
+            }
             Instance = this;
 
             // ネットワークマネージャーを取得
@@ -258,7 +265,8 @@ namespace OpenGS
                 return;
             }
 
-            Instantiate(effectPrefab, position, Quaternion.identity);
+            var spawnedEffect = Instantiate(effectPrefab, position, Quaternion.identity);
+            Destroy(spawnedEffect, 5f);
         }
 
         private void ApplyRuleSettings()
@@ -303,6 +311,60 @@ namespace OpenGS
             playerCamera.Priority = 10;
 
             this.player = player;
+        }
+
+        public override void OnMyPlayerDead()
+        {
+            if (endFlag || respawnPending)
+            {
+                return;
+            }
+
+            respawnPending = true;
+            var delay = ResolveRespawnDelaySeconds();
+            CancelInvoke(nameof(HandleMyPlayerRespawn));
+            Invoke(nameof(HandleMyPlayerRespawn), delay);
+
+            if (battleSceneMediateObject?.uiManager != null)
+            {
+                battleSceneMediateObject.uiManager.ShowRespawnGauge(delay);
+            }
+
+            Debug.Log($"[CTF] Local player will respawn in {delay:0.##} seconds.");
+        }
+
+        private void HandleMyPlayerRespawn()
+        {
+            respawnPending = false;
+            if (endFlag)
+            {
+                return;
+            }
+
+            var oldPlayerId = Guid.Empty;
+            if (player != null)
+            {
+                oldPlayerId = player.GetComponent<AbstractPlayer>()?.UniqueID() ?? Guid.Empty;
+                Destroy(player);
+                player = null;
+            }
+
+            var team = ResolveLocalTeam();
+            var spawnPos = ResolveSpawnPoint(team);
+            CreateNewMyPlayer();
+
+            if (player != null)
+            {
+                var playerComponent = player.GetComponent<AbstractPlayer>();
+                if (playerComponent != null && oldPlayerId != Guid.Empty)
+                {
+                    playerComponent.SetUniqueID(oldPlayerId);
+                }
+
+                AttachPlayerLink(player, ResolveLocalPlayerId());
+            }
+
+            Debug.Log($"[CTF] My player respawned for {team} at {spawnPos}.");
         }
 
         private void CreateOtherPlayers()
@@ -456,28 +518,33 @@ namespace OpenGS
             linker.SetPlayerId(playerId ?? string.Empty);
         }
 
-        void OnEnable()
+        protected override void OnEnable()
         {
             if (Instance == null)
             {
                 Instance = this;
             }
+
+            base.OnEnable();
         }
 
-        void OnDisable()
+        protected override void OnDisable()
         {
             if (Instance == this)
             {
                 Instance = null;
             }
+
+            base.OnDisable();
         }
 
-        void OnDestroy()
+        protected override void OnDestroy()
         {
             UnbindFlagStand(redTeamFlagStand);
             UnbindFlagStand(blueTeamFlagStand);
             UnSubscribeEvent();
             if (Instance == this) Instance = null;
+            base.OnDestroy();
         }
 
         protected override float ResolveMatchDuration()
@@ -567,24 +634,32 @@ namespace OpenGS
 
         private void OfflineEventParser(AbstractGameEvent e)
         {
-            if (e.GetType() == typeof(FlagReturnSuccessEvent))
+            if (e is FlagReturnSuccessEvent)
             {
-                var ev = e as FlagReturnSuccessEvent;
-                //matchRoom.Data;
+                // A successful return is a state/UI event even in offline play.
+                // The concrete team is applied by the flag controller path; keep
+                // the event visible here for match-level observers.
+                Debug.Log("[CTF] Flag return success event processed.");
             }
         }
 
         private void OnlineEventParser(AbstractMatchEvent e)
         {
+            if (e == null)
+            {
+                return;
+            }
+
             var eventName = e.EventName;
 
             if (RUDPMessageTypes.FlagReturn == eventName)
             {
+                Debug.Log("[CTF] Flag return event processed online.");
             }
 
             if (RUDPMessageTypes.FlagLost == eventName)
             {
-                //PlaySound.PlayBGM()
+                Debug.Log("[CTF] Flag lost event processed online.");
             }
         }
 
@@ -592,6 +667,7 @@ namespace OpenGS
         {
             // オフライン/オンライン両方のイベントを処理
             OfflineEventParser(e);
+            OnlineEventParser(e as AbstractMatchEvent);
 
             // オンラインの場合、サーバーに送信
             if (GameManager != null && GameManager.IsOnlineGameMode)
@@ -777,7 +853,7 @@ namespace OpenGS
         public void PlayerFlagCaptured(ETeam team, bool fromNetwork = false)
         {
             Debug.Log("FlagCaptured: " + team);
-            OnFlagCaptured?.Invoke(team);
+            InvokeSafely(OnFlagCaptured, team, nameof(OnFlagCaptured));
             if (!fromNetwork)
             {
                 RegisterFlagCapture(team);
@@ -794,21 +870,61 @@ namespace OpenGS
         public void PlayerFlagLost(ETeam team, bool fromNetwork = false)
         {
             Debug.Log("FlagLost: " + team);
-            OnFlagLost?.Invoke(team);
+            InvokeSafely(OnFlagLost, team, nameof(OnFlagLost));
         }
 
         [Button("フラッグ帰還テスト")]
         public void PlayerFlagReturned(ETeam team, bool fromNetwork = false)
         {
             Debug.Log("FlagReturned: " + team);
-            OnFlagReturned?.Invoke(team);
+            InvokeSafely(OnFlagReturned, team, nameof(OnFlagReturned));
         }
 
         [Button("フラッグピックテスト")]
         public void PlayerFlagPickedUp(ETeam team, string playerName, bool fromNetwork = false)
         {
             Debug.Log("FlagPickedUp: " + team + " by " + playerName);
-            OnFlagPickedUp?.Invoke(team, playerName);
+            InvokeSafely(OnFlagPickedUp, team, playerName, nameof(OnFlagPickedUp));
+        }
+
+        private static void InvokeSafely(Action<ETeam> handlers, ETeam team, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<ETeam> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(team);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[CTFMatchMainScript] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<ETeam, string> handlers, ETeam team, string playerName, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<ETeam, string> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(team, playerName);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[CTFMatchMainScript] {eventName} subscriber failed: {ex}");
+                }
+            }
         }
 
         private void RegisterFlagCapture(ETeam scoringTeam)
@@ -896,8 +1012,8 @@ namespace OpenGS
                 return jsonKey;
             }
 
-            var posX = json?["PosX"]?.ToObject<float>() ?? 0f;
-            var posY = json?["PosY"]?.ToObject<float>() ?? 0f;
+            var posX = ReadFloat(json, "PosX");
+            var posY = ReadFloat(json, "PosY");
             return $"{eventType}|{team}|{playerId}|{posX:0.###}|{posY:0.###}";
         }
 
@@ -913,7 +1029,7 @@ namespace OpenGS
                 var token = json?[key];
                 if (token != null && int.TryParse(token.ToString(), out var value))
                 {
-                    return value;
+                    return Math.Max(0, value);
                 }
             }
 

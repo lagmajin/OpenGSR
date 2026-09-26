@@ -7,6 +7,7 @@ using System;
 using OpenGSCore;
 using UnityEngine.Audio;
 using UnityEngine.Serialization;
+using Zenject;
 
 
 namespace OpenGS
@@ -62,6 +63,18 @@ namespace OpenGS
 
         [SerializeField]private PlayerMasterData playerMasterData;
         [SerializeField] private AudioSource audioSource;
+        private IInputService inputService = new UnityInputService();
+
+        public Vector2 GetAimWorldPosition() => inputService.GetAimWorldPosition();
+
+        [Inject]
+        private void Construct(IInputService resolvedInputService)
+        {
+            if (resolvedInputService != null)
+            {
+                inputService = resolvedInputService;
+            }
+        }
 
         private SpriteRenderer[] spriteRendereres;
 
@@ -99,7 +112,19 @@ namespace OpenGS
         private int speedBuffVersion;
         private int invisibleBuffVersion;
         private int normalGrenadeCount = 3;
+        private int powerGrenadeCount;
+        private int clusterGrenadeCount;
+        private int magneticGrenadeCount;
+        private int mineGrenadeCount;
+        [SerializeField] private float maxHealth = 100f;
+        [SerializeField] private float currentHealth = 100f;
+        private readonly InstantItemSlots instantItemSlots = new InstantItemSlots();
+        private readonly List<EGrenadeType> grenadeSlotTypes = new List<EGrenadeType>(3);
+        private bool instantItemsLoaded;
+        private MatchEventProvider matchEventProvider;
         private bool invisibleBuffActive = false;
+        private float elementalBulletTime;
+        private eDamageType elementalBulletType = eDamageType.Bullet;
         private bool deathTriggered = false;
         [Header("Standing Sway")]
         [SerializeField] private float standBobAmplitude = 0.02f;
@@ -107,6 +132,22 @@ namespace OpenGS
         [SerializeField] private Vector3 standBobDirection = new Vector3(0f, 1f, 0f);
 
         public int NormalGrenadeCount => normalGrenadeCount;
+        public float CurrentHealth => currentHealth;
+        public float MaxHealth => maxHealth;
+        public eDamageType CurrentBulletDamageType => elementalBulletTime > 0f ? elementalBulletType : eDamageType.Bullet;
+
+        public int GetGrenadeCount(EGrenadeType type)
+        {
+            return type switch
+            {
+                EGrenadeType.Normal => normalGrenadeCount,
+                EGrenadeType.Power => powerGrenadeCount,
+                EGrenadeType.Cluster => clusterGrenadeCount,
+                EGrenadeType.Magnetic => magneticGrenadeCount,
+                EGrenadeType.Mine => mineGrenadeCount,
+                _ => 0
+            };
+        }
         public Vector3 StandingBobOffset => GetStandingBobOffset();
 
         public bool TryConsumeNormalGrenade()
@@ -131,6 +172,11 @@ namespace OpenGS
 
         void Start()
         {
+            AutoBindComponents();
+            if (animator == null)
+            {
+                animator = GetComponent<Animator>();
+            }
             AutoBindColliders();
             rigidbody2D = GetComponent<Rigidbody2D>();
             if (rigidbody2D != null)
@@ -180,10 +226,253 @@ namespace OpenGS
 
             baseMovementSpeed = movementSpeed;
             baseDashSpeed = dashSpeed;
+            currentHealth = Mathf.Max(1f, maxHealth);
             ResetPowerupState();
             StartInvincibility(2.0f);
 
             AutoSetMediateObject();
+            LoadInstantItems();
+            LoadGrenadeSlots();
+            EnsureDefaultSecondaryWeapon();
+            AutoBindComponents();
+
+            if (PlayerType() == EPlayerType.MyPlayer && GetComponent<PlayerInputSender>() == null)
+            {
+                gameObject.AddComponent<PlayerInputSender>();
+            }
+        }
+
+        private void AutoBindComponents()
+        {
+            playerTransform ??= transform;
+            rigidbody2D ??= GetComponent<Rigidbody2D>();
+            spriteRenderer ??= GetComponent<SpriteRenderer>();
+            headController ??= GetComponent<HeadController>();
+            armController ??= GetComponentInChildren<WeaponArmController>(true);
+            jetBooster ??= GetComponentInChildren<JetBooster>(true);
+            primaryGunController ??= GetComponentInChildren<AbstractGunController>(true);
+
+            head ??= transform.Find("Head");
+            weaponArm ??= transform.Find("Arm");
+        }
+
+        private void OnDisable()
+        {
+            CancelInvoke();
+            StopAllCoroutines();
+            if (fadeTween != null && fadeTween.IsActive())
+            {
+                fadeTween.Kill();
+            }
+
+            attackBuffVersion++;
+            defenseBuffVersion++;
+            speedBuffVersion++;
+            invisibleBuffVersion++;
+            attackMultiplier = 1f;
+            defenseMultiplier = 1f;
+            moveSpeedMultiplier = 1f;
+            invisibleBuffActive = false;
+            invincible = false;
+            movementSpeed = baseMovementSpeed;
+            dashSpeed = baseDashSpeed;
+            isDashing = false;
+            dashTimer = 0f;
+            SetSpriteAlpha(1f);
+            base.OnDisable();
+        }
+
+        private void EnsureDefaultSecondaryWeapon()
+        {
+            if (weaponSlots == null)
+            {
+                weaponSlots = GetComponent<WeaponSlots>();
+            }
+
+            if (weaponSlots == null)
+            {
+                weaponSlots = gameObject.AddComponent<WeaponSlots>();
+            }
+
+            weaponSlots.mainWeaponSlot = EnsureWeaponSlot("MainWeaponSlot");
+            weaponSlots.secondaryWeaponSlot = EnsureWeaponSlot("SecondaryWeaponSlot");
+            weaponSlots.specialWeaponSlot = EnsureWeaponSlot("SpecialWeaponSlot");
+
+            if (weaponSlots.secondaryWeaponSlot.transform.childCount == 0)
+            {
+                var pistol = Resources.Load<GameObject>("Prefabs/Weapon/Guns/Pistol/Glock");
+                if (pistol != null)
+                {
+                    weaponSlots.currentEquipType = EPlayerEquipWeapon.SecondaryWeapon;
+                    weaponSlots.EquipWeapon(pistol);
+                }
+                else
+                {
+                    Debug.LogWarning("[PlayerAgent] Default secondary pistol was not found.");
+                }
+            }
+        }
+
+        public bool CanEquipWeapon()
+        {
+            return weaponSlots != null && weaponSlots.currentEquipType != EPlayerEquipWeapon.SpecialWeapon;
+        }
+
+        public void EquipWeapon(GameObject prefab)
+        {
+            if (prefab == null || weaponSlots == null) return;
+            weaponSlots.EquipWeapon(prefab);
+        }
+
+        public bool EquipWeaponType(EWeaponType weaponType)
+        {
+            var prefab = WeaponPrefabResolver.Load(weaponType);
+            if (prefab == null)
+            {
+                Debug.LogWarning($"[PlayerAgent] Weapon prefab not found for {weaponType}.");
+                return false;
+            }
+
+            if (weaponSlots == null)
+            {
+                EnsureDefaultSecondaryWeapon();
+            }
+
+            if (weaponSlots.currentEquipType == EPlayerEquipWeapon.SpecialWeapon)
+            {
+                weaponSlots.ClearSpecialWeapon();
+            }
+
+            weaponSlots.EquipWeapon(prefab);
+            return weaponSlots.currentWeaponObject != null;
+        }
+
+        public void SetCurrentWeaponMagazine(int magazine)
+        {
+            weaponSlots?.GetCurrentGun()?.SetMagazineCount(magazine);
+        }
+
+        private GameObject EnsureWeaponSlot(string slotName)
+        {
+            var existing = transform.Find(slotName);
+            if (existing != null) return existing.gameObject;
+            var slot = new GameObject(slotName);
+            slot.transform.SetParent(transform, false);
+            return slot;
+        }
+
+        private void LoadInstantItems()
+        {
+            instantItemSlots.SetFromEquippedItems(GetEquippedInstantItemTypes());
+            instantItemsLoaded = true;
+        }
+
+        private void LoadGrenadeSlots()
+        {
+            grenadeSlotTypes.Clear();
+            var equipped = UserSaveManager.GetEquippedGrenadeSlots();
+            for (var i = 0; i < 3; i++)
+            {
+                var type = EGrenadeType.Normal;
+                if (equipped != null && i < equipped.Length && !string.IsNullOrWhiteSpace(equipped[i]))
+                    Enum.TryParse(equipped[i], true, out type);
+                grenadeSlotTypes.Add(type);
+            }
+        }
+
+        private static IEnumerable<EInstantItemType> GetEquippedInstantItemTypes()
+        {
+            var equipped = UserSaveManager.GetEquippedInstantItems();
+            if (equipped == null) yield break;
+            foreach (var id in equipped)
+            {
+                if (string.IsNullOrWhiteSpace(id) || !Enum.TryParse(id, true, out EInstantItemType type))
+                    yield return EInstantItemType.None;
+                else
+                    yield return type;
+            }
+        }
+
+        public bool TryUseInstantItem(int slotNumber)
+        {
+            if (!instantItemsLoaded) LoadInstantItems();
+            var equippedItemType = instantItemSlots.GetSlotType(slotNumber - 1);
+            if (IsGrenadePack(equippedItemType) && grenadeSlotTypes.Count >= 3)
+            {
+                Debug.Log("[PlayerAgent] Grenade slots are full; grenade pack was not used.");
+                return false;
+            }
+            if (!instantItemSlots.TryUse(slotNumber - 1, out var type)) return false;
+
+            switch (type)
+            {
+                case EInstantItemType.HealthKit:
+                    Heal(100f);
+                    break;
+                case EInstantItemType.FireBullet:
+                    elementalBulletType = eDamageType.Fire;
+                    elementalBulletTime = 30f;
+                    break;
+                case EInstantItemType.PoisonBullet:
+                    elementalBulletType = eDamageType.Poison;
+                    elementalBulletTime = 30f;
+                    break;
+                case EInstantItemType.PowerGrenadePack:
+                    TryAddGrenadeSlot(EGrenadeType.Power);
+                    RefillGrenade(EGrenadeType.Power);
+                    break;
+                case EInstantItemType.ClusterGrenadePack:
+                    TryAddGrenadeSlot(EGrenadeType.Cluster);
+                    RefillGrenade(EGrenadeType.Cluster);
+                    break;
+                case EInstantItemType.MagnetGrenadePack:
+                    TryAddGrenadeSlot(EGrenadeType.Magnetic);
+                    RefillGrenade(EGrenadeType.Magnetic);
+                    break;
+                case EInstantItemType.MineGrenadePack:
+                    TryAddGrenadeSlot(EGrenadeType.Mine);
+                    RefillGrenade(EGrenadeType.Mine);
+                    break;
+            }
+
+            matchEventProvider ??= GetComponent<MatchEventProvider>();
+            matchEventProvider?.UseInstantItem(this, type);
+            Debug.Log($"[PlayerAgent] Instant item used: {type}, slot={slotNumber}");
+            return true;
+        }
+
+        private static bool IsGrenadePack(EInstantItemType type)
+        {
+            return type == EInstantItemType.PowerGrenadePack
+                || type == EInstantItemType.ClusterGrenadePack
+                || type == EInstantItemType.MagnetGrenadePack
+                || type == EInstantItemType.MineGrenadePack;
+        }
+
+        private bool TryAddGrenadeSlot(EGrenadeType type)
+        {
+            if (grenadeSlotTypes.Count >= 3) return false;
+            grenadeSlotTypes.Add(type);
+            return true;
+        }
+
+        public int GetInstantItemSlotCount() => instantItemSlots.Count();
+        public EInstantItemType GetInstantItemType(int slotIndex) => instantItemSlots.GetSlotType(slotIndex);
+
+        public EGrenadeType GetGrenadeSlotType(int slotIndex)
+        {
+            return slotIndex >= 0 && slotIndex < grenadeSlotTypes.Count
+                ? grenadeSlotTypes[slotIndex]
+                : EGrenadeType.Empty;
+        }
+
+        public bool TryConsumeGrenadeSlot(out EGrenadeType type)
+        {
+            type = EGrenadeType.Empty;
+            if (grenadeSlotTypes.Count == 0) return false;
+            type = grenadeSlotTypes[0];
+            grenadeSlotTypes.RemoveAt(0);
+            return true;
         }
 
         protected void AutoSetMediateObject()
@@ -238,6 +527,19 @@ namespace OpenGS
 
         void Update()
         {
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f) return;
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+            if (elementalBulletTime > 0f) elementalBulletTime = Mathf.Max(0f, elementalBulletTime - deltaTime);
+
+            if (IsRemoteControlled())
+            {
+                return;
+            }
+
+            HandleDefaultWeaponInput();
+            var instantItemSlot = inputService.GetInstantItemSlotJustPressed();
+            if (instantItemSlot > 0) TryUseInstantItem(instantItemSlot);
             if (CheckFallDeath())
             {
                 return;
@@ -247,47 +549,59 @@ namespace OpenGS
             CheckJumping();
             CheckFlip();
             CheckDashing();
-            jetBooster?.SetBoostHeld(Input.GetMouseButton(1));
+            jetBooster?.SetBoostHeld(inputService.IsBoosterPressed());
 
             if (!isDashing && isGrounded) // 地上限定
             {
-                if (Input.GetKeyDown(KeyCode.D))
+                if (inputService.IsMoveRightJustPressed())
                 {
-                    if (Time.time - lastRightTapTime < doubleTapTime)
+                    var now = Time.time;
+                    if (!float.IsFinite(now) || now < 0f)
+                    {
+                        return;
+                    }
+
+                    if (now - lastRightTapTime < doubleTapTime)
                         StartDash(Vector2.right);
-                    lastRightTapTime = Time.time;
+                    lastRightTapTime = now;
                 }
-                if (Input.GetKeyDown(KeyCode.A))
+                if (inputService.IsMoveLeftJustPressed())
                 {
-                    if (Time.time - lastLeftTapTime < doubleTapTime)
+                    var now = Time.time;
+                    if (!float.IsFinite(now) || now < 0f)
+                    {
+                        return;
+                    }
+
+                    if (now - lastLeftTapTime < doubleTapTime)
                         StartDash(Vector2.left);
-                    lastLeftTapTime = Time.time;
+                    lastLeftTapTime = now;
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.S))
+            if (inputService.IsSitJustPressed())
             {
                 Sit();
             }
 
-            if(Input.GetKeyUp(KeyCode.S))
+            if(inputService.IsCrouchJustReleased())
             {
                 StandUp();
             }
 
-            if (Input.GetKeyDown(KeyCode.X))
+            if (inputService.IsLieDownJustPressed())
             {
                 LieDown();
             }
 
-            if (Input.GetKeyUp(KeyCode.X))
+            if (inputService.IsLieDownJustReleased())
             {
                 StandUp();
             }
 
             if (isDashing)
             {
-                dashTimer -= Time.deltaTime;
+                dashTimer = Mathf.Max(0f, dashTimer - deltaTime);
                 if (dashTimer <= 0f)
                     isDashing = false;
             }
@@ -305,13 +619,13 @@ namespace OpenGS
                 : null;
             if (currentGun == null) return;
 
-            if (Input.GetMouseButtonDown(0))
+            if (inputService.IsFireJustPressed())
             {
                 currentGun.StartFire();
                 // 特殊武器の弾数減衰を通知
                 weaponSlots.OnFireSpecialWeapon();
             }
-            else if (Input.GetMouseButtonUp(0))
+            else if (!inputService.IsFirePressed())
             {
                 currentGun.StopFire();
             }
@@ -319,35 +633,67 @@ namespace OpenGS
 
         public void FixedUpdate()
         {
+            var fixedDeltaTime = Time.fixedDeltaTime;
+            if (!float.IsFinite(fixedDeltaTime) || fixedDeltaTime < 0f) return;
+
             if (CheckFallDeath())
             {
                 return;
             }
 
+            if (IsRemoteControlled())
+            {
+                return;
+            }
+
             CheckGround();
-            coyoteTimeLeft = Mathf.Max(0f, coyoteTimeLeft - Time.fixedDeltaTime);
-            jumpBufferLeft = Mathf.Max(0f, jumpBufferLeft - Time.fixedDeltaTime);
+            coyoteTimeLeft = Mathf.Max(0f, coyoteTimeLeft - fixedDeltaTime);
+            jumpBufferLeft = Mathf.Max(0f, jumpBufferLeft - fixedDeltaTime);
             ApplyDashing();
             ApplyMovement();
             ResolvePenetration();
             SnapToGround();
             CheckGround();
-            jetBooster?.RecoverFuel(Time.fixedDeltaTime);
+            jetBooster?.RecoverFuel(fixedDeltaTime);
+        }
+
+        private bool IsRemoteControlled()
+        {
+            return PlayerType() != EPlayerType.Unknown && PlayerType() != EPlayerType.MyPlayer;
         }
         void StartDash(Vector2 direction)
         {
-            dashDir = (dashAngle.normalized.x * direction.x) * Vector2.right + dashAngle.normalized.y * Vector2.up;
+            if (!float.IsFinite(direction.x) || !float.IsFinite(direction.y) || direction.sqrMagnitude <= Mathf.Epsilon)
+            {
+                direction = Vector2.right;
+            }
+
+            direction.Normalize();
+            var safeDashAngle = dashAngle;
+            if (!float.IsFinite(safeDashAngle.x) || !float.IsFinite(safeDashAngle.y) ||
+                safeDashAngle.sqrMagnitude <= Mathf.Epsilon)
+            {
+                safeDashAngle = Vector2.right;
+            }
+
+            safeDashAngle.Normalize();
+            dashDir = new Vector2(safeDashAngle.x * direction.x, safeDashAngle.y).normalized;
+            if (!float.IsFinite(dashDir.x) || !float.IsFinite(dashDir.y) || dashDir.sqrMagnitude <= Mathf.Epsilon)
+            {
+                dashDir = direction;
+            }
+
             isDashing = true;
-            dashTimer = dashDuration;
+            dashTimer = float.IsFinite(dashDuration) ? Mathf.Max(0f, dashDuration) : 0f;
         }
         void GetInput()
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (inputService.IsSprintPressed())
                 extraSpeed = 2f;
             else
                 extraSpeed = 1;
 
-            horizontalSpeed = Input.GetAxis("Horizontal") * extraSpeed;
+            horizontalSpeed = inputService.GetHorizontalAxis() * extraSpeed;
         }
 
         public void Sit()
@@ -416,12 +762,55 @@ namespace OpenGS
                 return;
             }
 
-            animator.SetBool("IsSit", isSit);
-            animator.SetBool("IsLieDown", isLieDown);
+            if (animator != null)
+            {
+                animator.SetBool("IsSit", isSit);
+                animator.SetBool("IsLieDown", isLieDown);
+            }
         }
         private void OnValidate()
         {
+            doubleTapTime = SafeMin(doubleTapTime, 0.01f, 0.3f);
+            dashDuration = SafeMin(dashDuration, 0.01f, 0.2f);
+            dashSpeed = SafeMin(dashSpeed, 0f, 6f);
+            gravity = SafeMin(gravity, 0f, 28f);
+            groundProbeDistance = SafeMin(groundProbeDistance, 0f, 0.12f);
+            groundSnapDistance = SafeMin(groundSnapDistance, 0f, 0.18f);
+            wallProbeDistance = SafeMin(wallProbeDistance, 0f, 0.08f);
+            maxGroundAngle = SafeMin(maxGroundAngle, 0f, 70f, 180f);
+            groundAcceleration = SafeMin(groundAcceleration, 0f, 45f);
+            airAcceleration = SafeMin(airAcceleration, 0f, 25f);
+            groundFriction = SafeMin(groundFriction, 0f, 35f);
+            collisionSkinWidth = SafeMin(collisionSkinWidth, 0f, 0.02f);
+            maxFallSpeed = SafeMin(maxFallSpeed, 0f, 12f);
+            maxBoostRiseSpeed = SafeMin(maxBoostRiseSpeed, 0f, 10f);
+            fallDeathY = SafeFinite(fallDeathY, -80f);
+            coyoteTime = SafeMin(coyoteTime, 0f, 0.12f);
+            jumpBufferTime = SafeMin(jumpBufferTime, 0f, 0.12f);
+            maxHealth = SafeMin(maxHealth, 1f, 100f);
+            currentHealth = Mathf.Clamp(SafeMin(currentHealth, 0f, maxHealth), 0f, maxHealth);
+            standBobAmplitude = SafeMin(standBobAmplitude, 0f, 0.02f);
+            standBobFrequency = SafeMin(standBobFrequency, 0f, 7.5f);
+            if (!float.IsFinite(dashAngle.x) || !float.IsFinite(dashAngle.y) || dashAngle.sqrMagnitude <= Mathf.Epsilon)
+            {
+                dashAngle = new Vector2(1f, 0.3f);
+            }
             RecalculateJumpVelocity();
+        }
+
+        private static float SafeMin(float value, float minimum, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Max(minimum, value) : fallback;
+        }
+
+        private static float SafeMin(float value, float minimum, float fallback, float maximum)
+        {
+            return float.IsFinite(value) ? Mathf.Clamp(value, minimum, maximum) : fallback;
+        }
+
+        private static float SafeFinite(float value, float fallback)
+        {
+            return float.IsFinite(value) ? value : fallback;
         }
         void OnDrawGizmosSelected()
         {
@@ -469,7 +858,7 @@ namespace OpenGS
         }
         void CheckJumping()
         {
-            if (Input.GetKeyDown(KeyCode.W))
+            if (inputService.IsJumpJustPressed())
             {
                 jumpBufferLeft = jumpBufferTime;
             }
@@ -490,7 +879,13 @@ namespace OpenGS
 
         void CheckFlip()
         {
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            var camera = Camera.main;
+            if (camera == null)
+            {
+                return;
+            }
+
+            Vector3 mouseWorldPos = inputService.GetAimWorldPosition();
             float deltaX = mouseWorldPos.x - transform.position.x;
 
             if (deltaX > 0)
@@ -505,7 +900,7 @@ namespace OpenGS
 
         void CheckDashing()
         {
-            if (Input.GetKeyDown(KeyCode.F) && !isDashing)
+            if (inputService.IsDashJustPressed() && !isDashing)
             {
                 isDashing = true;
                 Invoke("EndDash", dashTimer);
@@ -522,7 +917,7 @@ namespace OpenGS
             if (isDashing)
             {
                 if (!isWallAhead)
-                    dashingSpeed = Mathf.Lerp(dashingSpeed, 2 * Mathf.Sign(transform.localScale.x), 10 * Time.deltaTime);
+                    dashingSpeed = Mathf.Lerp(dashingSpeed, 2 * Mathf.Sign(transform.localScale.x), 10 * Time.fixedDeltaTime);
                 else
                 {
                     isDashing = false;
@@ -531,12 +926,13 @@ namespace OpenGS
             }
             else
             {
-                dashingSpeed = Mathf.Lerp(dashingSpeed, 0, 10 * Time.deltaTime);
+                dashingSpeed = Mathf.Lerp(dashingSpeed, 0, 10 * Time.fixedDeltaTime);
             }
         }
         void ApplyMovement()
         {
             float dt = Time.fixedDeltaTime;
+            if (!float.IsFinite(dt) || dt < 0f) return;
 
             CheckHorizontalCollision();
 
@@ -800,7 +1196,7 @@ namespace OpenGS
         }
 
         [Button("死亡")]
-        private void Die(EDeadReason reason=EDeadReason.Unknown)
+        private void Die(EDeadReason reason=EDeadReason.Unknown, bool notifyServer = true)
         {
             if (deathTriggered)
             {
@@ -817,19 +1213,56 @@ namespace OpenGS
                 }
                 else
                 {
-                    SoundManager.Instance.PlayOneShotSafe(sound, context: nameof(PlayerAgent));
+                    SoundManager.Instance?.PlayOneShotSafe(sound, context: nameof(PlayerAgent));
                 }
             }
 
             DropWeapon();
 
-            // ネットワーク死亡通知を送信
-            SendDeathNotificationToServer(reason);
+            // Online matches receive the authoritative death event back from the
+            // match server. Local hazards still use the request path.
+            if (notifyServer)
+            {
+                SendDeathNotificationToServer(reason);
+            }
 
-            this.battleSceneMediateObject.mainscript.OnMyPlayerDead();
+            if (battleSceneMediateObject?.mainscript != null)
+            {
+                battleSceneMediateObject.mainscript.OnMyPlayerDead();
+            }
+            else
+            {
+                Debug.LogWarning("[PlayerAgent] Battle scene mediator/main script is not available during death cleanup.");
+            }
 
 
             Destroy(this.gameObject);
+        }
+
+        /// <summary>
+        /// Applies a death already confirmed by the match server without sending
+        /// a second client-originated death notification.
+        /// </summary>
+        public void ApplyServerDeath(EDeadReason reason = EDeadReason.Unknown)
+        {
+            Die(reason, false);
+        }
+
+        private void HandleDefaultWeaponInput()
+        {
+            if (weaponSlots == null) return;
+
+            var gun = weaponSlots.GetCurrentGun();
+            if (gun != null)
+            {
+                if (inputService.IsFirePressed()) gun.StartFire();
+                else gun.StopFire();
+
+                if (inputService.IsReloadJustPressed()) gun.ReloadStart();
+            }
+
+            if (inputService.IsSwapWeaponJustPressed()) weaponSlots.FlipWeapon();
+            if (inputService.IsDropWeaponJustPressed()) weaponSlots.DropCurrentWeapon();
         }
 
         private bool TryGetDeathVoiceClip(out AudioClip clip)
@@ -886,11 +1319,8 @@ namespace OpenGS
 
         public void TakeDamage()
         {
-            Debug.Log("TakeDamage Func");
-
             if (invincible || IsIncreaseDefenseNow())
             {
-                Debug.Log("TakeDamage ignored by invincibility or defense buff");
                 return;
             }
 
@@ -914,21 +1344,25 @@ namespace OpenGS
 
         public void SpeedUp(float sec = 30.0f)
         {
+            if (!float.IsFinite(sec) || sec <= 0f) return;
             StartCoroutine(SpeedUpCounter(sec));
         }
 
         public void IncreaseAttack(float sec = 30.0f)
         {
+            if (!float.IsFinite(sec) || sec <= 0f) return;
             StartCoroutine(IncreaseAttackCounter(sec));
         }
 
         public void IncreaseDefense(float sec = 30.0f)
         {
+            if (!float.IsFinite(sec) || sec <= 0f) return;
             StartCoroutine(IncreaseDefenseCounter(sec));
         }
 
         public void Invisible(float sec = 30.0f)
         {
+            if (!float.IsFinite(sec) || sec <= 0f) return;
             StartCoroutine(InvisibleCounter(sec));
         }
 
@@ -939,14 +1373,16 @@ namespace OpenGS
 
         public void RefillGrenade(EGrenadeType type, int amount = 3)
         {
-            if (type != EGrenadeType.Normal)
+            var value = Mathf.Clamp(amount, 0, 3);
+            switch (type)
             {
-                Debug.Log($"[PlayerAgent] Grenade refill requested for {type}, but this controller only tracks normal grenades.");
-                return;
+                case EGrenadeType.Normal: normalGrenadeCount = value; break;
+                case EGrenadeType.Power: powerGrenadeCount = value; break;
+                case EGrenadeType.Cluster: clusterGrenadeCount = value; break;
+                case EGrenadeType.Magnetic: magneticGrenadeCount = value; break;
+                case EGrenadeType.Mine: mineGrenadeCount = value; break;
             }
-
-            normalGrenadeCount = Mathf.Clamp(amount, 0, 3);
-            Debug.Log($"[PlayerAgent] Normal grenade refilled: {NormalGrenadeCount}");
+            Debug.Log($"[PlayerAgent] Grenade refilled: {type}={value}");
         }
 
         public void Berserk()
@@ -958,7 +1394,7 @@ namespace OpenGS
 
         public void AddDamage(Vector2 source, float damage, eDamageType type)
         {
-            if (damage <= 0f)
+            if (!float.IsFinite(damage) || damage <= 0f)
             {
                 return;
             }
@@ -969,12 +1405,18 @@ namespace OpenGS
                 return;
             }
 
-            TakeDamage();
+            currentHealth = Mathf.Max(0f, currentHealth - damage);
+            if (currentHealth <= 0f)
+            {
+                Die();
+            }
         }
 
         public void AddDamageAndForce(float damage, Vector3 vec, float force = 1.0f)
         {
-            if (damage <= 0f)
+            if (!float.IsFinite(damage) || damage <= 0f
+                || !float.IsFinite(force)
+                || !float.IsFinite(vec.x) || !float.IsFinite(vec.y) || !float.IsFinite(vec.z))
             {
                 return;
             }
@@ -990,7 +1432,9 @@ namespace OpenGS
                 rigidbody2D.AddForce(new Vector2(vec.x, vec.y).normalized * force, ForceMode2D.Impulse);
             }
 
-            TakeDamage();
+            // Apply the requested amount instead of routing impact damage to
+            // TakeDamage(), which would kill the player regardless of damage.
+            AddDamage(Vector2.zero, damage, eDamageType.None);
         }
 
         public void AddDamageAndForce2(float damage, Vector2 point)
@@ -1000,7 +1444,9 @@ namespace OpenGS
 
         public void Heal(float heal = 0)
         {
-            Debug.Log($"[PlayerAgent] Heal requested: {heal}");
+            if (!float.IsFinite(heal) || heal <= 0f || deathTriggered) return;
+            currentHealth = Mathf.Min(Mathf.Max(1f, maxHealth), currentHealth + heal);
+            Debug.Log($"[PlayerAgent] Healed: +{heal}, HP={currentHealth}/{maxHealth}");
         }
 
         public void TakeLavaDamage()
@@ -1036,7 +1482,7 @@ namespace OpenGS
 
         private IEnumerator IncreaseAttackCounter(float time)
         {
-            if (time <= 0f) time = 30f;
+            if (!float.IsFinite(time) || time <= 0f) time = 30f;
 
             var version = ++attackBuffVersion;
             attackMultiplier = BuffedMultiplier;
@@ -1049,7 +1495,7 @@ namespace OpenGS
 
         private IEnumerator IncreaseDefenseCounter(float time)
         {
-            if (time <= 0f) time = 30f;
+            if (!float.IsFinite(time) || time <= 0f) time = 30f;
 
             var version = ++defenseBuffVersion;
             defenseMultiplier = BuffedMultiplier;
@@ -1062,7 +1508,7 @@ namespace OpenGS
 
         private IEnumerator SpeedUpCounter(float time)
         {
-            if (time <= 0f) time = 30f;
+            if (!float.IsFinite(time) || time <= 0f) time = 30f;
 
             var version = ++speedBuffVersion;
             moveSpeedMultiplier = BuffedMultiplier;
@@ -1079,7 +1525,7 @@ namespace OpenGS
 
         private IEnumerator InvisibleCounter(float time)
         {
-            if (time <= 0f) time = 30f;
+            if (!float.IsFinite(time) || time <= 0f) time = 30f;
 
             var version = ++invisibleBuffVersion;
             invisibleBuffActive = true;
@@ -1116,8 +1562,21 @@ namespace OpenGS
                 return Vector3.zero;
             }
 
-            var phase = Time.time * standBobFrequency;
+            var now = Time.time;
+            if (!float.IsFinite(now))
+            {
+                return Vector3.zero;
+            }
+
+            var phase = now * standBobFrequency;
             var bob = Mathf.Sin(phase) * standBobAmplitude;
+            if (!float.IsFinite(standBobDirection.x) ||
+                !float.IsFinite(standBobDirection.y) ||
+                !float.IsFinite(standBobDirection.z))
+            {
+                return Vector3.zero;
+            }
+
             var direction = standBobDirection.sqrMagnitude > 0.0001f ? standBobDirection.normalized : Vector3.up;
             return direction * bob;
         }

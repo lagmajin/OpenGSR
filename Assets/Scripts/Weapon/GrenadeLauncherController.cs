@@ -52,6 +52,10 @@ namespace OpenGS
                 impactBullet.EnableGravity();
                 bullet.enabled = false;
             }
+            else
+            {
+                Destroy(grenadeObj);
+            }
         }
     }
 }

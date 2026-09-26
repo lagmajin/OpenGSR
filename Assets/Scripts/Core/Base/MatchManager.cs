@@ -92,7 +92,19 @@ namespace OpenGS
 
         public void SendEvent(AbstractGameEvent ev)
         {
+            if (ev == null)
+            {
+                return;
+            }
 
+            var subscriber = mainScriptSubscriber;
+            if (subscriber == null)
+            {
+                Debug.LogWarning($"[MatchManager] Dropped {ev.GetType().Name}: no match subscriber is registered.");
+                return;
+            }
+
+            subscriber.PostEvent(ev);
         }
 
         public void ClearAllSubscribe()

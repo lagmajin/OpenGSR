@@ -7,6 +7,7 @@ namespace OpenGS
     {
         [SerializeField] public Transform target; // キャラのTransform
         [SerializeField] public Vector3 offset = new Vector3(0, 1.0f, 0); // 頭の上
+        private Camera cachedCamera;
 
         void LateUpdate()
         {
@@ -15,7 +16,12 @@ namespace OpenGS
                 transform.position = target.position + offset;
             }
 
-            var cam = Camera.main;
+            if (cachedCamera == null)
+            {
+                cachedCamera = Camera.main;
+            }
+
+            var cam = cachedCamera;
             if (cam == null)
             {
                 return;

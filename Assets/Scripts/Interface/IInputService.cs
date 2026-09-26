@@ -42,6 +42,9 @@ namespace OpenGS
         /// 現在の武器をドロップするボタンが押された瞬間か
         /// </summary>
         bool IsDropWeaponJustPressed();
+        bool IsGrenadeJustPressed();
+        bool IsGrenadePressed();
+        bool IsGrenadeJustReleased();
 
         /// <summary>
         /// ジャンプボタンが押された瞬間か
@@ -82,5 +85,8 @@ namespace OpenGS
         /// ブースターボタンが押されているか
         /// </summary>
         bool IsBoosterPressed();
+
+        bool IsScoreboardJustPressed();
+        bool IsScoreboardJustReleased();
     }
 }

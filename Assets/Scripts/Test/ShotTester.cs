@@ -18,6 +18,11 @@ namespace OpenGS
 
         private float elapsed;
 
+        private void Awake()
+        {
+            autoInterval = Mathf.Max(0.01f, float.IsFinite(autoInterval) ? autoInterval : 1f);
+        }
+
 
         // Start is called before the first frame update
         void Start()
@@ -33,7 +38,14 @@ namespace OpenGS
                 return;
             }
 
-            elapsed += Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            elapsed = (float.IsFinite(elapsed) ? elapsed : 0f) + deltaTime;
             if (elapsed >= autoInterval)
             {
                 elapsed = 0f;

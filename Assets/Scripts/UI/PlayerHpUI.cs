@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace OpenGS
@@ -20,10 +21,25 @@ namespace OpenGS
         [SerializeField] private Gauge hpGauge;
 
         private AbstractPlayer myPlayer;
+        private Coroutine bindRoutine;
+        private bool subscribed;
 
         private void OnEnable()
         {
-            if (PlayerRegistry.Instance == null) return;
+            bindRoutine = StartCoroutine(BindWhenRegistryReady());
+        }
+
+        private IEnumerator BindWhenRegistryReady()
+        {
+            while (isActiveAndEnabled && PlayerRegistry.Instance == null)
+            {
+                yield return null;
+            }
+
+            if (!isActiveAndEnabled || PlayerRegistry.Instance == null)
+            {
+                yield break;
+            }
 
             PlayerRegistry.Instance.OnPlayerHealthChanged += HandleHealthChanged;
             PlayerRegistry.Instance.OnPlayerDied += HandlePlayerDied;
@@ -32,16 +48,37 @@ namespace OpenGS
 
             // 既に自プレイヤーが登録済みなら初期化
             TryFindMyPlayer();
+            subscribed = true;
+            bindRoutine = null;
         }
 
         private void OnDisable()
         {
-            if (PlayerRegistry.Instance == null) return;
+            if (bindRoutine != null)
+            {
+                StopCoroutine(bindRoutine);
+                bindRoutine = null;
+            }
+
+            if (!subscribed)
+            {
+                myPlayer = null;
+                return;
+            }
+
+            if (PlayerRegistry.Instance == null)
+            {
+                subscribed = false;
+                myPlayer = null;
+                return;
+            }
 
             PlayerRegistry.Instance.OnPlayerHealthChanged -= HandleHealthChanged;
             PlayerRegistry.Instance.OnPlayerDied -= HandlePlayerDied;
             PlayerRegistry.Instance.OnPlayerRespawned -= HandlePlayerRespawned;
             PlayerRegistry.Instance.OnPlayerRegistered -= HandlePlayerRegistered;
+            subscribed = false;
+            myPlayer = null;
         }
 
         private void HandlePlayerRegistered(AbstractPlayer player)

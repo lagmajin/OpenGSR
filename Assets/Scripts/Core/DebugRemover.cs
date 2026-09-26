@@ -1,23 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace OpenGS
 {
     public class DebugRemover : IProcessSceneWithReport
     {
-
-        public int callbackOrder
-        {
-            get { return 0; }
-        }
+        public int callbackOrder => 0;
 
         public void OnProcessScene(UnityEngine.SceneManagement.Scene scene, BuildReport report)
         {
@@ -28,3 +19,4 @@ namespace OpenGS
         }
     }
 }
+#endif

@@ -11,8 +11,13 @@ namespace OpenGS
             try
             {
                 var manager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
-                manager?.TryConnectToServer(ip, port);
-                return;
+                if (manager != null)
+                {
+                    manager.TryConnectToServer(ip, port);
+                    return;
+                }
+
+                Debug.LogWarning("[ConnectToLobbyNetworkManager] GeneralServerNetworkManager resolved as null.");
             }
             catch (System.Exception ex)
             {

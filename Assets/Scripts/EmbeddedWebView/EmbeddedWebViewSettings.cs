@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace OpenGS.UI
@@ -10,5 +11,25 @@ namespace OpenGS.UI
 
         public string NewsUrl => newsUrl;
         public string ClanUrl => clanUrl;
+
+        private void OnValidate()
+        {
+            ValidateUrl(nameof(newsUrl), newsUrl);
+            ValidateUrl(nameof(clanUrl), clanUrl);
+        }
+
+        private static void ValidateUrl(string fieldName, string value)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                return;
+            }
+
+            if (!Uri.TryCreate(value.Trim(), UriKind.Absolute, out var uri) ||
+                !string.Equals(uri.Scheme, Uri.UriSchemeHttps, StringComparison.OrdinalIgnoreCase))
+            {
+                Debug.LogWarning($"[EmbeddedWebViewSettings] {fieldName} must be an absolute HTTPS URL.");
+            }
+        }
     }
 }

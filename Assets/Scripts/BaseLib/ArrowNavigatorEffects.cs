@@ -24,8 +24,25 @@ namespace OpenGS
 
         public Image img;
 
+        private void Awake()
+        {
+            sec = Mathf.Max(0.01f, float.IsFinite(sec) ? sec : 0.1f);
+            mov = float.IsFinite(mov) ? mov : 50f;
+            loopCount = Mathf.Clamp(loopCount, 1, 6);
+        }
+
         private void Start()
         {
+            if (img == null)
+            {
+                img = GetComponent<Image>();
+            }
+
+            if (img == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
 
 
             //transform.DOLocalMoveX(new Vector3(5f,0f,0f),1f).SetLoops(3,LoopType.Restart);
@@ -64,9 +81,9 @@ namespace OpenGS
             Destroy(this.gameObject);
         }
 
-        private void Update()
+        private void OnDestroy()
         {
-
+            transform.DOKill();
         }
 
     }

@@ -43,7 +43,8 @@ namespace OpenGS
 
                 if (hitEffect != null)
                 {
-                    Instantiate(hitEffect, (Vector3)collider.ClosestPoint(impactOrigin), Quaternion.identity);
+                    var spawnedEffect = Instantiate(hitEffect, (Vector3)collider.ClosestPoint(impactOrigin), Quaternion.identity);
+                    Destroy(spawnedEffect, 5f);
                 }
 
                 return true;
@@ -71,10 +72,13 @@ namespace OpenGS
             switch (effect)
             {
                 case ESoundEffect.HitStageObject:  // ← enum名をフルで書く
-                    if (hitObjectSounds.Length > 0)
+                    if (hitObjectSounds != null && hitObjectSounds.Length > 0)
                     {
                         var clip = hitObjectSounds[Random.Range(0, hitObjectSounds.Length)];
-                        SoundManager.Instance.PlayOneShotSafe(clip, context: nameof(AbstractBulletAgent));
+                        if (clip != null)
+                        {
+                            SoundManager.Instance?.PlayOneShotSafe(clip, context: nameof(AbstractBulletAgent));
+                        }
 
                         //audioSource.PlayOneShot(clip);
                     }

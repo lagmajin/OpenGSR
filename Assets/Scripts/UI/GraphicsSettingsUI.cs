@@ -52,6 +52,19 @@ namespace OpenGS
             LoadCurrentSettings();
         }
 
+        private void OnDestroy()
+        {
+            resolutionDropdown?.onValueChanged.RemoveListener(OnResolutionChanged);
+            fullscreenToggle?.onValueChanged.RemoveListener(OnFullscreenChanged);
+            qualityDropdown?.onValueChanged.RemoveListener(OnQualityChanged);
+            vsyncToggle?.onValueChanged.RemoveListener(OnVSyncChanged);
+            frameRateDropdown?.onValueChanged.RemoveListener(OnFrameRateChanged);
+            brightnessSlider?.onValueChanged.RemoveListener(OnBrightnessChanged);
+            antiAliasingToggle?.onValueChanged.RemoveListener(OnAntiAliasingChanged);
+            shadowsToggle?.onValueChanged.RemoveListener(OnShadowsChanged);
+            shadowQualityDropdown?.onValueChanged.RemoveListener(OnShadowQualityChanged);
+        }
+
         // ─── 初期化 ─────────────────────────────────────────────────
 
         /// <summary>
@@ -160,6 +173,7 @@ namespace OpenGS
         /// </summary>
         public void ApplySettings()
         {
+            if (SettingsManager.Instance == null) return;
             SettingsManager.Instance.ApplyGraphicsSettings(currentSettings);
             Debug.Log("[GraphicsSettingsUI] グラフィックス設定を適用しました");
         }
@@ -171,6 +185,7 @@ namespace OpenGS
         /// </summary>
         private void LoadCurrentSettings()
         {
+            if (SettingsManager.Instance == null) return;
             currentSettings = SettingsManager.Instance.GetGraphicsSettings();
             UpdateUI();
         }
@@ -201,6 +216,8 @@ namespace OpenGS
             // 品質設定
             if (qualityDropdown != null)
             {
+                var maxQuality = Mathf.Max(0, qualityDropdown.options.Count - 1);
+                currentSettings.QualityLevel = Mathf.Clamp(currentSettings.QualityLevel, 0, maxQuality);
                 qualityDropdown.value = currentSettings.QualityLevel;
             }
 
@@ -225,6 +242,7 @@ namespace OpenGS
             // 詳細設定
             if (brightnessSlider != null)
             {
+                currentSettings.Brightness = Normalize01(currentSettings.Brightness, 1f);
                 brightnessSlider.value = currentSettings.Brightness;
             }
 
@@ -245,6 +263,8 @@ namespace OpenGS
 
             if (shadowQualityDropdown != null)
             {
+                var maxShadowQuality = Mathf.Max(0, shadowQualityDropdown.options.Count - 1);
+                currentSettings.ShadowQuality = Mathf.Clamp(currentSettings.ShadowQuality, 0, maxShadowQuality);
                 shadowQualityDropdown.value = currentSettings.ShadowQuality;
             }
         }
@@ -311,6 +331,11 @@ namespace OpenGS
         private void OnShadowQualityChanged(int index)
         {
             currentSettings.ShadowQuality = index;
+        }
+
+        private static float Normalize01(float value, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Clamp01(value) : fallback;
         }
     }
 }

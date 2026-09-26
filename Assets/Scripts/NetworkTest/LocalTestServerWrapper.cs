@@ -27,6 +27,7 @@ namespace OpenGS.Network
         /// ロビープレイヤー管理
         /// </summary>
         private readonly Dictionary<string, PlayerData> m_LobbyPlayers = new();
+        private readonly HashSet<string> m_LoadingCompletedPlayers = new(StringComparer.OrdinalIgnoreCase);
 
         /// <summary>
         /// ルームデータ
@@ -83,6 +84,16 @@ namespace OpenGS.Network
 
             // ゲームスタートのカスタム実装
             m_EventHandler.Register(MessageType.GameStartRequest, HandleGameStart);
+
+            // ローディング完了はクライアントから Request として届き、
+            // サーバーは Notification を返す。
+            m_EventHandler.Register(MessageType.LoadingStarted, HandleLoadingStarted);
+            m_EventHandler.Register(MessageType.LoadingProgress, HandleLoadingProgress);
+            m_EventHandler.Register(MessageType.LoadingCompleted, HandleLoadingFinished);
+
+            // ロードシーン入場時と明示的な情報要求の両方で、マッチ接続先を返す。
+            m_EventHandler.Register(MessageType.ClientLoadingSceneEntered, HandleClientLoadingSceneEntered);
+            m_EventHandler.Register(MessageType.MatchServerInfoRequest, HandleMatchServerInfoRequest);
         }
 
         /// <summary>
@@ -174,8 +185,11 @@ namespace OpenGS.Network
                 return;
             }
 
-            room.Players.Add(playerId);
-            room.PlayerReady[playerId] = false;
+            if (!room.Players.Contains(playerId))
+            {
+                room.Players.Add(playerId);
+                room.PlayerReady[playerId] = false;
+            }
 
             var resp = BuildRoomInfoSnapshot(room).ToResponseJson(MessageType.JoinRoomResponse);
             resp["PlayerID"] = playerId;
@@ -189,7 +203,7 @@ namespace OpenGS.Network
             var roomId = json["RoomID"]?.ToString() ?? "";
             var playerId = json["PlayerID"]?.ToString() ?? "";
 
-            if (m_Rooms.TryGetValue(roomId, out var room))
+            if (m_Rooms.TryGetValue(roomId, out var room) && room.Players.Contains(playerId))
             {
                 room.PlayerReady[playerId] = true;
 
@@ -212,6 +226,22 @@ namespace OpenGS.Network
 
             if (m_Rooms.TryGetValue(roomId, out var room))
             {
+                foreach (var playerId in room.Players)
+                {
+                    if (!room.PlayerReady.GetValueOrDefault(playerId, false))
+                    {
+                        sender(new JObject
+                        {
+                            ["MessageType"] = MessageType.ErrorNotification,
+                            ["Success"] = false,
+                            ["ErrorMessage"] = "All players must be ready before starting"
+                        });
+                        return;
+                    }
+                }
+
+                m_LoadingCompletedPlayers.Clear();
+
                 var countdown = new JObject
                 {
                     ["MessageType"] = MessageType.WaitRoomStartCountdown,
@@ -220,6 +250,82 @@ namespace OpenGS.Network
                 };
                 sender(countdown);
             }
+        }
+
+        private void HandleLoadingFinished(JObject json, Action<JObject> sender)
+        {
+            var playerId = json["PlayerID"]?.ToString() ?? "";
+            var roomId = json["RoomID"]?.ToString() ?? "";
+            m_LoadingCompletedPlayers.Add(playerId);
+            sender(new JObject
+            {
+                ["MessageType"] = MessageType.LoadingCompletedNotification,
+                ["Success"] = true,
+                ["PlayerID"] = playerId,
+                ["RoomID"] = roomId
+            });
+
+            if (!m_Rooms.TryGetValue(roomId, out var room) || m_LoadingCompletedPlayers.Count < room.Players.Count)
+            {
+                return;
+            }
+
+            sender(new JObject
+            {
+                ["MessageType"] = MessageType.AllowEnterMap,
+                ["Success"] = true,
+                ["PlayerID"] = playerId,
+                ["RoomID"] = roomId
+            });
+        }
+
+        private void HandleLoadingStarted(JObject json, Action<JObject> sender)
+        {
+            sender(new JObject
+            {
+                ["MessageType"] = MessageType.LoadingStartedNotification,
+                ["Success"] = true,
+                ["PlayerID"] = json["PlayerID"]?.ToString() ?? "",
+                ["RoomID"] = json["RoomID"]?.ToString() ?? "",
+                ["Progress"] = 0f
+            });
+        }
+
+        private void HandleLoadingProgress(JObject json, Action<JObject> sender)
+        {
+            var progress = Mathf.Clamp01(json["Progress"]?.ToObject<float>() ?? 0f);
+            sender(new JObject
+            {
+                ["MessageType"] = MessageType.LoadingProgressNotification,
+                ["Success"] = true,
+                ["PlayerID"] = json["PlayerID"]?.ToString() ?? "",
+                ["RoomID"] = json["RoomID"]?.ToString() ?? "",
+                ["Progress"] = progress
+            });
+        }
+
+        private void HandleClientLoadingSceneEntered(JObject json, Action<JObject> sender)
+        {
+            SendMatchServerInfo(json, sender);
+        }
+
+        private void HandleMatchServerInfoRequest(JObject json, Action<JObject> sender)
+        {
+            SendMatchServerInfo(json, sender);
+        }
+
+        private static void SendMatchServerInfo(JObject json, Action<JObject> sender)
+        {
+            sender(new JObject
+            {
+                ["MessageType"] = MessageType.MatchServerInfoResponse,
+                ["Success"] = true,
+                ["IP"] = "127.0.0.1",
+                ["Port"] = 60001,
+                ["UdpPort"] = 63000,
+                ["PlayerID"] = json["PlayerID"]?.ToString() ?? "",
+                ["RoomID"] = json["RoomID"]?.ToString() ?? ""
+            });
         }
 
         private void SeedDefaultRooms()

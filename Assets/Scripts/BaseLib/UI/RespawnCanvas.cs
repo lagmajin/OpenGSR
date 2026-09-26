@@ -2,6 +2,7 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace OpenGS
 {
@@ -31,9 +32,18 @@ namespace OpenGS
         private float timer;
         private bool isCounting;
         private int lastDisplayedSecond = -1;
+        private IDisposable respawnCountdownSubscription;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(respawnTime) || respawnTime < 0f) respawnTime = 0f;
+            if (!float.IsFinite(fadeDuration) || fadeDuration < 0f) fadeDuration = 0f;
+        }
 
         private void Awake()
         {
+            respawnTime = float.IsFinite(respawnTime) ? Mathf.Max(0f, respawnTime) : 0f;
+            fadeDuration = float.IsFinite(fadeDuration) ? Mathf.Max(0f, fadeDuration) : 0f;
             canvasGroup = GetComponent<CanvasGroup>();
             canvasGroup.alpha = 0f;
             isCounting = false;
@@ -41,6 +51,7 @@ namespace OpenGS
 
         private void OnEnable()
         {
+            respawnCountdownSubscription = GameEventBroker.Subscribe<RespawnCountdownEvent>(HandleRespawnCountdownEvent);
             if (PlayerRegistry.Instance == null) return;
             PlayerRegistry.Instance.OnPlayerDied += HandlePlayerDied;
             PlayerRegistry.Instance.OnPlayerRespawned += HandlePlayerRespawned;
@@ -48,6 +59,10 @@ namespace OpenGS
 
         private void OnDisable()
         {
+            DOTween.Kill(canvasGroup);
+            if (countdownText != null) DOTween.Kill(countdownText.transform);
+            respawnCountdownSubscription?.Dispose();
+            respawnCountdownSubscription = null;
             if (PlayerRegistry.Instance == null) return;
             PlayerRegistry.Instance.OnPlayerDied -= HandlePlayerDied;
             PlayerRegistry.Instance.OnPlayerRespawned -= HandlePlayerRespawned;
@@ -57,11 +72,13 @@ namespace OpenGS
         {
             if (!isCounting) return;
 
-            timer -= Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f) return;
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+            timer = Mathf.Max(0f, timer - deltaTime);
 
             if (timer <= 0f)
             {
-                timer = 0f;
                 isCounting = false;
             }
 
@@ -87,9 +104,26 @@ namespace OpenGS
             HideCanvas();
         }
 
+        private void HandleRespawnCountdownEvent(RespawnCountdownEvent evt)
+        {
+            if (evt == null || PlayerRegistry.Instance == null || !Guid.TryParse(evt.PlayerID(), out var id))
+            {
+                return;
+            }
+
+            if (!PlayerRegistry.Instance.TryGetPlayer(id, out var player) ||
+                player == null || player.PlayerType() != EPlayerType.MyPlayer)
+            {
+                return;
+            }
+
+            StartCountdown(Mathf.Max(0f, evt.CountdownSeconds()));
+        }
+
         public void StartCountdown(float? overrideTime = null)
         {
-            timer = overrideTime ?? respawnTime;
+            var requestedTime = overrideTime ?? respawnTime;
+            timer = float.IsFinite(requestedTime) ? Mathf.Max(0f, requestedTime) : 0f;
             isCounting = true;
             lastDisplayedSecond = -1;
 
@@ -97,13 +131,13 @@ namespace OpenGS
                 messageText.text = "RESPAWNING IN...";
 
             UpdateDisplay();
-            canvasGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad);
+            canvasGroup.DOFade(1f, fadeDuration).SetEase(Ease.OutQuad).SetTarget(canvasGroup);
         }
 
         private void HideCanvas()
         {
             isCounting = false;
-            canvasGroup.DOFade(0f, fadeDuration).SetEase(Ease.InQuad);
+            canvasGroup.DOFade(0f, fadeDuration).SetEase(Ease.InQuad).SetTarget(canvasGroup);
         }
 
         private void UpdateDisplay()
@@ -120,9 +154,15 @@ namespace OpenGS
                 // Pop animation on second change
                 countdownText.transform.DOScale(1.3f, 0.1f)
                     .SetEase(Ease.OutBack)
+                    .SetTarget(countdownText.transform)
                     .OnComplete(() =>
                     {
-                        countdownText.transform.DOScale(1f, 0.1f).SetEase(Ease.InOutSine);
+                        if (countdownText != null && isActiveAndEnabled)
+                        {
+                            countdownText.transform.DOScale(1f, 0.1f)
+                                .SetEase(Ease.InOutSine)
+                                .SetTarget(countdownText.transform);
+                        }
                     });
             }
         }

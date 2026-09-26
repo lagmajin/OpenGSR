@@ -7,7 +7,7 @@ namespace OpenGS
     /// <summary>
     /// フィールドアイテムのネットワークメッセージ
     /// </summary>
-    public static class FieldItemMessages
+    public static class WorldItemMessages
     {
         #region Message Types
 
@@ -47,7 +47,7 @@ namespace OpenGS
             {
                 ["MessageType"] = ItemPickup,
                 ["ItemId"] = itemId,
-                ["PlayerId"] = playerId,
+                ["PlayerID"] = playerId,
                 ["SpawnPointId"] = spawnPointId,
                 ["PositionX"] = pos.x,
                 ["PositionY"] = pos.y,
@@ -70,12 +70,26 @@ namespace OpenGS
         /// <summary>
         /// アイテム状態同期メッセージを作成
         /// </summary>
-        public static JObject CreateStateSyncMessage(List<FieldItemNetworkManager.FieldItemData> items)
+        public static JObject CreateStateSyncMessage(List<WorldItemNetworkManager.WorldItemData> items)
         {
             var itemsArray = new JArray();
 
+            if (items == null)
+            {
+                return new JObject
+                {
+                    ["MessageType"] = ItemStateSync,
+                    ["Items"] = itemsArray
+                };
+            }
+
             foreach (var item in items)
             {
+                if (item == null || string.IsNullOrWhiteSpace(item.ItemId))
+                {
+                    continue;
+                }
+
                 itemsArray.Add(new JObject
                 {
                     ["ItemId"] = item.ItemId,
@@ -98,11 +112,16 @@ namespace OpenGS
         /// <summary>
         /// アイテムをJSONからパース
         /// </summary>
-        public static FieldItemNetworkManager.FieldItemData ParseSpawnMessage(JObject json)
+        public static WorldItemNetworkManager.WorldItemData ParseSpawnMessage(JObject json)
         {
             try
             {
                 string itemId = json["ItemId"]?.ToString() ?? "";
+                if (string.IsNullOrWhiteSpace(itemId))
+                {
+                    return null;
+                }
+
                 string itemTypeStr = json["ItemType"]?.ToString() ?? "PowerUp";
 
                 if (!FieldItemVisualResolver.TryParseLegacy(itemTypeStr, out var itemType))
@@ -113,8 +132,12 @@ namespace OpenGS
                 float x = json["PositionX"]?.Value<float>() ?? 0;
                 float y = json["PositionY"]?.Value<float>() ?? 0;
                 float z = json["PositionZ"]?.Value<float>() ?? 0;
+                if (!IsFinite(x) || !IsFinite(y) || !IsFinite(z))
+                {
+                    return null;
+                }
 
-                var data = new FieldItemNetworkManager.FieldItemData(itemId, itemType, new Vector3(x, y, z));
+                var data = new WorldItemNetworkManager.WorldItemData(itemId, itemType, new Vector3(x, y, z));
                 return data;
             }
             catch
@@ -131,7 +154,14 @@ namespace OpenGS
             try
             {
                 string itemId = json["ItemId"]?.ToString() ?? "";
-                string playerId = json["PlayerId"]?.ToString() ?? "";
+                string playerId = json["PlayerId"]?.ToString()
+                    ?? json["PlayerID"]?.ToString()
+                    ?? "";
+
+                if (string.IsNullOrWhiteSpace(itemId) || string.IsNullOrWhiteSpace(playerId))
+                {
+                    return default;
+                }
 
                 return (itemId, playerId);
             }
@@ -141,33 +171,45 @@ namespace OpenGS
             }
         }
 
+        private static bool IsFinite(float value)
+        {
+            return !float.IsNaN(value) && !float.IsInfinity(value);
+        }
+
         #endregion
     }
 
     /// <summary>
     /// クライアント側でフィールドアイテムを NetworkView で同期するためのコンポーネント
     /// </summary>
-    public class FieldItemNetworkView : MonoBehaviour
+    public class WorldItemNetworkView : MonoBehaviour
     {
         [Header("Field Item Info")]
         [SerializeField] private string _itemId = "";
         [SerializeField] private eFieldItemType _itemType = eFieldItemType.PowerUpItem;
         [SerializeField] private int _spawnPointId = -1;
 
-        private FieldItemNetworkManager _manager;
+        private WorldItemNetworkManager _manager;
         private bool _isInitialized = false;
+        private bool _pickupSent;
 
         public string ItemId => _itemId;
         public eFieldItemType ItemType => _itemType;
 
         public void Initialize(string itemId, eFieldItemType itemType, int spawnPointId = -1)
         {
+            if (_manager != null)
+            {
+                _manager.OnItemDespawned -= OnItemDespawned;
+            }
+
             _itemId = itemId;
             _itemType = itemType;
             _spawnPointId = spawnPointId;
             _isInitialized = true;
+            _pickupSent = false;
 
-            _manager = FieldItemNetworkManager.Instance;
+            _manager = WorldItemNetworkManager.Instance;
 
             // スポーンイベント的通知
             if (_manager != null)
@@ -197,9 +239,11 @@ namespace OpenGS
         /// </summary>
         public void SendPickupToServer(string playerId)
         {
-            if (!_isInitialized) return;
+            if (!_isInitialized || _pickupSent || string.IsNullOrWhiteSpace(playerId)) return;
 
-            var message = FieldItemMessages.CreatePickupMessage(_itemId, playerId, _spawnPointId, transform.position);
+            _pickupSent = true;
+
+            var message = WorldItemMessages.CreatePickupMessage(_itemId, playerId, _spawnPointId, transform.position);
 
             try
             {
@@ -213,5 +257,22 @@ namespace OpenGS
 
             _manager?.PickupItem(_itemId, playerId);
         }
+    }
+
+    [System.Obsolete("Use WorldItemMessages instead.")]
+    public static class FieldItemMessages
+    {
+        public const string ItemSpawn = WorldItemMessages.ItemSpawn;
+        public const string ItemPickup = WorldItemMessages.ItemPickup;
+        public const string ItemDespawn = WorldItemMessages.ItemDespawn;
+        public const string ItemStateSync = WorldItemMessages.ItemStateSync;
+        public const string ItemSpawnBatch = WorldItemMessages.ItemSpawnBatch;
+
+        public static JObject CreateSpawnMessage(string itemId, string itemType, float x, float y, float z) => WorldItemMessages.CreateSpawnMessage(itemId, itemType, x, y, z);
+        public static JObject CreatePickupMessage(string itemId, string playerId, int spawnPointId = -1, Vector3? position = null) => WorldItemMessages.CreatePickupMessage(itemId, playerId, spawnPointId, position);
+        public static JObject CreateDespawnMessage(string itemId) => WorldItemMessages.CreateDespawnMessage(itemId);
+        public static JObject CreateStateSyncMessage(List<WorldItemNetworkManager.WorldItemData> items) => WorldItemMessages.CreateStateSyncMessage(items);
+        public static WorldItemNetworkManager.WorldItemData ParseSpawnMessage(JObject json) => WorldItemMessages.ParseSpawnMessage(json);
+        public static (string itemId, string playerId) ParsePickupMessage(JObject json) => WorldItemMessages.ParsePickupMessage(json);
     }
 }

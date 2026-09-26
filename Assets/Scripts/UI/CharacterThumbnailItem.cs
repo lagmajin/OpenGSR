@@ -41,6 +41,7 @@ namespace OpenGS
             this.character = character;
             this.onSelected = onSelectedCallback;
             this.isLocked = locked;
+            this.isSelected = false;
 
             UpdateUI(thumbnail);
             SetupListeners();
@@ -83,6 +84,7 @@ namespace OpenGS
         {
             if (selectButton != null)
             {
+                selectButton.onClick.RemoveListener(OnSelectButtonClicked);
                 selectButton.onClick.AddListener(OnSelectButtonClicked);
             }
         }
@@ -97,8 +99,10 @@ namespace OpenGS
                 return;
             }
 
-            // 選択状態を切り替え
-            isSelected = !isSelected;
+            // A thumbnail represents a choice, not a toggle. Keeping the
+            // selected state on repeated clicks prevents the border from
+            // disappearing while the dialog still holds this character.
+            isSelected = true;
 
             if (selectedBorder != null)
             {
@@ -106,9 +110,18 @@ namespace OpenGS
             }
 
             // コールバックを発火
-            if (isSelected)
+            try
             {
                 onSelected?.Invoke(character);
+            }
+            catch (Exception ex)
+            {
+                isSelected = false;
+                if (selectedBorder != null)
+                {
+                    selectedBorder.gameObject.SetActive(false);
+                }
+                Debug.LogError($"[CharacterThumbnailItem] Selection callback failed: {ex}");
             }
         }
 

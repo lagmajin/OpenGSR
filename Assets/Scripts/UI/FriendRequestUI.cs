@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenGS
@@ -35,6 +36,9 @@ namespace OpenGS
         // ─── 内部状態 ───────────────────────────────────────────────
 
         private List<FriendRequest> currentRequests = new List<FriendRequest>();
+        private FriendManager friendManager;
+        private Coroutine friendBindRoutine;
+        private Coroutine refreshRoutine;
 
         // ─── デリゲート ─────────────────────────────────────────────
 
@@ -50,7 +54,77 @@ namespace OpenGS
 
         private void OnEnable()
         {
+            friendBindRoutine = StartCoroutine(BindFriendManagerWhenReady());
+        }
+
+        private void OnDisable()
+        {
+            CancelInvoke();
+            if (friendManager != null)
+            {
+                friendManager.OnFriendListUpdated -= HandleFriendListUpdated;
+                friendManager.OnFriendRequestReceived -= HandleFriendRequestReceived;
+            }
+
+            friendManager = null;
+            if (friendBindRoutine != null)
+            {
+                StopCoroutine(friendBindRoutine);
+                friendBindRoutine = null;
+            }
+            if (refreshRoutine != null)
+            {
+                StopCoroutine(refreshRoutine);
+                refreshRoutine = null;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            closeButton?.onClick.RemoveListener(OnCloseButtonClicked);
+            refreshButton?.onClick.RemoveListener(OnRefreshButtonClicked);
+        }
+
+        private IEnumerator BindFriendManagerWhenReady()
+        {
+            while (isActiveAndEnabled && FriendManager.Instance == null)
+            {
+                yield return null;
+            }
+
+            if (!isActiveAndEnabled || FriendManager.Instance == null)
+            {
+                yield break;
+            }
+
+            friendManager = FriendManager.Instance;
+            friendManager.OnFriendListUpdated += HandleFriendListUpdated;
+            friendManager.OnFriendRequestReceived += HandleFriendRequestReceived;
+            friendBindRoutine = null;
             RefreshRequestList();
+        }
+
+        private void HandleFriendListUpdated(List<FriendEntry> requests)
+        {
+            QueueRefreshRequestList();
+        }
+
+        private void HandleFriendRequestReceived(FriendRequest request)
+        {
+            QueueRefreshRequestList();
+        }
+
+        private void QueueRefreshRequestList()
+        {
+            if (!isActiveAndEnabled || refreshRoutine != null) return;
+            refreshRoutine = StartCoroutine(RefreshRequestListNextFrame());
+        }
+
+        private IEnumerator RefreshRequestListNextFrame()
+        {
+            yield return null;
+            refreshRoutine = null;
+            if (isActiveAndEnabled) RefreshRequestList();
         }
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -127,8 +201,20 @@ namespace OpenGS
         /// </summary>
         private void RefreshRequestList()
         {
+            var manager = friendManager ?? FriendManager.Instance;
+            if (manager == null)
+            {
+                currentRequests = new List<FriendRequest>();
+                ClearRequestList();
+                UpdateStatistics();
+                return;
+            }
+
+            friendManager = manager;
+
             // 申請データを取得
-            currentRequests = FriendManager.Instance.GetPendingRequests();
+            currentRequests = manager.GetPendingRequests() ?? new List<FriendRequest>();
+            currentRequests.RemoveAll(request => request == null);
 
             // リストをクリア
             ClearRequestList();
@@ -202,9 +288,21 @@ namespace OpenGS
         /// </summary>
         private void OnRequestAccepted(FriendRequest request)
         {
-            FriendManager.Instance.AcceptFriendRequest(request.RequestId);
-            ShowStatus($"{request.SenderPlayerName}の申請を承認しました", false);
-            RefreshRequestList();
+            var networkManager = FindFirstObjectByType<ClientNetworkManager>();
+            if (networkManager != null)
+            {
+                networkManager.ApproveFriendRequest(request.TargetPlayerId, true);
+                ShowStatus($"{request.SenderPlayerName}の申請を承認中です", false);
+                return;
+            }
+
+            // Offline/local-only fallback.
+            var manager = friendManager ?? FriendManager.Instance;
+            if (manager != null && manager.AcceptFriendRequest(request.RequestId))
+            {
+                ShowStatus($"{request.SenderPlayerName}の申請を承認しました", false);
+                RefreshRequestList();
+            }
         }
 
         /// <summary>
@@ -212,9 +310,20 @@ namespace OpenGS
         /// </summary>
         private void OnRequestRejected(FriendRequest request)
         {
-            FriendManager.Instance.RejectFriendRequest(request.RequestId);
-            ShowStatus($"{request.SenderPlayerName}の申請を拒否しました", false);
-            RefreshRequestList();
+            var networkManager = FindFirstObjectByType<ClientNetworkManager>();
+            if (networkManager != null)
+            {
+                networkManager.ApproveFriendRequest(request.TargetPlayerId, false);
+                ShowStatus($"{request.SenderPlayerName}の申請を拒否中です", false);
+                return;
+            }
+
+            var manager = friendManager ?? FriendManager.Instance;
+            if (manager != null && manager.RejectFriendRequest(request.RequestId))
+            {
+                ShowStatus($"{request.SenderPlayerName}の申請を拒否しました", false);
+                RefreshRequestList();
+            }
         }
 
         /// <summary>

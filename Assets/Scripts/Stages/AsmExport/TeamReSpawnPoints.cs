@@ -26,6 +26,9 @@ namespace OpenGS
 
         private void Start()
         {
+            // Inspector で未設定のチームリストを扱えるようにして、実行時の null 分岐を減らす。
+            BlueTeamPoints ??= new List<GameObject>();
+            RedTeamPoints ??= new List<GameObject>();
         }
 
         public Vector2 GetRandomSpawnPoint(ETeam team = ETeam.NoTeam)
@@ -66,7 +69,30 @@ namespace OpenGS
 
         public List<string> ReadTeamRespawn()
         {
-            List<string> result = new List<string>();
+            var result = new List<string>();
+
+            if (BlueTeamPoints != null)
+            {
+                foreach (var point in BlueTeamPoints)
+                {
+                    if (point != null)
+                    {
+                        result.Add($"Blue:{point.name}");
+                    }
+                }
+            }
+
+            if (RedTeamPoints != null)
+            {
+                foreach (var point in RedTeamPoints)
+                {
+                    if (point != null)
+                    {
+                        result.Add($"Red:{point.name}");
+                    }
+                }
+            }
+
             return result;
         }
 

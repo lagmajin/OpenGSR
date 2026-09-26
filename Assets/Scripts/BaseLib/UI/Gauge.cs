@@ -39,6 +39,14 @@ namespace OpenGS
             {
                 targetSlider = GetComponent<Slider>();
             }
+
+            // Serialized values can still be invalid in a built player if an
+            // asset was modified outside the Unity inspector. Keep DOTween
+            // from receiving NaN or infinity as its duration.
+            if (!float.IsFinite(animationDuration) || animationDuration < 0f)
+            {
+                animationDuration = 0f;
+            }
         }
 
         /// <summary>
@@ -98,13 +106,28 @@ namespace OpenGS
 
         private float CalculateRatio(float current, float max)
         {
-            if (max <= 0f) return 0f;
+            if (!float.IsFinite(current) || !float.IsFinite(max) || max <= 0f) return 0f;
             return Mathf.Clamp01(current / max);
+        }
+
+        private void OnValidate()
+        {
+            animationDuration = Mathf.Max(0f, animationDuration);
+            if (targetSlider == null)
+            {
+                targetSlider = GetComponent<Slider>();
+            }
         }
 
         private void OnDestroy()
         {
             currentTween?.Kill(); // GameObject破棄時にTweenが残らないように
+            currentTween = null;
+        }
+
+        private void OnDisable()
+        {
+            currentTween?.Kill();
             currentTween = null;
         }
     }

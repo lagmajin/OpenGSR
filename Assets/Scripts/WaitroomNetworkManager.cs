@@ -32,6 +32,9 @@ namespace OpenGS
         private string currentRoomId = "";
         private string currentRoomName = "";
         private bool isReady = false;
+        [SerializeField] private float chatCooldownSeconds = 0.5f;
+        private float nextChatSendTime;
+        private float nextGameStartSendTime;
 
         // プレイヤー一覧（ロビー/ウェイトルーム用）
         private JArray currentPlayers = new JArray();
@@ -67,8 +70,17 @@ namespace OpenGS
         // Start is called before the first frame update
         void Start()
         {
-            networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
-            waitRoomManager = DependencyInjectionConfig.Resolve<WaitRoomManager>();
+            try
+            {
+                networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+                waitRoomManager = DependencyInjectionConfig.Resolve<WaitRoomManager>();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[WaitRoomNetworkManager] Failed to resolve dependencies: {ex.Message}");
+                networkManager = null;
+                waitRoomManager = null;
+            }
             
             // ネットワークマネージャのイベントを購読
             if (networkManager != null)
@@ -89,6 +101,19 @@ namespace OpenGS
             {
                 networkManager.UnSubscribe(this);
             }
+
+            onPlayerJoined.Dispose();
+            onPlayerLeft.Dispose();
+            onPlayerReady.Dispose();
+            onPlayerList.Dispose();
+            onRoomList.Dispose();
+            onRoomSettingsChanged.Dispose();
+            onChatMessage.Dispose();
+            onStartCountdown.Dispose();
+            onCancelCountdown.Dispose();
+            onRoomDeleted.Dispose();
+            onRoomNotFound.Dispose();
+            onSelfKicked.Dispose();
         }
         
         /// <summary>
@@ -102,20 +127,51 @@ namespace OpenGS
         [Button("\u0083e\u0083X\u0083g\u0090\u00DA\u0091\u00B1")]
         private void DebugConnect()
         {
-            DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>().ConnectToGeneralServerSync("127.0.0.1", 50000, "test", "test");
+            if (networkManager == null)
+            {
+                try
+                {
+                    networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[WaitRoomNetworkManager] Debug connection skipped: {ex.Message}");
+                    return;
+                }
+            }
+
+            networkManager?.ConnectToGeneralServerSync("127.0.0.1", 50000, "test", "test");
         }
 
         private void SendMessage(in JObject json)
         {
-            DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>().SendMessage(json);
+            if (json == null)
+            {
+                return;
+            }
+
+            if (networkManager == null)
+            {
+                try
+                {
+                    networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogWarning($"[WaitRoomNetworkManager] Message send skipped: {ex.Message}");
+                    return;
+                }
+            }
+
+            if (networkManager == null)
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Message send skipped: network manager is unavailable.");
+                return;
+            }
+
+            networkManager.SendMessage(json);
         }
 
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
 
         #region 送信メソッド
 
@@ -124,11 +180,24 @@ namespace OpenGS
         /// </summary>
         public void SendGameStart()
         {
+            if (string.IsNullOrWhiteSpace(currentRoomId))
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Game start ignored without a room.");
+                return;
+            }
+
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f || now < nextGameStartSendTime)
+            {
+                return;
+            }
+
             var json = new JObject();
             json["MessageType"] = MessageType.GameStartRequest;
             json["PlayerAccountID"] = ResolveLocalPlayerId();
             json["RoomID"] = currentRoomId;
             SendMessage(json);
+            nextGameStartSendTime = now + 1f;
         }
 
         /// <summary>
@@ -136,9 +205,14 @@ namespace OpenGS
         /// </summary>
         public void SendReady()
         {
+            if (string.IsNullOrWhiteSpace(currentRoomId) || isReady)
+            {
+                return;
+            }
+
             var json = new JObject
             {
-                ["MessageType"] = MessageType.WaitRoomPlayerReady,
+                ["MessageType"] = MessageType.PlayerReadyRequest,
                 ["PlayerID"] = ResolveLocalPlayerId(),
                 ["RoomID"] = currentRoomId
             };
@@ -151,9 +225,14 @@ namespace OpenGS
         /// </summary>
         public void SendUnready()
         {
+            if (string.IsNullOrWhiteSpace(currentRoomId) || !isReady)
+            {
+                return;
+            }
+
             var json = new JObject
             {
-                ["MessageType"] = MessageType.WaitRoomPlayerUnready,
+                ["MessageType"] = MessageType.PlayerUnready,
                 ["PlayerID"] = ResolveLocalPlayerId(),
                 ["RoomID"] = currentRoomId
             };
@@ -193,14 +272,27 @@ namespace OpenGS
         /// </summary>
         public void SendLobbyChat(string playerId, string playerName, string message)
         {
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f || now < nextChatSendTime)
+            {
+                return;
+            }
+
+            message = NormalizeChatField(message, 200);
+            if (string.IsNullOrEmpty(message))
+            {
+                return;
+            }
+
             var json = new JObject
             {
                 ["MessageType"] = MessageType.LobbyChat,
-                ["PlayerID"] = playerId,
-                ["PlayerName"] = playerName,
+                ["PlayerID"] = NormalizeChatField(playerId, 128),
+                ["PlayerName"] = NormalizeChatField(playerName, 64),
                 ["Message"] = message
             };
             SendMessage(json);
+            nextChatSendTime = now + GetChatCooldown();
         }
 
         /// <summary>
@@ -208,6 +300,14 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomEnter(string playerId, string playerName, string roomId)
         {
+            playerId = playerId?.Trim();
+            roomId = roomId?.Trim();
+            if (string.IsNullOrWhiteSpace(playerId) || string.IsNullOrWhiteSpace(roomId))
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Enter room ignored with missing player or room ID.");
+                return;
+            }
+
             var json = new JObject
             {
                 ["MessageType"] = MessageType.WaitRoomEnter,
@@ -238,15 +338,40 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomChat(string playerId, string playerName, string message)
         {
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f || now < nextChatSendTime)
+            {
+                return;
+            }
+
+            message = NormalizeChatField(message, 200);
+            if (string.IsNullOrEmpty(message) || string.IsNullOrWhiteSpace(currentRoomId))
+            {
+                return;
+            }
+
             var json = new JObject
             {
                 ["MessageType"] = MessageType.WaitRoomChat,
-                ["PlayerID"] = playerId,
-                ["PlayerName"] = playerName,
+                ["PlayerID"] = NormalizeChatField(playerId, 128),
+                ["PlayerName"] = NormalizeChatField(playerName, 64),
                 ["Message"] = message,
-                ["RoomID"] = currentRoomId
+                ["RoomID"] = NormalizeChatField(currentRoomId, 128)
             };
             SendMessage(json);
+            nextChatSendTime = now + GetChatCooldown();
+        }
+
+        private static string NormalizeChatField(string value, int maxLength)
+        {
+            var normalized = value?.Replace("\r\n", " ").Replace('\n', ' ').Replace('\r', ' ').Trim()
+                ?? string.Empty;
+            return normalized.Length > maxLength ? normalized.Substring(0, maxLength) : normalized;
+        }
+
+        private float GetChatCooldown()
+        {
+            return float.IsFinite(chatCooldownSeconds) ? Mathf.Max(0f, chatCooldownSeconds) : 0.5f;
         }
 
         /// <summary>
@@ -254,6 +379,12 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomSettingsChange(JObject settings)
         {
+            if (string.IsNullOrWhiteSpace(currentRoomId) || settings == null)
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Room settings change ignored without room or settings.");
+                return;
+            }
+
             var json = new JObject
             {
                 ["MessageType"] = MessageType.WaitRoomSettingsChange,
@@ -268,6 +399,14 @@ namespace OpenGS
         /// </summary>
         public void SendWaitRoomKickPlayer(string targetPlayerId, string reason)
         {
+            targetPlayerId = targetPlayerId?.Trim();
+            reason = NormalizeChatField(reason, 200);
+            if (string.IsNullOrWhiteSpace(targetPlayerId) || string.IsNullOrWhiteSpace(currentRoomId))
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Kick ignored with missing target or room ID.");
+                return;
+            }
+
             var json = new JObject
             {
                 ["MessageType"] = MessageType.WaitRoomKickPlayer,
@@ -283,6 +422,26 @@ namespace OpenGS
         /// </summary>
         public void SendCreateRoomRequest(string roomName, int capacity, string gameMode, bool teamBalance, string password = "")
         {
+            roomName = roomName?.Trim();
+            gameMode = gameMode?.Trim();
+            password = password?.Trim();
+            if (string.IsNullOrWhiteSpace(roomName) || string.IsNullOrWhiteSpace(gameMode))
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Room creation ignored with missing name or game mode.");
+                return;
+            }
+
+            if (roomName.Length > 64)
+            {
+                roomName = roomName.Substring(0, 64);
+            }
+
+            capacity = Mathf.Clamp(capacity, 2, 32);
+            if (password.Length > 64)
+            {
+                password = password.Substring(0, 64);
+            }
+
             var json = new JObject();
             json["MessageType"] = MessageType.CreateRoomRequest;
             json["OwnerPlayerID"] = "";
@@ -299,6 +458,20 @@ namespace OpenGS
         /// </summary>
         public void SendEnterRoomRequest(string roomId, string playerId, string password = "")
         {
+            roomId = roomId?.Trim();
+            playerId = playerId?.Trim();
+            password = password?.Trim();
+            if (string.IsNullOrWhiteSpace(roomId) || string.IsNullOrWhiteSpace(playerId))
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Join room ignored with missing player or room ID.");
+                return;
+            }
+
+            if (password.Length > 64)
+            {
+                password = password.Substring(0, 64);
+            }
+
             var json = new JObject();
             json["MessageType"] = MessageType.JoinRoomRequest;
             json["RoomID"] = roomId;
@@ -366,15 +539,20 @@ namespace OpenGS
                     HandleWaitRoomEnter(json);
                     break;
                 case MessageType.LeaveRoomRequest:
+                case MessageType.LeaveRoomResponse:
                     HandleWaitRoomLeave(json);
                     break;
                 case MessageType.WaitRoomPlayerList:
                     HandleWaitRoomPlayerList(json);
                     break;
                 case MessageType.LobbyChatRequest:
+                case MessageType.LobbyChatNotification:
                     HandleWaitRoomChat(json);
                     break;
                 case MessageType.WaitRoomPlayerReady:
+                    HandleWaitRoomPlayerReady(json);
+                    break;
+                case MessageType.PlayerReadyNotification:
                     HandleWaitRoomPlayerReady(json);
                     break;
                 case MessageType.WaitRoomPlayerUnready:
@@ -385,6 +563,9 @@ namespace OpenGS
                     break;
                 case MessageType.WaitRoomKickPlayer:
                     HandleWaitRoomKickPlayer(json);
+                    break;
+                case MessageType.LoadingStartedNotification:
+                    waitroom?.LoadGameSceneFromNetwork();
                     break;
                 case MessageType.WaitRoomOwnerChange:
                     HandleWaitRoomOwnerChange(json);
@@ -399,6 +580,9 @@ namespace OpenGS
                 // ルームリスト関連
                 case MessageType.RoomListUpdateNotification:
                     HandleRoomListUpdate(json);
+                    break;
+                case MessageType.WaitRoomUpdateNotification:
+                    HandleWaitRoomUpdate(json);
                     break;
                 case MessageType.RoomCreated:
                     HandleRoomCreated(json);
@@ -619,6 +803,7 @@ namespace OpenGS
         {
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
             var countdown = json["Countdown"]?.ToObject<int>() ?? 0;
+            countdown = Mathf.Clamp(countdown, 0, 300);
             
             PrettyLogger.Bold("WaitRoom", $"ゲーム開始カウントダウン: {countdown}s");
             onStartCountdown.OnNext(countdown);
@@ -645,6 +830,17 @@ namespace OpenGS
             
             PrettyLogger.Bold("RoomList", $"ルーム一覧更新: {roomCount}件");
             onRoomList.OnNext(currentRooms);
+        }
+
+        private void HandleWaitRoomUpdate(JObject json)
+        {
+            if (json["RoomInfo"] is not JObject roomInfo)
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] WaitRoomUpdateNotification did not include RoomInfo");
+                return;
+            }
+
+            HandleWaitRoomPlayerList(roomInfo);
         }
 
         private void HandleRoomCreated(JObject json)
@@ -777,7 +973,7 @@ namespace OpenGS
         // Implement missing INetworkManagerScript members
         public void TestFunc()
         {
-            // placeholder for compatibility with INetworkManagerScript
+            Debug.Log($"[WaitRoomNetworkManager] TestFunc: room={currentRoomId}, players={currentPlayers.Count}, ready={isReady}");
         }
 
         public void ParseNetworkMatchMessageFromServer(JObject json)
@@ -794,11 +990,36 @@ namespace OpenGS
         public void OnDisconnected()
         {
             Debug.Log("[WaitRoomNetworkManager] Disconnected from general server");
+            ClearCurrentRoomState();
+            onPlayerList.OnNext(new JArray());
+            onRoomList.OnNext(new JArray());
         }
 
         public void ParseMessageFromMatchServer(JObject json)
         {
+            if (json == null)
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Received null match-server message.");
+                return;
+            }
 
+            var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
+            if (string.IsNullOrWhiteSpace(messageType))
+            {
+                Debug.LogWarning("[WaitRoomNetworkManager] Match-server message has no MessageType.");
+                return;
+            }
+
+            // Match server and general server use the same notification envelope for
+            // room updates. Keep one source of truth for those handlers.
+            if (messageType == MessageType.GameStartNotification)
+            {
+                Debug.Log("[WaitRoomNetworkManager] Match start notification received.");
+                waitroom?.LoadGameSceneFromNetwork();
+                return;
+            }
+
+            ParseMessageFromGeneralServer(json);
         }
 
         private void EmitInitialState()
@@ -819,7 +1040,7 @@ namespace OpenGS
 
         private static string ResolveLocalPlayerId()
         {
-            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            var playerId = AccountManager.Instance?.CurrentProfile?.GlobalUserId;
             return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
         }
 
@@ -831,7 +1052,9 @@ namespace OpenGS
                 return parsedCharacter;
             }
 
-            return GamePlayerManager.Instance.SelectedPlayerCharacter();
+            return GamePlayerManager.Instance != null
+                ? GamePlayerManager.Instance.SelectedPlayerCharacter()
+                : EPlayerCharacter.Misty;
         }
 
         private void ClearCurrentRoomState()
@@ -839,7 +1062,10 @@ namespace OpenGS
             currentRoomId = "";
             currentRoomName = "";
             isReady = false;
+            nextChatSendTime = 0f;
+            nextGameStartSendTime = 0f;
             currentPlayers = new JArray();
+            currentRooms = new JArray();
 
             if (waitRoomManager?.WaitRoom != null)
             {

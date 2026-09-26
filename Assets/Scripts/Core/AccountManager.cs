@@ -29,10 +29,10 @@ namespace OpenGS
         {
             EnsureProfile();
 
-            CurrentProfile.AccountName = accountName ?? "";
-            CurrentProfile.DisplayName = string.IsNullOrWhiteSpace(accountName) ? "Player" : accountName;
-            CurrentProfile.GlobalMyIP = globalMyIP ?? "";
-            CurrentProfile.GlobalUserId = globalid ?? "";
+            CurrentProfile.AccountName = accountName?.Trim() ?? "";
+            CurrentProfile.DisplayName = string.IsNullOrWhiteSpace(CurrentProfile.AccountName) ? "Player" : CurrentProfile.AccountName;
+            CurrentProfile.GlobalMyIP = globalMyIP?.Trim() ?? "";
+            CurrentProfile.GlobalUserId = globalid?.Trim() ?? "";
             CurrentProfile.IsOnline = true;
 
             PlayerInfo.Id = CurrentProfile.GlobalUserId;
@@ -52,7 +52,7 @@ namespace OpenGS
         public void SetCredits(long credits)
         {
             EnsureProfile();
-            CurrentProfile.Credits = credits;
+            CurrentProfile.Credits = System.Math.Max(0L, credits);
         }
 
         public long GetCredits()
@@ -64,13 +64,20 @@ namespace OpenGS
         public void AddCredits(long amount)
         {
             EnsureProfile();
-            CurrentProfile.Credits = System.Math.Max(0, CurrentProfile.Credits + amount);
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            CurrentProfile.Credits = amount > long.MaxValue - CurrentProfile.Credits
+                ? long.MaxValue
+                : CurrentProfile.Credits + amount;
         }
 
         public bool SpendCredits(long amount)
         {
             EnsureProfile();
-            if (amount < 0)
+            if (amount <= 0)
             {
                 return false;
             }

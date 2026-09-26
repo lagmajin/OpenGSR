@@ -31,7 +31,10 @@ namespace OpenGS
                 LoadReplayNow();
             }
 
-            if (autoRecord)
+            // Playback and recording use the same input service. Starting a
+            // recording after playback would silently replace the playback
+            // session, so playback takes precedence when both flags are set.
+            if (autoRecord && !autoPlayback)
             {
                 StartRecordingNow();
             }
@@ -61,10 +64,21 @@ namespace OpenGS
             var path = GetReplayPath();
             if (!File.Exists(path))
             {
+                Debug.LogWarning($"[ReplaySessionController] Replay file was not found: {path}");
                 return;
             }
 
-            Session.StartPlayback(ReplayFileStore.Load(path));
+            try
+            {
+                var recording = ReplayFileStore.Load(path);
+                Session.StartPlayback(recording);
+                Debug.Log($"[ReplaySessionController] Replay loaded: {path}");
+            }
+            catch (System.Exception exception)
+            {
+                Session.StopPlayback();
+                Debug.LogError($"[ReplaySessionController] Failed to load replay '{path}': {exception.Message}");
+            }
         }
 
         [ContextMenu("Stop Playback")]

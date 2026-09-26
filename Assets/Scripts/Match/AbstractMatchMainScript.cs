@@ -15,7 +15,6 @@ using MessageType = OpenGSCore.MessageType;
 
 //using Unity.Cinemachine;
 using Zenject;
-using UnityEditor;
 using Unity.Cinemachine;
 using UniRx;
 
@@ -71,6 +70,8 @@ namespace OpenGS
 
         private Timer oneSecInvtervalTimer = new Timer(1000);
         private Timer oneMiniteIntervalTimer = new Timer(60000);
+        private Coroutine oneSecondRoutine;
+        private Coroutine oneMinuteRoutine;
 
 
         public bool overrideGameTime = false;
@@ -78,6 +79,7 @@ namespace OpenGS
         [SerializeField, Range(0.1f, 1.0f)]
         public float gameEndTimeScale = 0.4f;
         protected bool endFlag = false;
+        protected bool sceneTransitionRequested = false;
 
         protected bool isStarted = false;
         protected bool isMatchTerminating = false;
@@ -94,9 +96,12 @@ namespace OpenGS
         [ShowInInspector]protected MatchRoomManager matchRoomManager;
 
         private MatchRUDPServerNetworkManager matchNetworkManager;
+        private ClientNetworkManager clientNetworkManager;
         private bool matchNetworkSubscribed;
+        private MatchConnectionStatusOverlay connectionStatusOverlay;
 
 
+#if UNITY_EDITOR
         [InitializeOnEnterPlayMode]
         private static void HandleEditorRegistry()
         {
@@ -264,6 +269,10 @@ namespace OpenGS
                 // 装備の反映（ブースターの色など）
                 pAgent.OnSpawn();
             }
+            else if (playerObj.TryGetComponent<PlayerAgent>(out var playableAgent))
+            {
+                playableAgent.SetPlayerType(EPlayerType.MyPlayer);
+            }
 
             // カメラのセットアップ
             SetupPlayerCamera(playerObj.transform);
@@ -291,6 +300,7 @@ namespace OpenGS
                 observerCamera.Priority = 0;
             }
         }
+#endif
 
         protected void SetupInitialCameraFollow()
         {
@@ -427,6 +437,7 @@ namespace OpenGS
         public void Start()
         {
             EnsureMasterDataReferences();
+            EnsurePlayerStatusUI();
             OnStart();
             gameMode = MatchModeResolver.ResolveCurrentGameMode();
             PlayStageBGM();
@@ -450,8 +461,25 @@ namespace OpenGS
                 Debug.Log($"[{GetType().Name}] Timer started: {timer.GetRemainingTime()}s");
             }
 
-            StartCoroutine(OneSecCallback());
-            StartCoroutine(OneMinCallback());
+            StopMatchIntervalRoutines();
+            oneSecondRoutine = StartCoroutine(OneSecCallback());
+            oneMinuteRoutine = StartCoroutine(OneMinCallback());
+        }
+
+        private void EnsurePlayerStatusUI()
+        {
+            if (FindFirstObjectByType<PlayerStatusUIManager>() != null)
+            {
+                return;
+            }
+
+            if (uiCanvasMasterData == null || uiCanvasMasterData.PlayerStatusUI == null)
+            {
+                Debug.LogWarning($"[{GetType().Name}] PlayerStatusUI prefab is not configured. Player HUD is disabled.", this);
+                return;
+            }
+
+            Instantiate(uiCanvasMasterData.PlayerStatusUI);
         }
 
         /// <summary>
@@ -535,55 +563,114 @@ namespace OpenGS
             {
                 Debug.LogWarning($"[{GetType().Name}] Failed to resolve MatchRUDPServerNetworkManager: {ex.Message}");
                 matchNetworkManager = null;
+            }
+
+            EnsureConnectionStatusOverlay();
+
+            if (matchNetworkManager != null)
+            {
+                matchNetworkManager.DataReceivedStream
+                    .ObserveOnMainThread()
+                    .Subscribe(OnNetworkDataRecved)
+                    .AddTo(this);
+
+                matchNetworkManager.ConnectedStream
+                    .ObserveOnMainThread()
+                    .Subscribe(_ => OnMatchNetworkConnected())
+                    .AddTo(this);
+
+                matchNetworkManager.DisconnectedStream
+                    .ObserveOnMainThread()
+                    .Subscribe(_ => OnMatchNetworkDisconnected())
+                    .AddTo(this);
+
+                if (IsOnlineMatch() && !matchNetworkManager.IsConnected())
+                {
+                    matchNetworkManager.ConnectToLocalServer(0);
+                }
+
+                matchNetworkSubscribed = true;
                 return;
             }
 
-            if (matchNetworkManager == null)
+            clientNetworkManager = FindFirstObjectByType<ClientNetworkManager>();
+            if (clientNetworkManager == null)
             {
                 return;
             }
 
-            matchNetworkManager.DataReceivedStream
-                .ObserveOnMainThread()
-                .Subscribe(OnNetworkDataRecved)
-                .AddTo(this);
-
-            matchNetworkManager.ConnectedStream
-                .ObserveOnMainThread()
-                .Subscribe(_ => OnMatchNetworkConnected())
-                .AddTo(this);
-
-            matchNetworkManager.DisconnectedStream
-                .ObserveOnMainThread()
-                .Subscribe(_ => OnMatchNetworkDisconnected())
-                .AddTo(this);
-
-            if (IsOnlineMatch() && !matchNetworkManager.IsConnected())
-            {
-                matchNetworkManager.ConnectToLocalServer(0);
-            }
-
+            clientNetworkManager.UdpMessageReceived += OnNetworkDataRecved;
+            clientNetworkManager.MatchUdpConnectionChanged += OnClientMatchUdpConnectionChanged;
             matchNetworkSubscribed = true;
+        }
+
+        private void OnClientMatchUdpConnectionChanged(bool connected, string reason)
+        {
+            if (connected)
+            {
+                OnMatchNetworkConnected();
+            }
+            else
+            {
+                OnMatchNetworkDisconnected();
+            }
         }
 
         protected virtual void OnMatchNetworkConnected()
         {
             Debug.Log($"[{GetType().Name}] Match network connected");
+            connectionStatusOverlay?.SetConnected();
         }
 
         protected virtual void OnMatchNetworkDisconnected()
         {
             Debug.Log($"[{GetType().Name}] Match network disconnected");
+            EnsureConnectionStatusOverlay();
+            connectionStatusOverlay?.SetDisconnected("接続を確認中");
         }
 
-        void OnEnable()
+        private void EnsureConnectionStatusOverlay()
+        {
+            if (connectionStatusOverlay == null)
+            {
+                connectionStatusOverlay = GetComponent<MatchConnectionStatusOverlay>();
+                if (connectionStatusOverlay == null)
+                {
+                    connectionStatusOverlay = gameObject.AddComponent<MatchConnectionStatusOverlay>();
+                }
+            }
+        }
+
+        protected virtual void OnEnable()
         {
             SubscribeEvent();
         }
 
-        void OnDisable()
+        protected virtual void OnDisable()
         {
             UnSubscribeEvent();
+            StopMatchIntervalRoutines();
+            if (clientNetworkManager != null)
+            {
+                clientNetworkManager.UdpMessageReceived -= OnNetworkDataRecved;
+                clientNetworkManager.MatchUdpConnectionChanged -= OnClientMatchUdpConnectionChanged;
+                clientNetworkManager = null;
+            }
+        }
+
+        private void StopMatchIntervalRoutines()
+        {
+            if (oneSecondRoutine != null)
+            {
+                StopCoroutine(oneSecondRoutine);
+                oneSecondRoutine = null;
+            }
+
+            if (oneMinuteRoutine != null)
+            {
+                StopCoroutine(oneMinuteRoutine);
+                oneMinuteRoutine = null;
+            }
         }
 
 
@@ -599,14 +686,14 @@ namespace OpenGS
 
         protected void PlayGameStartVoice()
         {
-            SoundManager.Instance.PlayGameSound(EMatchSound.GameStartVoice);
+            SoundManager.Instance?.PlayGameSound(EMatchSound.GameStartVoice);
         }
 
         protected virtual void PlayStageBGM()
         {
             var map = ResolveCurrentStageMap();
             Debug.Log($"[{GetType().Name}] PlayStageBGM: {map}");
-            SoundManager.Instance.PlayBGM(map);
+            SoundManager.Instance?.PlayBGM(map);
         }
 
         protected virtual EMap ResolveCurrentStageMap()
@@ -766,6 +853,9 @@ namespace OpenGS
                 case RUDPMessageTypes.ItemPickup:
                     HandleItemPickup(obj);
                     break;
+                case RUDPMessageTypes.PlayerDeath:
+                    HandleAuthoritativePlayerDeath(obj);
+                    break;
                 case RUDPMessageTypes.PlayerBuff:
                     HandlePlayerBuff(obj);
                     break;
@@ -789,8 +879,12 @@ namespace OpenGS
         {
             var playerId = json["PlayerId"]?.ToString() ?? "unknown";
             var itemType = json["ItemType"]?.ToString() ?? "";
-            var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? -1;
-            var value = json["Value"]?.ToObject<float>() ?? 0f;
+            var spawnPointId = ReadInt(json, "SpawnPointId", -1);
+            var value = ReadFloat(json, "Value");
+            if (float.IsNaN(value) || float.IsInfinity(value))
+            {
+                value = 0f;
+            }
             var player = ResolvePlayerById(playerId);
 
             if (player != null && value > 0f && (string.Equals(itemType, nameof(HealItem), StringComparison.OrdinalIgnoreCase) ||
@@ -822,7 +916,7 @@ namespace OpenGS
         protected virtual void HandleItemSpawn(JObject json)
         {
             var itemTypeStr = json["ItemType"]?.ToString() ?? "";
-            var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? 0;
+            var spawnPointId = ReadInt(json, "SpawnPointId");
 
             if (!Enum.TryParse(itemTypeStr, true, out EFieldItemType itemType))
             {
@@ -842,7 +936,7 @@ namespace OpenGS
 
         protected virtual void HandleItemDespawn(JObject json)
         {
-            var spawnPointId = json["SpawnPointId"]?.ToObject<int>() ?? -1;
+            var spawnPointId = ReadInt(json, "SpawnPointId", -1);
 
             if (spawnPointId >= 0 && ItemSpawnPoints.TryGetPoint(spawnPointId, out var point))
             {
@@ -868,8 +962,8 @@ namespace OpenGS
             var weaponType = json["WeaponType"]?.ToString() ?? "";
             var playerId = json["ReservedByPlayerId"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "";
             var position = new Vector2(
-                json["PosX"]?.ToObject<float>() ?? 0f,
-                json["PosY"]?.ToObject<float>() ?? 0f
+                ReadFloat(json, "PosX"),
+                ReadFloat(json, "PosY")
             );
 
             if (!FieldWeaponController.TryFindMatchingWeapon(weaponType, position, out var controller))
@@ -888,13 +982,26 @@ namespace OpenGS
             }
         }
 
+        protected virtual void HandleAuthoritativePlayerDeath(JObject json)
+        {
+            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString();
+            var target = ResolvePlayerById(playerId);
+            if (target == null || !IsLocalPlayer(target))
+            {
+                return;
+            }
+
+            var agent = target.GetComponent<PlayerAgent>();
+            agent?.ApplyServerDeath();
+        }
+
         protected virtual void HandleWeaponPickup(JObject json)
         {
             var weaponType = json["WeaponType"]?.ToString() ?? "";
             var playerId = json["ReservedByPlayerId"]?.ToString() ?? json["PlayerId"]?.ToString() ?? "";
             var position = new Vector2(
-                json["PosX"]?.ToObject<float>() ?? 0f,
-                json["PosY"]?.ToObject<float>() ?? 0f
+                ReadFloat(json, "PosX"),
+                ReadFloat(json, "PosY")
             );
 
             if (!FieldWeaponController.TryFindMatchingWeapon(weaponType, position, out var controller))
@@ -911,8 +1018,12 @@ namespace OpenGS
             var targetPlayerId = json["PlayerId"]?.ToString() ?? json["TargetPlayerId"]?.ToString() ?? "";
             var player = ResolvePlayerById(targetPlayerId);
             var buffType = json["BuffType"]?.ToString() ?? "";
-            var duration = json["Duration"]?.ToObject<int>() ?? 0;
-            var value = json["Value"]?.ToObject<float>() ?? 0f;
+            var duration = Math.Max(0, ReadInt(json, "Duration"));
+            var value = ReadFloat(json, "Value");
+            if (float.IsNaN(value) || float.IsInfinity(value))
+            {
+                value = 0f;
+            }
 
             if (player != null)
             {
@@ -975,7 +1086,7 @@ namespace OpenGS
             var targetPlayerId = json["PlayerId"]?.ToString() ?? json["TargetPlayerId"]?.ToString() ?? "";
             var player = ResolvePlayerById(targetPlayerId);
             var debuffType = json["DebuffType"]?.ToString() ?? "";
-            var duration = json["Duration"]?.ToObject<int>() ?? 0;
+            var duration = Math.Max(0, ReadInt(json, "Duration"));
 
             if (player != null)
             {
@@ -1006,15 +1117,23 @@ namespace OpenGS
             return player.GetComponent<AbstractPlayer>();
         }
 
-        void OnDestory()
+        protected virtual void OnDestroy()
         {
-            /*
             oneSecInvtervalTimer.Stop();
             oneSecInvtervalTimer.Dispose();
 
             oneMiniteIntervalTimer.Stop();
             oneMiniteIntervalTimer.Dispose();
-            */
+
+            if (clientNetworkManager != null)
+            {
+                clientNetworkManager.UdpMessageReceived -= OnNetworkDataRecved;
+                clientNetworkManager.MatchUdpConnectionChanged -= OnClientMatchUdpConnectionChanged;
+            }
+
+            matchNetworkManager?.Disconnect();
+
+            matchNetworkSubscribed = false;
         }
 
         protected void ExitGame()
@@ -1129,8 +1248,26 @@ namespace OpenGS
         [Button("リザルトテスト")]
         public void GoToResult()
         {
+            if (sceneTransitionRequested)
+            {
+                return;
+            }
 
-            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().ResultScene());
+            var nextSceneName = GeneralSceneMasterData.Instance().ResultScene();
+            if (string.IsNullOrWhiteSpace(nextSceneName))
+            {
+                Debug.LogWarning($"[{GetType().Name}] Result scene is not configured.");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(nextSceneName))
+            {
+                Debug.LogError($"[{GetType().Name}] Result scene is not in build settings: {nextSceneName}");
+                return;
+            }
+
+            sceneTransitionRequested = true;
+            SceneManager.LoadSceneAsync(nextSceneName);
 
         }
 
@@ -1147,12 +1284,35 @@ namespace OpenGS
                 return;
             }
 
+            if (!Application.CanStreamedLevelBeLoaded(nextSceneName))
+            {
+                Debug.LogError($"[{GetType().Name}] Scene is not in build settings: {nextSceneName}. reason={reason}");
+                return;
+            }
+
+            if (sceneTransitionRequested)
+            {
+                Debug.Log($"[{GetType().Name}] Scene transition already requested. reason={reason}");
+                return;
+            }
+
             if (!string.IsNullOrWhiteSpace(reason))
             {
                 Debug.Log($"[{GetType().Name}] RequestSceneTransition -> {nextSceneName} reason={reason}");
             }
 
-            onApproved?.Invoke();
+            sceneTransitionRequested = true;
+            if (onApproved != null)
+            {
+                try
+                {
+                    onApproved();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[{GetType().Name}] Scene transition approval callback failed: {ex}");
+                }
+            }
             SceneManager.LoadSceneAsync(nextSceneName);
         }
 
@@ -1195,12 +1355,39 @@ namespace OpenGS
         [Button("タイトルテスト")]
         public void GoToTitle()
         {
-            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
+            if (sceneTransitionRequested)
+            {
+                return;
+            }
+
+            var nextSceneName = GeneralSceneMasterData.Instance().TitleScene();
+            if (string.IsNullOrWhiteSpace(nextSceneName))
+            {
+                Debug.LogWarning($"[{GetType().Name}] Title scene is not configured.");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(nextSceneName))
+            {
+                Debug.LogError($"[{GetType().Name}] Title scene is not in build settings: {nextSceneName}");
+                return;
+            }
+
+            sceneTransitionRequested = true;
+            SceneManager.LoadSceneAsync(nextSceneName);
         }
 
         public MatchRoomManager MatchRoomManager()
         {
-            return DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            try
+            {
+                return DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[{GetType().Name}] MatchRoomManager is not available: {ex.Message}");
+                return null;
+            }
         }
 
         [Button("リスポーンUI表示")]
@@ -1221,6 +1408,58 @@ namespace OpenGS
         public virtual void OnMyPlayerDead()
         {
             Debug.Log($"[{GetType().Name}] My player dead");
+        }
+
+        protected static float ReadFloat(JObject json, string key, float fallback = 0f)
+        {
+            if (json == null || string.IsNullOrWhiteSpace(key))
+            {
+                return fallback;
+            }
+
+            try
+            {
+                var value = json[key]?.ToObject<float>();
+                return value.HasValue && float.IsFinite(value.Value) ? value.Value : fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
+
+        protected static int ReadInt(JObject json, string key, int fallback = 0)
+        {
+            if (json == null || string.IsNullOrWhiteSpace(key))
+            {
+                return fallback;
+            }
+
+            try
+            {
+                return json[key]?.ToObject<int>() ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
+        }
+
+        protected static bool ReadBool(JObject json, string key, bool fallback = false)
+        {
+            if (json == null || string.IsNullOrWhiteSpace(key))
+            {
+                return fallback;
+            }
+
+            try
+            {
+                return json[key]?.ToObject<bool>() ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
         }
 
         /*

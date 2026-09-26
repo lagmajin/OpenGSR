@@ -15,6 +15,14 @@ namespace OpenGS
         private Vector3 originalLocalPosition;
         private bool hasCachedPosition;
 
+        private void OnValidate()
+        {
+            if (!float.IsFinite(sitTransitionTime) || sitTransitionTime < 0f)
+                sitTransitionTime = 0.2f;
+            if (!float.IsFinite(sitLocalOffset.x) || !float.IsFinite(sitLocalOffset.y) || !float.IsFinite(sitLocalOffset.z))
+                sitLocalOffset = Vector3.zero;
+        }
+
         private void Awake()
         {
             originalLocalPosition = transform.localPosition;

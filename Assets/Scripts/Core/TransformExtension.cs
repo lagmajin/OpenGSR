@@ -12,7 +12,7 @@ namespace OpenGS
             }
 
             var local = self.localScale;
-            local.x = local.x * -1;
+            local.x = float.IsFinite(local.x) ? local.x * -1f : -1f;
             self.localScale = local;
         }
 
@@ -24,7 +24,7 @@ namespace OpenGS
             }
 
             var local = self.localScale;
-            local.x = scale;
+            local.x = float.IsFinite(scale) ? scale : 1f;
             self.localScale = local;
         }
 
@@ -36,7 +36,7 @@ namespace OpenGS
             }
 
             var local = self.localScale;
-            local.y = scale;
+            local.y = float.IsFinite(scale) ? scale : 1f;
             self.localScale = local;
         }
 
@@ -47,10 +47,15 @@ namespace OpenGS
 
         public static void AddLocalPosition(this Transform self, Vector3 delta)
         {
-            if (self != null)
+            if (self != null && IsFinite(delta))
             {
                 self.localPosition += delta;
             }
+        }
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z);
         }
 
         public static void SetRotationX()
@@ -66,7 +71,7 @@ namespace OpenGS
             }
 
             var euler = self.localEulerAngles;
-            euler.x = x;
+            euler.x = float.IsFinite(x) ? x : 0f;
             self.localEulerAngles = euler;
         }
 
@@ -90,7 +95,7 @@ namespace OpenGS
             }
 
             var euler = self.localEulerAngles;
-            euler.z = z;
+            euler.z = float.IsFinite(z) ? z : 0f;
             self.localEulerAngles = euler;
         }
 

@@ -61,6 +61,14 @@ namespace OpenGS
             Initialize();
         }
 
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
+        }
+
         // ─── 初期化 ─────────────────────────────────────────────────
 
         /// <summary>
@@ -88,6 +96,9 @@ namespace OpenGS
         /// <returns>新記録かどうか</returns>
         public bool RegisterScore(string playerName, int score, string gameMode = "Total", Dictionary<string, object> additionalData = null)
         {
+            playerName = playerName?.Trim();
+            gameMode = string.IsNullOrWhiteSpace(gameMode) ? "Total" : gameMode.Trim();
+
             if (string.IsNullOrEmpty(playerName))
             {
                 Debug.LogWarning("[RankingManager] プレイヤー名が空です");
@@ -97,7 +108,7 @@ namespace OpenGS
             var entry = new RankingEntry
             {
                 PlayerName = playerName,
-                Score = score,
+                Score = Mathf.Max(0, score),
                 GameMode = gameMode,
                 Timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
                 AdditionalData = additionalData
@@ -108,7 +119,7 @@ namespace OpenGS
 
             if (isNewRecord)
             {
-                OnNewRecord?.Invoke(entry);
+                InvokeSafely(OnNewRecord, entry, nameof(OnNewRecord));
                 Debug.Log($"[RankingManager] 新記録: {playerName} - {score} ({gameMode})");
             }
 
@@ -116,7 +127,7 @@ namespace OpenGS
             SaveRankingData();
 
             // ランキング更新イベントを発火
-            OnRankingUpdated?.Invoke(GetTopRanking(DISPLAY_RANKING_COUNT));
+            InvokeSafely(OnRankingUpdated, GetTopRanking(DISPLAY_RANKING_COUNT), nameof(OnRankingUpdated));
 
             return isNewRecord;
         }
@@ -129,11 +140,17 @@ namespace OpenGS
         /// <returns>ランキングリスト</returns>
         public List<RankingEntry> GetTopRanking(int count = DISPLAY_RANKING_COUNT, string gameMode = null)
         {
+            if (count <= 0)
+            {
+                return new List<RankingEntry>();
+            }
+
             var entries = string.IsNullOrEmpty(gameMode)
                 ? rankingData.Entries
-                : rankingData.Entries.Where(e => e.GameMode == gameMode).ToList();
+                : rankingData.Entries.Where(e => e != null && e.GameMode == gameMode).ToList();
 
             return entries
+                .Where(e => e != null)
                 .OrderByDescending(e => e.Score)
                 .Take(count)
                 .ToList();
@@ -147,9 +164,15 @@ namespace OpenGS
         /// <returns>順位（見つからない場合は-1）</returns>
         public int GetPlayerRank(string playerName, string gameMode = null)
         {
+            playerName = playerName?.Trim();
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                return -1;
+            }
+
             var entries = string.IsNullOrEmpty(gameMode)
-                ? rankingData.Entries
-                : rankingData.Entries.Where(e => e.GameMode == gameMode).ToList();
+                ? rankingData.Entries.Where(e => e != null)
+                : rankingData.Entries.Where(e => e != null && e.GameMode == gameMode).ToList();
 
             var sortedEntries = entries.OrderByDescending(e => e.Score).ToList();
 
@@ -172,9 +195,15 @@ namespace OpenGS
         /// <returns>最高スコア</returns>
         public int GetPlayerHighScore(string playerName, string gameMode = null)
         {
+            playerName = playerName?.Trim();
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                return 0;
+            }
+
             var entries = string.IsNullOrEmpty(gameMode)
-                ? rankingData.Entries
-                : rankingData.Entries.Where(e => e.GameMode == gameMode).ToList();
+                ? rankingData.Entries.Where(e => e != null)
+                : rankingData.Entries.Where(e => e != null && e.GameMode == gameMode).ToList();
 
             var playerEntries = entries.Where(e => e.PlayerName == playerName).ToList();
 
@@ -194,12 +223,12 @@ namespace OpenGS
             }
             else
             {
-                rankingData.Entries.RemoveAll(e => e.GameMode == gameMode);
+                rankingData.Entries.RemoveAll(e => e == null || e.GameMode == gameMode);
                 Debug.Log($"[RankingManager] {gameMode}のランキングをクリアしました");
             }
 
             SaveRankingData();
-            OnRankingUpdated?.Invoke(GetTopRanking(DISPLAY_RANKING_COUNT));
+            InvokeSafely(OnRankingUpdated, GetTopRanking(DISPLAY_RANKING_COUNT), nameof(OnRankingUpdated));
         }
 
         /// <summary>
@@ -223,14 +252,35 @@ namespace OpenGS
                 if (importedData != null && importedData.Entries != null)
                 {
                     rankingData = importedData;
+                    NormalizeRankingData();
                     SaveRankingData();
-                    OnRankingUpdated?.Invoke(GetTopRanking(DISPLAY_RANKING_COUNT));
+                    InvokeSafely(OnRankingUpdated, GetTopRanking(DISPLAY_RANKING_COUNT), nameof(OnRankingUpdated));
                     Debug.Log("[RankingManager] ランキングデータをインポートしました");
                 }
             }
             catch (Exception ex)
             {
                 Debug.LogError($"[RankingManager] インポートエラー: {ex.Message}");
+            }
+        }
+
+        private static void InvokeSafely<T>(Action<T> handlers, T value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<T> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[RankingManager] {eventName} subscriber failed: {ex}");
+                }
             }
         }
 
@@ -243,7 +293,7 @@ namespace OpenGS
         {
             // 同じプレイヤーの既存エントリーを確認
             var existingEntry = rankingData.Entries
-                .FirstOrDefault(e => e.PlayerName == entry.PlayerName && e.GameMode == entry.GameMode);
+                .FirstOrDefault(e => e != null && e.PlayerName == entry.PlayerName && e.GameMode == entry.GameMode);
 
             if (existingEntry != null)
             {
@@ -286,6 +336,8 @@ namespace OpenGS
                 try
                 {
                     rankingData = JsonConvert.DeserializeObject<RankingData>(json) ?? new RankingData();
+                    rankingData.Entries ??= new List<RankingEntry>();
+                    NormalizeRankingData();
                     Debug.Log($"[RankingManager] ランキングデータを読み込みました: {rankingData.Entries.Count}件");
                 }
                 catch (Exception ex)
@@ -298,6 +350,27 @@ namespace OpenGS
             {
                 rankingData = new RankingData();
             }
+        }
+
+        private void NormalizeRankingData()
+        {
+            rankingData ??= new RankingData();
+            rankingData.Entries ??= new List<RankingEntry>();
+
+            rankingData.Entries = rankingData.Entries
+                .Where(entry => entry != null && !string.IsNullOrWhiteSpace(entry.PlayerName))
+                .Select(entry =>
+                {
+                    entry.PlayerName = entry.PlayerName.Trim();
+                    entry.GameMode = string.IsNullOrWhiteSpace(entry.GameMode) ? "Total" : entry.GameMode.Trim();
+                    entry.Score = Mathf.Max(0, entry.Score);
+                    return entry;
+                })
+                .GroupBy(entry => $"{entry.GameMode}\n{entry.PlayerName}", StringComparer.OrdinalIgnoreCase)
+                .Select(group => group.OrderByDescending(entry => entry.Score).First())
+                .OrderByDescending(entry => entry.Score)
+                .Take(MAX_RANKING_ENTRIES)
+                .ToList();
         }
 
         /// <summary>

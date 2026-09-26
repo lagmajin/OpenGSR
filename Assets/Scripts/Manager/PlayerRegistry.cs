@@ -15,6 +15,19 @@ namespace OpenGS
     {
         public static PlayerRegistry Instance { get; private set; }
 
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void EnsureRuntimeInstance()
+        {
+            if (Instance != null || FindFirstObjectByType<PlayerRegistry>() != null)
+            {
+                return;
+            }
+
+            var registryObject = new GameObject(nameof(PlayerRegistry));
+            registryObject.AddComponent<PlayerRegistry>();
+            DontDestroyOnLoad(registryObject);
+        }
+
         // players keyed by GUID
         private readonly Dictionary<Guid, AbstractPlayer> players = new Dictionary<Guid, AbstractPlayer>();
         private readonly object locker = new object();
@@ -39,11 +52,25 @@ namespace OpenGS
             }
 
             Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            foreach (var player in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
+            {
+                RegisterPlayer(player);
+            }
         }
 
         void OnDestroy()
         {
-            if (Instance == this) Instance = null;
+            if (Instance == this)
+            {
+                lock (locker)
+                {
+                    players.Clear();
+                }
+
+                Instance = null;
+            }
         }
 
         public bool RegisterPlayer(AbstractPlayer player)
@@ -52,11 +79,23 @@ namespace OpenGS
             var id = player.UniqueID();
             lock (locker)
             {
-                if (players.ContainsKey(id)) return false;
+                if (players.TryGetValue(id, out var existing))
+                {
+                    if (existing != null)
+                    {
+                        return false;
+                    }
+
+                    // A destroyed Unity object can remain as a dictionary value
+                    // until its OnDisable callback runs. Replace that stale entry
+                    // so a newly spawned player with the same ID is not invisible.
+                    players.Remove(id);
+                }
+
                 players[id] = player;
             }
 
-            OnPlayerRegistered?.Invoke(player);
+            InvokeSafely(OnPlayerRegistered, player, nameof(OnPlayerRegistered));
             return true;
         }
 
@@ -77,7 +116,7 @@ namespace OpenGS
 
             if (removed != null)
             {
-                OnPlayerUnregistered?.Invoke(removed);
+                InvokeSafely(OnPlayerUnregistered, removed, nameof(OnPlayerUnregistered));
             }
 
             return true;
@@ -95,7 +134,7 @@ namespace OpenGS
         {
             lock (locker)
             {
-                return players.Values.ToList().AsReadOnly();
+                return players.Values.Where(player => player != null).ToList().AsReadOnly();
             }
         }
 
@@ -104,6 +143,28 @@ namespace OpenGS
             lock (locker)
             {
                 return players.Values.Where(p => p != null && p.Team() == team).ToList().AsReadOnly();
+            }
+        }
+
+        /// <summary>
+        /// Publishes a health update for changes made outside ApplyDamage.
+        /// ApplyDamage already raises this event and must not call this method.
+        /// </summary>
+        public void NotifyPlayerHealthChanged(AbstractPlayer player, float newHp)
+        {
+            if (player == null || float.IsNaN(newHp) || float.IsInfinity(newHp))
+            {
+                return;
+            }
+
+            InvokeSafely(OnPlayerHealthChanged, player, newHp, nameof(OnPlayerHealthChanged));
+        }
+
+        public void NotifyPlayerDied(AbstractPlayer player)
+        {
+            if (player != null)
+            {
+                InvokeSafely(OnPlayerDied, player, nameof(OnPlayerDied));
             }
         }
 
@@ -119,9 +180,15 @@ namespace OpenGS
         public bool ApplyDamage(Guid id, Vector2 source, float damage, eDamageType type, string attackerId, string weaponType, bool headshot, bool knockback = false)
         {
             if (!TryGetPlayer(id, out var p) || p == null) return false;
+            if (!float.IsFinite(source.x) || !float.IsFinite(source.y)
+                || !float.IsFinite(damage) || damage <= 0f || p.IsDead()) return false;
 
             float prevHp = GetPlayerHpSafe(p);
             float prevArmor = GetPlayerArmorSafe(p);
+            if (!float.IsFinite(prevHp) || !float.IsFinite(prevArmor))
+            {
+                return false;
+            }
             bool wasDead = p.IsDead();
 
             try
@@ -136,15 +203,20 @@ namespace OpenGS
 
             float newHp = GetPlayerHpSafe(p);
             float newArmor = GetPlayerArmorSafe(p);
+            if (!float.IsFinite(newHp) || !float.IsFinite(newArmor))
+            {
+                Debug.LogWarning($"[PlayerRegistry] Ignoring non-finite damage result for player {id}.");
+                return false;
+            }
 
             if (!Mathf.Approximately(prevArmor, newArmor))
             {
-                OnPlayerArmorChanged?.Invoke(p, newArmor);
+                InvokeSafely(OnPlayerArmorChanged, p, newArmor, nameof(OnPlayerArmorChanged));
             }
 
             if (!Mathf.Approximately(prevHp, newHp))
             {
-                OnPlayerHealthChanged?.Invoke(p, newHp);
+                InvokeSafely(OnPlayerHealthChanged, p, newHp, nameof(OnPlayerHealthChanged));
                 GameEventBroker.Publish(new PlayerDamageEvent(
                     targetId: p.UniqueID().ToString(),
                     attackerId: attackerId ?? string.Empty,
@@ -152,7 +224,7 @@ namespace OpenGS
                     remainingHp: Mathf.Max(0, Mathf.RoundToInt(newHp))
                 ));
 
-                if (ShouldPlayLocalPlayerSound(p))
+                if (ShouldPlayLocalPlayerSound(p) && SoundManager.Instance != null)
                 {
                     SoundManager.Instance.PlayPlayerSound(GetDamageSound(p));
                 }
@@ -166,7 +238,7 @@ namespace OpenGS
             if (!wasDead && p.IsDead())
             {
                 if (p.Status != null) p.Status.DeathCount++;
-                OnPlayerDied?.Invoke(p);
+                InvokeSafely(OnPlayerDied, p, nameof(OnPlayerDied));
 
                 var deadReason = string.IsNullOrWhiteSpace(attackerId) ? EDeadReason.Unknown : EDeadReason.KilledBy;
                 var deadEvent = new PlayerDeadEvent(deadReason, p.gameObject.name, p.UniqueID().ToString(), p.Team());
@@ -178,7 +250,7 @@ namespace OpenGS
 
                 GameEventBroker.Publish(deadEvent);
 
-                if (ShouldPlayLocalPlayerSound(p))
+                if (ShouldPlayLocalPlayerSound(p) && SoundManager.Instance != null)
                 {
                     SoundManager.Instance.PlayPlayerSound(GetDeathSound(p));
                 }
@@ -201,7 +273,10 @@ namespace OpenGS
             }
 
             var force = Mathf.Clamp(damage * 0.01f, 0.2f, 0.6f);
-            player.AddDamageAndForce(Mathf.Max(1f, damage), impactDirection, force);
+            // ApplyDamage has already reduced HP. The impact pass must only
+            // add knockback, otherwise AddDamageAndForce would reduce HP a
+            // second time.
+            player.AddDamageAndForce(0f, impactDirection, force);
         }
 
         private float GetPlayerHpSafe(AbstractPlayer p)
@@ -259,34 +334,88 @@ namespace OpenGS
         /// </summary>
         public void ClearAll()
         {
+            List<AbstractPlayer> removedPlayers;
             lock (locker)
             {
+                removedPlayers = players.Values.Where(player => player != null).ToList();
                 players.Clear();
+            }
+
+            foreach (var removedPlayer in removedPlayers)
+            {
+                InvokeSafely(OnPlayerUnregistered, removedPlayer, nameof(OnPlayerUnregistered));
             }
         }
 
         public void PublishPlayerStatus(AbstractPlayer player)
         {
             if (player == null) return;
-            OnPlayerStatusChanged?.Invoke(player, player.Status);
+            InvokeSafely(OnPlayerStatusChanged, player, player.Status, nameof(OnPlayerStatusChanged));
         }
 
         public void PublishPlayerBooster(AbstractPlayer player, float newBooster)
         {
             if (player == null) return;
-            OnPlayerBoosterChanged?.Invoke(player, newBooster);
+
+            if (player.Status != null)
+            {
+                player.Status.Booster = newBooster;
+                newBooster = player.Status.Booster;
+            }
+
+            InvokeSafely(OnPlayerBoosterChanged, player, newBooster, nameof(OnPlayerBoosterChanged));
         }
 
         public void PublishPlayerSpawned(AbstractPlayer player)
         {
             if (player == null) return;
-            OnPlayerSpawned?.Invoke(player);
+            InvokeSafely(OnPlayerSpawned, player, nameof(OnPlayerSpawned));
         }
 
         public void PublishPlayerRespawned(AbstractPlayer player)
         {
             if (player == null) return;
-            OnPlayerRespawned?.Invoke(player);
+            InvokeSafely(OnPlayerRespawned, player, nameof(OnPlayerRespawned));
+        }
+
+        private static void InvokeSafely<T>(Action<T> handlers, T value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<T> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[PlayerRegistry] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely<T>(Action<AbstractPlayer, T> handlers, AbstractPlayer player, T value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<AbstractPlayer, T> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(player, value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[PlayerRegistry] {eventName} subscriber failed: {ex}");
+                }
+            }
         }
 
         private static bool ShouldPlayLocalPlayerSound(AbstractPlayer player)

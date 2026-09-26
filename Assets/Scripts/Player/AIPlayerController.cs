@@ -20,6 +20,17 @@ namespace OpenGS
         private float lastAttackTime = -10f;
         [SerializeField]
         private float attackCooldown = 0.5f;
+        [SerializeField]
+        private float targetRefreshInterval = 0.25f;
+        private float nextTargetRefreshTime;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(attackCooldown)) attackCooldown = 0.5f;
+            if (!float.IsFinite(targetRefreshInterval)) targetRefreshInterval = 0.25f;
+            attackCooldown = Mathf.Max(0f, attackCooldown);
+            targetRefreshInterval = Mathf.Max(0.05f, targetRefreshInterval);
+        }
 
         private void Start()
         {
@@ -34,7 +45,6 @@ namespace OpenGS
 
         private void EnableScriptMachine()
         {
-            Debug.Log("[AIPlayerController] Script machine enabled");
         }
 
         private void Update()
@@ -85,6 +95,13 @@ namespace OpenGS
 
         private void GetTargets()
         {
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f || now < nextTargetRefreshTime)
+            {
+                return;
+            }
+
+            nextTargetRefreshTime = now + targetRefreshInterval;
             targetList.Clear();
             foreach (var player in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
             {
@@ -110,16 +127,21 @@ namespace OpenGS
             GetTargets();
             GetTargetPos();
 
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
             if (targetList.Count > 0)
             {
-                Debug.Log($"[AIPlayerController] Attack target={targetList[0].name}");
-                if (Time.time >= lastAttackTime + attackCooldown)
+                if (now >= lastAttackTime + attackCooldown)
                 {
                     var gun = weaponSlots != null ? weaponSlots.GetCurrentGun() : null;
                     if (gun != null && gun.CanShot())
                     {
                         gun.Shot();
-                        lastAttackTime = Time.time;
+                        lastAttackTime = now;
                     }
                 }
             }
@@ -127,13 +149,11 @@ namespace OpenGS
 
         void Avoid()
         {
-            Debug.Log("[AIPlayerController] Avoid");
             mode = eAIBattleMode.Wait;
         }
 
         void Patrol()
         {
-            Debug.Log("[AIPlayerController] Patrol");
             Analyze();
             if (targetList.Count > 0)
             {
@@ -143,7 +163,6 @@ namespace OpenGS
 
         void Wait()
         {
-            Debug.Log("[AIPlayerController] Wait");
             if (targetList.Count > 0)
             {
                 mode = eAIBattleMode.Attack;
@@ -185,7 +204,6 @@ namespace OpenGS
 
         public override void AddDamage(Vector2 source, float damage, eDamageType type)
         {
-            Debug.Log($"[AIPlayerController] Damage {damage}");
             base.AddDamage(source, damage, type);
         }
 
@@ -259,6 +277,7 @@ namespace OpenGS
             SetPlayerType(EPlayerType.AIPlayer);
             mode = eAIBattleMode.Patrol;
             lastAttackTime = -10f;
+            nextTargetRefreshTime = 0f;
             SelectWeapon();
         }
 
@@ -266,6 +285,7 @@ namespace OpenGS
         {
             base.OnReSpawn();
             mode = eAIBattleMode.Patrol;
+            nextTargetRefreshTime = 0f;
             Analyze();
         }
     }

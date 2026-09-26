@@ -12,27 +12,36 @@ namespace OpenGS
 
         public override void Exp()
         {
-            if (effectService != null)
+            if (explosionTriggered)
+            {
+                return;
+            }
+
+            explosionTriggered = true;
+            if (expEffect != null && effectService != null)
             {
                 effectService.PlayOneShotEffect(expEffect, gameObject.transform.position, Quaternion.identity);
             }
-            else
+            else if (expEffect != null)
             {
-                Instantiate(expEffect).transform.position = gameObject.transform.position;
+                var spawnedEffect = Instantiate(expEffect, gameObject.transform.position, Quaternion.identity);
+                Destroy(spawnedEffect, 5f);
             }
-            SoundManager.Instance.PlayGameSound(EMatchSound.GameStartVoice);
+            SoundManager.Instance?.PlayGameSound(EMatchSound.GameStartVoice);
             Destroy(gameObject);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            var targetTags = collision.gameObject.GetComponent<MultipleTags>();
+            var targetTags = collision != null && collision.collider != null
+                ? collision.collider.GetComponentInParent<IMultipleTags>()
+                : null;
             if (targetTags == null)
             {
                 return;
             }
 
-            if (targetTags.HasPlayerTag() && myTags.HasEnemyAttackTag())
+            if (targetTags.HasPlayerTag() && myTags != null && myTags.HasEnemyAttackTag())
             {
                 Exp();
             }

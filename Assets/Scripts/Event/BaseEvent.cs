@@ -174,6 +174,54 @@ namespace OpenGS
     }
 
     /// <summary>
+    /// CTFのチームスコアとフラッグ所持数の更新イベント。
+    /// </summary>
+    public class FlagScoreUpdateEvent : AbstractGameEvent
+    {
+        private readonly int redTeamScore_;
+        private readonly int blueTeamScore_;
+        private readonly int redTeamFlags_;
+        private readonly int blueTeamFlags_;
+        private readonly string eventKey_;
+
+        public FlagScoreUpdateEvent(int redTeamScore, int blueTeamScore, int redTeamFlags, int blueTeamFlags, string eventKey = "")
+        {
+            redTeamScore_ = redTeamScore;
+            blueTeamScore_ = blueTeamScore;
+            redTeamFlags_ = redTeamFlags;
+            blueTeamFlags_ = blueTeamFlags;
+            eventKey_ = eventKey ?? string.Empty;
+        }
+
+        public int RedTeamScore() => redTeamScore_;
+        public int BlueTeamScore() => blueTeamScore_;
+        public int RedTeamFlags() => redTeamFlags_;
+        public int BlueTeamFlags() => blueTeamFlags_;
+        public string EventKey() => eventKey_;
+    }
+
+    /// <summary>
+    /// 連続キルなどのストリーク更新イベント。
+    /// </summary>
+    public class StreakUpdateEvent : AbstractGameEvent
+    {
+        private readonly string playerID_;
+        private readonly int streakCount_;
+        private readonly string streakType_;
+
+        public StreakUpdateEvent(string playerId, int streakCount, string streakType = "kill")
+        {
+            playerID_ = playerId ?? string.Empty;
+            streakCount_ = Mathf.Max(0, streakCount);
+            streakType_ = string.IsNullOrWhiteSpace(streakType) ? "kill" : streakType;
+        }
+
+        public string PlayerID() => playerID_;
+        public int StreakCount() => streakCount_;
+        public string StreakType() => streakType_;
+    }
+
+    /// <summary>
     /// フラッグイベント（CTF用）
     /// </summary>
     public class FlagEvent : AbstractGameEvent

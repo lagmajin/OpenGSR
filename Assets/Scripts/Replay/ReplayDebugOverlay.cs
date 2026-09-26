@@ -19,9 +19,20 @@ namespace OpenGS
         Coroutine playbackRoutine;
         bool isPlayingBack;
 
+        void OnValidate()
+        {
+            playbackSpeed = float.IsFinite(playbackSpeed) ? Mathf.Max(0.01f, playbackSpeed) : 1f;
+        }
+
         void Awake()
         {
+            playbackSpeed = float.IsFinite(playbackSpeed) ? Mathf.Max(0.01f, playbackSpeed) : 1f;
             clientNetworkManager = FindFirstObjectByType<ClientNetworkManager>();
+        }
+
+        void OnDisable()
+        {
+            StopPlayback();
         }
 
         void OnGUI()

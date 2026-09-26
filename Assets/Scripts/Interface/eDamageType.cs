@@ -5,6 +5,7 @@ namespace OpenGS
         None,
         Bullet,
         Fire,
+        Poison,
         Explosion,
         Lava,
         WaterFall

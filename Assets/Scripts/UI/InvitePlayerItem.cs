@@ -36,6 +36,7 @@ namespace OpenGS
         {
             playerInfo = player;
             onSelected = onSelectedCallback;
+            isSelected = false;
 
             UpdateUI();
             SetupListeners();
@@ -91,6 +92,7 @@ namespace OpenGS
         {
             if (selectButton != null)
             {
+                selectButton.onClick.RemoveListener(OnSelectButtonClicked);
                 selectButton.onClick.AddListener(OnSelectButtonClicked);
             }
         }
@@ -112,7 +114,19 @@ namespace OpenGS
             // コールバックを発火
             if (isSelected)
             {
-                onSelected?.Invoke(playerInfo);
+                try
+                {
+                    onSelected?.Invoke(playerInfo);
+                }
+                catch (Exception ex)
+                {
+                    isSelected = false;
+                    if (selectedBackground != null)
+                    {
+                        selectedBackground.gameObject.SetActive(false);
+                    }
+                    Debug.LogError($"[InvitePlayerItem] Selection callback failed: {ex}");
+                }
             }
         }
 

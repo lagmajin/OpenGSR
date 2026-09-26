@@ -1,4 +1,5 @@
 #nullable enable
+using System.Collections;
 using System.Threading;
 using Newtonsoft.Json.Linq;
 using Sirenix.OdinInspector;
@@ -17,10 +18,14 @@ namespace OpenGS
         private SynchronizationContext mainThread = null!;
         private GeneralServerNetworkManager? networkManager;
         private MatchRoomManager? matchRoomManager;
+        private bool missionTransitionRequested;
+        private Coroutine dependencyRetryRoutine;
+        private bool missionServerSubscribed;
 
         protected override void Awake()
         {
             base.Awake();
+            maxPlayers = Mathf.Clamp(maxPlayers, 1, 64);
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             mainThread = SynchronizationContext.Current ?? new SynchronizationContext();
 
@@ -33,7 +38,20 @@ namespace OpenGS
         private void Start()
         {
             ResolveDependencies();
+            missionTransitionRequested = false;
             SubscribeToMissionServer();
+            dependencyRetryRoutine = StartCoroutine(RetryMissionServerSubscription());
+        }
+
+        protected override void OnDestroy()
+        {
+            if (dependencyRetryRoutine != null)
+            {
+                StopCoroutine(dependencyRetryRoutine);
+                dependencyRetryRoutine = null;
+            }
+
+            base.OnDestroy();
         }
 
         private void ResolveDependencies()
@@ -51,7 +69,7 @@ namespace OpenGS
 
         private void SubscribeToMissionServer()
         {
-            if (networkManager == null) return;
+            if (networkManager == null || missionServerSubscribed) return;
 
             networkManager.DataReceivedStream
                 .ObserveOnMainThread()
@@ -64,6 +82,25 @@ namespace OpenGS
                 })
                 .Subscribe(OnMissionServerMessage)
                 .AddTo(this);
+            missionServerSubscribed = true;
+        }
+
+        private IEnumerator RetryMissionServerSubscription()
+        {
+            while (isActiveAndEnabled && !missionServerSubscribed)
+            {
+                ResolveDependencies();
+                SubscribeToMissionServer();
+                if (missionServerSubscribed)
+                {
+                    dependencyRetryRoutine = null;
+                    yield break;
+                }
+
+                yield return null;
+            }
+
+            dependencyRetryRoutine = null;
         }
 
         private void OnMissionServerMessage(JObject json)
@@ -93,15 +130,44 @@ namespace OpenGS
                 return;
             }
 
-            var count = json["Players"]?["Count"]?.ToObject<int>() ?? 0;
+            var count = ReadPlayerCount(json["Players"]?["Count"]);
             var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? "";
             var roomName = json["RoomName"]?.ToString() ?? "";
+
+            if (!string.IsNullOrWhiteSpace(roomId))
+            {
+                MissionRoomManager.Instance.SetRoomId(roomId);
+            }
 
             Debug.Log($"[OnlineMissionWaitRoom] Player list updated: {count} players in room {roomName}");
         }
 
+        private int ReadPlayerCount(JToken token)
+        {
+            try
+            {
+                return Mathf.Clamp(token?.ToObject<int>() ?? 0, 0, maxPlayers);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[OnlineMissionWaitRoom] Invalid player count: {ex.Message}");
+                return 0;
+            }
+        }
+
         private void OnMissionStart()
         {
+            if (missionTransitionRequested)
+            {
+                return;
+            }
+
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[OnlineMissionWaitRoom] Mission start received before room state was initialized.");
+                return;
+            }
+
             var missionIndex = MissionRoomManager.Instance.MissionIndex();
             var questIndex = MissionRoomManager.Instance.QuestIndex();
 
@@ -117,7 +183,12 @@ namespace OpenGS
 
             if (!string.IsNullOrWhiteSpace(nextScene))
             {
+                missionTransitionRequested = true;
                 RequestSceneTransition(nextScene, "OnlineMissionWaitRoomToMission");
+            }
+            else
+            {
+                Debug.LogWarning("[OnlineMissionWaitRoom] Mission start received, but no destination scene is configured.");
             }
         }
 
@@ -151,26 +222,39 @@ namespace OpenGS
 
         public void SendReady()
         {
-            var json = new Newtonsoft.Json.Linq.JObject
-            {
-                ["MessageType"] = OpenGSCore.MessageType.WaitRoomPlayerReady,
-                ["PlayerID"] = ResolveLocalPlayerId(),
-                ["RoomID"] = MissionRoomManager.Instance.RoomName()
-            };
-
-            networkManager?.SendMessage(json);
+            SendReadyState(true);
         }
 
         public void SendUnready()
         {
+            SendReadyState(false);
+        }
+
+        private void SendReadyState(bool ready)
+        {
+            if (networkManager == null || MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[OnlineMissionWaitRoom] Cannot change ready state before dependencies are ready.");
+                return;
+            }
+
+            var roomId = MissionRoomManager.Instance.RoomId();
+            if (string.IsNullOrWhiteSpace(roomId))
+            {
+                Debug.LogWarning("[OnlineMissionWaitRoom] Cannot change ready state without a room ID.");
+                return;
+            }
+
             var json = new Newtonsoft.Json.Linq.JObject
             {
-                ["MessageType"] = OpenGSCore.MessageType.WaitRoomPlayerUnready,
+                ["MessageType"] = ready
+                    ? OpenGSCore.MessageType.WaitRoomPlayerReady
+                    : OpenGSCore.MessageType.WaitRoomPlayerUnready,
                 ["PlayerID"] = ResolveLocalPlayerId(),
-                ["RoomID"] = MissionRoomManager.Instance.RoomName()
+                ["RoomID"] = roomId
             };
 
-            networkManager?.SendMessage(json);
+            networkManager.SendMessage(json);
         }
 
         private static string ResolveLocalPlayerId()

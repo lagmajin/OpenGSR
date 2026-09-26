@@ -5,13 +5,21 @@ namespace OpenGS
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MultipleTags))]
-    public abstract class TimedFieldItem : AbstractFieldItem
+    public abstract class TimedWorldItem : WorldItem
     {
+        private bool consumed;
+
         protected virtual float GetEffectDuration() => 30f;
+
+        protected float GetSafeEffectDuration()
+        {
+            var duration = GetEffectDuration();
+            return float.IsFinite(duration) ? Mathf.Clamp(duration, 0.01f, 86400f) : 30f;
+        }
 
         protected bool TryApplyToPlayer(Collider2D collision, Action<IPowerupable> apply)
         {
-            if (collision == null || apply == null)
+            if (consumed || collision == null || apply == null)
             {
                 return false;
             }
@@ -33,8 +41,9 @@ namespace OpenGS
                 return false;
             }
 
+            consumed = true;
             apply(powerupable);
-            SendPickupToNetwork(collision);
+            SendPickupToNetwork(collision, GetSafeEffectDuration());
             Destroy(gameObject);
             return true;
         }
@@ -44,7 +53,7 @@ namespace OpenGS
             return collision != null && TryApplyToPlayer(collision.collider, apply);
         }
 
-        private void SendPickupToNetwork(Collider2D collision)
+        private void SendPickupToNetwork(Collider2D collision, float duration)
         {
             var player = collision != null ? collision.GetComponentInParent<AbstractPlayer>() : null;
             if (player == null)
@@ -62,7 +71,7 @@ namespace OpenGS
                 spawnPointId,
                 (Vector2)transform.position,
                 0f,
-                GetEffectDuration()));
+                duration));
         }
 
         private string ResolveNetworkItemType()
@@ -77,5 +86,10 @@ namespace OpenGS
                 _ => GetType().Name
             };
         }
+    }
+
+    [System.Obsolete("Use TimedWorldItem instead.")]
+    public abstract class TimedFieldItem : TimedWorldItem
+    {
     }
 }

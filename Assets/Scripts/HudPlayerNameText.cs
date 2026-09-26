@@ -26,50 +26,57 @@ namespace OpenGS
 
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-
-
-        }
-
-
         [Button("Change Text")]
         public void ChangeText(string str)
         {
             //text?.text = str;
 
-            text.text = str;
+            if (text != null) text.text = str ?? string.Empty;
         }
         [Button("Show Text")]
         public void ShowText()
         {
-            text.enabled = true;
+            if (text != null) text.enabled = true;
         }
 
         [Button("Hide Text")]
         public void HideText()
         {
-            text.enabled = false;
+            if (text != null) text.enabled = false;
         }
 
         public void ClearText()
         {
-            text.text = "";
+            if (text != null) text.text = string.Empty;
         }
 
         [Button("Set Team Color")]
         public void SetTeamColor(ETeam team)
         {
-            
+            if (text == null)
+            {
+                return;
+            }
 
+            var colors = teamMasterData;
+            if (colors == null)
+            {
+                Debug.LogWarning("[HudPlayerNameText] TeamMasterData is not assigned.");
+                return;
+            }
+
+            text.color = team switch
+            {
+                ETeam.Red => colors.RedTeamColor,
+                ETeam.Blue => colors.BlueTeamColor,
+                _ => colors.NoTeamColor
+            };
         }
 
         [Button("Set Color")]
         public void SetColor()
         {
-            text.color=Color.black;
+            if (text != null) text.color = Color.black;
             
         }
 

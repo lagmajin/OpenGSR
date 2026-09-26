@@ -12,16 +12,24 @@ namespace OpenGS
 
         public static UnityEngine.Object Load(string resourceName, System.Type systemTypeInstance)
         {
-            string[] directories = Directory.GetDirectories(ResourcesPath, "*", SearchOption.AllDirectories);
+            if (string.IsNullOrWhiteSpace(resourceName) || systemTypeInstance == null)
+            {
+                return null;
+            }
+
+            string[] directories = Directory.Exists(ResourcesPath)
+                ? Directory.GetDirectories(ResourcesPath, "*", SearchOption.AllDirectories)
+                : System.Array.Empty<string>();
             foreach (var item in directories)
             {
                 string itemPath = item.Substring(ResourcesPath.Length + 1);
-                UnityEngine.Object result = Resources.Load(itemPath + "\\" + resourceName, systemTypeInstance);
+                itemPath = itemPath.Replace('\\', '/').Trim('/');
+                UnityEngine.Object result = Resources.Load(itemPath + "/" + resourceName.TrimStart('/'), systemTypeInstance);
                 if (result != null)
                     return result;
             }
 
-            var directResult = Resources.Load(resourceName, systemTypeInstance);
+            var directResult = Resources.Load(resourceName.Replace('\\', '/').TrimStart('/'), systemTypeInstance);
             if (directResult != null)
             {
                 return directResult;

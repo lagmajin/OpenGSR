@@ -28,6 +28,26 @@ namespace OpenGS
         private bool wasGrounded;
         private float boosterLoopTimer;
 
+        protected override void OnValidate()
+        {
+            base.OnValidate();
+            if (!float.IsFinite(airResistance)) airResistance = 0.95f;
+            if (!float.IsFinite(groundAcceleration)) groundAcceleration = 50f;
+            if (!float.IsFinite(maxSpeed)) maxSpeed = 8f;
+            if (!float.IsFinite(boosterAcceleration)) boosterAcceleration = 25f;
+            if (!float.IsFinite(maxBoosterSpeed)) maxBoosterSpeed = 12f;
+            if (!float.IsFinite(boosterConsumption)) boosterConsumption = 20f;
+            if (!float.IsFinite(boosterRecovery)) boosterRecovery = 15f;
+
+            airResistance = Mathf.Clamp01(airResistance);
+            groundAcceleration = Mathf.Max(0f, groundAcceleration);
+            maxSpeed = Mathf.Max(0f, maxSpeed);
+            boosterAcceleration = Mathf.Max(0f, boosterAcceleration);
+            maxBoosterSpeed = Mathf.Max(0f, maxBoosterSpeed);
+            boosterConsumption = Mathf.Max(0f, boosterConsumption);
+            boosterRecovery = Mathf.Max(0f, boosterRecovery);
+        }
+
         [Inject]
         public void Construct(IInputService inputService, ISoundService soundService, IEffectService effectService)
         {
@@ -49,19 +69,25 @@ namespace OpenGS
         {
             if (CheckFallDeath() || isDead || inputService == null) return;
 
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f) return;
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
             UpdateFacing();
             HandleActions();
 
             // ブースター燃料の回復
             if (IsGround() && !inputService.IsBoosterPressed())
             {
-                Status.RefillBooster(boosterRecovery * Time.deltaTime);
+                Status.RefillBooster(boosterRecovery * deltaTime);
             }
         }
 
         protected virtual void FixedUpdate()
         {
-            if (CheckFallDeath() || isDead || inputService == null) return;
+            if (CheckFallDeath() || isDead || inputService == null || rigidbody2D == null) return;
+
+            if (!float.IsFinite(Time.fixedDeltaTime) || Time.fixedDeltaTime < 0f) return;
 
             HandleMovement();
             HandleBooster();
@@ -70,20 +96,42 @@ namespace OpenGS
         private void HandleMovement()
         {
             float horizontal = inputService.GetHorizontalAxis();
+            if (float.IsNaN(horizontal) || float.IsInfinity(horizontal))
+            {
+                horizontal = 0f;
+            }
+            horizontal = Mathf.Clamp(horizontal, -1f, 1f);
             bool isGround = IsGround();
+            var fixedDeltaTime = Time.fixedDeltaTime;
+            if (!float.IsFinite(fixedDeltaTime) || fixedDeltaTime < 0f)
+            {
+                return;
+            }
 
             Vector2 velocity = rigidbody2D.linearVelocity;
+            if (!float.IsFinite(velocity.x) || !float.IsFinite(velocity.y))
+            {
+                velocity = Vector2.zero;
+            }
 
             if (Mathf.Abs(horizontal) > 0.1f)
             {
                 float accel = isGround ? groundAcceleration : groundAcceleration * 0.5f;
-                velocity.x += horizontal * accel * Time.fixedDeltaTime;
-                velocity.x = Mathf.Clamp(velocity.x, -maxSpeed, maxSpeed);
+                accel = float.IsFinite(accel) ? Mathf.Max(0f, accel) : 0f;
+                var safeMaxSpeed = float.IsFinite(maxSpeed) ? Mathf.Max(0f, maxSpeed) : 0f;
+                velocity.x += horizontal * accel * fixedDeltaTime;
+                velocity.x = Mathf.Clamp(velocity.x, -safeMaxSpeed, safeMaxSpeed);
             }
             else
             {
                 float friction = isGround ? 0.8f : airResistance;
+                friction = float.IsFinite(friction) ? Mathf.Clamp01(friction) : 0f;
                 velocity.x *= friction;
+            }
+
+            if (!float.IsFinite(velocity.x) || !float.IsFinite(velocity.y))
+            {
+                velocity = Vector2.zero;
             }
 
             rigidbody2D.linearVelocity = velocity;
@@ -92,6 +140,11 @@ namespace OpenGS
         private void HandleBooster()
         {
             bool boostingNow = inputService.IsBoosterPressed() && Status.Booster > 0;
+            var fixedDeltaTime = Time.fixedDeltaTime;
+            if (!float.IsFinite(fixedDeltaTime) || fixedDeltaTime < 0f)
+            {
+                return;
+            }
 
             if (boostingNow)
             {
@@ -101,7 +154,7 @@ namespace OpenGS
                     boosterLoopTimer = 0f;
                 }
 
-                boosterLoopTimer -= Time.fixedDeltaTime;
+                boosterLoopTimer = (float.IsFinite(boosterLoopTimer) ? boosterLoopTimer : 0f) - fixedDeltaTime;
                 if (boosterLoopTimer <= 0f)
                 {
                     PlayGeneralSound(EPlayerGeneralSound.BoosterLoop);
@@ -109,11 +162,24 @@ namespace OpenGS
                 }
 
                 Vector2 velocity = rigidbody2D.linearVelocity;
-                velocity.y += boosterAcceleration * Time.fixedDeltaTime;
-                velocity.y = Mathf.Min(velocity.y, maxBoosterSpeed);
+                if (!float.IsFinite(velocity.x) || !float.IsFinite(velocity.y))
+                {
+                    velocity = Vector2.zero;
+                }
+
+                var safeAcceleration = float.IsFinite(boosterAcceleration) ? Mathf.Max(0f, boosterAcceleration) : 0f;
+                var safeMaxBoosterSpeed = float.IsFinite(maxBoosterSpeed) ? Mathf.Max(0f, maxBoosterSpeed) : 0f;
+                velocity.y += safeAcceleration * fixedDeltaTime;
+                velocity.y = Mathf.Min(velocity.y, safeMaxBoosterSpeed);
+                if (!float.IsFinite(velocity.x) || !float.IsFinite(velocity.y))
+                {
+                    velocity = Vector2.zero;
+                }
+
                 rigidbody2D.linearVelocity = velocity;
 
-                Status.ConsumeBooster(boosterConsumption * Time.fixedDeltaTime);
+                var safeConsumption = float.IsFinite(boosterConsumption) ? Mathf.Max(0f, boosterConsumption) : 0f;
+                Status.ConsumeBooster(safeConsumption * fixedDeltaTime);
             }
             else if (wasBoosting)
             {
@@ -201,7 +267,7 @@ namespace OpenGS
 
         public new void Jump()
         {
-            if (IsGround())
+            if (rigidbody2D != null && IsGround())
             {
                 rigidbody2D.AddForce(Vector2.up * jumpCurve.Evaluate(1.0f) * 10f, ForceMode2D.Impulse);
                 PlayGeneralSound(EPlayerGeneralSound.JumpStart);

@@ -28,7 +28,13 @@ namespace OpenGS
             aiInput.Horizontal = target.position.x > transform.position.x ? 1f : -1f;
 
             // ジャンプロジック（段差やプレイヤーが上にいる場合）
-            if (canJump && Time.time >= nextJumpCheck)
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            if (canJump && now >= nextJumpCheck)
             {
                 if (target.position.y > transform.position.y + 1f || IsBlockedByWall())
                 {
@@ -38,7 +44,7 @@ namespace OpenGS
                 {
                     aiInput.JumpPressed = false;
                 }
-                nextJumpCheck = Time.time + jumpCheckInterval;
+                nextJumpCheck = now + jumpCheckInterval;
             }
 
             // 攻撃ロジック

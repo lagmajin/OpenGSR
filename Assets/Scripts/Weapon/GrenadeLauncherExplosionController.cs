@@ -16,6 +16,14 @@ namespace OpenGS
         [SerializeField] private string weaponName = "GrenadeLauncher";
         private bool exploded;
 
+        private void OnValidate()
+        {
+            if (!float.IsFinite(damage)) damage = 0f;
+            if (!float.IsFinite(activeTime)) activeTime = 2f;
+            damage = Mathf.Max(0f, damage);
+            activeTime = Mathf.Max(0.01f, activeTime);
+        }
+
         private void Start()
         {
             Destroy(this.gameObject, activeTime);
@@ -23,12 +31,12 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            if (exploded)
+            if (exploded || collision == null)
             {
                 return;
             }
 
-            var tags = collision.gameObject.GetComponent<IMultipleTags>();
+            var tags = collision.GetComponentInParent<IMultipleTags>();
             if (tags == null || !tags.HasPlayerTag())
             {
                 return;
@@ -39,7 +47,12 @@ namespace OpenGS
                 ? ownerPlayerId
                 : owner != null ? owner.UniqueID().ToString() : string.Empty;
             var resolvedTeam = owner != null ? owner.Team() : ETeam.NoTeam;
-            var effectiveDamage = owner != null ? damage * owner.AttackMultiplier() : damage;
+            var attackMultiplier = owner != null ? owner.AttackMultiplier() : 1f;
+            var effectiveDamage = damage * (float.IsFinite(attackMultiplier) ? Mathf.Max(0f, attackMultiplier) : 0f);
+            if (!float.IsFinite(effectiveDamage) || effectiveDamage <= 0f)
+            {
+                return;
+            }
             exploded = true;
             GrenadeExplosionDamageUtility.ApplyCircularDamage((Vector2)transform.position, resolvedOwnerId, weaponName, resolvedTeam, effectiveDamage / 100f);
 

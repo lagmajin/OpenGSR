@@ -99,16 +99,56 @@ namespace OpenGS
 
         void SendLeftDash(EDirection direction)
         {
-            DashRequested?.Invoke(direction);
+            InvokeSafely(DashRequested, direction, nameof(DashRequested));
 
 
         }
 
         void SendLoling()
         {
-            RollRequested?.Invoke();
+            InvokeSafely(RollRequested, nameof(RollRequested));
 
 
+        }
+
+        private static void InvokeSafely(Action<EDirection> handlers, EDirection direction, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<EDirection> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(direction);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[DashAndRolling] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action handlers, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[DashAndRolling] {eventName} subscriber failed: {ex}");
+                }
+            }
         }
 
     }

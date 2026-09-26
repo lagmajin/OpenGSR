@@ -190,7 +190,7 @@ namespace OpenGS
 
         public IReadOnlyList<AbstractInstantItem> GetItems()
         {
-            return items;
+            return items.AsReadOnly();
         }
 
         public AbstractInstantItem GetItemFromSlot(int i = 0)
@@ -214,6 +214,8 @@ namespace OpenGS
         {
             return type switch
             {
+                EInstantItemType.FireBullet => new InstantFireBullet(),
+                EInstantItemType.PoisonBullet => new InstantPoisonBullet(),
                 EInstantItemType.ClusterGrenadePack => new InstantClusterGrenadePack(),
                 EInstantItemType.PowerGrenadePack => new InstantPowerGrenadePack(),
                 EInstantItemType.MagnetGrenadePack => new InstantMagneticGrenadePack(),
@@ -225,7 +227,32 @@ namespace OpenGS
 
         private void NotifyChanged()
         {
-            Changed?.Invoke();
+            if (Changed == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in Changed.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    UnityEngine.Debug.LogError($"[InstantItemSlot] Changed subscriber failed: {ex}");
+                }
+            }
         }
+    }
+
+    public class InstantFireBullet : AbstractInstantItem
+    {
+        public InstantFireBullet() { type = EInstantItemType.FireBullet; }
+    }
+
+    public class InstantPoisonBullet : AbstractInstantItem
+    {
+        public InstantPoisonBullet() { type = EInstantItemType.PoisonBullet; }
     }
 }

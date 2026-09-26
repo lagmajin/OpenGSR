@@ -15,6 +15,9 @@ namespace OpenGS
         public bool reloadJustPressed;
         public bool swapWeaponJustPressed;
         public bool dropWeaponJustPressed;
+        public bool grenadeJustPressed;
+        public bool grenadePressed;
+        public bool grenadeJustReleased;
         public bool jumpJustPressed;
         public bool sitJustPressed;
         public bool lieDownJustPressed;

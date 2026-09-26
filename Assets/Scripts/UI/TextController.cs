@@ -18,18 +18,6 @@ namespace OpenGS
         [SerializeField] [Required] private TextMeshProUGUI text;
 
 
-        // Start is called before the first frame update
-        void Start()
-        {
-
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
-
         public void Set(string t)
         {
             this.t = t;
@@ -41,7 +29,10 @@ namespace OpenGS
 
             //text.text=t+i;
 
-            text.SetText(t+i);
+            if (text != null)
+            {
+                text.SetText(t + i);
+            }
 
         }
     }

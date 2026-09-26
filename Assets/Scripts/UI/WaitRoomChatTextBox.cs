@@ -1,10 +1,12 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using TMPro;
 using UniRx;
 using UnityEngine;
 using UnityEngine.UI;
+using OpenGSCore;
 
 namespace OpenGS
 {
@@ -21,32 +23,81 @@ namespace OpenGS
         [SerializeField] private TMP_InputField sendTmpInputField;
         [SerializeField] private InputField sendLegacyInputField;
 
+        [Header("Send Limits")]
+        [SerializeField] private int maxMessageLength = 200;
+        [SerializeField] private float sendCooldownSeconds = 0.5f;
+
         [Header("Network")]
         [SerializeField] private WaitRoomNetworkManager networkManager;
         [SerializeField] private bool subscribeToNetworkChat = true;
 
         private IDisposable chatSubscription;
+        private GeneralServerNetworkManager generalServerManager;
+        private Coroutine chatBindRoutine;
+        private float nextSendTime;
+
+        private void OnValidate()
+        {
+            maxLines = Mathf.Max(1, maxLines);
+            maxMessageLength = Mathf.Max(1, maxMessageLength);
+            sendCooldownSeconds = Mathf.Max(0f, sendCooldownSeconds);
+        }
 
         private void Awake()
         {
+            maxLines = Mathf.Max(1, maxLines);
+            maxMessageLength = Mathf.Max(1, maxMessageLength);
+            sendCooldownSeconds = NormalizeNonNegative(sendCooldownSeconds);
             AutoBindMissingReferences();
             ConfigureDisplayFields();
         }
 
         private void OnEnable()
         {
-            BindChatStream();
+            chatBindRoutine = StartCoroutine(BindChatStreamWhenReady());
         }
 
         private void OnDisable()
         {
+            if (chatBindRoutine != null)
+            {
+                StopCoroutine(chatBindRoutine);
+                chatBindRoutine = null;
+            }
             UnbindChatStream();
+            nextSendTime = 0f;
+        }
+
+        private IEnumerator BindChatStreamWhenReady()
+        {
+            while (isActiveAndEnabled && chatSubscription == null)
+            {
+                BindChatStream();
+                if (chatSubscription != null)
+                {
+                    chatBindRoutine = null;
+                    yield break;
+                }
+
+                yield return null;
+            }
+
+            chatBindRoutine = null;
         }
 
         public void AppendChatLine(string playerName, string message)
         {
             var safePlayerName = string.IsNullOrWhiteSpace(playerName) ? "Player" : Sanitize(playerName);
             var safeMessage = Sanitize(message);
+            if (safeMessage.Length > maxMessageLength)
+            {
+                safeMessage = safeMessage.Substring(0, maxMessageLength);
+            }
+
+            if (safeMessage.Length == 0)
+            {
+                return;
+            }
             AppendRawLine(safePlayerName + ":" + safeMessage);
         }
 
@@ -76,25 +127,49 @@ namespace OpenGS
                 return;
             }
 
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            if (now < nextSendTime)
+            {
+                return;
+            }
+
+            message = Sanitize(message).Trim();
+            if (maxMessageLength > 0 && message.Length > maxMessageLength)
+            {
+                message = message.Substring(0, maxMessageLength);
+            }
+
+            if (message.Length == 0)
+            {
+                return;
+            }
+
             if (networkManager == null)
             {
                 Debug.LogWarning("[WaitRoomChatTextBox] WaitRoomNetworkManager is not assigned.");
                 return;
             }
 
-            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            var profile = AccountManager.Instance?.CurrentProfile;
+            var playerName = profile?.DisplayName;
             if (string.IsNullOrWhiteSpace(playerName))
             {
                 playerName = "Player";
             }
 
-            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            var playerId = profile?.GlobalUserId;
             if (string.IsNullOrWhiteSpace(playerId))
             {
                 playerId = "local_player";
             }
 
             networkManager.SendWaitRoomChat(playerId, playerName, message);
+            nextSendTime = now + Mathf.Max(0f, sendCooldownSeconds);
             ClearSendInputText();
         }
 
@@ -114,12 +189,42 @@ namespace OpenGS
         {
             if (!subscribeToNetworkChat || networkManager == null || chatSubscription != null)
             {
+                if (!subscribeToNetworkChat || chatSubscription != null || networkManager != null)
+                {
+                    return;
+                }
+
+                try
+                {
+                    generalServerManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+                }
+                catch
+                {
+                    generalServerManager = null;
+                }
+
+                if (generalServerManager == null)
+                {
+                    return;
+                }
+
+                chatSubscription = generalServerManager.DataReceivedStream
+                    .Where(IsLobbyChatMessage)
+                    .ObserveOnMainThread()
+                    .Subscribe(HandleChatMessage);
                 return;
             }
 
             chatSubscription = networkManager.OnChatMessageStream
                 .ObserveOnMainThread()
                 .Subscribe(HandleChatMessage);
+        }
+
+        private static bool IsLobbyChatMessage(JObject json)
+        {
+            var messageType = MessageType.Normalize(json?["MessageType"]?.ToString());
+            return messageType == MessageType.LobbyChatNotification
+                || messageType == MessageType.LobbyChat;
         }
 
         private void UnbindChatStream()
@@ -167,6 +272,16 @@ namespace OpenGS
             {
                 displayLegacyInputField.lineType = InputField.LineType.MultiLineNewline;
                 displayLegacyInputField.readOnly = displayIsReadOnly;
+            }
+
+            if (sendTmpInputField != null)
+            {
+                sendTmpInputField.characterLimit = maxMessageLength;
+            }
+
+            if (sendLegacyInputField != null)
+            {
+                sendLegacyInputField.characterLimit = maxMessageLength;
             }
         }
 
@@ -256,6 +371,11 @@ namespace OpenGS
             }
 
             return string.Join(Environment.NewLine, trimmedLines);
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
         }
     }
 }

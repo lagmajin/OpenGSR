@@ -11,7 +11,8 @@ namespace OpenGS
     /// </summary>
     public static class ShopCatalogFactory
     {
-        private static readonly Dictionary<string, ShopItemData> itemCache = new Dictionary<string, ShopItemData>();
+        private static readonly Dictionary<string, ShopItemData> itemCache =
+            new Dictionary<string, ShopItemData>(StringComparer.OrdinalIgnoreCase);
 
         public static List<ShopItemData> GetDefaultItems(EShopCategory category)
         {
@@ -49,7 +50,13 @@ namespace OpenGS
 
         public static ShopItemData GetDefaultItemById(string id)
         {
-            if (itemCache.TryGetValue(id ?? string.Empty, out var cached))
+            id = id?.Trim();
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return null;
+            }
+
+            if (itemCache.TryGetValue(id, out var cached))
             {
                 return cached;
             }
@@ -74,6 +81,13 @@ namespace OpenGS
             {
                 var weapon = (EWeaponType)value;
                 if (weapon == EWeaponType.None)
+                {
+                    continue;
+                }
+
+                // Do not expose legacy or incomplete enum entries in the
+                // fallback catalog when no runtime prefab can equip them.
+                if (WeaponPrefabResolver.Load(weapon) == null)
                 {
                     continue;
                 }

@@ -24,11 +24,32 @@ namespace OpenGS
 
         private readonly Queue<KillLogItem> activeLogs = new();
 
+        private void OnValidate()
+        {
+            maxLogCount = Mathf.Max(1, maxLogCount);
+        }
+
+        private void OnEnable()
+        {
+            // Keep a malformed serialized value from allowing an unbounded
+            // queue in a player build where OnValidate may not have run.
+            if (maxLogCount < 1)
+            {
+                maxLogCount = 1;
+            }
+        }
+
         /// <summary>
         /// 純データを使ってキルログを追加する。
         /// </summary>
         public void AddLog(KillLogEntryData entry, Sprite weaponSprite = null)
         {
+            if (entry == null)
+            {
+                Debug.LogWarning("KillLogManager: log entry is null.");
+                return;
+            }
+
             if (logPrefab == null)
             {
                 Debug.LogWarning("KillLogManager: logPrefab がアサインされていません。");

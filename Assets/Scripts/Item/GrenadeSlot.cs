@@ -48,18 +48,17 @@ namespace OpenGS
 
         public void Clear()
         {
-
+            _type = null;
         }
 
         public override string ToString()
         {
-
-            return _type.ToString();
+            return _type?.ToString() ?? EGrenadeType.Empty.ToString();
         }
 
         public string DebugString()
         {
-            return "";
+            return ToString();
         }
 
     }
@@ -67,13 +66,21 @@ namespace OpenGS
     public class GrenadeSlots
     {
 
-        List<GrenadeSlotItem> items = new List<GrenadeSlotItem>();
+        private const int SlotCount = 3;
+        private readonly List<GrenadeSlotItem> items = new List<GrenadeSlotItem>();
+        private readonly GrenadeSlotItem[] slots = new GrenadeSlotItem[SlotCount];
 
-        GrenadeSlotItem[] slots = new GrenadeSlotItem[3];
+        public GrenadeSlots()
+        {
+            for (var i = 0; i < slots.Length; i++)
+            {
+                slots[i] = new GrenadeSlotItem();
+            }
+        }
 
         public bool IsEmpty()
         {
-            for (int i = 0; i < 3; i++)
+            for (int i = 0; i < slots.Length; i++)
             {
                 if (!slots[i].IsEmpty())
                 {
@@ -90,9 +97,9 @@ namespace OpenGS
 
         public void FillGrenade(EGrenadeType type = EGrenadeType.Normal)
         {
-            for (int i = 0; i < 2; i++)
+            for (int i = 0; i < slots.Length; i++)
             {
-                if (!slots[i].IsEmpty())
+                if (slots[i].IsEmpty())
                 {
                     slots[i] = new GrenadeSlotItem(type);
                 }
@@ -108,38 +115,47 @@ namespace OpenGS
 
         public void RemoveAll()
         {
-
+            for (var i = 0; i < slots.Length; i++)
+            {
+                slots[i].Clear();
+            }
+            items.Clear();
         }
 
         public int Size()
         {
-            return 2;
+            return slots.Length;
         }
 
         public int Count()
         {
-            return 3;
+            var count = 0;
+            for (var i = 0; i < slots.Length; i++)
+            {
+                if (!slots[i].IsEmpty())
+                {
+                    count++;
+                }
+            }
+            return count;
         }
 
         public GrenadeSlotItem Use(int i = 0)
         {
-            if (slots[i].IsEmpty())
+            if (i < 0 || i >= slots.Length || slots[i].IsEmpty())
             {
-
-            }
-            else
-            {
-
+                return new GrenadeSlotItem();
             }
 
-            return new GrenadeSlotItem();
+            var used = slots[i];
+            slots[i] = new GrenadeSlotItem();
+            return used;
         }
 
 
         public string DebugString()
         {
-
-            return "GrenadeSlot";
+            return $"GrenadeSlot {Count()}/{Size()}";
         }
 
 

@@ -21,7 +21,7 @@ namespace OpenGS
         {
             base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
-            mainThread = SynchronizationContext.Current;
+            mainThread = SynchronizationContext.Current ?? new SynchronizationContext();
 
             if (missionSceneStorage == null)
             {
@@ -31,7 +31,7 @@ namespace OpenGS
 
         private void Start()
         {
-            Application.targetFrameRate = 30;
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
             Debug.Log("[OfflineMissionWaitRoom] Started");
         }
 
@@ -60,6 +60,12 @@ namespace OpenGS
             }
 
             isRoomOwner = true;
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[OfflineMissionWaitRoom] MissionRoomManager is not ready.");
+                return;
+            }
+
             MissionRoomManager.Instance.CreateNewRoom("OfflineMissionRoom");
             Debug.Log("[OfflineMissionWaitRoom] Room owner appointed.");
         }
@@ -78,6 +84,12 @@ namespace OpenGS
 
         public void MissionDifficlucyChanged()
         {
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[OfflineMissionWaitRoom] MissionRoomManager is not ready.");
+                return;
+            }
+
             if (isQuestMode)
             {
                 MissionRoomManager.Instance.SetQuestIndex(selectedQuestIndex);
@@ -117,6 +129,12 @@ namespace OpenGS
         [Button("ミッションへ進む")]
         public void EnterMission()
         {
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[OfflineMissionWaitRoom] MissionRoomManager is not ready.");
+                return;
+            }
+
             var nextScene = ResolveSelectedScene();
             if (string.IsNullOrWhiteSpace(nextScene))
             {
@@ -147,6 +165,12 @@ namespace OpenGS
         {
             isQuestMode = false;
             selectedMissionIndex = Mathf.Max(1, missionIndex);
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[OfflineMissionWaitRoom] MissionRoomManager is not ready.");
+                return;
+            }
+
             MissionRoomManager.Instance.SetMissionIndex(selectedMissionIndex);
             Debug.Log($"[OfflineMissionWaitRoom] Selected mission {selectedMissionIndex}.");
         }
@@ -155,6 +179,12 @@ namespace OpenGS
         {
             isQuestMode = true;
             selectedQuestIndex = Mathf.Max(1, questIndex);
+            if (MissionRoomManager.Instance == null)
+            {
+                Debug.LogWarning("[OfflineMissionWaitRoom] MissionRoomManager is not ready.");
+                return;
+            }
+
             MissionRoomManager.Instance.SetQuestIndex(selectedQuestIndex);
             Debug.Log($"[OfflineMissionWaitRoom] Selected quest {selectedQuestIndex}.");
         }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 using Zenject;
 using Cysharp.Threading.Tasks;
@@ -47,7 +48,10 @@ namespace OpenGS
 
         private IShopService shopService;
         private ShopItemData selectedItem;
+        private int categoryRequestVersion;
+        private bool actionInProgress;
         private List<ShopItemUI> activeItemObjects = new List<ShopItemUI>();
+        private UnityAction[] slotButtonHandlers;
         private int currentSelectedSlot = 0;
         private EShopCategory currentCategory = EShopCategory.Weapon;
 
@@ -79,20 +83,23 @@ namespace OpenGS
             SwitchCategory(currentCategory).Forget();
 
             // タブのイベント登録
-            if (weaponTab) weaponTab.onClick.AddListener(() => SwitchCategory(EShopCategory.Weapon).Forget());
-            if (itemTab) itemTab.onClick.AddListener(() => SwitchCategory(EShopCategory.InstantItem).Forget());
-            if (boosterTab) boosterTab.onClick.AddListener(() => SwitchCategory(EShopCategory.Booster).Forget());
+            if (weaponTab) weaponTab.onClick.AddListener(OnWeaponTabClicked);
+            if (itemTab) itemTab.onClick.AddListener(OnItemTabClicked);
+            if (boosterTab) boosterTab.onClick.AddListener(OnBoosterTabClicked);
 
-            if (actionButton) actionButton.onClick.AddListener(() => OnActionClicked().Forget());
+            if (actionButton) actionButton.onClick.AddListener(OnActionButtonClicked);
 
             if (slotButtons != null)
             {
+                slotButtonHandlers = new UnityAction[slotButtons.Length];
                 for (int i = 0; i < slotButtons.Length; i++)
                 {
                     int index = i;
                     if (slotButtons[i] != null)
                     {
-                        slotButtons[i].onClick.AddListener(() => SelectSlot(index));
+                        UnityAction handler = () => SelectSlot(index);
+                        slotButtonHandlers[i] = handler;
+                        slotButtons[i].onClick.AddListener(handler);
                     }
                 }
             }
@@ -104,9 +111,32 @@ namespace OpenGS
 
         private void OnDestroy()
         {
+            // 画面遷移中に完了した非同期処理が、破棄済みUIを更新しないよう無効化する。
+            categoryRequestVersion++;
+            actionInProgress = false;
             if (shopService != null)
                 shopService.OnDataChanged -= UpdateUI;
+            weaponTab?.onClick.RemoveListener(OnWeaponTabClicked);
+            itemTab?.onClick.RemoveListener(OnItemTabClicked);
+            boosterTab?.onClick.RemoveListener(OnBoosterTabClicked);
+            actionButton?.onClick.RemoveListener(OnActionButtonClicked);
+            if (slotButtons != null && slotButtonHandlers != null)
+            {
+                for (int i = 0; i < slotButtons.Length && i < slotButtonHandlers.Length; i++)
+                {
+                    if (slotButtons[i] != null && slotButtonHandlers[i] != null)
+                    {
+                        slotButtons[i].onClick.RemoveListener(slotButtonHandlers[i]);
+                    }
+                }
+            }
+            slotButtonHandlers = null;
         }
+
+        private void OnWeaponTabClicked() => SwitchCategory(EShopCategory.Weapon).Forget();
+        private void OnItemTabClicked() => SwitchCategory(EShopCategory.InstantItem).Forget();
+        private void OnBoosterTabClicked() => SwitchCategory(EShopCategory.Booster).Forget();
+        private void OnActionButtonClicked() => OnActionClicked().Forget();
 
         private void UpdateUI()
         {
@@ -162,10 +192,16 @@ namespace OpenGS
             }
         }
 
-        public async UniTaskVoid SwitchCategory(EShopCategory category)
+        public async UniTask SwitchCategory(EShopCategory category)
         {
+            if (shopService == null)
+            {
+                return;
+            }
+
             currentCategory = category;
             selectedItem = null;
+            var requestVersion = ++categoryRequestVersion;
 
             // 既存のリストをクリア
             foreach (var obj in activeItemObjects)
@@ -188,10 +224,34 @@ namespace OpenGS
             }
 
             // 指定カテゴリーのアイテムをサービス経由で取得
-            var items = await shopService.GetItemsAsync(category);
+            List<ShopItemData> items;
+            try
+            {
+                items = await shopService.GetItemsAsync(category) ?? new List<ShopItemData>();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[ShopUIManager] Failed to load category {category}: {ex}");
+                return;
+            }
+            if (this == null || !isActiveAndEnabled || itemGridRoot == null ||
+                requestVersion != categoryRequestVersion || currentCategory != category)
+            {
+                return;
+            }
+
+            if (itemPrefab == null || itemGridRoot == null)
+            {
+                return;
+            }
             
             foreach (var item in items)
             {
+                if (item == null)
+                {
+                    continue;
+                }
+
                 var go = Instantiate(itemPrefab, itemGridRoot);
                 var ui = go.GetComponent<ShopItemUI>();
                 if (ui != null)
@@ -206,6 +266,11 @@ namespace OpenGS
 
         private void OnItemSelected(ShopItemData item)
         {
+            if (item == null || shopService == null)
+            {
+                return;
+            }
+
             selectedItem = item;
             
             if (detailPanel != null)
@@ -220,9 +285,21 @@ namespace OpenGS
                 UpdateButtonState();
             }
 
-            if (item != null && item.category == EShopCategory.Character && shopService.IsPurchased(item.id))
+            if (item.category == EShopCategory.Character && shopService.IsPurchased(item.id))
             {
-                ApplyCharacterSelection(item).Forget();
+                ApplyCharacterSelectionSafe(item).Forget();
+            }
+        }
+
+        private async UniTask ApplyCharacterSelectionSafe(ShopItemData item)
+        {
+            try
+            {
+                await ApplyCharacterSelection(item);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[ShopUIManager] Character selection failed: {ex}");
             }
         }
 
@@ -273,48 +350,74 @@ namespace OpenGS
             UpdateSlotSummary();
         }
 
-        private async UniTaskVoid OnActionClicked()
+        private async UniTask OnActionClicked()
         {
-            if (selectedItem == null) return;
+            if (actionInProgress || selectedItem == null || shopService == null) return;
 
-            bool purchased = shopService.IsPurchased(selectedItem.id);
-
-            if (!purchased)
+            actionInProgress = true;
+            if (actionButton != null)
             {
-                bool success = await shopService.PurchaseItemAsync(selectedItem.id, selectedItem.price);
-                if (success)
+                actionButton.interactable = false;
+            }
+
+            try
+            {
+                var actionItem = selectedItem;
+                bool purchased = shopService.IsPurchased(actionItem.id);
+
+                if (!purchased)
                 {
-                    Debug.Log($"Purchased: {selectedItem.itemName}");
-                    if (selectedItem.category == EShopCategory.Character)
+                    bool success = await shopService.PurchaseItemAsync(actionItem.id, actionItem.price);
+                    if (this == null || !isActiveAndEnabled) return;
+                    if (success)
                     {
-                        await ApplyCharacterSelection(selectedItem);
-                        return;
+                        Debug.Log($"Purchased: {actionItem.itemName}");
+                        if (actionItem.category == EShopCategory.Character)
+                        {
+                            await ApplyCharacterSelection(actionItem);
+                            return;
+                        }
                     }
                 }
-            }
-            else if (selectedItem.category == EShopCategory.Character)
-            {
-                await ApplyCharacterSelection(selectedItem);
-            }
-            else
-            {
-                bool equipped = shopService.IsEquipped(selectedItem.id, selectedItem.category, currentSelectedSlot);
-                if (equipped)
+                else if (actionItem.category == EShopCategory.Character)
                 {
-                    await shopService.UnequipItemAsync(selectedItem.id, selectedItem.category, currentSelectedSlot);
+                    await ApplyCharacterSelection(actionItem);
+                    if (this == null || !isActiveAndEnabled) return;
                 }
                 else
                 {
-                    await shopService.EquipItemAsync(selectedItem.id, selectedItem.category, currentSelectedSlot);
+                    bool equipped = shopService.IsEquipped(actionItem.id, actionItem.category, currentSelectedSlot);
+                    if (equipped)
+                    {
+                        await shopService.UnequipItemAsync(actionItem.id, actionItem.category, currentSelectedSlot);
+                    }
+                    else
+                    {
+                        await shopService.EquipItemAsync(actionItem.id, actionItem.category, currentSelectedSlot);
+                    }
+
+                    if (this == null || !isActiveAndEnabled) return;
+                }
+
+                UpdateUI();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[ShopUIManager] Shop action failed: {ex}");
+            }
+            finally
+            {
+                actionInProgress = false;
+                if (this != null && isActiveAndEnabled)
+                {
+                    UpdateButtonState();
                 }
             }
-
-            UpdateUI();
         }
 
         private async UniTask ApplyCharacterSelection(ShopItemData item)
         {
-            if (item == null || item.category != EShopCategory.Character)
+            if (item == null || item.category != EShopCategory.Character || shopService == null)
             {
                 return;
             }
@@ -326,8 +429,14 @@ namespace OpenGS
             }
 
             var success = await shopService.EquipItemAsync(item.id, item.category, 0);
-            if (!success)
+            if (this == null || !isActiveAndEnabled || !success)
             {
+                return;
+            }
+
+            if (GamePlayerManager.Instance == null)
+            {
+                Debug.LogWarning("[ShopUIManager] GamePlayerManager is not ready; character selection was not applied.");
                 return;
             }
 
@@ -339,12 +448,17 @@ namespace OpenGS
         {
             if (creditsText != null)
             {
-                creditsText.text = $"CREDITS: {shopService.GetCredits()}";
+                creditsText.text = $"CREDITS: {(shopService != null ? shopService.GetCredits() : 0)}";
             }
         }
 
         private void RefreshItemStates()
         {
+            if (shopService == null)
+            {
+                return;
+            }
+
             foreach (var itemUi in activeItemObjects)
             {
                 if (itemUi == null)
@@ -371,17 +485,12 @@ namespace OpenGS
                 return;
             }
 
-            var equippedItems = UserSaveManager.GetEquippedInstantItems();
-            if (equippedItems == null || equippedItems.Length == 0)
-            {
-                slotSummaryText.text = "SLOT 1-3: EMPTY";
-                return;
-            }
-
             var lines = new List<string>();
-            for (var index = 0; index < Mathf.Min(InstantItemSlotCount, equippedItems.Length); index++)
+            for (var index = 0; index < InstantItemSlotCount; index++)
             {
-                var itemId = equippedItems[index];
+                var itemId = shopService != null
+                    ? shopService.GetEquippedItemId(EShopCategory.InstantItem, index)
+                    : string.Empty;
                 var displayName = "EMPTY";
                 if (!string.IsNullOrWhiteSpace(itemId))
                 {

@@ -35,15 +35,35 @@ namespace OpenGS
 
         // ─── Unity ライフサイクル ─────────────────────────────────────
 
+        private void Awake()
+        {
+            if (!float.IsFinite(comboResetTime) || comboResetTime < 0f)
+            {
+                comboResetTime = 0f;
+            }
+        }
+
         private void Update()
         {
             if (!isComboActive) return;
 
-            comboTimer -= Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            comboTimer = Mathf.Max(0f, comboTimer - deltaTime);
             if (comboTimer <= 0f)
             {
                 ResetCombo();
             }
+        }
+
+        private void OnDisable()
+        {
+            ResetCombo();
         }
 
         // ─── 公開メソッド ─────────────────────────────────────────────
@@ -53,7 +73,10 @@ namespace OpenGS
         /// </summary>
         public void AddCombo()
         {
-            currentComboCount++;
+            if (currentComboCount < int.MaxValue)
+            {
+                currentComboCount++;
+            }
             comboTimer    = comboResetTime;
             isComboActive = true;
 

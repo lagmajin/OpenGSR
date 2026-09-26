@@ -5,6 +5,19 @@ public class NewBehaviourScript : MonoBehaviour
     [SerializeField] private bool activateOnStart = true;
     [SerializeField] private float destroyAfterSeconds = 0f;
 
+    private void OnValidate()
+    {
+        if (!float.IsFinite(destroyAfterSeconds)) destroyAfterSeconds = 0f;
+        destroyAfterSeconds = Mathf.Max(0f, destroyAfterSeconds);
+    }
+
+    private void Awake()
+    {
+        destroyAfterSeconds = float.IsFinite(destroyAfterSeconds)
+            ? Mathf.Max(0f, destroyAfterSeconds)
+            : 0f;
+    }
+
     private void Start()
     {
         if (!activateOnStart)
@@ -16,10 +29,6 @@ public class NewBehaviourScript : MonoBehaviour
         {
             Destroy(gameObject, destroyAfterSeconds);
         }
-    }
-
-    private void Update()
-    {
     }
 
     public void SetActiveState(bool active)

@@ -13,6 +13,12 @@ namespace OpenGS
         public ParticleSystem system;
 
         [SerializeField] private float time = 1.0f;
+
+        private void Awake()
+        {
+            time = Mathf.Max(0.01f, float.IsFinite(time) ? time : 1f);
+        }
+
         // Start is called before the first frame update
         void Start()
         {
@@ -21,11 +27,6 @@ namespace OpenGS
 
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 
 

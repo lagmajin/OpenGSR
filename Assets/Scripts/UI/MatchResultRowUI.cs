@@ -33,9 +33,11 @@ namespace OpenGS
             if (player == null) return;
 
             if (nameText != null) nameText.text = player.gameObject.name;
-            if (scoreText != null) scoreText.text = "-"; // スコア概念がまだなければ暫定
-            if (killsText != null) killsText.text = (player.Status?.KillCount ?? 0).ToString();
-            if (deathsText != null) deathsText.text = (player.Status?.DeathCount ?? 0).ToString();
+            int kills = player.Status?.KillCount ?? 0;
+            int deaths = player.Status?.DeathCount ?? 0;
+            if (scoreText != null) scoreText.text = kills.ToString();
+            if (killsText != null) killsText.text = kills.ToString();
+            if (deathsText != null) deathsText.text = deaths.ToString();
 
             if (backgroundPanel != null)
             {
@@ -51,6 +53,12 @@ namespace OpenGS
         /// </summary>
         public void SetData(PlayerMatchResultData data)
         {
+            if (data == null)
+            {
+                ClearData();
+                return;
+            }
+
             if (nameText != null) nameText.text = data.PlayerName;
             if (scoreText != null) scoreText.text = data.Score.ToString();
             if (killsText != null) killsText.text = data.Kills.ToString();
@@ -72,6 +80,15 @@ namespace OpenGS
                     backgroundPanel.color = defaultColor;
                 }
             }
+        }
+
+        private void ClearData()
+        {
+            if (nameText != null) nameText.text = string.Empty;
+            if (scoreText != null) scoreText.text = "0";
+            if (killsText != null) killsText.text = "0";
+            if (deathsText != null) deathsText.text = "0";
+            if (backgroundPanel != null) backgroundPanel.color = defaultColor;
         }
     }
 }

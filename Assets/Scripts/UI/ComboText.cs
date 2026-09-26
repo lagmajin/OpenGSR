@@ -61,6 +61,11 @@ namespace OpenGS
                 canvasGroup = gameObject.AddComponent<CanvasGroup>();
 
             canvasGroup.alpha = 0f;
+            displayDuration = NormalizeNonNegative(displayDuration);
+            fadeInDuration = NormalizeNonNegative(fadeInDuration);
+            fadeOutDuration = NormalizeNonNegative(fadeOutDuration);
+            peakScale = NormalizePositive(peakScale, 1f);
+            popDuration = NormalizeNonNegative(popDuration);
 
             // digitRoot 配下のすべての Image を収集しておく
             if (digitRoot != null)
@@ -166,6 +171,16 @@ namespace OpenGS
         private void OnDestroy()
         {
             currentSequence?.Kill();
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
+        }
+
+        private static float NormalizePositive(float value, float fallback)
+        {
+            return float.IsFinite(value) && value > 0f ? value : fallback;
         }
     }
 }

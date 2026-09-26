@@ -73,26 +73,105 @@ namespace OpenGS
 
         private AbstractPlayer myPlayer;
         private CharaController myCharaPlayer;
+        private PlayerAgent myPlayerAgent;
         private PlayerStatus myStatus;
         private string myPlayerId;
         private GrenadeSlotImage[] grenadeSlotImages;
         private IDisposable ammoSub;
         private IDisposable weaponSub;
         private IDisposable killSub;
+        private bool registrySubscribed;
+        private PlayerRegistry subscribedRegistry;
         
         private PlayerGrenadeComponent grenadeComponent;
+        [SerializeField] private float grenadeDisplayRefreshInterval = 0.1f;
+        private float nextGrenadeDisplayRefreshTime;
+        [SerializeField] private float playerResolveRetryInterval = 0.25f;
+        private float nextPlayerResolveTime;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(grenadeDisplayRefreshInterval)) grenadeDisplayRefreshInterval = 0.1f;
+            if (!float.IsFinite(playerResolveRetryInterval)) playerResolveRetryInterval = 0.25f;
+            grenadeDisplayRefreshInterval = Mathf.Max(0.02f, grenadeDisplayRefreshInterval);
+            playerResolveRetryInterval = Mathf.Max(0.05f, playerResolveRetryInterval);
+        }
+
+        private void Awake()
+        {
+            grenadeDisplayRefreshInterval = NormalizeInterval(grenadeDisplayRefreshInterval, 0.1f, 0.02f);
+            playerResolveRetryInterval = NormalizeInterval(playerResolveRetryInterval, 0.25f, 0.05f);
+            AutoBindHudReferences();
+        }
+
+        private void AutoBindHudReferences()
+        {
+            healthUI ??= new HealthUIElements();
+            armorUI ??= new ArmorUIElements();
+            boosterUI ??= new BoosterUIElements();
+            weaponUI ??= new WeaponUIElements();
+
+            var gauges = GetComponentsInChildren<Gauge>(true);
+            foreach (var gauge in gauges)
+            {
+                if (gauge == null)
+                {
+                    continue;
+                }
+
+                switch (gauge.gameObject.name)
+                {
+                    case "HPGauge":
+                        healthUI.hpGauge ??= gauge;
+                        break;
+                    case "BoostGauge":
+                        boosterUI.boosterGauge ??= gauge;
+                        break;
+                    case "BombGauge":
+                        weaponUI.grenadeChargeGauge ??= gauge;
+                        break;
+                }
+            }
+
+            if (weaponUI.weaponIcon == null)
+            {
+                foreach (var image in GetComponentsInChildren<Image>(true))
+                {
+                    if (image != null && image.gameObject.name == "WeaponImage")
+                    {
+                        weaponUI.weaponIcon = image;
+                        break;
+                    }
+                }
+            }
+
+            foreach (var text in GetComponentsInChildren<TextMeshProUGUI>(true))
+            {
+                if (text == null)
+                {
+                    continue;
+                }
+
+                switch (text.gameObject.name)
+                {
+                    case "MagazineLabel(Bullet)":
+                        weaponUI.ammoText ??= text;
+                        break;
+                    case "RemainsLabel":
+                        weaponUI.grenadeCountText ??= text;
+                        break;
+                }
+            }
+        }
+
+        private static float NormalizeInterval(float value, float fallback, float minimum)
+        {
+            return float.IsFinite(value) ? Mathf.Max(minimum, value) : fallback;
+        }
 
         private void OnEnable()
         {
-            if (PlayerRegistry.Instance != null)
-            {
-                PlayerRegistry.Instance.OnPlayerHealthChanged += HandleHealthChanged;
-                PlayerRegistry.Instance.OnPlayerArmorChanged += HandleArmorChanged;
-                PlayerRegistry.Instance.OnPlayerBoosterChanged += HandleBoosterChanged;
-                PlayerRegistry.Instance.OnPlayerDied += HandlePlayerDied;
-                PlayerRegistry.Instance.OnPlayerRespawned += HandlePlayerRespawned;
-                PlayerRegistry.Instance.OnPlayerRegistered += HandlePlayerRegistered;
-            }
+            TryBindRegistryEvents();
 
             // MessagePipe (GameEventBroker) 購読
             ammoSub = GameEventBroker.Subscribe<AmmoUpdateEvent>(HandleAmmoUpdate);
@@ -103,15 +182,17 @@ namespace OpenGS
 
         private void OnDisable()
         {
-            if (PlayerRegistry.Instance != null)
+            if (registrySubscribed && subscribedRegistry != null)
             {
-                PlayerRegistry.Instance.OnPlayerHealthChanged -= HandleHealthChanged;
-                PlayerRegistry.Instance.OnPlayerArmorChanged -= HandleArmorChanged;
-                PlayerRegistry.Instance.OnPlayerBoosterChanged -= HandleBoosterChanged;
-                PlayerRegistry.Instance.OnPlayerDied -= HandlePlayerDied;
-                PlayerRegistry.Instance.OnPlayerRespawned -= HandlePlayerRespawned;
-                PlayerRegistry.Instance.OnPlayerRegistered -= HandlePlayerRegistered;
+                subscribedRegistry.OnPlayerHealthChanged -= HandleHealthChanged;
+                subscribedRegistry.OnPlayerArmorChanged -= HandleArmorChanged;
+                subscribedRegistry.OnPlayerBoosterChanged -= HandleBoosterChanged;
+                subscribedRegistry.OnPlayerDied -= HandlePlayerDied;
+                subscribedRegistry.OnPlayerRespawned -= HandlePlayerRespawned;
+                subscribedRegistry.OnPlayerRegistered -= HandlePlayerRegistered;
             }
+            registrySubscribed = false;
+            subscribedRegistry = null;
 
             UnbindInstantItemEvents();
             UnbindGrenadeSlotEvents();
@@ -119,10 +200,33 @@ namespace OpenGS
             ammoSub?.Dispose();
             weaponSub?.Dispose();
             killSub?.Dispose();
+            ammoSub = null;
+            weaponSub = null;
+            killSub = null;
+            myPlayer = null;
+            myCharaPlayer = null;
+            myPlayerAgent = null;
+            myStatus = null;
+            myPlayerId = null;
+            grenadeComponent = null;
         }
 
         private void Update()
         {
+            TryBindRegistryEvents();
+
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            if (myPlayerAgent == null && myCharaPlayer == null && now >= nextPlayerResolveTime)
+            {
+                nextPlayerResolveTime = now + Mathf.Max(0.05f, playerResolveRetryInterval);
+                TryFindMyPlayer();
+            }
+
             if (weaponUI != null)
             {
                 // グレネードの溜め状態などは毎フレーム更新が必要な場合がある
@@ -135,21 +239,79 @@ namespace OpenGS
                     weaponUI.grenadeChargeGauge.gameObject.SetActive(ratio > 0);
                 }
 
-                UpdateGrenadeDisplay();
             }
 
-            RefreshGrenadeSlotDisplays();
+            if (now >= nextGrenadeDisplayRefreshTime)
+            {
+                nextGrenadeDisplayRefreshTime = now + Mathf.Max(0.02f, grenadeDisplayRefreshInterval);
+                UpdateGrenadeDisplay();
+                RefreshGrenadeSlotDisplays();
+            }
+        }
+
+        private void TryBindRegistryEvents()
+        {
+            if (PlayerRegistry.Instance == null)
+            {
+                return;
+            }
+
+            if (registrySubscribed && subscribedRegistry == PlayerRegistry.Instance)
+            {
+                return;
+            }
+
+            if (registrySubscribed && subscribedRegistry != null)
+            {
+                subscribedRegistry.OnPlayerHealthChanged -= HandleHealthChanged;
+                subscribedRegistry.OnPlayerArmorChanged -= HandleArmorChanged;
+                subscribedRegistry.OnPlayerBoosterChanged -= HandleBoosterChanged;
+                subscribedRegistry.OnPlayerDied -= HandlePlayerDied;
+                subscribedRegistry.OnPlayerRespawned -= HandlePlayerRespawned;
+                subscribedRegistry.OnPlayerRegistered -= HandlePlayerRegistered;
+            }
+
+            PlayerRegistry.Instance.OnPlayerHealthChanged += HandleHealthChanged;
+            PlayerRegistry.Instance.OnPlayerArmorChanged += HandleArmorChanged;
+            PlayerRegistry.Instance.OnPlayerBoosterChanged += HandleBoosterChanged;
+            PlayerRegistry.Instance.OnPlayerDied += HandlePlayerDied;
+            PlayerRegistry.Instance.OnPlayerRespawned += HandlePlayerRespawned;
+            PlayerRegistry.Instance.OnPlayerRegistered += HandlePlayerRegistered;
+            registrySubscribed = true;
+            subscribedRegistry = PlayerRegistry.Instance;
         }
 
         private void TryFindMyPlayer()
         {
-            if (PlayerRegistry.Instance == null) return;
+            if (PlayerRegistry.Instance == null)
+            {
+                foreach (var agent in FindObjectsByType<PlayerAgent>(FindObjectsSortMode.None))
+                {
+                    if (agent != null && agent.PlayerType() == EPlayerType.MyPlayer)
+                    {
+                        myPlayerAgent = agent;
+                        return;
+                    }
+                }
+                return;
+            }
 
             foreach (var p in PlayerRegistry.Instance.GetAllPlayers())
             {
                 if (p != null && p.PlayerType() == EPlayerType.MyPlayer)
                 {
                     SetMyPlayer(p);
+                    return;
+                }
+            }
+
+            // Do not use an arbitrary PlayerAgent here: remote players may
+            // be registered before the local player during scene startup.
+            foreach (var agent in FindObjectsByType<PlayerAgent>(FindObjectsSortMode.None))
+            {
+                if (agent != null && agent.PlayerType() == EPlayerType.MyPlayer)
+                {
+                    myPlayerAgent = agent;
                     return;
                 }
             }
@@ -233,7 +395,7 @@ namespace OpenGS
 
         private void HandlePlayerRegistered(AbstractPlayer player)
         {
-            if (player.PlayerType() == EPlayerType.MyPlayer)
+            if (player != null && player.PlayerType() == EPlayerType.MyPlayer)
             {
                 SetMyPlayer(player);
             }
@@ -396,7 +558,9 @@ namespace OpenGS
 
             var grenadeType = grenadeComponent.CurrentGrenadeType;
             var grenadeName = GrenadeVisualResolver.GetDisplayName(grenadeType);
-            var grenadeCount = myPlayer?.Status?.GrenadeCount ?? 0;
+            var grenadeCount = myPlayerAgent != null
+                ? myPlayerAgent.GetGrenadeCount(grenadeType)
+                : myPlayer?.Status?.GrenadeCount ?? 0;
             var grenadeIcon = GrenadeVisualResolver.GetPackHudSprite(grenadeType);
 
             if (weaponUI.grenadeTypeText != null)
@@ -432,13 +596,31 @@ namespace OpenGS
                     continue;
                 }
 
-                if (myCharaPlayer == null || index >= myCharaPlayer.GetInstantItemSlotCount())
+                if (!slotImage.SyncFromPlayer)
+                {
+                    continue;
+                }
+
+                if (myCharaPlayer == null && myPlayerAgent == null)
                 {
                     slotImage.Clear();
                     continue;
                 }
 
-                slotImage.SetInstantItemType(myCharaPlayer.GetInstantItemType(index));
+                if (myPlayerAgent != null)
+                {
+                    slotImage.SetInstantItemType(index < myPlayerAgent.GetInstantItemSlotCount()
+                        ? myPlayerAgent.GetInstantItemType(index)
+                        : OpenGSCore.EInstantItemType.None);
+                }
+                else if (index < myCharaPlayer.GetInstantItemSlotCount())
+                {
+                    slotImage.SetInstantItemType(myCharaPlayer.GetInstantItemType(index));
+                }
+                else
+                {
+                    slotImage.Clear();
+                }
             }
         }
 
@@ -456,6 +638,12 @@ namespace OpenGS
                 var slotImage = grenadeSlotImages[index];
                 if (slotImage == null)
                 {
+                    continue;
+                }
+
+                if (myPlayerAgent != null)
+                {
+                    slotImage.SetGrenadeType(myPlayerAgent.GetGrenadeSlotType(index));
                     continue;
                 }
 

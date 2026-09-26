@@ -37,7 +37,7 @@ namespace OpenGS
         {
             if (self != null)
             {
-                self.gravityScale = Mathf.Max(0f, gravityScale);
+                self.gravityScale = float.IsFinite(gravityScale) ? Mathf.Max(0f, gravityScale) : 0f;
             }
         }
 

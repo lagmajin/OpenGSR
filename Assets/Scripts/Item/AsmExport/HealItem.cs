@@ -6,7 +6,7 @@ namespace OpenGS
 {
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MultipleTags))]
-    public class HealItem : AbstractFieldItem
+    public class HealItem : WorldItem
     {
         public AudioClip takeSound;
         [SerializeField] private float healAmount = 25f;
@@ -20,54 +20,45 @@ namespace OpenGS
 
         public float cantTakeTime=3.0f;
         public float time = 30.0f;
+        private bool consumed;
         //private int heal = 25;
 
        // private float fHeal = 0.25f;
 
-        void Start()
-        {
-
-        }
-
-        void Remove()
-        {
-
-        }
-
         public void OnTriggerEnter2D(Collider2D collision)
         {
-            var tags=collision.GetComponent<MultipleTags>();
-
-            if(tags != null && (tags.HasPlayerTag() || tags.HasMyPlayerTag() || tags.HasBotTag()))
-            {
-                var player = collision.GetComponent<AbstractPlayer>();
-                if (player != null)
-                {
-                    player.Heal(healAmount);
-                    SendPickupToNetwork(player);
-                }
-
-                Destroy(gameObject);
-            }
-
-
+            TryConsume(collision != null ? collision.GetComponentInParent<AbstractPlayer>() : null,
+                collision != null ? collision.GetComponentInParent<IMultipleTags>() : null);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            var tags = collision.gameObject.GetComponent<MultipleTags>();
+            var collider = collision != null ? collision.collider : null;
+            TryConsume(collider != null ? collider.GetComponentInParent<AbstractPlayer>() : null,
+                collider != null ? collider.GetComponentInParent<IMultipleTags>() : null);
+        }
 
-            if (tags != null && (tags.HasPlayerTag() || tags.HasMyPlayerTag() || tags.HasBotTag()))
+        private void TryConsume(AbstractPlayer player, IMultipleTags tags)
+        {
+            if (consumed || player == null || !float.IsFinite(healAmount) || healAmount <= 0f)
             {
-                var player = collision.gameObject.GetComponent<AbstractPlayer>();
-                if (player != null)
-                {
-                    player.Heal(healAmount);
-                    SendPickupToNetwork(player);
-                }
-
-                Destroy(gameObject);
+                return;
             }
+
+            if (tags == null || (!tags.HasPlayerTag() && !tags.HasMyPlayerTag() && !tags.HasBotTag()))
+            {
+                return;
+            }
+
+            consumed = true;
+            player.Heal(healAmount);
+            SendPickupToNetwork(player);
+            if (takeSound != null)
+            {
+                AudioSource.PlayClipAtPoint(takeSound, transform.position);
+            }
+
+            Destroy(gameObject);
         }
 
         private void SendPickupToNetwork(AbstractPlayer player)

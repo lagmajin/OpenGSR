@@ -45,6 +45,8 @@ namespace OpenGS
         /// </summary>
         bool IsEquipped(string itemId, EShopCategory category, int slot = 0);
 
+        string GetEquippedItemId(EShopCategory category, int slot = 0);
+
         /// <summary>
         /// データが変更された際の通知イベント
         /// </summary>

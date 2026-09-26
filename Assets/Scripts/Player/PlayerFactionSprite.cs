@@ -13,6 +13,7 @@ namespace OpenGS
         [SerializeField] private Sprite redSprite;
         [SerializeField] private Sprite blueSprite;
         [SerializeField] private Vector3 worldOffset = new Vector3(0f, 1.6f, 0f);
+        private Camera cachedCamera;
 
         private void Awake()
         {
@@ -40,7 +41,12 @@ namespace OpenGS
 
             transform.position = targetPlayer.transform.position + worldOffset;
 
-            var cam = Camera.main;
+            if (cachedCamera == null)
+            {
+                cachedCamera = Camera.main;
+            }
+
+            var cam = cachedCamera;
             if (cam != null)
             {
                 transform.forward = cam.transform.forward;

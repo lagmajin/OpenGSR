@@ -6,6 +6,8 @@ namespace OpenGS
     public class PlayerDataLinker : AbstractPlayerLinker
     {
         private AbstractPlayer cachedPlayer;
+        private float nextResolveTime;
+        private const float ResolveRetryInterval = 0.25f;
 
         public bool HasPlayer => cachedPlayer != null;
 
@@ -27,6 +29,7 @@ namespace OpenGS
         public void RefreshLink()
         {
             cachedPlayer = null;
+            nextResolveTime = 0f;
             EnsurePlayer();
         }
 
@@ -43,6 +46,19 @@ namespace OpenGS
             {
                 return;
             }
+
+            var now = Time.unscaledTime;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            if (now < nextResolveTime)
+            {
+                return;
+            }
+
+            nextResolveTime = now + ResolveRetryInterval;
 
             cachedPlayer = GetComponent<AbstractPlayer>();
             SetPlayer(cachedPlayer);

@@ -27,6 +27,13 @@ namespace OpenGS
         protected bool isResultSet = false;
         private float resultElapsedTime = 0f;
         private bool hasReturnedFromResult = false;
+        private bool transitionRequested = false;
+
+        protected virtual void OnValidate()
+        {
+            fanfareDelay = float.IsFinite(fanfareDelay) ? Mathf.Max(0f, fanfareDelay) : 0f;
+            timeOut = float.IsFinite(timeOut) ? Mathf.Max(0f, timeOut) : 0f;
+        }
 
         protected override void OnStartUnityEditor() { }
         protected override void OnStartFromEditorDirectly() { }
@@ -45,12 +52,17 @@ namespace OpenGS
 
             if (!hasReturnedFromResult && timeOut > 0f)
             {
-                resultElapsedTime += Time.deltaTime;
+                var deltaTime = Time.deltaTime;
+                if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+                {
+                    return;
+                }
+                deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+                resultElapsedTime = (float.IsFinite(resultElapsedTime) ? resultElapsedTime : 0f) + deltaTime;
                 if (resultElapsedTime >= timeOut)
                 {
-                    GoToNextScene();
-                    hasReturnedFromResult = true;
-                    isResultSet = false;
+                    TryReturnFromResult("timeout");
                     return;
                 }
             }
@@ -58,10 +70,22 @@ namespace OpenGS
             // クリックやエンターキーで次の画面へ
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0))
             {
-                GoToNextScene();
-                hasReturnedFromResult = true;
-                isResultSet = false;
+                TryReturnFromResult("input");
             }
+        }
+
+        private void TryReturnFromResult(string reason)
+        {
+            if (transitionRequested || hasReturnedFromResult)
+            {
+                return;
+            }
+
+            transitionRequested = true;
+            hasReturnedFromResult = true;
+            isResultSet = false;
+            Debug.Log($"[AbstractResultScene] Returning from result. reason={reason}");
+            GoToNextScene();
         }
 
         /// <summary>
@@ -69,9 +93,12 @@ namespace OpenGS
         /// </summary>
         protected void ShowResult(string winningTeam, string myTeam)
         {
+            OnValidate();
+            CancelInvoke(nameof(PlayFanfare));
             Invoke(nameof(PlayFanfare), fanfareDelay);
             resultElapsedTime = 0f;
             hasReturnedFromResult = false;
+            transitionRequested = false;
 
             if (winImage != null) winImage.gameObject.SetActive(false);
             if (loseImage != null) loseImage.gameObject.SetActive(false);
@@ -95,7 +122,7 @@ namespace OpenGS
 
         private void PlayFanfare()
         {
-            if (fanfare != null)
+            if (fanfare != null && SoundManager.Instance != null)
             {
                 // SE再生
                 SoundManager.Instance.PlayOneShotSafe(fanfare, context: nameof(AbstractResultScene));
@@ -104,7 +131,7 @@ namespace OpenGS
 
         public override SynchronizationContext MainThread()
         {
-            return SynchronizationContext.Current;
+            return SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
         /// <summary>

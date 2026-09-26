@@ -12,8 +12,14 @@ namespace OpenGS
     {
         private AbstractPlayer cachedPlayer;
         private float lastHealthValue;
-        private float healthCheckInterval = 0.1f; // Check health every 0.1 seconds
+        [SerializeField] private float healthCheckInterval = 0.1f; // Check health every 0.1 seconds
         private float healthCheckTimer = 0f;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(healthCheckInterval)) healthCheckInterval = 0.1f;
+            healthCheckInterval = Mathf.Max(0.02f, healthCheckInterval);
+        }
 
         private void Start()
         {
@@ -25,29 +31,42 @@ namespace OpenGS
                 return;
             }
 
-            lastHealthValue = cachedPlayer.GetHP();
+            lastHealthValue = GetSafeHealth(cachedPlayer.GetHP());
         }
 
         private void Update()
         {
             if (cachedPlayer == null) return;
 
-            healthCheckTimer += Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f) return;
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+            healthCheckTimer += deltaTime;
+            if (!float.IsFinite(healthCheckTimer))
+            {
+                healthCheckTimer = 0f;
+                return;
+            }
             if (healthCheckTimer < healthCheckInterval)
                 return;
 
             healthCheckTimer = 0f;
 
-            float currentHealth = cachedPlayer.GetHP();
+            float currentHealth = GetSafeHealth(cachedPlayer.GetHP());
             if (!Mathf.Approximately(lastHealthValue, currentHealth))
             {
                 // Health changed - publish to PlayerRegistry
                 if (PlayerRegistry.Instance != null)
                 {
-                    //PlayerRegistry.Instance.OnPlayerHealthChanged?.Invoke(cachedPlayer, currentHealth);
+                    PlayerRegistry.Instance.NotifyPlayerHealthChanged(cachedPlayer, currentHealth);
                 }
                 lastHealthValue = currentHealth;
             }
+        }
+
+        private static float GetSafeHealth(float value)
+        {
+            return float.IsFinite(value) ? value : 0f;
         }
     }
 }

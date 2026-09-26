@@ -13,6 +13,14 @@ namespace OpenGS
         public float randRange1 = 0.05f;
         public float randRange2 = 0.05f;
 
+        private void Awake()
+        {
+            time = Mathf.Max(0.01f, float.IsFinite(time) ? time : 3f);
+            moveY = float.IsFinite(moveY) ? moveY : 3f;
+            randRange1 = float.IsFinite(randRange1) ? randRange1 : 0.05f;
+            randRange2 = float.IsFinite(randRange2) ? randRange2 : 0.05f;
+        }
+
         private void Start()
         {
             var rand1 = Random.Range(randRange1, 0.30f);
@@ -26,6 +34,11 @@ namespace OpenGS
             myTransform.position = pos;
 
             var render = gameObject.GetComponent<SpriteRenderer>();
+            if (render == null)
+            {
+                Destroy(gameObject, Mathf.Max(0f, time));
+                return;
+            }
 
             var seq = DOTween.Sequence();
             seq.SetLink(gameObject);
@@ -41,10 +54,6 @@ namespace OpenGS
             //Destroy(gameObject, 2.0f);
         }
 
-        private void Update()
-        {
-
-        }
     }
 
 

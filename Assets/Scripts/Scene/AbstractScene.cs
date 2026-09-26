@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using JetBrains.Annotations;
 using Newtonsoft.Json.Linq;
@@ -25,6 +26,7 @@ namespace OpenGS
 
         private CancellationTokenSource sceneLifetimeCts;
         private readonly HashSet<Coroutine> managedCoroutines = new HashSet<Coroutine>();
+        private readonly HashSet<string> pendingSceneTransitions = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         private AsyncOperation currentSceneOperation;
         private bool isSceneTransitionInProgress;
 
@@ -159,7 +161,7 @@ namespace OpenGS
         public void SaveScreenShot()
         {
             string date = DateTime.Now.ToString("yy-MM-dd_HH-mm-ss");
-            string fileName = Application.dataPath + date + ".png";
+            string fileName = Path.Combine(Application.dataPath, $"screenshot_{date}.png");
             ScreenCapture.CaptureScreenshot(fileName);
         }
 
@@ -184,7 +186,23 @@ namespace OpenGS
                 return null;
             }
 
-            var c = StartCoroutine(routine);
+            Coroutine c = null;
+            IEnumerator RunManagedRoutine()
+            {
+                try
+                {
+                    yield return routine;
+                }
+                finally
+                {
+                    if (c != null)
+                    {
+                        managedCoroutines.Remove(c);
+                    }
+                }
+            }
+
+            c = StartCoroutine(RunManagedRoutine());
             if (c != null)
             {
                 managedCoroutines.Add(c);
@@ -224,6 +242,12 @@ namespace OpenGS
             if (string.IsNullOrWhiteSpace(nextSceneName))
             {
                 Debug.LogWarning($"{GetType().Name}: next scene name is empty.");
+                return null;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(nextSceneName))
+            {
+                Debug.LogError($"{GetType().Name}: scene is not in build settings: {nextSceneName}");
                 return null;
             }
 
@@ -414,6 +438,18 @@ namespace OpenGS
 
         protected void RequestSceneTransition(string nextSceneName, Action onApproved, string reason = "")
         {
+            if (string.IsNullOrWhiteSpace(nextSceneName))
+            {
+                Debug.LogWarning($"{GetType().Name}: scene transition target is empty.");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(nextSceneName))
+            {
+                Debug.LogError($"{GetType().Name}: scene is not in build settings: {nextSceneName}");
+                return;
+            }
+
             GeneralServerNetworkManager networkManager;
             try
             {
@@ -432,8 +468,16 @@ namespace OpenGS
             }
 
             var fromSceneName = SceneManager.GetActiveScene().name;
+
+            var transitionKey = $"{fromSceneName}\n{nextSceneName}";
+            if (!pendingSceneTransitions.Add(transitionKey))
+            {
+                Debug.LogWarning($"{GetType().Name}: scene transition request already pending. next={nextSceneName}");
+                return;
+            }
+
             GameFlagsManager.GetInstance().BeforeSceneName = fromSceneName;
-            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            var playerId = AccountManager.Instance?.CurrentProfile?.GlobalUserId;
             if (string.IsNullOrWhiteSpace(playerId))
             {
                 playerId = "local_player";
@@ -464,22 +508,48 @@ namespace OpenGS
                         && string.Equals(responseToScene, nextSceneName, StringComparison.OrdinalIgnoreCase);
                 })
                 .Take(1)
+                .Timeout(TimeSpan.FromSeconds(5))
                 .Subscribe(json =>
                 {
+                    pendingSceneTransitions.Remove(transitionKey);
                     var approved = json?["Approved"]?.ToObject<bool>() ?? false;
                     if (approved)
                     {
-                        onApproved?.Invoke();
+                        if (onApproved != null)
+                        {
+                            try
+                            {
+                                onApproved();
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.LogError($"[{GetType().Name}] Scene transition approval callback failed: {ex}");
+                            }
+                        }
                         GoToScene(nextSceneName);
                         return;
                     }
 
                     var denialReason = json?["Reason"]?.ToString() ?? "Denied by server";
                     OnSceneTransitionDenied(nextSceneName, denialReason);
+                }, ex =>
+                {
+                    pendingSceneTransitions.Remove(transitionKey);
+                    Debug.LogWarning($"[{GetType().Name}] Scene transition response timed out or failed. target={nextSceneName}, error={ex.Message}");
+                    OnSceneTransitionDenied(nextSceneName, "Transition response timed out.");
                 })
                 .AddTo(this);
 
-            networkManager.SendMessage(request);
+            try
+            {
+                networkManager.SendMessage(request);
+            }
+            catch (Exception ex)
+            {
+                pendingSceneTransitions.Remove(transitionKey);
+                Debug.LogError($"[{GetType().Name}] Scene transition request failed: {ex.Message}");
+                OnSceneTransitionDenied(nextSceneName, "Failed to send transition request.");
+            }
         }
 
         protected virtual void OnSceneTransitionDenied(string nextSceneName, string reason)
@@ -489,6 +559,9 @@ namespace OpenGS
 
         protected virtual void OnDestroy()
         {
+            SceneManager.sceneLoaded -= OnTitleSceneLoadedForWarning;
+            shouldPlayWarningSound = false;
+
             foreach (var coroutine in managedCoroutines)
             {
                 if (coroutine != null)
@@ -501,6 +574,7 @@ namespace OpenGS
             sceneLifetimeCts?.Cancel();
             sceneLifetimeCts?.Dispose();
             sceneLifetimeCts = null;
+            pendingSceneTransitions.Clear();
             currentSceneOperation = null;
             isSceneTransitionInProgress = false;
         }
@@ -534,21 +608,39 @@ namespace OpenGS
             if (generalSceneMasterData == null)
             {
                 generalSceneMasterData = FindFirstObjectByType<GeneralSceneMasterData>();
+                if (generalSceneMasterData == null)
+                {
+                    generalSceneMasterData = Resources.Load<GeneralSceneMasterData>("MasterData/GeneralSceneMasterData")
+                        ?? Resources.Load<GeneralSceneMasterData>("MasterData/Scene/GeneralSceneMasterData");
+                }
             }
 
             if (bgmMasterData == null)
             {
                 bgmMasterData = FindFirstObjectByType<BGMMasterData>();
+                if (bgmMasterData == null)
+                {
+                    bgmMasterData = Resources.Load<BGMMasterData>("MasterData/BGMMasterData");
+                }
             }
 
             if (soundMasterData == null)
             {
                 soundMasterData = FindFirstObjectByType<SoundMasterData>();
+                if (soundMasterData == null)
+                {
+                    soundMasterData = Resources.Load<SoundMasterData>("MasterData/SoundMasterData");
+                }
             }
 
             if (systemSoundMasterData == null)
             {
                 systemSoundMasterData = FindFirstObjectByType<SystemSoundMasterData>();
+                if (systemSoundMasterData == null)
+                {
+                    systemSoundMasterData = Resources.Load<SystemSoundMasterData>("MasterData/Sound/System/SystemSoundMasterData")
+                        ?? Resources.Load<SystemSoundMasterData>("MasterData/SystemSoundMasterData");
+                }
             }
         }
 #endif

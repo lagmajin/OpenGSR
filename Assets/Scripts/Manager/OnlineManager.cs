@@ -18,6 +18,7 @@ namespace OpenGS
         public int? Port { get; set; } = null;
         public string IP { get; set; } = null;
         public int? UdpPort { get; set; } = null;
+        public string UdpToken { get; set; } = null;
 
         public bool HasEndpoint()
         {
@@ -29,6 +30,7 @@ namespace OpenGS
             Port = null;
             IP = null;
             UdpPort = null;
+            UdpToken = null;
         }
     }
     public class OnlineManager

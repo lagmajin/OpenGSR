@@ -10,6 +10,7 @@ namespace OpenGS
         int diffucluty = 1;
 
         int needKillCount = 0;
+        private bool transitionRequested;
 
         public GameObject ui;
 
@@ -97,22 +98,51 @@ namespace OpenGS
 
         void EndGame()
         {
-            if (endFlag)
+            if (endFlag || transitionRequested)
             {
                 return;
             }
 
             endFlag = true;
             var nextScene = GeneralSceneMasterData.Instance().MissionResultScene();
+            if (string.IsNullOrWhiteSpace(nextScene))
+            {
+                Debug.LogError("[SkyFighter] Mission result scene is not configured.");
+                endFlag = false;
+                return;
+            }
+
+            transitionRequested = true;
             Debug.Log($"[SkyFighter] EndGame -> {nextScene}");
-            SceneManager.LoadSceneAsync(nextScene);
+            if (SceneManager.LoadSceneAsync(nextScene) == null)
+            {
+                transitionRequested = false;
+                endFlag = false;
+                Debug.LogError($"[SkyFighter] Failed to load scene: {nextScene}");
+            }
         }
 
         void ReturnWaitRoom()
         {
+            if (transitionRequested)
+            {
+                return;
+            }
+
             var nextScene = GeneralSceneMasterData.Instance().MissionLobbyScene();
+            if (string.IsNullOrWhiteSpace(nextScene))
+            {
+                Debug.LogError("[SkyFighter] Mission lobby scene is not configured.");
+                return;
+            }
+
+            transitionRequested = true;
             Debug.Log($"[SkyFighter] ReturnWaitRoom -> {nextScene}");
-            SceneManager.LoadSceneAsync(nextScene);
+            if (SceneManager.LoadSceneAsync(nextScene) == null)
+            {
+                transitionRequested = false;
+                Debug.LogError($"[SkyFighter] Failed to load scene: {nextScene}");
+            }
         }
 
         override public void PostEvent(AbstractGameEvent e)

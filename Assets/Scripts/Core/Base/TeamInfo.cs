@@ -43,13 +43,13 @@ namespace OpenGS
         {
             if (delta == 0) return;
             score += delta;
-            OnScoreChanged?.Invoke(score);
+            InvokeSafely(OnScoreChanged, score, nameof(OnScoreChanged));
         }
 
         public void ResetScore()
         {
             score = 0;
-            OnScoreChanged?.Invoke(score);
+            InvokeSafely(OnScoreChanged, score, nameof(OnScoreChanged));
         }
 
         public bool AddPlayer(GameObject player)
@@ -57,7 +57,7 @@ namespace OpenGS
             if (player == null) return false;
             if (players.Contains(player)) return false;
             players.Add(player);
-            OnPlayerCountChanged?.Invoke(players.Count);
+            InvokeSafely(OnPlayerCountChanged, players.Count, nameof(OnPlayerCountChanged));
             return true;
         }
 
@@ -67,12 +67,32 @@ namespace OpenGS
             var removed = players.Remove(player);
             if (removed)
             {
-                OnPlayerCountChanged?.Invoke(players.Count);
+                InvokeSafely(OnPlayerCountChanged, players.Count, nameof(OnPlayerCountChanged));
             }
             return removed;
         }
 
         public int PlayerCount() => players.Count;
+
+        private static void InvokeSafely(Action<int> handlers, int value, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<int> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(value);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[TeamInfo] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
 
         // Safe lookup by instance id
         public bool ContainsPlayer(GameObject player) => player != null && players.Contains(player);

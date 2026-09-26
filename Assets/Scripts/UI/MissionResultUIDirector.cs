@@ -12,6 +12,7 @@ namespace OpenGS
         [SerializeField] private TMPro.TextMeshProUGUI scoreText;
 
         private SynchronizationContext mainThread;
+        private bool transitionRequested;
 
         private void Awake()
         {
@@ -23,6 +24,9 @@ namespace OpenGS
 
         public void ShowMissionResult(int lifeRemaining, int score, bool success)
         {
+            lifeRemaining = Mathf.Max(0, lifeRemaining);
+            score = Mathf.Max(0, score);
+
             if (lifeText != null)
             {
                 lifeText.text = $"Life: {lifeRemaining}";
@@ -46,11 +50,26 @@ namespace OpenGS
 
         public void BackToMissionLobby()
         {
-            var scene = GeneralSceneMasterData.Instance().MissionLobbyScene();
-            if (!string.IsNullOrWhiteSpace(scene))
+            if (transitionRequested)
             {
-                UnityEngine.SceneManagement.SceneManager.LoadScene(scene);
+                return;
             }
+
+            var scene = GeneralSceneMasterData.Instance().MissionLobbyScene();
+            if (string.IsNullOrWhiteSpace(scene))
+            {
+                Debug.LogWarning("[MissionResultUIDirector] Mission lobby scene is not configured.");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(scene))
+            {
+                Debug.LogError($"[MissionResultUIDirector] Mission lobby scene is not in build settings: {scene}");
+                return;
+            }
+
+            transitionRequested = true;
+            UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(scene);
         }
     }
 }

@@ -24,7 +24,7 @@ namespace OpenGS
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MultipleTags))]
-    public abstract class AbstractPlayer : MonoBehaviour, IPowerupable, IDamageable, IPlayer, IMovable, IEventActor
+    public abstract class AbstractPlayer : MonoBehaviour, IPowerupable, IDamageable, IPlayer, IMovable, IEventActor, OpenGS.Network.INetworkTransform
     {
         // ─── Inspector フィールド ────────────────────────────────────
 
@@ -44,6 +44,9 @@ namespace OpenGS
         [SerializeField] [BoxGroup("Status")] private float fallDeathY = -80f;
 
         [SerializeField] [BoxGroup("Health")] protected float damageInvincibleTime = 0.2f;
+        [SerializeField] [BoxGroup("Health")] protected float elementalDamageTickInterval = 1.0f;
+        [SerializeField] [BoxGroup("Health")] protected float poisonDamagePerTick = 2.0f;
+        [SerializeField] [BoxGroup("Health")] protected float fireDamagePerTick = 4.0f;
 
         [SerializeField] public AnimationCurve dashCurve;
         [SerializeField] public AnimationCurve jumpCurve;
@@ -75,6 +78,7 @@ namespace OpenGS
         protected bool isSitting = false;
         protected bool isLyingDown = false;
         protected bool invisible = false;
+        protected bool isInvincible = false;
         protected float jumpPos = 0.0f;
         protected float jumpInterval = 10.0f;
         protected bool canEquip = false;
@@ -95,7 +99,29 @@ namespace OpenGS
         private bool cachedStandingMoveSpeed;
         private float cachedCameraZoomScale = 1f;
         private float cachedProneCameraZoomScale = 1f;
+        private AbstractMatchMainScript cachedMatchScene;
         private IDisposable poseEventSubscription;
+        private Coroutine elementalDamageCoroutine;
+        private Coroutine lavaDamageCoroutine;
+
+        protected virtual void OnValidate()
+        {
+            interval = SafeNonNegative(interval, 0.1f);
+            lavaDamageInterval = SafeNonNegative(lavaDamageInterval, 1.2f);
+            lavaDamageCounter = SafeNonNegative(lavaDamageCounter, 0f);
+            warpCounter = SafeNonNegative(warpCounter, 0f);
+            damageInvincibleTime = SafeNonNegative(damageInvincibleTime, 0.2f);
+            elementalDamageTickInterval = Mathf.Max(0.05f, SafeNonNegative(elementalDamageTickInterval, 1f));
+            poisonDamagePerTick = SafeNonNegative(poisonDamagePerTick, 2f);
+            fireDamagePerTick = SafeNonNegative(fireDamagePerTick, 4f);
+            moveSpeed = SafeNonNegative(moveSpeed, 0.4f);
+            if (!float.IsFinite(fallDeathY)) fallDeathY = -80f;
+        }
+
+        private static float SafeNonNegative(float value, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : fallback;
+        }
 
         protected SpriteRenderer spriteRenderer;
 
@@ -103,10 +129,17 @@ namespace OpenGS
         private int defenseBuffVersion;
         private int speedBuffVersion;
         private int invisibleBuffVersion;
+        private int invincibilityVersion;
 
         // ─── PlayerStatus (HP・Booster を一元管理) ──────────────────
 
         public PlayerStatus Status { get; set; } = new PlayerStatus();
+
+        public uint NetworkId => StableNetworkId(UniqueID().ToString());
+        public Vector3 Position { get => transform.position; set => transform.position = value; }
+        public Quaternion Rotation { get => transform.rotation; set => transform.rotation = value; }
+        public Vector3 Velocity => rigidbody2D != null ? (Vector3)rigidbody2D.linearVelocity : Vector3.zero;
+        public string OwnerPlayerId => UniqueID().ToString();
 
         // ─── IPlayer: ライフサイクル ─────────────────────────────────
         private bool hasEnemyFlag = false;
@@ -146,6 +179,8 @@ namespace OpenGS
         public virtual void OnSpawn()
         {
             isDead = false;
+            isInvincible = false;
+            invincibilityVersion++;
             ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
             Status?.FullCombatRecovery();
@@ -171,6 +206,8 @@ namespace OpenGS
             }
 
             isDead = false;
+            isInvincible = false;
+            invincibilityVersion++;
             ResetPowerupState();
             Status?.FullRecovery(); // Recover HP, Booster, Grenades
             Status?.FullCombatRecovery();
@@ -221,7 +258,26 @@ namespace OpenGS
 
         public void SetUniqueID(Guid id)
         {
+            var previousId = UniqueID().ToString();
+            var idChanged = uniqueId != id;
+
+            if (idChanged && PlayerRegistry.Instance != null)
+            {
+                PlayerRegistry.Instance.UnregisterPlayer(uniqueId);
+            }
+
             uniqueId = id;
+
+            if (idChanged && PlayerRegistry.Instance != null)
+            {
+                PlayerRegistry.Instance.RegisterPlayer(this);
+            }
+
+            if (OpenGS.Network.LagCompensationManager.Instance != null)
+            {
+                OpenGS.Network.LagCompensationManager.Instance.UnregisterNetworkObject(previousId);
+                OpenGS.Network.LagCompensationManager.Instance.RegisterNetworkObject(this);
+            }
         }
 
         // ─── IPlayer: チーム ─────────────────────────────────────────
@@ -353,19 +409,32 @@ namespace OpenGS
 
         public virtual void AddDamage(Vector2 source, float damage, eDamageType type)
         {
-            if (isDead || Status == null) return;
+            if (isDead || isInvincible || Status == null || !float.IsFinite(damage) || damage <= 0f) return;
 
             // Armor reduction logic: Armor absorbs 10% of damage, boosted by defense buff.
             float finalDamage = damage;
             if (Status.Armor > 0)
             {
-                float absorbed = damage * 0.1f * defenseMultiplier;
+                var safeDefenseMultiplier = float.IsFinite(defenseMultiplier)
+                    ? Mathf.Max(0f, defenseMultiplier)
+                    : 1f;
+                float absorbed = damage * 0.1f * safeDefenseMultiplier;
+                if (!float.IsFinite(absorbed))
+                {
+                    absorbed = 0f;
+                }
+
                 if (absorbed > Status.Armor)
                 {
                     absorbed = Status.Armor;
                 }
                 Status.ReduceArmor(absorbed);
                 finalDamage -= absorbed;
+            }
+
+            if (!float.IsFinite(finalDamage) || finalDamage <= 0f)
+            {
+                return;
             }
 
             Status.ReduceHp(finalDamage);
@@ -381,10 +450,22 @@ namespace OpenGS
 
         public void AddDamageAndForce(float damage, Vector3 vec, float force = 1.0f)
         {
+            if (!float.IsFinite(damage) || damage <= 0f
+                || !float.IsFinite(force)
+                || !float.IsFinite(vec.x) || !float.IsFinite(vec.y) || !float.IsFinite(vec.z))
+            {
+                return;
+            }
+
             if (rigidbody2D != null)
             {
                 rigidbody2D.AddForce(vec.normalized * force, ForceMode2D.Impulse);
             }
+
+            // Keep the damage contract of this method: callers expect both
+            // knockback and health reduction. Previously only the force was
+            // applied, making several contact/impact attacks harmless.
+            AddDamage(Vector2.zero, damage, eDamageType.None);
         }
 
         public void AddDamageAndForce2(float damage, Vector2 point)
@@ -394,8 +475,14 @@ namespace OpenGS
 
         public void Heal(float heal = 0)
         {
-            if (heal <= 0) return;
+            if (!float.IsFinite(heal) || heal <= 0f || Status == null) return;
+            var previousHp = Status?.Hp ?? 0f;
             Status.AddHp(heal);
+
+            if (PlayerRegistry.Instance != null && Status != null && !Mathf.Approximately(previousHp, Status.Hp))
+            {
+                PlayerRegistry.Instance.NotifyPlayerHealthChanged(this, Status.Hp);
+            }
         }
 
         public virtual void TakeLavaDamage()
@@ -412,15 +499,20 @@ namespace OpenGS
                     {
                         var effect = Instantiate(PlayerEffectPrefabMasterData.HitEffect);
                         effect.transform.position = gameObject.transform.position;
+                        Destroy(effect, 5f);
                     }
                 }
-                StartCoroutine(LavaCounter());
+                if (lavaDamageCoroutine != null)
+                {
+                    StopCoroutine(lavaDamageCoroutine);
+                }
+                lavaDamageCoroutine = StartCoroutine(LavaCounter());
             }
         }
 
         public virtual void AddSlipDamage(float v, string id)
         {
-            if (v <= 0f)
+            if (!float.IsFinite(v) || v <= 0f)
             {
                 return;
             }
@@ -444,8 +536,10 @@ namespace OpenGS
             if (Status != null)
             {
                 Status.Hp = 0f;
+                PlayerRegistry.Instance?.NotifyPlayerHealthChanged(this, 0f);
             }
             Status?.AddDeath();
+            PlayerRegistry.Instance?.NotifyPlayerDied(this);
             GameEventBroker.Publish(new PlayerDeadEvent(EDeadReason.Suicide, gameObject.name, UniqueID().ToString(), Team()));
             OnDead();
             return true;
@@ -478,6 +572,7 @@ namespace OpenGS
 
         public virtual void IncreaseAttack(float sec)
         {
+            if (!float.IsFinite(sec) || sec <= 0f) return;
             PlayGeneralSound(EPlayerGeneralSound.TakeItem);
             SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakePowerUpItemEffect : null);
             StartCoroutine(IncreaseAttackCounter(sec));
@@ -485,6 +580,7 @@ namespace OpenGS
 
         public virtual void IncreaseDefense(float sec)
         {
+            if (!float.IsFinite(sec) || sec <= 0f) return;
             PlayGeneralSound(EPlayerGeneralSound.TakeItem);
             SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakeDefenseUpItemEffect : null);
             StartCoroutine(IncreaseDefenseCounter(sec));
@@ -492,11 +588,13 @@ namespace OpenGS
 
         public virtual void Invisible(float sec)
         {
+            if (!float.IsFinite(sec) || sec <= 0f) return;
             StartCoroutine(InvisibleCounter(sec));
         }
 
         public virtual void SpeedUp(float sec)
         {
+            if (!float.IsFinite(sec) || sec <= 0f) return;
             PlayGeneralSound(EPlayerGeneralSound.TakeItem);
             SpawnPlayerEffect(PlayerEffectPrefabMasterData != null ? PlayerEffectPrefabMasterData.TakeSpeedUpItemEffect : null);
             StartCoroutine(SpeedUpCounter(sec));
@@ -521,12 +619,48 @@ namespace OpenGS
 
         public virtual void PoisonBullet(float sec)
         {
-            Debug.Log($"[{GetType().Name}] PoisonBullet applied for {sec} sec");
+            StartElementalDamage(sec, poisonDamagePerTick, eDamageType.Poison, "PoisonBullet");
         }
 
         public virtual void FireBullet(float sec)
         {
-            Debug.Log($"[{GetType().Name}] FireBullet applied for {sec} sec");
+            StartElementalDamage(sec, fireDamagePerTick, eDamageType.Fire, "FireBullet");
+        }
+
+        private void StartElementalDamage(float duration, float damagePerTick, eDamageType damageType, string effectName)
+        {
+            if (isDead || !float.IsFinite(duration) || !float.IsFinite(damagePerTick) ||
+                duration <= 0f || damagePerTick <= 0f)
+            {
+                return;
+            }
+
+            if (elementalDamageCoroutine != null)
+            {
+                StopCoroutine(elementalDamageCoroutine);
+            }
+
+            elementalDamageCoroutine = StartCoroutine(ElementalDamageCoroutine(duration, damagePerTick, damageType, effectName));
+        }
+
+        private IEnumerator ElementalDamageCoroutine(float duration, float damagePerTick, eDamageType damageType, string effectName)
+        {
+            var endTime = Time.realtimeSinceStartup + duration;
+            var tickInterval = Mathf.Max(0.05f, elementalDamageTickInterval);
+
+            Debug.Log($"[{GetType().Name}] {effectName} applied for {duration:0.##} sec");
+            while (!isDead && Time.realtimeSinceStartup < endTime)
+            {
+                yield return new WaitForSecondsRealtime(tickInterval);
+                if (Time.realtimeSinceStartup >= endTime || isDead)
+                {
+                    break;
+                }
+
+                AddDamage(Vector2.zero, damagePerTick, damageType);
+            }
+
+            elementalDamageCoroutine = null;
         }
 
         // ─── IMovable ────────────────────────────────────────────────
@@ -569,6 +703,21 @@ namespace OpenGS
         public EPlayerType PlayerType() => playerType;
 
         public EPlayerCharacter Character() => character;
+
+        private static uint StableNetworkId(string value)
+        {
+            unchecked
+            {
+                uint hash = 2166136261u;
+                if (string.IsNullOrEmpty(value)) return 0u;
+                foreach (var character in value)
+                {
+                    hash ^= char.ToUpperInvariant(character);
+                    hash *= 16777619u;
+                }
+                return hash;
+            }
+        }
 
         public void SetPlayerType(EPlayerType type = EPlayerType.Unknown)
         {
@@ -618,6 +767,21 @@ namespace OpenGS
         /// </summary>
         public int GetFacingDirection()
         {
+            var playerAgent = this as PlayerAgent;
+            if (playerAgent != null)
+            {
+                var aimPosition = playerAgent.GetAimWorldPosition();
+                if (!float.IsNaN(aimPosition.x) && !float.IsInfinity(aimPosition.x)
+                    && !float.IsNaN(aimPosition.y) && !float.IsInfinity(aimPosition.y))
+                {
+                    var delta = aimPosition.x - transform.position.x;
+                    if (Mathf.Abs(delta) > 0.0001f)
+                    {
+                        return delta >= 0f ? 1 : -1;
+                    }
+                }
+            }
+
             if (Camera.main == null) return 1;
             var screenPos = Camera.main.WorldToScreenPoint(transform.position);
             var direction = Input.mousePosition - screenPos;
@@ -632,7 +796,7 @@ namespace OpenGS
             }
 
             canWarp = false;
-            warpCounter = coolTime;
+            warpCounter = SafeNonNegative(coolTime, 2f);
             StartCoroutine(WarpCounter());
         }
 
@@ -659,7 +823,7 @@ namespace OpenGS
                 return false;
             }
 
-            OpenGS.SoundManager.Instance.PlayOneShotSafe(clip, volume, pitch, $"{GetType().Name}:{sound}");
+            OpenGS.SoundManager.Instance?.PlayOneShotSafe(clip, volume, pitch, $"{GetType().Name}:{sound}");
             return true;
         }
 
@@ -677,12 +841,25 @@ namespace OpenGS
 
         public IEnumerator InvincibleCounter(float time = 4.0f)
         {
+            if (!float.IsFinite(time) || time <= 0f)
+            {
+                isInvincible = false;
+                yield break;
+            }
+
+            var version = ++invincibilityVersion;
+            isInvincible = true;
             yield return new WaitForSecondsRealtime(time);
+
+            if (version == invincibilityVersion)
+            {
+                isInvincible = false;
+            }
         }
 
         protected IEnumerator IncreaseAttackCounter(float time = 30.0f)
         {
-            if (time <= 0) time = 30.0f;
+            if (!float.IsFinite(time) || time <= 0) time = 30.0f;
 
             var version = ++attackBuffVersion;
             attackMultiplier = BuffedMultiplier;
@@ -695,7 +872,7 @@ namespace OpenGS
 
         public IEnumerator IncreaseDefenseCounter(float time = 30.0f)
         {
-            if (time <= 0) time = 30.0f;
+            if (!float.IsFinite(time) || time <= 0) time = 30.0f;
 
             var version = ++defenseBuffVersion;
             defenseMultiplier = BuffedMultiplier;
@@ -708,7 +885,7 @@ namespace OpenGS
 
         protected IEnumerator SpeedUpCounter(float time = 30.0f)
         {
-            if (time <= 0) time = 30.0f;
+            if (!float.IsFinite(time) || time <= 0) time = 30.0f;
 
             var version = ++speedBuffVersion;
             moveSpeedMultiplier = BuffedMultiplier;
@@ -723,7 +900,7 @@ namespace OpenGS
 
         protected IEnumerator InvisibleCounter(float time = 30.0f)
         {
-            if (time <= 0) time = 30.0f;
+            if (!float.IsFinite(time) || time <= 0) time = 30.0f;
 
             var version = ++invisibleBuffVersion;
             invisible = true;
@@ -738,6 +915,7 @@ namespace OpenGS
 
         protected IEnumerator ReSpawnCounter(float time = 5.0f)
         {
+            if (!float.IsFinite(time) || time < 0f) time = 5.0f;
             yield return new WaitForSecondsRealtime(time);
         }
 
@@ -783,7 +961,7 @@ namespace OpenGS
                 input.enabled = false;
             }
 
-            var matchScene = FindFirstObjectByType<AbstractMatchMainScript>();
+            var matchScene = GetCachedMatchScene();
             matchScene?.EnterSpectatorMode(transform);
 
             GameEventBroker.Publish(new PlayerSpectatingEvent(UniqueID().ToString(), true));
@@ -812,7 +990,7 @@ namespace OpenGS
                 input.enabled = true;
             }
 
-            var matchScene = FindFirstObjectByType<AbstractMatchMainScript>();
+            var matchScene = GetCachedMatchScene();
             matchScene?.ExitSpectatorMode(transform);
 
             GameEventBroker.Publish(new PlayerSpectatingEvent(UniqueID().ToString(), false));
@@ -846,6 +1024,7 @@ namespace OpenGS
                 lavaDamageCounter -= interval;
             }
             lavaDamageCounter = 0f;
+            lavaDamageCoroutine = null;
         }
 
         // ─── サウンドユーティリティ ──────────────────────────────────
@@ -887,6 +1066,11 @@ namespace OpenGS
 
         protected virtual void Awake()
         {
+            interval = Mathf.Max(0.01f, SafeNonNegative(interval, 0.1f));
+            lavaDamageInterval = SafeNonNegative(lavaDamageInterval, 1.2f);
+            lavaDamageCounter = SafeNonNegative(lavaDamageCounter, 0f);
+            warpCounter = SafeNonNegative(warpCounter, 0f);
+            moveSpeed = SafeNonNegative(moveSpeed, 0.4f);
             baseMoveSpeed = moveSpeed;
         }
 
@@ -937,6 +1121,7 @@ namespace OpenGS
 
             var effect = Instantiate(effectPrefab, transform.position, Quaternion.identity);
             effect.transform.SetParent(transform, true);
+            Destroy(effect, 5f);
         }
 
         public void PlayReloadCompleteEffect()
@@ -971,7 +1156,7 @@ namespace OpenGS
                 isLyingDown = false;
                 if (!Mathf.Approximately(cachedProneCameraZoomScale, 1f))
                 {
-                    FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(1f / cachedProneCameraZoomScale);
+                    GetCachedMatchScene()?.SetPlayerCameraZoom(1f / cachedProneCameraZoomScale);
                     cachedProneCameraZoomScale = 1f;
                 }
             }
@@ -990,7 +1175,7 @@ namespace OpenGS
             if (gun != null && gun.canZooming)
             {
                 cachedCameraZoomScale = 1.18f;
-                FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(cachedCameraZoomScale);
+                GetCachedMatchScene()?.SetPlayerCameraZoom(cachedCameraZoomScale);
             }
             else
             {
@@ -1022,13 +1207,13 @@ namespace OpenGS
 
             if (!Mathf.Approximately(cachedCameraZoomScale, 1f))
             {
-                FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(1f / cachedCameraZoomScale);
+                GetCachedMatchScene()?.SetPlayerCameraZoom(1f / cachedCameraZoomScale);
                 cachedCameraZoomScale = 1f;
             }
 
             if (!Mathf.Approximately(cachedProneCameraZoomScale, 1f))
             {
-                FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(1f / cachedProneCameraZoomScale);
+                GetCachedMatchScene()?.SetPlayerCameraZoom(1f / cachedProneCameraZoomScale);
                 cachedProneCameraZoomScale = 1f;
             }
 
@@ -1057,7 +1242,7 @@ namespace OpenGS
             if (gun != null && gun.canZooming)
             {
                 cachedProneCameraZoomScale = 1.28f;
-                FindFirstObjectByType<AbstractMatchMainScript>()?.SetPlayerCameraZoom(cachedProneCameraZoomScale);
+                GetCachedMatchScene()?.SetPlayerCameraZoom(cachedProneCameraZoomScale);
             }
             else
             {
@@ -1069,6 +1254,16 @@ namespace OpenGS
             {
                 PublishPose(EPlayerPoseState.LieDown);
             }
+        }
+
+        private AbstractMatchMainScript GetCachedMatchScene()
+        {
+            if (cachedMatchScene == null)
+            {
+                cachedMatchScene = FindFirstObjectByType<AbstractMatchMainScript>();
+            }
+
+            return cachedMatchScene;
         }
 
         private void PublishPose(EPlayerPoseState poseState)
@@ -1141,11 +1336,39 @@ namespace OpenGS
         protected virtual void OnEnable()
         {
             SubscribeEvent();
+            OpenGS.Network.LagCompensationManager.Instance?.RegisterNetworkObject(this);
+            ResolvePlayerRegistry()?.RegisterPlayer(this);
         }
 
         protected virtual void OnDisable()
         {
+            StopAllCoroutines();
+            reSpawnCoroutine = null;
+            lavaDamageCoroutine = null;
+            if (elementalDamageCoroutine != null)
+            {
+                elementalDamageCoroutine = null;
+            }
+
+            isInvincible = false;
+            canWarp = true;
+            ResetPowerupState();
+
             UnSubscribeEvent();
+            OpenGS.Network.LagCompensationManager.Instance?.UnregisterNetworkObject(OwnerPlayerId);
+            ResolvePlayerRegistry()?.UnregisterPlayer(this);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Status?.Dispose();
+        }
+
+        private PlayerRegistry ResolvePlayerRegistry()
+        {
+            return PlayerRegistry.Instance != null
+                ? PlayerRegistry.Instance
+                : FindFirstObjectByType<PlayerRegistry>();
         }
     }
 }

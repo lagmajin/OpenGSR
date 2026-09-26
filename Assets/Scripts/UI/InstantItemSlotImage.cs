@@ -10,6 +10,9 @@ namespace OpenGS
     {
         [SerializeField] private Image slotImage;
         [SerializeField] private EInstantItemType currentType = EInstantItemType.None;
+        [SerializeField] private bool syncFromPlayer = false;
+
+        public bool SyncFromPlayer => syncFromPlayer;
 
         private void Awake()
         {

@@ -47,7 +47,7 @@ namespace OpenGS
             isRecording = false;
             return new ReplayRecording
             {
-                formatVersion = 1,
+                formatVersion = 2,
                 gameVersion = recordingGameVersion,
                 mapId = recordingMapId,
                 seed = recordingSeed,

@@ -31,10 +31,16 @@ namespace OpenGS
 
         public UniTask<bool> PurchaseItemAsync(string itemId, int price)
         {
+            if (string.IsNullOrWhiteSpace(itemId) || price < 0)
+            {
+                Debug.LogWarning($"[OfflineShop] Purchase rejected: itemId='{itemId}', price={price}.");
+                return UniTask.FromResult(false);
+            }
+
             if (EconomyManager.SpendCredits(price))
             {
                 UserSaveManager.SetPurchased(itemId);
-                OnDataChanged?.Invoke();
+                NotifyDataChanged();
                 return UniTask.FromResult(true);
             }
             return UniTask.FromResult(false);
@@ -42,6 +48,13 @@ namespace OpenGS
 
         public UniTask<bool> EquipItemAsync(string itemId, EShopCategory category, int slot = 0)
         {
+            itemId = itemId?.Trim();
+            if (string.IsNullOrWhiteSpace(itemId) || (category == EShopCategory.InstantItem && !IsValidSlot(slot)))
+            {
+                Debug.LogWarning($"[OfflineShop] Equip rejected: itemId='{itemId}', category={category}, slot={slot}.");
+                return UniTask.FromResult(false);
+            }
+
             if (category == EShopCategory.InstantItem)
             {
                 UserSaveManager.EquipToSlot(itemId, category, slot);
@@ -50,12 +63,18 @@ namespace OpenGS
             {
                 UserSaveManager.EquipItem(itemId, category);
             }
-            OnDataChanged?.Invoke();
+            NotifyDataChanged();
             return UniTask.FromResult(true);
         }
 
         public UniTask<bool> UnequipItemAsync(string itemId, EShopCategory category, int slot = 0)
         {
+            if (category == EShopCategory.InstantItem && !IsValidSlot(slot))
+            {
+                Debug.LogWarning($"[OfflineShop] Unequip rejected: category={category}, slot={slot}.");
+                return UniTask.FromResult(false);
+            }
+
             if (category == EShopCategory.InstantItem)
             {
                 UserSaveManager.EquipToSlot("", category, slot);
@@ -65,8 +84,28 @@ namespace OpenGS
                 // ここでは空にする処理
                 UserSaveManager.EquipItem("", category);
             }
-            OnDataChanged?.Invoke();
+            NotifyDataChanged();
             return UniTask.FromResult(true);
+        }
+
+        private void NotifyDataChanged()
+        {
+            if (OnDataChanged == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in OnDataChanged.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[OfflineShopService] OnDataChanged subscriber failed: {ex}");
+                }
+            }
         }
 
         public long GetCredits() => EconomyManager.GetCredits();
@@ -84,6 +123,22 @@ namespace OpenGS
                 return UserSaveManager.IsFavoriteWeapon(itemId);
             }
             return UserSaveManager.GetEquippedId(category) == itemId;
+        }
+
+        public string GetEquippedItemId(EShopCategory category, int slot = 0)
+        {
+            if (category == EShopCategory.InstantItem)
+            {
+                var items = UserSaveManager.GetEquippedInstantItems();
+                return items != null && slot >= 0 && slot < items.Length ? items[slot] : string.Empty;
+            }
+
+            return UserSaveManager.GetEquippedId(category) ?? string.Empty;
+        }
+
+        private static bool IsValidSlot(int slot)
+        {
+            return slot >= 0 && slot < 3;
         }
     }
 }

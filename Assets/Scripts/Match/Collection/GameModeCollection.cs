@@ -75,7 +75,7 @@ namespace OpenGS
             //test.AddTo(this.gameObject);
 
 
-            Application.targetFrameRate = 75;
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
 
 
             if (bootImmidietry)
@@ -151,7 +151,7 @@ namespace OpenGS
 
         private void SetupDeathMatch()
         {
-            dmMatchMainScript?.SetActive(true);
+            ActivateMatchScript(dmMatchMainScript, "DeathMatch");
             if (autoDeleteOthers)
             {
                 DeleteNotUseScripts();
@@ -160,7 +160,7 @@ namespace OpenGS
 
         private void SetupTDMMatch()
         {
-            tdmMatchMainScript?.SetActive(true);
+            ActivateMatchScript(tdmMatchMainScript, "TeamDeathMatch");
             if (autoDeleteOthers)
             {
                 DeleteNotUseScripts();
@@ -169,7 +169,7 @@ namespace OpenGS
 
         private void SetupSUV()
         {
-            suvMatchMainScript?.SetActive(true);
+            ActivateMatchScript(suvMatchMainScript, "Survival");
 
             if (autoDeleteOthers)
             {
@@ -179,7 +179,7 @@ namespace OpenGS
 
         private void SetupTSUV()
         {
-            tsuvMatchMainScript?.SetActive(true);
+            ActivateMatchScript(tsuvMatchMainScript, "TeamSurvival");
 
             if (autoDeleteOthers)
             {
@@ -190,7 +190,7 @@ namespace OpenGS
 
         private void SetupCTFMatch()
         {
-            ctfMatchMainScript?.SetActive(true);
+            ActivateMatchScript(ctfMatchMainScript, "CaptureTheFlag");
 
             if (autoDeleteOthers)
             {
@@ -200,9 +200,7 @@ namespace OpenGS
 
         private void SetupArmsRace()
         {
-            if (!IsAnyOn())
-            {
-            }
+            ActivateMatchScript(armMatchMainScript, "ArmsRace");
 
             if (autoDeleteOthers)
             {
@@ -210,25 +208,37 @@ namespace OpenGS
             }
         }
 
+        private static bool ActivateMatchScript(GameObject matchScript, string modeName)
+        {
+            if (matchScript == null)
+            {
+                Debug.LogError($"[GameModeCollection] {modeName} match script is not assigned.");
+                return false;
+            }
+
+            matchScript.SetActive(true);
+            return true;
+        }
+
 
         private void DeleteNotUseScripts()
         {
-            if (!dmMatchMainScript.activeSelf)
+            if (dmMatchMainScript != null && !dmMatchMainScript.activeSelf)
             {
                 Destroy(dmMatchMainScript.gameObject);
             }
 
-            if (!tdmMatchMainScript.activeSelf)
+            if (tdmMatchMainScript != null && !tdmMatchMainScript.activeSelf)
             {
                 Destroy(tdmMatchMainScript.gameObject);
             }
 
-            if (!suvMatchMainScript.activeSelf)
+            if (suvMatchMainScript != null && !suvMatchMainScript.activeSelf)
             {
                 Destroy(suvMatchMainScript.gameObject);
             }
 
-            if (!tsuvMatchMainScript.gameObject.activeSelf)
+            if (tsuvMatchMainScript != null && !tsuvMatchMainScript.gameObject.activeSelf)
             {
                 Debug.Log("CTF ok");
 
@@ -236,14 +246,14 @@ namespace OpenGS
             }
 
 
-            if (!ctfMatchMainScript.gameObject.activeSelf)
+            if (ctfMatchMainScript != null && !ctfMatchMainScript.gameObject.activeSelf)
             {
                 Debug.Log("CTF ok");
 
                 Destroy(ctfMatchMainScript.gameObject);
             }
 
-            if (!armMatchMainScript.gameObject.activeSelf)
+            if (armMatchMainScript != null && !armMatchMainScript.gameObject.activeSelf)
             {
                 Destroy(armMatchMainScript);
             }
@@ -257,26 +267,65 @@ namespace OpenGS
         [Button("タイトル移動テスト")]
         private void BackToWaitRoom()
         {
-
+            LoadConfiguredScene(generalScene != null ? generalScene.OfflineWaitRoomScene() : null, "OfflineWaitRoom");
         }
         [Button("タイトル移動テスト")]
         private void BackToOnlineWaitRoom()
         {
-
+            LoadConfiguredScene(generalScene != null ? generalScene.OnlineWaitRoomScene() : null, "OnlineWaitRoom");
         }
 
         [Button("タイトル移動テスト")]
         private void BackToTitle()
         {
-            SceneManager.LoadScene(generalScene.TitleScene());
+            if (generalScene == null)
+            {
+                Debug.LogError("[GameModeCollection] GeneralSceneMasterData is not assigned.");
+                return;
+            }
 
+            var sceneName = generalScene.TitleScene();
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogError("[GameModeCollection] Title scene is not configured.");
+                return;
+            }
+
+            LoadConfiguredScene(sceneName, "Title");
+
+        }
+
+        private static void LoadConfiguredScene(string sceneName, string label)
+        {
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogError($"[GameModeCollection] {label} scene is not configured.");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                Debug.LogError($"[GameModeCollection] {label} scene is not in build settings: {sceneName}");
+                return;
+            }
+
+            SceneManager.LoadScene(sceneName);
         }
 
 
         public IDMMatchMainScript DMMatchMainScript()
         {
-            var result = dmMatchMainScript.GetComponent<IDMMatchMainScript>();
+            if (dmMatchMainScript == null)
+            {
+                Debug.LogWarning("[GameModeCollection] DM match main script is not assigned.");
+                return null;
+            }
 
+            var result = dmMatchMainScript.GetComponent<IDMMatchMainScript>();
+            if (result == null)
+            {
+                Debug.LogWarning("[GameModeCollection] Assigned DM object has no IDMMatchMainScript component.");
+            }
 
             return result;
         }

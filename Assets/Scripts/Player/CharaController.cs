@@ -17,6 +17,7 @@ namespace OpenGS
         private bool spaceKeyDown = false;
         private bool onDamage = false;
         bool isBlink = false;
+        private Coroutine blinkRoutine;
 
         [SerializeField] private float time = 10.0f;
         private bool rightKey = false;
@@ -27,23 +28,21 @@ namespace OpenGS
         public event Action OnInstantItemsChanged;
         private MatchEventProvider matchEventProvider;
         private PlayerGrenadeComponent grenadeComponent;
-
-        private PlayerStatus status = GamePlayerManager.Instance.Status;
-
-        private PlayerStatus PlayerStatus()
-        {
-            return GamePlayerManager.Instance.Status;
-        }
+        private Camera playerCamera;
+        private bool cameraMissingWarningLogged;
+        private readonly UnityInputService inputService = new UnityInputService();
 
         private IEnumerator OnBlink()
         {
             yield return new WaitForSeconds(3.0f);
             isBlink = false;
             onDamage = false;
+            blinkRoutine = null;
         }
 
         public override void OnSpawn()
         {
+            base.OnSpawn();
             grenadeComponent = GetComponent<PlayerGrenadeComponent>();
             InitializeSpawnLoadout();
             canOpenGranade = true;
@@ -53,6 +52,7 @@ namespace OpenGS
 
         public override void OnReSpawn()
         {
+            base.OnReSpawn();
             grenadeComponent = GetComponent<PlayerGrenadeComponent>();
             InitializeSpawnLoadout();
             canOpenGranade = true;
@@ -65,11 +65,25 @@ namespace OpenGS
             if (isBlink) return;
             isBlink = true;
             onDamage = true;
-            StartCoroutine(OnBlink());
+            blinkRoutine = StartCoroutine(OnBlink());
+        }
+
+        private void OnDisable()
+        {
+            if (blinkRoutine != null)
+            {
+                StopCoroutine(blinkRoutine);
+                blinkRoutine = null;
+            }
+
+            isBlink = false;
+            onDamage = false;
+            base.OnDisable();
         }
 
         public void Start()
         {
+            playerCamera = Camera.main;
             animator = GetComponent<Animator>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             rigidbody2D = GetComponent<Rigidbody2D>();
@@ -81,10 +95,27 @@ namespace OpenGS
         {
             if (CheckFallDeath() || isDead) return;
 
-            var screenPos = Camera.main.WorldToScreenPoint(transform.position);
-            var direc = Input.mousePosition - screenPos;
+            if (playerCamera == null)
+            {
+                playerCamera = Camera.main;
+            }
 
-            if (direc.x >= 0)
+            if (playerCamera == null)
+            {
+                if (!cameraMissingWarningLogged)
+                {
+                    Debug.LogWarning("[CharaController] Update skipped because no camera is available.");
+                    cameraMissingWarningLogged = true;
+                }
+                return;
+            }
+
+            cameraMissingWarningLogged = false;
+
+            var aimWorldPosition = inputService.GetAimWorldPosition();
+            var direc = aimWorldPosition.x - transform.position.x;
+
+            if (direc >= 0f)
             {
                 var ls = transform.localScale;
                 ls.x = -Mathf.Abs(ls.x);
@@ -97,7 +128,7 @@ namespace OpenGS
                 transform.localScale = ls;
             }
 
-            if (Input.GetMouseButton(0))
+            if (inputService.IsFirePressed())
             {
                 Shot();
             }
@@ -147,7 +178,6 @@ namespace OpenGS
             {
                 TryPlayGeneralSound(EPlayerGeneralSound.ThrowGrenade);
                 grenadeComponent.ThrowGrenade(1.0f);
-                SendGrenadeNotificationToServer();
                 canOpenGranade = false;
                 return;
             }
@@ -167,8 +197,19 @@ namespace OpenGS
         {
             if (isDead) return;
 
-            var weapon = weaponSlots.mainWeaponSlot;
-            var cont = weapon.transform.GetComponentInChildren<AbstractGunController>();
+            var weapon = weaponSlots?.mainWeaponSlot;
+            if (weapon == null)
+            {
+                Debug.LogWarning("[CharaController] Shot ignored because no main weapon is equipped.");
+                return;
+            }
+
+            var cont = weapon.GetComponentInChildren<AbstractGunController>();
+            if (cont == null)
+            {
+                Debug.LogWarning($"[CharaController] Shot ignored because weapon '{weapon.name}' has no gun controller.");
+                return;
+            }
 
             if (cont.CanShot())
             {
@@ -200,32 +241,14 @@ namespace OpenGS
             }
         }
 
-        private void SendGrenadeNotificationToServer()
-        {
-            try
-            {
-                if (matchEventProvider == null)
-                {
-                    matchEventProvider = FindFirstObjectByType<MatchEventProvider>();
-                }
-
-                if (matchEventProvider == null) return;
-
-                matchEventProvider.UseGrenade(this, grenadeComponent != null ? grenadeComponent.CurrentGrenadeType : EGrenadeType.Normal);
-            }
-            catch (Exception ex)
-            {
-                Debug.LogWarning($"[Network] Failed to send grenade notification: {ex.Message}");
-            }
-        }
-
         [Button("しゃがみテスト")]
         public override void Sit()
         {
             Debug.Log("Sit");
+            base.Sit();
             if (null != animator)
             {
-                //animator.SetBool("Sit", true);
+                animator.SetBool("IsSit", true);
             }
         }
 
@@ -241,9 +264,10 @@ namespace OpenGS
 
         public new void StandUp()
         {
+            base.StandUp();
             if (animator)
             {
-                animator.SetBool("Sit", false);
+                animator.SetBool("IsSit", false);
             }
         }
 
@@ -268,6 +292,10 @@ namespace OpenGS
 
         public override void Burst()
         {
+            // Keep the common player lifecycle (flag drop, death animation and
+            // spectator handling) in AbstractPlayer. This override used to
+            // swallow burst requests entirely.
+            base.Burst();
         }
 
         public override void UseItem(int num = 0)
@@ -355,7 +383,7 @@ namespace OpenGS
             switch (itemType)
             {
                 case EInstantItemType.HealthKit:
-                    Status?.AddHp(100f);
+                    Heal(100f);
                     Debug.Log("[CharaController] Used HealthKit.");
                     break;
                 case EInstantItemType.FireBullet:
@@ -450,7 +478,22 @@ namespace OpenGS
 
         private void NotifyInstantItemsChanged()
         {
-            OnInstantItemsChanged?.Invoke();
+            if (OnInstantItemsChanged == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in OnInstantItemsChanged.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[CharaController] OnInstantItemsChanged subscriber failed: {ex}");
+                }
+            }
         }
 
         public void FlipWeapon()

@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using Zenject;
 
 namespace OpenGS
 {
@@ -20,6 +21,15 @@ namespace OpenGS
         [SerializeField] private KeyCode toggleKey = KeyCode.Tab;
 
         private readonly List<GameObject> activeEntries = new List<GameObject>();
+        [Inject] private IInputService inputService;
+
+        private void Awake()
+        {
+            if (inputService == null)
+            {
+                inputService = new UnityInputService();
+            }
+        }
 
         private void Start()
         {
@@ -29,13 +39,22 @@ namespace OpenGS
             }
         }
 
+        private void OnDisable()
+        {
+            ClearEntries();
+            if (scoreboardPanel != null)
+            {
+                scoreboardPanel.SetActive(false);
+            }
+        }
+
         private void Update()
         {
-            if (Input.GetKeyDown(toggleKey))
+            if (toggleKey == KeyCode.Tab ? inputService.IsScoreboardJustPressed() : Input.GetKeyDown(toggleKey))
             {
                 ShowScoreboard();
             }
-            else if (Input.GetKeyUp(toggleKey))
+            else if (toggleKey == KeyCode.Tab ? inputService.IsScoreboardJustReleased() : Input.GetKeyUp(toggleKey))
             {
                 HideScoreboard();
             }
@@ -59,15 +78,11 @@ namespace OpenGS
         {
             if (PlayerRegistry.Instance == null || entryContainer == null || entryPrefab == null) return;
 
-            // Clear old entries
-            foreach (var entry in activeEntries)
-            {
-                Destroy(entry);
-            }
-            activeEntries.Clear();
+            ClearEntries();
 
             // Fetch and sort players (by Kills desc, then Deaths asc)
             var players = PlayerRegistry.Instance.GetAllPlayers()
+                .Where(p => p != null)
                 .OrderByDescending(p => p.Status?.KillCount ?? 0)
                 .ThenBy(p => p.Status?.DeathCount ?? 0)
                 .ToList();
@@ -84,6 +99,19 @@ namespace OpenGS
                     rowUI.SetData(player);
                 }
             }
+        }
+
+        private void ClearEntries()
+        {
+            foreach (var entry in activeEntries)
+            {
+                if (entry != null)
+                {
+                    Destroy(entry);
+                }
+            }
+
+            activeEntries.Clear();
         }
     }
 }

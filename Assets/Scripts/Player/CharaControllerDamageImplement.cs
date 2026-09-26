@@ -14,21 +14,9 @@ namespace OpenGS
 
         public override void AddDamage(Vector2 source, float damage, eDamageType type)
         {
-            Debug.Log("Damage:" + damage);
             base.AddDamage(source, damage, type);
             onDamage = true;
             StartBlink();
-
-            if (type == eDamageType.Explosion)
-            {
-                Debug.Log("[CharaController] Explosion damage received.");
-            }
-
-            if (type == eDamageType.Fire)
-            {
-                Debug.Log("[CharaController] Fire damage received.");
-            }
-
         }
         public override void AddSlipDamage(float v, string id)
         {
@@ -42,7 +30,13 @@ namespace OpenGS
                 slipDamage = new Dictionary<float, string>();
             }
 
-            slipDamage[Time.time] = id ?? string.Empty;
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            slipDamage[now] = id ?? string.Empty;
             onDamage = true;
             StartBlink();
         }

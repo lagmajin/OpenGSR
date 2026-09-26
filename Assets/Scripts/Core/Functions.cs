@@ -11,9 +11,22 @@ namespace OpenGS
     {
         public static IEnumerator WaitAfterAction(Action func,float time = 0.0f)
         {
-            yield return new WaitForSeconds(time);
+            var safeTime = float.IsFinite(time) ? Mathf.Max(0f, time) : 0f;
+            yield return new WaitForSeconds(safeTime);
 
-            func();
+            if (func == null)
+            {
+                yield break;
+            }
+
+            try
+            {
+                func.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[Functions] delayed action failed: {ex}");
+            }
         }
 
         public static void NullFunc()

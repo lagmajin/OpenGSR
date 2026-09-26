@@ -37,6 +37,8 @@ namespace OpenGS
         {
             canvasGroup = GetComponent<CanvasGroup>();
             canvasGroup.alpha = 0f;
+            displayDuration = NormalizeNonNegative(displayDuration);
+            fadeDuration = NormalizeNonNegative(fadeDuration);
         }
 
         /// <summary>
@@ -106,6 +108,11 @@ namespace OpenGS
         private void OnDestroy()
         {
             currentSequence?.Kill();
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
         }
     }
 }

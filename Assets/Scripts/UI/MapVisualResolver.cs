@@ -85,8 +85,25 @@ namespace OpenGS
                     return true;
                 default:
                     map = EMap.Unknown;
-                    return false;
+                    break;
             }
+
+            return false;
+        }
+
+        public static bool TryGetFirstPlayableMap(EGameMode mode, out EMap map)
+        {
+            foreach (var info in Resources.LoadAll<MapInfoMasterData>("MasterData/Map"))
+            {
+                if (info != null && info.HasMapScene() && info.CanPlayForMode(mode))
+                {
+                    map = info.MapType();
+                    return true;
+                }
+            }
+
+            map = EMap.Unknown;
+            return false;
         }
     }
 }

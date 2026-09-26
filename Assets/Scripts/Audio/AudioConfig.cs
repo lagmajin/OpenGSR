@@ -20,5 +20,23 @@ namespace OpenGSR.Audio
 
         [Header("SE List")]
         public List<AudioItem> SEList = new List<AudioItem>();
+
+        private void OnValidate()
+        {
+            Sanitize(BGMList);
+            Sanitize(SEList);
+        }
+
+        private static void Sanitize(List<AudioItem> items)
+        {
+            if (items == null) return;
+
+            foreach (var item in items)
+            {
+                if (item == null) continue;
+                if (!float.IsFinite(item.Volume)) item.Volume = 1f;
+                item.Volume = Mathf.Clamp01(item.Volume);
+            }
+        }
     }
 }

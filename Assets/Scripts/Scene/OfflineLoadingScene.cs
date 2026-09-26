@@ -14,6 +14,8 @@ namespace OpenGS
         private bool loadImmediately = true;
         private float count = 0.0f;
         private float timeout = 20.0f;
+        private bool loadingStarted;
+        private Coroutine loadingCoroutine;
 
         public MapSceneMasterData mapMasterdata;
         public GeneralSceneMasterData senes;
@@ -41,6 +43,7 @@ namespace OpenGS
 
         public void DebugScene()
         {
+            LoadingStart();
         }
 
         protected override void Awake()
@@ -49,12 +52,14 @@ namespace OpenGS
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
         }
 
-        private void OnApplicationQuit()
-        {
-        }
-
         private void EnsureLoadingBgm()
         {
+            if (SoundManager.Instance == null)
+            {
+                Debug.LogWarning("[OfflineLoadingScene] SoundManager is not ready; skipping loading BGM.");
+                return;
+            }
+
             if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
             {
                 return;
@@ -68,12 +73,36 @@ namespace OpenGS
 
         public void LoadingStart()
         {
-            StartCoroutine(LoadingCoroutine());
+            if (loadingStarted)
+            {
+                return;
+            }
+
+            loadingStarted = true;
+            loadingCoroutine = StartCoroutine(LoadingCoroutine());
+        }
+
+        protected override void OnDestroy()
+        {
+            if (loadingCoroutine != null)
+            {
+                StopCoroutine(loadingCoroutine);
+                loadingCoroutine = null;
+            }
+
+            base.OnDestroy();
         }
 
         private IEnumerator LoadingCoroutine()
         {
             var matchRoomManager = MatchRoomManager();
+            if (matchRoomManager == null)
+            {
+                Debug.LogError("[OfflineLoadingScene] MatchRoomManager is not available.");
+                loadingStarted = false;
+                yield break;
+            }
+
             if (!matchRoomManager.IsValidOfflineWaitRoom())
             {
                 matchRoomManager.CreateNewOfflineWaitRoom("OfflineRoom");
@@ -88,11 +117,26 @@ namespace OpenGS
 
             matchRoomManager.CreateNewOfflineMatchRoom();
 
-            var select = GameModeSelectManager.Instance.OfflineGameSelect;
+            var select = GameModeSelectManager.Instance != null
+                ? GameModeSelectManager.Instance.OfflineGameSelect
+                : null;
             var sceneName = ResolveOfflineBattleSceneName(select?.GameMode ?? EGameMode.DeathMatch, select?.Map ?? EMap.DryDays);
             UnityEngine.Debug.Log($"Offline loading scene={sceneName}");
 
+            if (string.IsNullOrWhiteSpace(sceneName) || !Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                Debug.LogError($"[OfflineLoadingScene] Battle scene is not available in build settings: {sceneName}");
+                loadingStarted = false;
+                yield break;
+            }
+
             var async = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
+            if (async == null)
+            {
+                Debug.LogError($"[OfflineLoadingScene] Failed to load battle scene: {sceneName}");
+                loadingStarted = false;
+                yield break;
+            }
             async.allowSceneActivation = false;
 
             yield return new WaitForSecondsRealtime(1);
@@ -115,6 +159,12 @@ namespace OpenGS
 
         void BackToWaitRoom()
         {
+            if (loadingCoroutine != null)
+            {
+                StopCoroutine(loadingCoroutine);
+                loadingCoroutine = null;
+            }
+            loadingStarted = false;
             var waitRoomScene = GeneralSceneMasterData.Instance().OfflineWaitRoomScene();
             RequestSceneTransition(waitRoomScene, "OfflineLoadingBackToWaitRoom");
         }

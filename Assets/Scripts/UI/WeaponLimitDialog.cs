@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,6 +7,7 @@ namespace OpenGS
 {
     public class WeaponLimitDialog : MonoBehaviour
     {
+        public event Action<IReadOnlyCollection<eWeaponType>> SelectionApplied;
         [SerializeField] private Vector2 position;
         [SerializeField] private CanvasGroup group;
         [SerializeField] private Button okButton;
@@ -73,10 +75,23 @@ namespace OpenGS
 
         private void Awake()
         {
-            matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            TryResolveMatchRoomManager();
             AutoBindIfNeeded();
             SetupListeners();
             SyncUiFromState();
+        }
+
+        private void OnDestroy()
+        {
+            if (!listenersRegistered)
+            {
+                return;
+            }
+
+            okButton?.onClick.RemoveListener(OnOK);
+            cancelButton?.onClick.RemoveListener(OnCancel);
+            listenersRegistered = false;
+            SelectionApplied = null;
         }
 
         private void Reset()
@@ -91,10 +106,7 @@ namespace OpenGS
 
         private void OnEnable()
         {
-            if (matchRoomManager == null)
-            {
-                matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
-            }
+            TryResolveMatchRoomManager();
 
             if (group != null)
             {
@@ -107,6 +119,24 @@ namespace OpenGS
             SetupListeners();
             SyncUiFromState();
             ApplyInteractableState();
+        }
+
+        private void TryResolveMatchRoomManager()
+        {
+            if (matchRoomManager != null)
+            {
+                return;
+            }
+
+            try
+            {
+                matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            }
+            catch (Exception exception)
+            {
+                matchRoomManager = null;
+                Debug.LogWarning($"[WeaponLimitDialog] MatchRoomManager is not ready: {exception.Message}");
+            }
         }
 
         public void Open()
@@ -132,8 +162,18 @@ namespace OpenGS
 
         public void OnOK()
         {
-            ApplySelection();
-            Close();
+            try
+            {
+                ApplySelection();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[WeaponLimitDialog] Failed to apply weapon limits: {ex}");
+            }
+            finally
+            {
+                Close();
+            }
         }
 
         public void OnOk()
@@ -176,6 +216,7 @@ namespace OpenGS
             ApplyCategory(sg, ShotgunWeapons);
             ApplyCategory(gr, GunnerWeapons);
             ApplyCategory(mg, MachineGunWeapons);
+            SelectionApplied?.Invoke(matchRoomManager.WeaponLimit.GetBanned());
         }
 
         private void ApplyCategory(Toggle toggle, IReadOnlyList<eWeaponType> weapons)

@@ -34,6 +34,18 @@ namespace OpenGS
 
         [SerializeField] private new Transform transform;
 
+        private void Awake()
+        {
+            if (transform == null)
+            {
+                transform = base.transform;
+            }
+
+            riseSpeed = Mathf.Max(0.01f, float.IsFinite(riseSpeed) ? riseSpeed : 3f);
+            fallSpeed = Mathf.Max(0.01f, float.IsFinite(fallSpeed) ? fallSpeed : 1f);
+            peakHeight = Mathf.Max(0f, float.IsFinite(peakHeight) ? peakHeight : 2f);
+        }
+
         private void Start()
         {
             startPos = transform.position;
@@ -66,7 +78,15 @@ namespace OpenGS
             // 上昇フェーズ
             while (!isFalling && transform.position.y < startPos.y + peakHeight)
             {
-                transform.position += Vector3.up * riseSpeed * Time.deltaTime;
+                var deltaTime = Time.deltaTime;
+                if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+                {
+                    yield return null;
+                    continue;
+                }
+                deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+                transform.position += Vector3.up * riseSpeed * deltaTime;
                 yield return null;
             }
 
@@ -74,12 +94,27 @@ namespace OpenGS
             // 落下フェーズ
             while (isFalling && transform.position.y > startPos.y)
             {
-                transform.position += Vector3.down * fallSpeed * Time.deltaTime;
+                var deltaTime = Time.deltaTime;
+                if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+                {
+                    yield return null;
+                    continue;
+                }
+                deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+                transform.position += Vector3.down * fallSpeed * deltaTime;
                 yield return null;
             }
 
             transform.position = new Vector3(transform.position.x, startPos.y, transform.position.z);
             isPlaying = false;
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            isPlaying = false;
+            isFalling = false;
         }
     }
 }

@@ -13,34 +13,5 @@ namespace OpenGS
     public class PlayerServerLinker:MonoBehaviour
     {
         [Required]public AbstractPlayer player;
-        void Start()
-        {
-
-        }
-
-        void Update()
-        {
-            if (player)
-            {
-
-                var position = player.transform.position;
-
-
-
-            }
-
-
-        }
-
-        private void SendPlayerDataToServer()
-        {
-            
-            
-            
-
-
-        }
-
-
     }
 }

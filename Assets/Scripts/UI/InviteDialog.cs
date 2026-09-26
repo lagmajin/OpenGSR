@@ -52,6 +52,8 @@ namespace OpenGS
         private bool isLobbyTabActive = true;
         private string currentRoomId = "";
         private string currentRoomName = "";
+        private string searchKeyword = "";
+        private bool inviteInProgress;
 
         // ─── デリゲート ─────────────────────────────────────────────
 
@@ -68,8 +70,20 @@ namespace OpenGS
 
         private void OnEnable()
         {
+            CancelInvoke();
+            inviteInProgress = false;
             RefreshPlayerList();
             UpdateRoomInfo();
+        }
+
+        private void OnDestroy()
+        {
+            searchButton?.onClick.RemoveListener(OnSearchButtonClicked);
+            searchInput?.onValueChanged.RemoveListener(OnSearchValueChanged);
+            lobbyTabButton?.onClick.RemoveListener(OnLobbyTabClicked);
+            friendTabButton?.onClick.RemoveListener(OnFriendTabClicked);
+            inviteButton?.onClick.RemoveListener(OnInviteButtonClicked);
+            cancelButton?.onClick.RemoveListener(OnCancelButtonClicked);
         }
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -185,7 +199,7 @@ namespace OpenGS
 
         private void OnSearchButtonClicked()
         {
-            FilterPlayers(searchInput.text);
+            FilterPlayers(searchInput != null ? searchInput.text : searchKeyword);
         }
 
         private void OnSearchValueChanged(string value)
@@ -209,6 +223,11 @@ namespace OpenGS
 
         private void OnInviteButtonClicked()
         {
+            if (inviteInProgress)
+            {
+                return;
+            }
+
             if (selectedPlayer == null)
             {
                 ShowStatus("プレイヤーを選択してください", true);
@@ -221,8 +240,19 @@ namespace OpenGS
                 return;
             }
 
+            if (string.IsNullOrWhiteSpace(selectedPlayer.Id))
+            {
+                ShowStatus("招待先のプレイヤー情報が無効です", true);
+                return;
+            }
+
             // 招待を送信
             string message = messageInput != null ? messageInput.text : "";
+            inviteInProgress = true;
+            if (inviteButton != null)
+            {
+                inviteButton.interactable = false;
+            }
             SendInvite(selectedPlayer.Id, message);
         }
 
@@ -238,12 +268,14 @@ namespace OpenGS
         /// </summary>
         private void RefreshPlayerList()
         {
+            string selectedPlayerId = selectedPlayer != null ? selectedPlayer.Id : null;
+
             // リストをクリア
             ClearPlayerList();
 
             // 現在のタブに応じたプレイヤーリストを取得
             var sourceList = isLobbyTabActive ? lobbyPlayers : friendList;
-            filteredPlayers = new List<OpenGSCore.PlayerInfo>(sourceList);
+            filteredPlayers = FilterPlayerList(sourceList, searchKeyword);
 
             // プレイヤーアイテムを生成
             if (filteredPlayers.Count == 0)
@@ -262,12 +294,13 @@ namespace OpenGS
 
                 foreach (var player in filteredPlayers)
                 {
-                    CreatePlayerItem(player);
+                    if (player != null) CreatePlayerItem(player);
                 }
             }
 
-            // 選択をクリア
-            selectedPlayer = null;
+            // 更新後も同じプレイヤーが残っていれば選択を維持する
+            selectedPlayer = filteredPlayers.FirstOrDefault(player =>
+                player != null && string.Equals(player.Id, selectedPlayerId, StringComparison.Ordinal));
             UpdateSelectedPlayerUI();
         }
 
@@ -347,17 +380,14 @@ namespace OpenGS
         /// </summary>
         private void FilterPlayers(string keyword)
         {
+            searchKeyword = keyword ?? string.Empty;
             var sourceList = isLobbyTabActive ? lobbyPlayers : friendList;
 
-            if (string.IsNullOrWhiteSpace(keyword))
+            filteredPlayers = FilterPlayerList(sourceList, searchKeyword);
+            if (selectedPlayer != null && !filteredPlayers.Any(player =>
+                string.Equals(player.Id, selectedPlayer.Id, StringComparison.Ordinal)))
             {
-                filteredPlayers = new List<OpenGSCore.PlayerInfo>(sourceList);
-            }
-            else
-            {
-                filteredPlayers = sourceList
-                    .Where(p => p.Name.IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0)
-                    .ToList();
+                selectedPlayer = null;
             }
 
             // リストを再構築
@@ -379,9 +409,25 @@ namespace OpenGS
 
                 foreach (var player in filteredPlayers)
                 {
-                    CreatePlayerItem(player);
+                    if (player != null) CreatePlayerItem(player);
                 }
             }
+        }
+
+        private static List<OpenGSCore.PlayerInfo> FilterPlayerList(
+            IEnumerable<OpenGSCore.PlayerInfo> source,
+            string keyword)
+        {
+            IEnumerable<OpenGSCore.PlayerInfo> validPlayers = (source ?? Enumerable.Empty<OpenGSCore.PlayerInfo>())
+                .Where(player => player != null);
+
+            if (!string.IsNullOrWhiteSpace(keyword))
+            {
+                validPlayers = validPlayers.Where(player =>
+                    (player.Name ?? string.Empty).IndexOf(keyword, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            return validPlayers.ToList();
         }
 
         // ─── タブ管理 ───────────────────────────────────────────────
@@ -409,10 +455,25 @@ namespace OpenGS
         /// </summary>
         private void SendInvite(string playerId, string message)
         {
+            playerId = playerId?.Trim();
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                ShowStatus("招待先のプレイヤー情報が無効です", true);
+                return;
+            }
+
+            message = message?.Trim() ?? string.Empty;
             Debug.Log($"[InviteDialog] 招待送信: PlayerID={playerId}, Message={message}");
 
             // 招待送信イベントを発火
-            OnInviteSent?.Invoke(playerId, message);
+            try
+            {
+                OnInviteSent?.Invoke(playerId, message);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[InviteDialog] Invite callback failed: {ex}");
+            }
 
             ShowStatus("招待を送信しました", false);
 
@@ -473,8 +534,12 @@ namespace OpenGS
         private void CloseDialog()
         {
             // 状態をリセット
+            inviteInProgress = false;
             selectedPlayer = null;
-            searchInput.text = "";
+            if (searchInput != null)
+            {
+                searchInput.text = "";
+            }
             filteredPlayers.Clear();
 
             // ダイアログを非表示

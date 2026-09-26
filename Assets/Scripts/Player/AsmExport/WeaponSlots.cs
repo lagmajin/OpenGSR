@@ -39,7 +39,7 @@ namespace OpenGS
         /// </summary>
         public void EquipSpecialWeapon(GameObject weaponPrefab, int ammo)
         {
-            if (weaponPrefab == null)
+            if (weaponPrefab == null || specialWeaponSlot == null || ammo <= 0)
             {
                 return;
             }
@@ -65,7 +65,7 @@ namespace OpenGS
 
         public void OnFireSpecialWeapon()
         {
-            if (currentEquipType != EPlayerEquipWeapon.SpecialWeapon) return;
+            if (currentEquipType != EPlayerEquipWeapon.SpecialWeapon || specialWeaponAmmo <= 0) return;
 
             specialWeaponAmmo--;
             if (specialWeaponAmmo <= 0)
@@ -167,6 +167,11 @@ namespace OpenGS
 
         private void RemoveWeaponFromSlot(GameObject slot)
         {
+            if (slot == null)
+            {
+                return;
+            }
+
             foreach (Transform child in slot.transform)
             {
                 Destroy(child.gameObject);

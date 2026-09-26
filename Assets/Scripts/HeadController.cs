@@ -30,6 +30,7 @@ namespace OpenGS
 
         public Vector3 StandingBobOffset { get; private set; }
         private PlayerAgent owner;
+        private Camera cachedCamera;
 
         private enum HeadPose
         {
@@ -43,6 +44,10 @@ namespace OpenGS
 
         private void Start()
         {
+            head ??= transform.Find("Head")?.gameObject;
+            jumpBlendSpeed = Mathf.Max(0f, float.IsFinite(jumpBlendSpeed) ? jumpBlendSpeed : 18f);
+            sitBlendSpeed = Mathf.Max(0f, float.IsFinite(sitBlendSpeed) ? sitBlendSpeed : 18f);
+            standBobHeadMultiplier = float.IsFinite(standBobHeadMultiplier) ? standBobHeadMultiplier : 1f;
             owner = GetComponentInParent<PlayerAgent>();
             InitializeHeadPoseCache();
         }
@@ -82,19 +87,45 @@ namespace OpenGS
 
         public void Reset()
         {
+            targetPose = HeadPose.Default;
+            currentPose = HeadPose.Default;
+            StandingBobOffset = Vector3.zero;
+            InitializeHeadPoseCache();
 
+            if (head != null && initialized)
+            {
+                head.transform.localPosition = defaultLocalHeadPos;
+            }
         }
 
         private void Update()
         {
             
-            var screenPos = Camera.main.WorldToScreenPoint(transform.position);
-            var dir = Input.mousePosition - screenPos;
+            if (cachedCamera == null)
+            {
+                cachedCamera = Camera.main;
+            }
+
+            var camera = cachedCamera;
+            if (camera == null)
+            {
+                return;
+            }
+
+            var aimWorldPosition = owner != null
+                ? owner.GetAimWorldPosition()
+                : camera.ScreenToWorldPoint(Input.mousePosition);
+            if (!IsFinite(aimWorldPosition) || !IsFinite(transform.position))
+            {
+                return;
+            }
+
+            var dir = (Vector3)aimWorldPosition - transform.position;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
             //Debug.Log("角度" + angle);
             // ここで、マウスがキャラの右側にあれば反転しない、左側にあれば反転
-            if (Input.mousePosition.x < screenPos.x)  // マウスが左側
+            if (aimWorldPosition.x < transform.position.x)  // エイムが左側
             {
                 float relativeAngle = Mathf.DeltaAngle(180f, angle);
 
@@ -142,7 +173,17 @@ namespace OpenGS
 
             StandingBobOffset = owner != null ? owner.GetStandingBobOffset() : Vector3.zero;
             var desiredLocalPos = defaultLocalHeadPos + targetOffset + StandingBobOffset * standBobHeadMultiplier;
-            head.transform.localPosition = Vector3.Lerp(head.transform.localPosition, desiredLocalPos, Time.deltaTime * GetBlendSpeed(currentPose));
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            head.transform.localPosition = Vector3.Lerp(
+                head.transform.localPosition,
+                desiredLocalPos,
+                Mathf.Clamp01(deltaTime * GetBlendSpeed(currentPose)));
         }
 
         private float GetBlendSpeed(HeadPose pose)
@@ -153,6 +194,11 @@ namespace OpenGS
                 HeadPose.Sit => sitBlendSpeed,
                 _ => Mathf.Max(jumpBlendSpeed, sitBlendSpeed)
             };
+        }
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z);
         }
 
         public void Jump()

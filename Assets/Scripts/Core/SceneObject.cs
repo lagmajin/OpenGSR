@@ -13,14 +13,14 @@ namespace OpenGS
 
         public string SceneName()
         {
-            return m_SceneName;
+            return m_SceneName ?? string.Empty;
         }
 
         
 
         public static implicit operator string(SceneObject sceneObject)
         {
-            return sceneObject.m_SceneName;
+            return sceneObject != null ? sceneObject.m_SceneName ?? string.Empty : string.Empty;
         }
 
         public static implicit operator SceneObject(string sceneName)

@@ -14,6 +14,7 @@ namespace OpenGS
         }
 
         private readonly Dictionary<string, RouteHandler> handlersByRoute = new Dictionary<string, RouteHandler>(StringComparer.Ordinal);
+        private readonly object syncRoot = new object();
 
         public void RegisterHandler<TRequest, TResponse>(string route, Func<TRequest, CancellationToken, Task<TResponse>> handler)
         {
@@ -27,7 +28,7 @@ namespace OpenGS
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            handlersByRoute[route] = new RouteHandler
+            var routeHandler = new RouteHandler
             {
                 Handler = async (payload, ct) =>
                 {
@@ -36,6 +37,11 @@ namespace OpenGS
                     return response != null ? JToken.FromObject(response) : JValue.CreateNull();
                 }
             };
+
+            lock (syncRoot)
+            {
+                handlersByRoute[route] = routeHandler;
+            }
         }
 
         public bool CanHandle(JObject message)
@@ -52,7 +58,15 @@ namespace OpenGS
             }
 
             string route = message["Route"]?.ToString();
-            return !string.IsNullOrWhiteSpace(route) && handlersByRoute.ContainsKey(route);
+            if (string.IsNullOrWhiteSpace(route))
+            {
+                return false;
+            }
+
+            lock (syncRoot)
+            {
+                return handlersByRoute.ContainsKey(route);
+            }
         }
 
         public async Task<JObject> HandleAsync(JObject requestEnvelope, CancellationToken cancellationToken = default)
@@ -65,12 +79,23 @@ namespace OpenGS
             string requestId = requestEnvelope["RequestId"]?.ToString() ?? string.Empty;
             string route = requestEnvelope["Route"]?.ToString();
 
+            if (string.IsNullOrWhiteSpace(requestId))
+            {
+                return CreateErrorResponse(string.Empty, route, "INVALID_REQUEST_ID", "RequestId is required.");
+            }
+
             if (string.IsNullOrWhiteSpace(route))
             {
                 return CreateErrorResponse(requestId, route, "INVALID_ROUTE", "Route is required.");
             }
 
-            if (!handlersByRoute.TryGetValue(route, out RouteHandler handler))
+            RouteHandler handler;
+            lock (syncRoot)
+            {
+                handlersByRoute.TryGetValue(route, out handler);
+            }
+
+            if (handler == null)
             {
                 return CreateErrorResponse(requestId, route, "ROUTE_NOT_FOUND", $"No handler registered for route '{route}'.");
             }

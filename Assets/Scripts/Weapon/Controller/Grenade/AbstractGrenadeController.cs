@@ -18,6 +18,13 @@ namespace OpenGS
 
         public MultipleTags myTags;
         protected IEffectService effectService;
+        protected bool explosionTriggered;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(damage) || damage < 0f) damage = 0f;
+            if (!float.IsFinite(expTime) || expTime < 0.01f) expTime = 3f;
+        }
 
         [Inject]
         private void Construct([InjectOptional] IEffectService effectService)
@@ -27,35 +34,59 @@ namespace OpenGS
 
         private void Start()
         {
-            StartCoroutine(Functions.WaitAfterAction(Exp, expTime));
+            if (body == null)
+            {
+                body = GetComponent<Rigidbody2D>();
+            }
+            var safeExpTime = float.IsFinite(expTime) ? Mathf.Max(0.01f, expTime) : 3f;
+            StartCoroutine(Functions.WaitAfterAction(Exp, safeExpTime));
         }
 
         public virtual void Exp()
         {
-            if (effectService != null)
+            if (explosionTriggered)
+            {
+                return;
+            }
+
+            explosionTriggered = true;
+            if (expEffect != null && effectService != null)
             {
                 effectService.PlayOneShotEffect(expEffect, transform.position, Quaternion.identity);
             }
-            else
+            else if (expEffect != null)
             {
-                Instantiate(expEffect, gameObject.transform);
+                var spawnedEffect = Instantiate(expEffect, gameObject.transform);
+                Destroy(spawnedEffect, 5f);
             }
             Destroy(this.gameObject);
         }
 
         public void StopMoving()
         {
-            body.linearVelocity = new Vector2();
+            var rigidbody = body != null ? body : GetComponent<Rigidbody2D>();
+            if (rigidbody != null)
+            {
+                rigidbody.linearVelocity = Vector2.zero;
+            }
         }
 
         public void EnableGravity()
         {
-            body.bodyType = RigidbodyType2D.Dynamic;
+            var rigidbody = body != null ? body : GetComponent<Rigidbody2D>();
+            if (rigidbody != null)
+            {
+                rigidbody.bodyType = RigidbodyType2D.Dynamic;
+            }
         }
 
         public void DisableGravity()
         {
-            body.bodyType = RigidbodyType2D.Kinematic;
+            var rigidbody = body != null ? body : GetComponent<Rigidbody2D>();
+            if (rigidbody != null)
+            {
+                rigidbody.bodyType = RigidbodyType2D.Kinematic;
+            }
         }
 
         protected AbstractPlayer GetOwnerPlayer()

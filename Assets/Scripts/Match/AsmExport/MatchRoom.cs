@@ -137,6 +137,12 @@ namespace OpenGS
         /// </summary>
         private void ProcessBufferedInput(JObject input)
         {
+            if (input == null)
+            {
+                Debug.LogWarning("[MatchRoom] Ignoring null buffered input.");
+                return;
+            }
+
             string messageType = input.GetStringOrNull("MessageType");
             string playerId = input.GetStringOrNull("PlayerID");
 
@@ -162,16 +168,22 @@ namespace OpenGS
         /// </summary>
         private void ApplyServerSnapshot(JObject snapshot)
         {
+            if (snapshot == null)
+            {
+                Debug.LogWarning("[MatchRoom] Ignoring null server snapshot.");
+                return;
+            }
+
             // ルームの基本情報を更新
             Id = snapshot.GetStringOrNull("RoomID") ?? Id;
             RoomName = snapshot.GetStringOrNull("RoomName") ?? RoomName;
-            Playing = snapshot.Value<bool>("IsPlaying");
+            Playing = ReadBool(snapshot, "IsPlaying", Playing);
             // Finished = snapshot.Value<bool>("IsFinished"); // クライアント側で直接Finishを呼ばない
 
             Debug.Log($"[MatchRoom] Applied Snapshot for Room {RoomName} ({Id}). Playing: {Playing}");
 
             // GameSceneのスナップショットを適用
-            JObject gameSceneSnapshot = snapshot.Value<JObject>("Snapshot");
+            JObject gameSceneSnapshot = snapshot["Snapshot"] as JObject;
             if (gameSceneSnapshot != null)
             {
                 Stage?.ApplySnapshot(gameSceneSnapshot);
@@ -180,6 +192,18 @@ namespace OpenGS
             // プレイヤー情報の更新（もしスナップショットに含まれていれば）
             // 例: JArray playersArray = snapshot.Value<JArray>("Players");
             // if (playersArray != null) { /* プレイヤーリストを更新 */ }
+        }
+
+        private static bool ReadBool(JObject json, string key, bool fallback)
+        {
+            try
+            {
+                return json[key]?.ToObject<bool>() ?? fallback;
+            }
+            catch
+            {
+                return fallback;
+            }
         }
 
         public void AddPlayer(OpenGSCore.PlayerInfo info)
@@ -243,9 +267,15 @@ namespace OpenGS
                 return new PlayerData(myPlayer.PlayerInfo, myPlayer.Status);
             }
 
-            if (database.AllPlayer().Count > 0)
+            var allPlayers = database.AllPlayer();
+            if (allPlayers != null && allPlayers.Count == 1)
             {
-                return database.AllPlayer()[database.AllPlayer().Count - 1];
+                return allPlayers[0];
+            }
+
+            if (allPlayers != null && allPlayers.Count > 1)
+            {
+                Debug.LogWarning("[MatchRoom] Local player id was not resolved; refusing to guess from multiple players.");
             }
 
             Debug.LogWarning("[MatchRoom] MyPlayer was requested but no local player data is available.");

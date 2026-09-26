@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,12 +17,16 @@ namespace OpenGS.Network
             public TransformState? PreviousState;
             public TransformState? NextState;
             public float TargetTimeDelay = 0.1f; // 遅延	buffer
+            public bool HasLatestSequence;
+            public byte LatestSequence;
         }
 
         /// <summary>プレイヤーIDごとの補間バッファ</summary>
-        private readonly Dictionary<string, InterpolateBuffer> m_Buffers = new Dictionary<string, InterpolateBuffer>();
+        private readonly Dictionary<string, InterpolateBuffer> m_Buffers =
+            new Dictionary<string, InterpolateBuffer>(StringComparer.OrdinalIgnoreCase);
 
         private readonly int m_MaxBufferSize = 20;
+        private float m_TargetTimeDelay = 0.1f;
 
         /// <summary>
         /// サーバーからの状態更新を追加する
@@ -29,17 +34,42 @@ namespace OpenGS.Network
         /// <param name="state">トランスフォーム状態</param>
         public void AddServerState(TransformState state)
         {
-            if (!m_Buffers.TryGetValue(state.playerId, out var buffer))
-            {
-                buffer = new InterpolateBuffer();
-                m_Buffers[state.playerId] = buffer;
-            }
-
-            // シーケンスが古ければスキップ
-            if (buffer.NextState.HasValue && !IsSequenceNewer(state.sequenceNumber, buffer.NextState.Value.sequenceNumber))
+            if (string.IsNullOrWhiteSpace(state.playerId)
+                || !IsFinite(state.position)
+                || !IsFinite(state.velocity)
+                || !IsFinite(state.rotation)
+                || float.IsNaN(state.timestamp)
+                || float.IsInfinity(state.timestamp)
+                || state.timestamp < 0f)
             {
                 return;
             }
+
+            if (state.rotation.sqrMagnitude < 0.0001f)
+            {
+                state.rotation = Quaternion.identity;
+            }
+            else
+            {
+                state.rotation = Quaternion.Normalize(state.rotation);
+            }
+
+            if (!m_Buffers.TryGetValue(state.playerId, out var buffer))
+            {
+                buffer = new InterpolateBuffer { TargetTimeDelay = m_TargetTimeDelay };
+                m_Buffers[state.playerId] = buffer;
+            }
+
+            // キューに複数状態がある場合でも、直近に受理した状態を基準に
+            // 比較する。NextStateだけを基準にすると、古いパケットが
+            // キューへ再混入する。
+            if (buffer.HasLatestSequence && !IsSequenceNewer(state.sequenceNumber, buffer.LatestSequence))
+            {
+                return;
+            }
+
+            buffer.LatestSequence = state.sequenceNumber;
+            buffer.HasLatestSequence = true;
 
             if (buffer.NextState.HasValue)
             {
@@ -71,12 +101,25 @@ namespace OpenGS.Network
             currentPosition = Vector3.zero;
             currentRotation = Quaternion.identity;
 
-            if (!m_Buffers.TryGetValue(playerId, out var buffer))
+            if (string.IsNullOrWhiteSpace(playerId)
+                || !m_Buffers.TryGetValue(playerId, out var buffer))
             {
                 return false;
             }
 
-            float renderTimestamp = Time.time - buffer.TargetTimeDelay;
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                if (buffer.PreviousState.HasValue)
+                {
+                    currentPosition = buffer.PreviousState.Value.position;
+                    currentRotation = buffer.PreviousState.Value.rotation;
+                    return true;
+                }
+                return false;
+            }
+
+            float renderTimestamp = now - buffer.TargetTimeDelay;
 
             if (!buffer.NextState.HasValue && buffer.StateQueue.Count > 0)
             {
@@ -144,6 +187,11 @@ namespace OpenGS.Network
         /// <param name="transform">ネットワークトランスフォーム</param>
         public void UpdateTransform(INetworkTransform transform)
         {
+            if (transform == null || string.IsNullOrWhiteSpace(transform.OwnerPlayerId))
+            {
+                return;
+            }
+
             if (UpdateInterpolation(transform.OwnerPlayerId, out var position, out var rotation))
             {
                 transform.Position = position;
@@ -156,13 +204,12 @@ namespace OpenGS.Network
         /// </summary>
         public void ClearPlayer(string playerId)
         {
-            if (m_Buffers.TryGetValue(playerId, out var buffer))
+            if (string.IsNullOrWhiteSpace(playerId))
             {
-                buffer.StateQueue.Clear();
-                buffer.PreviousState = null;
-                buffer.NextState = null;
-                buffer.TargetTimeDelay = 0.1f;
+                return;
             }
+
+            m_Buffers.Remove(playerId);
         }
 
         /// <summary>
@@ -178,9 +225,10 @@ namespace OpenGS.Network
         /// </summary>
         public void SetTargetDelay(float delay)
         {
+            m_TargetTimeDelay = float.IsFinite(delay) ? Mathf.Clamp(delay, 0f, 10f) : 0.1f;
             foreach (var buffer in m_Buffers.Values)
             {
-                buffer.TargetTimeDelay = Mathf.Max(0f, delay);
+                buffer.TargetTimeDelay = m_TargetTimeDelay;
             }
         }
 
@@ -189,7 +237,8 @@ namespace OpenGS.Network
         /// </summary>
         public int GetBufferCount(string playerId)
         {
-            if (m_Buffers.TryGetValue(playerId, out var buffer))
+            if (!string.IsNullOrWhiteSpace(playerId)
+                && m_Buffers.TryGetValue(playerId, out var buffer))
             {
                 return buffer.StateQueue.Count;
             }
@@ -202,7 +251,24 @@ namespace OpenGS.Network
         private bool IsSequenceNewer(byte newSeq, byte oldSeq)
         {
             //  Rolloverを考慮した比較
-            return (byte)(newSeq - oldSeq) < 128;
+            var distance = (byte)(newSeq - oldSeq);
+            return distance != 0 && distance < 128;
+        }
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return IsFinite(value.x) && IsFinite(value.y) && IsFinite(value.z);
+        }
+
+        private static bool IsFinite(Quaternion value)
+        {
+            return IsFinite(value.x) && IsFinite(value.y)
+                && IsFinite(value.z) && IsFinite(value.w);
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return !float.IsNaN(value) && !float.IsInfinity(value);
         }
     }
 }

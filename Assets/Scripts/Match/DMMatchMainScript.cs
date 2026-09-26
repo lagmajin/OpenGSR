@@ -23,6 +23,7 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class DMMatchMainScript : AbstractMatchMainScript, IDMMatchMainScript
     {
+        private MatchRUDPServerNetworkManager networkManager;
         private float nowTime = 0.0f;
         public GameObject uiManager;
 
@@ -46,7 +47,7 @@ namespace OpenGS
         private void Awake()
         {
 
-            Application.targetFrameRate = 60;
+            Application.targetFrameRate = SettingsManager.Instance.GetGraphicsSettings().TargetFrameRate;
         }
 
         
@@ -54,6 +55,16 @@ namespace OpenGS
         protected new void Start()
         {
             base.Start();
+
+            try
+            {
+                networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"DMMatchMainScript: Failed to resolve MatchRUDPServerNetworkManager: {ex.Message}");
+                networkManager = null;
+            }
 
             if (!CompareTag("MainScript"))
             {
@@ -78,9 +89,15 @@ namespace OpenGS
         // Update is called once per frame
         private void Update()
         {
-            nowTime += Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
 
-            testGameTime -= Time.deltaTime;
+            nowTime = (float.IsFinite(nowTime) ? nowTime : 0f) + deltaTime;
+            testGameTime = (float.IsFinite(testGameTime) ? testGameTime : 0f) - deltaTime;
 
             if ((!endFlag) && testGameTime <= 0)
             {
@@ -111,11 +128,6 @@ namespace OpenGS
                 battleSceneMediateObject.uiManager.ShowRespawnGauge(delay);
             }
 
-
-        }
-
-        private void OnApplicationQuit()
-        {
 
         }
 
@@ -287,17 +299,36 @@ namespace OpenGS
 
         public override void PostEvent(AbstractGameEvent e)
         {
-            if (GameManager.IsOnlineGameMode)
+            if (e == null) return;
+            OfflineEventParser(e);
+            if (GameManager != null && GameManager.IsOnlineGameMode)
             {
-
-                //OfflineEventParser(e);
+                SendEventToServer(e);
             }
-            else
+        }
+
+        private void SendEventToServer(AbstractGameEvent e)
+        {
+            if (networkManager == null || !networkManager.IsConnected()) return;
+
+            JObject json = null;
+            if (e is PlayerKillEvent killEvent)
             {
-                //OnlineEventParser(e);
+                json = new JObject
+                {
+                    ["MessageType"] = RUDPMessageTypes.PlayerKill,
+                    ["KillerId"] = killEvent.KillerID(),
+                    ["VictimId"] = killEvent.VictimID(),
+                    ["WeaponType"] = killEvent.WeaponType(),
+                    ["Headshot"] = killEvent.IsHeadshot()
+                };
+            }
+            else if (e is PlayerDeadEvent deadEvent)
+            {
+                json = RUDPMessageBuilder.CreatePlayerDeath(deadEvent.PlayerID(), deadEvent.KillerID());
             }
 
-
+            if (json != null) networkManager.SendToServer(json);
         }
 
         protected override void OnNetworkDataRecved(JObject obj)
@@ -308,6 +339,7 @@ namespace OpenGS
             {
                 case RUDPMessageTypes.PlayerDeath:
                     Debug.Log($"[DM] PlayerDeath received: {obj["PlayerId"]?.ToString()}");
+                    HandleAuthoritativePlayerDeath(obj);
                     break;
                 case RUDPMessageTypes.KillScoreUpdate:
                     Debug.Log($"[DM] KillScoreUpdate received: {obj["PlayerId"]?.ToString()}");

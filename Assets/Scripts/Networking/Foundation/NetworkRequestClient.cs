@@ -23,6 +23,23 @@ namespace OpenGS
             this.sendMessage = sendMessage ?? throw new ArgumentNullException(nameof(sendMessage));
         }
 
+        public void FailPendingRequests(string reason)
+        {
+            List<PendingRequest> pendingRequests;
+            lock (syncRoot)
+            {
+                pendingRequests = new List<PendingRequest>(pendingByRequestId.Values);
+                pendingByRequestId.Clear();
+            }
+
+            var exception = new NetworkRequestException(
+                string.IsNullOrWhiteSpace(reason) ? "Network session was closed." : reason);
+            foreach (var pending in pendingRequests)
+            {
+                pending.CompletionSource.TrySetException(exception);
+            }
+        }
+
         public bool HandleIncomingMessage(JObject message)
         {
             if (message == null)
@@ -106,6 +123,8 @@ namespace OpenGS
                 throw new ArgumentException("Route is required.", nameof(route));
             }
 
+            cancellationToken.ThrowIfCancellationRequested();
+
             string requestId = Guid.NewGuid().ToString("N");
             var requestEnvelope = new JObject
             {
@@ -126,7 +145,24 @@ namespace OpenGS
                 };
             }
 
-            if (!sendMessage(requestEnvelope))
+            if (cancellationToken.IsCancellationRequested)
+            {
+                RemovePending(requestId);
+                cancellationToken.ThrowIfCancellationRequested();
+            }
+
+            bool sent;
+            try
+            {
+                sent = sendMessage(requestEnvelope);
+            }
+            catch
+            {
+                RemovePending(requestId);
+                throw;
+            }
+
+            if (!sent)
             {
                 RemovePending(requestId);
                 throw new NetworkRequestException($"Transport send failed. route={route}");
@@ -156,7 +192,15 @@ namespace OpenGS
                 RemovePending(requestId);
             }
 
-            bool success = responseEnvelope["Success"]?.ToObject<bool>() ?? false;
+            bool success;
+            try
+            {
+                success = responseEnvelope["Success"]?.ToObject<bool>() ?? false;
+            }
+            catch (Exception ex)
+            {
+                throw new NetworkRequestException($"Invalid response envelope. route={route}: {ex.Message}", "INVALID_RESPONSE");
+            }
             if (!success)
             {
                 string errorCode = responseEnvelope["ErrorCode"]?.ToString();
@@ -170,7 +214,14 @@ namespace OpenGS
                 return default;
             }
 
-            return payloadToken.ToObject<TResponse>();
+            try
+            {
+                return payloadToken.ToObject<TResponse>();
+            }
+            catch (Exception ex)
+            {
+                throw new NetworkRequestException($"Invalid response payload. route={route}: {ex.Message}", "INVALID_PAYLOAD");
+            }
         }
 
         private void RemovePending(string requestId)

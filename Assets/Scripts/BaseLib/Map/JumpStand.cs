@@ -13,16 +13,23 @@ namespace OpenGS
         
         public float jumpPower=10.0f;
 
+        private void Awake()
+        {
+            jumpPower = float.IsFinite(jumpPower) ? Mathf.Max(0f, jumpPower) : 0f;
+        }
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(jumpPower)) jumpPower = 0f;
+            jumpPower = Mathf.Max(0f, jumpPower);
+        }
+
         private void Start()
         {
             if (jumpPower < 0f)
             {
                 jumpPower = 0f;
             }
-        }
-
-        private void Update()
-        {
         }
 
         private void AddForce(GameObject obj)
@@ -32,16 +39,21 @@ namespace OpenGS
                 return;
             }
 
-            if (obj.TryGetComponent<Rigidbody2D>(out var body))
+            var body = obj.GetComponentInParent<Rigidbody2D>();
+            if (body != null)
             {
-                body.linearVelocity = new Vector2(body.linearVelocity.x, 0f);
+                var velocityX = float.IsFinite(body.linearVelocity.x) ? body.linearVelocity.x : 0f;
+                body.linearVelocity = new Vector2(velocityX, 0f);
                 body.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
                 return;
             }
 
-            if (obj.TryGetComponent<IPlayer>(out var player) && obj.TryGetComponent<Rigidbody2D>(out var playerBody))
+            var player = obj.GetComponentInParent<IPlayer>();
+            var playerBody = obj.GetComponentInParent<Rigidbody2D>();
+            if (player != null && playerBody != null)
             {
-                playerBody.linearVelocity = new Vector2(playerBody.linearVelocity.x, 0f);
+                var velocityX = float.IsFinite(playerBody.linearVelocity.x) ? playerBody.linearVelocity.x : 0f;
+                playerBody.linearVelocity = new Vector2(velocityX, 0f);
                 playerBody.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
             }
         }

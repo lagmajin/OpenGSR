@@ -7,12 +7,12 @@ namespace OpenGS
     {
         public static bool HasChild(this GameObject gameObject)
         {
-            return 0 < gameObject.transform.childCount;
+            return gameObject != null && 0 < gameObject.transform.childCount;
         }
 
         public static void SetLayer(this GameObject gameObject, int layer, bool needSetChildrens = true)
         {
-            if (!gameObject) return;
+            if (!gameObject || layer < 0 || layer > 31) return;
 
             gameObject.layer = layer;
 
@@ -24,11 +24,15 @@ namespace OpenGS
 
         public static void SetLayer(this GameObject gameObject, string layerName, bool needSetChildrens = true)
         {
-            SetLayer(gameObject, LayerMask.NameToLayer(layerName), needSetChildrens);
+            if (string.IsNullOrWhiteSpace(layerName)) return;
+            var layer = LayerMask.NameToLayer(layerName);
+            if (layer < 0) return;
+            SetLayer(gameObject, layer, needSetChildrens);
         }
 
         public static void SetInvert(this GameObject self)
         {
+            if (self == null) return;
             bool inv = !self.activeSelf;
             self.SetActive(inv);
         }

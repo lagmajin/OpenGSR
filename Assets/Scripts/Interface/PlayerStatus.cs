@@ -9,7 +9,7 @@ namespace OpenGS
     /// <summary>
     /// Player status data class containing HP, Booster, and related reactive properties
     /// </summary>
-    public class PlayerStatus
+    public class PlayerStatus : IDisposable
     {
         const float DefaultMaxHp = 512f; // ベースルールに合わせた512固定
         const float DefaultMaxBooster = 100f;
@@ -31,6 +31,7 @@ namespace OpenGS
             EGrenadeType.Empty,
             EGrenadeType.Empty
         };
+        readonly IReadOnlyList<EGrenadeType> grenadeSlotsView;
 
         // Kill/Death count properties for gameplay tracking
         readonly ReactiveProperty<int> killCount = new(0);
@@ -38,48 +39,61 @@ namespace OpenGS
 
         public PlayerStatus()
         {
+            grenadeSlotsView = Array.AsReadOnly(grenadeSlots);
         }
 
         public float Hp
         {
             get => hp.Value;
-            set => hp.Value = Mathf.Clamp(value, 0f, MaxHp);
+            set => hp.Value = float.IsFinite(value) ? Mathf.Clamp(value, 0f, MaxHp) : 0f;
         }
 
         public float MaxHp
         {
             get => maxHp.Value;
-            set => maxHp.Value = Mathf.Max(1f, value);
+            set
+            {
+                maxHp.Value = float.IsFinite(value) ? Mathf.Max(1f, value) : DefaultMaxHp;
+                hp.Value = Mathf.Min(hp.Value, maxHp.Value);
+            }
         }
 
         public float Armor
         {
             get => armor.Value;
-            set => armor.Value = Mathf.Clamp(value, 0f, MaxArmor);
+            set => armor.Value = float.IsFinite(value) ? Mathf.Clamp(value, 0f, MaxArmor) : 0f;
         }
 
         public float MaxArmor
         {
             get => maxArmor.Value;
-            set => maxArmor.Value = Mathf.Max(0f, value);
+            set
+            {
+                maxArmor.Value = float.IsFinite(value) ? Mathf.Max(0f, value) : DefaultMaxArmor;
+                armor.Value = Mathf.Min(armor.Value, maxArmor.Value);
+            }
         }
 
         public float Booster
         {
             get => booster.Value;
-            set => booster.Value = Mathf.Clamp(value, 0f, MaxBooster);
+            set => booster.Value = float.IsFinite(value) ? Mathf.Clamp(value, 0f, MaxBooster) : 0f;
         }
 
         public float MaxBooster
         {
             get => maxBooster.Value;
-            set => maxBooster.Value = Mathf.Max(1f, value);
+            set
+            {
+                maxBooster.Value = float.IsFinite(value) ? Mathf.Max(1f, value) : DefaultMaxBooster;
+                booster.Value = Mathf.Min(booster.Value, maxBooster.Value);
+            }
         }
 
         public float BoosterPower
         {
             get => boosterPower.Value;
-            set => boosterPower.Value = Mathf.Max(0.1f, value);
+            set => boosterPower.Value = float.IsFinite(value) ? Mathf.Max(0.1f, value) : 0.1f;
         }
 
         public int KillCount
@@ -100,7 +114,7 @@ namespace OpenGS
             set => SetGrenadeCount(value);
         }
 
-        public IReadOnlyList<EGrenadeType> GrenadeSlots => grenadeSlots;
+        public IReadOnlyList<EGrenadeType> GrenadeSlots => grenadeSlotsView;
 
         public IReadOnlyReactiveProperty<float> HpStream => hp;
         public IReadOnlyReactiveProperty<float> ArmorStream => armor;
@@ -135,6 +149,21 @@ namespace OpenGS
             Armor = MaxArmor;
             Booster = MaxBooster;
             RefillGrenade();
+        }
+
+        public void Dispose()
+        {
+            hp.Dispose();
+            maxHp.Dispose();
+            armor.Dispose();
+            maxArmor.Dispose();
+            booster.Dispose();
+            maxBooster.Dispose();
+            boosterPower.Dispose();
+            grenadeCount.Dispose();
+            killCount.Dispose();
+            deathCount.Dispose();
+            GrenadeSlotsChanged = null;
         }
 
         public void LoadGrenadeSlots(IEnumerable<EGrenadeType> equippedGrenades)
@@ -393,7 +422,22 @@ namespace OpenGS
             }
 
             grenadeCount.Value = Mathf.Clamp(count, 0, DefaultMaxGrenade);
-            GrenadeSlotsChanged?.Invoke();
+            if (GrenadeSlotsChanged == null)
+            {
+                return;
+            }
+
+            foreach (Action handler in GrenadeSlotsChanged.GetInvocationList())
+            {
+                try
+                {
+                    handler();
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[PlayerStatus] GrenadeSlotsChanged subscriber failed: {ex}");
+                }
+            }
         }
 
         public void FullCombatRecovery()

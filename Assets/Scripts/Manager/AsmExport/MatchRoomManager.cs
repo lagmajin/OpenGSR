@@ -23,6 +23,10 @@ namespace OpenGS
                     RemoveOnlineWaitRoom();
                 }
 
+                // A wait room starts a new lobby session; do not expose the
+                // previous match room to mode resolution or replay lookups.
+                OnlineMatchRoom = null;
+
                 OnlineWaitRoom = new WaitRoom(roomName, "", capacity);
                 WeaponLimit.Clear();
             }

@@ -26,11 +26,12 @@ namespace OpenGS
         public int spawnPointId;
 
         public int SpawnPointId => spawnPointId;
+        private ItemSpawnPoints manager;
 
         private void Awake()
         {
             AllSpawnPoints[spawnPointId] = this;
-            var manager = GetComponentInParent<ItemSpawnPoints>();
+            manager = GetComponentInParent<ItemSpawnPoints>();
             manager?.Register(this);
         }
 
@@ -41,8 +42,8 @@ namespace OpenGS
                 AllSpawnPoints.Remove(spawnPointId);
             }
 
-            var manager = GetComponentInParent<ItemSpawnPoints>();
             manager?.Unregister(this);
+            manager = null;
         }
 
         public void SpawnItem(EFieldItemType type)
@@ -62,16 +63,16 @@ namespace OpenGS
 
             if (prefab != null && transform.childCount == 0)
             {
-                Debug.Log($"[ItemSpawnPoint] SpawnItem: {FieldItemVisualResolver.GetDisplayName(type)} ({type})");
+                Debug.Log($"[ItemSpawnPoint] SpawnItem: {WorldItemVisualResolver.GetDisplayName(type)} ({type})");
                 var item = Instantiate(prefab, transform);
                 var pos = transform.position;
                 pos.y += heightOffset;
                 item.transform.position = pos;
 
-                var fieldItem = item.GetComponent<AbstractFieldItem>();
-                if (fieldItem != null)
+                var worldItem = item.GetComponent<WorldItem>();
+                if (worldItem != null)
                 {
-                    fieldItem.point = this;
+                    worldItem.point = this;
                 }
             }
         }

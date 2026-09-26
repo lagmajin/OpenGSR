@@ -45,7 +45,7 @@ namespace OpenGS
                 nextItem = eFieldItemType.FlameThrower;
             }
 
-            Debug.Log($"[WeaponItemSpawnPoint] Initial item: {FieldItemVisualResolver.GetDisplayName(nextItem ?? eFieldItemType.None)}");
+            Debug.Log($"[WeaponItemSpawnPoint] Initial item: {WorldItemVisualResolver.GetDisplayName(nextItem ?? eFieldItemType.None)}");
             if (startImmidietry)
             {
                 StartWorking();
@@ -62,6 +62,12 @@ namespace OpenGS
                 {
                     Debug.Log("[WeaponItemSpawnPoint] SpawnItem: FlameThrower");
 
+                    if (FlameThrowerPrefab == null)
+                    {
+                        Debug.LogWarning($"[WeaponItemSpawnPoint] FlameThrowerPrefab is not assigned on {name}. Skipping spawn.", this);
+                        return;
+                    }
+
                     var obj = Instantiate(FlameThrowerPrefab, gameObject.transform.position, Quaternion.identity);
 
                     obj.transform.parent = transform;
@@ -75,6 +81,12 @@ namespace OpenGS
                 if (gameObject.transform.childCount == 0)
                 {
                     Debug.Log("[WeaponItemSpawnPoint] SpawnItem: RocketLauncher");
+
+                    if (RocketLauncherPrefab == null)
+                    {
+                        Debug.LogWarning($"[WeaponItemSpawnPoint] RocketLauncherPrefab is not assigned on {name}. Skipping spawn.", this);
+                        return;
+                    }
 
                     var obj = Instantiate(RocketLauncherPrefab, gameObject.transform.position, Quaternion.identity);
 

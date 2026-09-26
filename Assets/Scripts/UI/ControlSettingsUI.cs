@@ -52,6 +52,17 @@ namespace OpenGS
             LoadCurrentSettings();
         }
 
+        private void OnDestroy()
+        {
+            mouseSensitivitySlider?.onValueChanged.RemoveListener(OnMouseSensitivityChanged);
+            invertMouseYToggle?.onValueChanged.RemoveListener(OnInvertMouseYChanged);
+            autoAimToggle?.onValueChanged.RemoveListener(OnAutoAimChanged);
+            defaultPresetButton?.onClick.RemoveListener(OnDefaultPresetClicked);
+            fpsPresetButton?.onClick.RemoveListener(OnFPSPresetClicked);
+            tpsPresetButton?.onClick.RemoveListener(OnTPSPresetClicked);
+            resetKeyBindingsButton?.onClick.RemoveListener(OnResetKeyBindingsClicked);
+        }
+
         // ─── 初期化 ─────────────────────────────────────────────────
 
         /// <summary>
@@ -118,6 +129,7 @@ namespace OpenGS
         /// </summary>
         public void ApplySettings()
         {
+            if (SettingsManager.Instance == null) return;
             currentSettings.KeyBindings = new Dictionary<string, string>(keyBindings);
             SettingsManager.Instance.ApplyControlSettings(currentSettings);
             Debug.Log("[ControlSettingsUI] 操作設定を適用しました");
@@ -130,6 +142,7 @@ namespace OpenGS
         /// </summary>
         private void LoadCurrentSettings()
         {
+            if (SettingsManager.Instance == null) return;
             currentSettings = SettingsManager.Instance.GetControlSettings();
             keyBindings = new Dictionary<string, string>(currentSettings.KeyBindings);
             UpdateUI();
@@ -181,11 +194,16 @@ namespace OpenGS
                 { "Jump", "Space" },
                 { "Crouch", "LeftControl" },
                 { "Sprint", "LeftShift" },
+                { "Dash", "F" },
+                { "InstantItem1", "Alpha1" },
+                { "InstantItem2", "Alpha2" },
+                { "InstantItem3", "Alpha3" },
                 { "Fire", "Mouse0" },
                 { "Aim", "Mouse1" },
                 { "Reload", "R" },
                 { "Interact", "E" },
-                { "Inventory", "Tab" },
+                { "Inventory", "G" },
+                { "Grenade", "V" },
                 { "Map", "M" },
                 { "Scoreboard", "Tab" },
                 { "Chat", "Enter" }

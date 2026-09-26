@@ -18,10 +18,6 @@ namespace OpenGS
             currentHealth = Mathf.Max(0f, maxHealth);
         }
 
-        void Update()
-        {
-        }
-
         public void OnHit()
         {
             if (IsDead)

@@ -31,6 +31,7 @@ namespace OpenGS
 
         public void PlayBGM(EBgm bgm, float fadeTime = -1f)
         {
+            fadeTime = SanitizeFadeTime(fadeTime);
             Debug.Log($"[SoundService] PlayBGM(Enum): {BGMVisualResolver.GetDisplayName(bgm)} ({bgm})");
             if (_bgmMasterData != null && _bgmMasterData.TryGetBGM(bgm, out var clip))
             {
@@ -63,6 +64,14 @@ namespace OpenGS
 
         public void PlayBGM(string bgmName, float fadeTime = -1f)
         {
+            fadeTime = SanitizeFadeTime(fadeTime);
+            if (string.IsNullOrWhiteSpace(bgmName))
+            {
+                Debug.LogWarning("[SoundService] Ignoring empty BGM name.");
+                return;
+            }
+
+            bgmName = bgmName.Trim();
             Debug.Log($"[SoundService] PlayBGM(String): {bgmName}");
             // 1. BGMMasterData から文字列名で探す
             if (_bgmMasterData != null && _bgmMasterData.TryGetBGMByName(bgmName, out var clip))
@@ -82,6 +91,7 @@ namespace OpenGS
         public void PlayBGM(AudioClip clip, float fadeTime = -1f)
         {
             if (clip == null) return;
+            fadeTime = SanitizeFadeTime(fadeTime);
             Debug.Log($"[SoundService] PlayBGM(Clip): {clip.name}");
             SimpleAudioManager.Instance.PlayBGM(clip, 1.0f, true);
             SimpleAudioManager.Instance.SetCurrentBGMName(clip.name);
@@ -122,7 +132,14 @@ namespace OpenGS
         public void PlayOneShot(AudioClip clip, float volume = 1.0f, float pitch = 1.0f)
         {
             if (clip == null) return;
+            volume = float.IsFinite(volume) ? Mathf.Clamp01(volume) : 1f;
+            pitch = float.IsFinite(pitch) ? Mathf.Clamp(pitch, 0.1f, 3f) : 1f;
             SimpleAudioManager.Instance.PlaySE(clip, volume, pitch);
+        }
+
+        private static float SanitizeFadeTime(float fadeTime)
+        {
+            return float.IsFinite(fadeTime) ? Mathf.Max(-1f, fadeTime) : -1f;
         }
 
         public bool ValidateSoundSetup(bool logWarnings = true)

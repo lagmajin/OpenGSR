@@ -81,6 +81,7 @@ namespace OpenGS
         {
             if (keyButton != null)
             {
+                keyButton.onClick.RemoveListener(OnKeyButtonClicked);
                 keyButton.onClick.AddListener(OnKeyButtonClicked);
             }
         }
@@ -105,6 +106,15 @@ namespace OpenGS
 
             // キー入力を待機
             StartCoroutine(WaitForKeyInput());
+        }
+
+        private void OnDisable()
+        {
+            StopAllCoroutines();
+            if (isWaitingForKey)
+            {
+                CancelKeyInput();
+            }
         }
 
         private System.Collections.IEnumerator WaitForKeyInput()
@@ -158,7 +168,14 @@ namespace OpenGS
                 keyText.text = GetKeyDisplayName(newKey);
             }
 
-            onKeyChanged?.Invoke(action, newKey);
+            try
+            {
+                onKeyChanged?.Invoke(action, newKey);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"[KeyBindItem] Key change callback failed: {ex}");
+            }
             Debug.Log($"[KeyBindItem] キーを設定しました: {action} = {newKey}");
         }
 
@@ -200,6 +217,7 @@ namespace OpenGS
                 case "Reload": return "リロード";
                 case "Interact": return "インタラクト";
                 case "Inventory": return "インベントリ";
+                case "Grenade": return "グレネード";
                 case "Map": return "マップ";
                 case "Scoreboard": return "スコアボード";
                 case "Chat": return "チャット";

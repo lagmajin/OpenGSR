@@ -30,11 +30,28 @@ namespace OpenGS
         private Collider2D pickupCollider;
         private string reservedPlayerId = string.Empty;
         private bool suppressReservationSync = false;
+        private bool lifecycleInitialized;
 
         [SerializeField] [Required] public GameObject weaponPrefab;
         [SerializeField] private int storedMagazine = -1;
         [SerializeField] private bool isSpecialWeapon = false;
         [SerializeField] private int specialAmmo = 0;
+
+        private void OnValidate()
+        {
+            if (!float.IsFinite(time) || time < 0f) time = 30f;
+            if (!float.IsFinite(picupableDelay) || picupableDelay < 0f) picupableDelay = 1f;
+            storedMagazine = Mathf.Max(-1, storedMagazine);
+            specialAmmo = Mathf.Max(0, specialAmmo);
+        }
+
+        private void Awake()
+        {
+            time = float.IsFinite(time) ? Mathf.Max(0f, time) : 30f;
+            picupableDelay = float.IsFinite(picupableDelay) ? Mathf.Max(0f, picupableDelay) : 1f;
+            storedMagazine = Mathf.Max(-1, storedMagazine);
+            specialAmmo = Mathf.Max(0, specialAmmo);
+        }
 
         //public Sound
 
@@ -65,19 +82,8 @@ namespace OpenGS
 
             pickupable = false;
 
-            if (pickupableOnTime)
-            {
-                Invoke(nameof(EnablePickUp), Mathf.Max(0f, picupableDelay));
-            }
-            else
-            {
-                EnablePickUp();
-            }
-
-            if (time > 0f)
-            {
-                Invoke(nameof(DestroySelf), time);
-            }
+            lifecycleInitialized = true;
+            ScheduleLifecycleInvokes();
         }
 
         private void OnEnable()
@@ -86,19 +92,42 @@ namespace OpenGS
             {
                 ActiveWeapons.Add(this);
             }
+
+            if (lifecycleInitialized)
+            {
+                ScheduleLifecycleInvokes();
+            }
         }
 
         private void OnDisable()
         {
+            CancelInvoke(nameof(EnablePickUp));
+            CancelInvoke(nameof(DestroySelf));
             ActiveWeapons.Remove(this);
         }
 
-        private void Update()
+        private void ScheduleLifecycleInvokes()
         {
+            CancelInvoke(nameof(EnablePickUp));
+            CancelInvoke(nameof(DestroySelf));
 
+            if (!pickupable)
+            {
+                if (pickupableOnTime)
+                {
+                    Invoke(nameof(EnablePickUp), picupableDelay);
+                }
+                else
+                {
+                    EnablePickUp();
+                }
+            }
+
+            if (time > 0f)
+            {
+                Invoke(nameof(DestroySelf), time);
+            }
         }
-
-
 
         public void EnablePickUp()
         {
@@ -149,6 +178,11 @@ namespace OpenGS
         {
             controller = null;
 
+            if (!IsFinite(position) || string.IsNullOrWhiteSpace(weaponType))
+            {
+                return false;
+            }
+
             var bestDistance = float.MaxValue;
             foreach (var weapon in ActiveWeapons)
             {
@@ -163,6 +197,10 @@ namespace OpenGS
                 }
 
                 var weaponPosition = weapon.ResolveSyncPosition();
+                if (!IsFinite(weaponPosition))
+                {
+                    continue;
+                }
                 var distance = Vector2.Distance(weaponPosition, position);
                 if (distance > 0.5f)
                 {
@@ -177,6 +215,11 @@ namespace OpenGS
             }
 
             return controller != null;
+        }
+
+        private static bool IsFinite(Vector2 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y);
         }
 
         private void SendWeaponReservationSync(bool isReserved, string playerId)
@@ -243,9 +286,15 @@ namespace OpenGS
 
         private void EquipPlayer(IPlayer p)
         {
+            if (p == null)
+            {
+                Debug.LogWarning($"[{nameof(FieldWeaponController)}] Pickup ignored: player is null.");
+                return;
+            }
+
             if (!weaponPrefab)
             {
-                Debug.Log("Error weapon");
+                Debug.LogWarning($"[{nameof(FieldWeaponController)}] Pickup ignored: weapon prefab is not assigned on {name}.");
 
                 return;
             }
@@ -277,6 +326,14 @@ namespace OpenGS
             {
                 SendWeaponPickupSync(pickupActor.UniqueID().ToString());
             }
+            Destroy(gameObject);
+        }
+
+        private void EquipPlayer(PlayerAgent agent)
+        {
+            if (agent == null || weaponPrefab == null || !agent.CanEquipWeapon()) return;
+            agent.EquipWeapon(weaponPrefab);
+            if (storedMagazine >= 0) agent.SetCurrentWeaponMagazine(storedMagazine);
             Destroy(gameObject);
         }
 
@@ -392,6 +449,12 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            var agent = collision != null ? collision.GetComponentInParent<PlayerAgent>() : null;
+            if (agent != null && pickupable)
+            {
+                EquipPlayer(agent);
+                return;
+            }
             HandlePickupCollision(collision);
         }
     }

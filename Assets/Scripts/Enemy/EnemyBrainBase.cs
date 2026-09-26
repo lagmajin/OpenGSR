@@ -20,17 +20,38 @@ namespace OpenGS
         protected Transform target;
         private float nextThinkTime = 0f;
 
+        private void OnValidate()
+        {
+            if (!float.IsFinite(detectionRange)) detectionRange = 10f;
+            if (!float.IsFinite(attackRange)) attackRange = 5f;
+            if (!float.IsFinite(thinkInterval)) thinkInterval = 0.2f;
+            detectionRange = Mathf.Max(0f, detectionRange);
+            attackRange = Mathf.Clamp(attackRange, 0f, detectionRange);
+            thinkInterval = Mathf.Max(0.02f, thinkInterval);
+        }
+
         protected virtual void Awake()
         {
+            detectionRange = float.IsFinite(detectionRange) ? Mathf.Max(0f, detectionRange) : 10f;
+            attackRange = float.IsFinite(attackRange)
+                ? Mathf.Clamp(attackRange, 0f, detectionRange)
+                : Mathf.Min(5f, detectionRange);
+            thinkInterval = float.IsFinite(thinkInterval) ? Mathf.Max(0.02f, thinkInterval) : 0.2f;
             aiInput = GetComponent<EnemyInputService>();
         }
 
         protected virtual void Update()
         {
-            if (Time.time >= nextThinkTime)
+            var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
+
+            if (now >= nextThinkTime)
             {
                 Think();
-                nextThinkTime = Time.time + thinkInterval;
+                nextThinkTime = now + thinkInterval;
             }
 
             // 毎フレームの更新（滑らかな移動やエイムなど）
@@ -57,7 +78,13 @@ namespace OpenGS
         {
             // シンプルにプレイヤーを探す（将来的に抽象化可能）
             var hit = Physics2D.OverlapCircle(transform.position, detectionRange, targetLayer);
-            return hit != null ? hit.transform : null;
+            if (hit == null)
+            {
+                return null;
+            }
+
+            var player = hit.GetComponentInParent<AbstractPlayer>();
+            return player != null ? player.transform : hit.transform;
         }
 
         protected bool IsTargetVisible()

@@ -103,6 +103,29 @@ namespace OpenGS.UI
             if (webView != null && !string.IsNullOrWhiteSpace(currentUrl)) webView.LoadURL(currentUrl);
         }
 
+        private void OnDisable()
+        {
+            // Native WebView is not automatically hidden when its Unity host
+            // object is disabled.
+            Close();
+        }
+
+        private void OnApplicationPause(bool paused)
+        {
+            if (paused)
+            {
+                Close();
+            }
+        }
+
+        private void OnApplicationFocus(bool focused)
+        {
+            if (!focused)
+            {
+                Close();
+            }
+        }
+
         private void EnsureWebView()
         {
             if (webView != null) return;

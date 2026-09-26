@@ -34,6 +34,23 @@ namespace OpenGS
         [SerializeField]private PlayerAgent player;
         private bool boostHeld;
 
+        private void OnValidate()
+        {
+            if (!float.IsFinite(maxFuel)) maxFuel = 2f;
+            if (!float.IsFinite(fuelRecoverRate)) fuelRecoverRate = 0.5f;
+            if (!float.IsFinite(boostAccel)) boostAccel = 10f;
+            if (!float.IsFinite(maxBoostSpeed)) maxBoostSpeed = 5f;
+            if (!float.IsFinite(groundedRecoveryDelay)) groundedRecoveryDelay = 0.5f;
+            if (!float.IsFinite(gravityDuringBoost)) gravityDuringBoost = 3f;
+
+            maxFuel = Mathf.Max(0.01f, maxFuel);
+            fuelRecoverRate = Mathf.Max(0f, fuelRecoverRate);
+            boostAccel = Mathf.Max(0f, boostAccel);
+            maxBoostSpeed = Mathf.Max(0f, maxBoostSpeed);
+            groundedRecoveryDelay = Mathf.Max(0f, groundedRecoveryDelay);
+            gravityDuringBoost = Mathf.Max(0f, gravityDuringBoost);
+        }
+
         public void Activate(bool active)
         {
             boostHeld = active;
@@ -46,6 +63,11 @@ namespace OpenGS
 
         public float StepBoost(float dt)
         {
+            if (!float.IsFinite(dt) || dt < 0f)
+            {
+                return 0f;
+            }
+
             bool willActivate = boostHeld && currentFuel > 0f;
 
             if (willActivate && !isActive)
@@ -70,21 +92,24 @@ namespace OpenGS
 
         public void RecoverFuel(float dt)
         {
-            if (player == null)
+            if (player == null || !float.IsFinite(dt) || dt < 0f)
             {
                 return;
             }
 
-            if (player.isGrounded && Time.time - groundedTime > groundedRecoveryDelay)
+            var currentTime = Time.time;
+            if (!float.IsFinite(currentTime)) return;
+
+            if (player.isGrounded && currentTime - groundedTime > groundedRecoveryDelay)
             {
-                currentFuel = Mathf.Min(currentFuel + fuelRecoverRate * dt, maxFuel);
+                currentFuel = Mathf.Clamp(currentFuel + fuelRecoverRate * dt, 0f, maxFuel);
             }
         }
 
         private float ApplyBoost(float dt)
         {
-            currentFuel -= dt;
-            currentBoostSpeed = Mathf.Min(currentBoostSpeed + boostAccel * dt, maxBoostSpeed);
+            currentFuel = Mathf.Max(0f, currentFuel - dt);
+            currentBoostSpeed = Mathf.Clamp(currentBoostSpeed + boostAccel * dt, 0f, maxBoostSpeed);
             currentFuel = Mathf.Max(currentFuel, 0f);
 
             if (currentFuel <= 0f)
@@ -112,7 +137,8 @@ namespace OpenGS
         {
             currentBoostSpeed = 0f;
             isActive = false;
-            groundedTime = Time.time;
+            var now = Time.time;
+            groundedTime = float.IsFinite(now) && now >= 0f ? now : 0f;
         }
 
         private void LoadEquippedSettings()
@@ -153,7 +179,7 @@ namespace OpenGS
             }
         }
 
-        public float GetFuelRatio() => currentFuel / maxFuel;
+        public float GetFuelRatio() => maxFuel > 0f ? Mathf.Clamp01(currentFuel / maxFuel) : 0f;
         public bool IsOutOfFuel() => currentFuel <= 0f;
         public float CurrentFuel => currentFuel;
     }

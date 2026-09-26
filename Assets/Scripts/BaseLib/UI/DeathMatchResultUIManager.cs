@@ -21,15 +21,33 @@ namespace OpenGS
         }
         public void ShowResult(DeathMatchFinalScore score)
         {
-            var allPlayerScore = score.AllPlayerFinalScores().AllPlayerFinalScore();
+            if (score == null)
+            {
+                UpdateResultList(null);
+                return;
+            }
 
-            var sortedList=allPlayerScore.OrderBy(s => s.Rank)
-                                  .ToList();
+            var allPlayerScore = score.AllPlayerFinalScores()?.AllPlayerFinalScore();
+            if (allPlayerScore == null)
+            {
+                UpdateResultList(null);
+                return;
+            }
 
+            var resultRows = allPlayerScore
+                .Where(player => player != null)
+                .Select(player => new PlayerMatchResultData
+                {
+                    PlayerId = player.PlayerId,
+                    PlayerName = player.PlayerName,
+                    Team = string.Empty,
+                    Kills = player.Kill,
+                    Deaths = player.Death,
+                    Score = Mathf.RoundToInt(player.TotalPoint)
+                })
+                .ToList();
 
-
-
-            //var sorted=allPlayerScore.Orderd
+            UpdateResultList(resultRows);
 
 
         }

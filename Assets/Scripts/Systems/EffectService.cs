@@ -22,6 +22,7 @@ namespace OpenGS
     {
         private const string PoolRootName = "[EffectService Pool]";
         private const float DefaultHitLifetime = 0.2f;
+        private const float DefaultOneShotLifetime = 5f;
         private const int DefaultPoolCapacity = 8;
         private const int MaxPoolSize = 32;
 
@@ -73,10 +74,10 @@ namespace OpenGS
             }
 
             var effect = Object.Instantiate(prefab, position, rotation);
-            if (lifetime > 0f)
-            {
-                Object.Destroy(effect, lifetime);
-            }
+            var safeLifetime = float.IsFinite(lifetime) && lifetime > 0f
+                ? Mathf.Min(lifetime, DefaultOneShotLifetime)
+                : DefaultOneShotLifetime;
+            Object.Destroy(effect, safeLifetime);
         }
 
         public void ShakeCamera(float intensity, float duration)
@@ -84,7 +85,16 @@ namespace OpenGS
             if (_mainCamera == null) _mainCamera = Camera.main;
             if (_mainCamera == null) return;
 
-            _mainCamera.transform.DOShakePosition(duration, intensity, 10, 90, false, true);
+            intensity = float.IsFinite(intensity) ? Mathf.Max(0f, intensity) : 0f;
+            duration = float.IsFinite(duration) ? Mathf.Max(0f, duration) : 0f;
+            if (intensity <= 0f || duration <= 0f)
+            {
+                return;
+            }
+
+            _mainCamera.transform
+                .DOShakePosition(duration, intensity, 10, 90, false, true)
+                .SetLink(_mainCamera.gameObject);
         }
 
         private Quaternion CreateImpactRotation(Vector2 normal)

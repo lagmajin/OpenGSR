@@ -17,22 +17,22 @@ namespace OpenGS
     {
         [SerializeField] [Required] private AbstractPlayer player;
 
+        private void Awake()
+        {
+            if (player == null)
+            {
+                player = GetComponent<AbstractPlayer>();
+            }
+        }
 
 
         void Update()
         {
-
             var current = Mouse.current;
-
-
-            var cursorPosition = current.position.ReadValue();
-
-            var leftButton = current.leftButton;
-            if (leftButton.wasPressedThisFrame)
+            if (current == null || player == null)
             {
-                Debug.Log($"左ボタンが押された！ {cursorPosition}");
+                return;
             }
-
 
             var rightButton = current.rightButton;
 

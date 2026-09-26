@@ -14,10 +14,26 @@ namespace OpenGS
 
         private float count;
 
+        private void Awake()
+        {
+            damage = Mathf.Max(0, damage);
+            count = 0f;
+        }
+
+        private void OnValidate()
+        {
+            damage = Mathf.Max(0, damage);
+        }
+
         //[SerializeField][Required]public AudioClip hitSound;
 
         private void FixedUpdate()
         {
+            if (!float.IsFinite(count))
+            {
+                count = 0f;
+            }
+
             if (count <= 180.0f)
             {
                 transform.Rotate(0, 0, -1.1f);
@@ -28,6 +44,12 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
+            if (collision == null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             if (ProjectileHitUtility.TryGetTargetPlayer(collision, out var player))
             {
                 if (ProjectileHitUtility.ApplyPlayerDamage(
@@ -50,7 +72,12 @@ namespace OpenGS
 
         public void Init(Vector2 direction, float initDamage, string ownerId, string weapon, ETeam team)
         {
-            damage = Mathf.RoundToInt(initDamage);
+            if (!float.IsFinite(direction.x) || !float.IsFinite(direction.y) || direction.sqrMagnitude <= Mathf.Epsilon)
+            {
+                direction = Vector2.right;
+            }
+
+            damage = float.IsFinite(initDamage) ? Mathf.Max(0, Mathf.RoundToInt(initDamage)) : 0;
             ownerPlayerId = ownerId ?? string.Empty;
             weaponName = string.IsNullOrWhiteSpace(weapon) ? "Shotgun" : weapon;
             Team = team;

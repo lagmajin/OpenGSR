@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 
 namespace OpenGS
@@ -18,11 +19,28 @@ namespace OpenGS
 
         private ShopItemData itemData;
         private System.Action<ShopItemData> onSelected;
+        private UnityAction selectButtonHandler;
 
         public ShopItemData ItemData => itemData;
 
         public void Setup(ShopItemData data, System.Action<ShopItemData> callback)
         {
+            if (data == null || string.IsNullOrWhiteSpace(data.id))
+            {
+                itemData = null;
+                onSelected = null;
+                if (selectButton != null)
+                {
+                    selectButton.interactable = false;
+                    if (selectButtonHandler != null)
+                    {
+                        selectButton.onClick.RemoveListener(selectButtonHandler);
+                        selectButtonHandler = null;
+                    }
+                }
+                return;
+            }
+
             itemData = data;
             onSelected = callback;
 
@@ -36,12 +54,17 @@ namespace OpenGS
                 accentImage.color = data.category == EShopCategory.Booster ? data.itemColor : Color.clear;
             }
             if (nameText != null) nameText.text = data.itemName;
-            if (priceText != null) priceText.text = $"{data.price} CR";
+            if (priceText != null) priceText.text = $"{Mathf.Max(0, data.price)} CR";
 
             if (selectButton != null)
             {
-                selectButton.onClick.RemoveAllListeners();
-                selectButton.onClick.AddListener(() => onSelected?.Invoke(itemData));
+                if (selectButtonHandler != null)
+                {
+                    selectButton.onClick.RemoveListener(selectButtonHandler);
+                }
+
+                selectButtonHandler = () => onSelected?.Invoke(itemData);
+                selectButton.onClick.AddListener(selectButtonHandler);
             }
         }
 

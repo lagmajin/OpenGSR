@@ -155,6 +155,46 @@ namespace OpenGS
             }
         }
 
+        private static void InvokeSafely(Action<FlagStand, FlagController> handlers, FlagStand stand, FlagController flag, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<FlagStand, FlagController> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(stand, flag);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[FlagStand] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
+        private static void InvokeSafely(Action<FlagStand, AbstractPlayer> handlers, FlagStand stand, AbstractPlayer player, string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<FlagStand, AbstractPlayer> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(stand, player);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[FlagStand] {eventName} subscriber failed: {ex}");
+                }
+            }
+        }
+
         private void BindFlagController(FlagController flagController)
         {
             if (flagController == null)
@@ -163,7 +203,7 @@ namespace OpenGS
             }
 
             currentFlagController = flagController;
-            FlagSpawned?.Invoke(this, currentFlagController);
+            InvokeSafely(FlagSpawned, this, currentFlagController, nameof(FlagSpawned));
         }
 
         private void UnbindCurrentFlagController()
@@ -187,7 +227,7 @@ namespace OpenGS
                         Debug.Log("Capture Success: " + team);
                         if (pl is AbstractPlayer ap)
                         {
-                            FlagCaptured?.Invoke(this, ap);
+                            InvokeSafely(FlagCaptured, this, ap, nameof(FlagCaptured));
                         }
                     }
                 }

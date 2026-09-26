@@ -39,16 +39,43 @@ namespace OpenGS.Network
 
         public static TransformState Create(INetworkTransform transform, float timestamp, byte sequence)
         {
+            if (transform == null)
+            {
+                return default;
+            }
+
+            var position = SanitizeVector(transform.Position);
+            var rotation = SanitizeRotation(transform.Rotation);
+            var velocity = SanitizeVector(transform.Velocity);
             return new TransformState
             {
                 networkId = transform.NetworkId,
-                playerId = transform.OwnerPlayerId,
-                position = transform.Position,
-                rotation = transform.Rotation,
-                velocity = transform.Velocity,
-                timestamp = timestamp,
+                playerId = transform.OwnerPlayerId ?? string.Empty,
+                position = position,
+                rotation = rotation,
+                velocity = velocity,
+                timestamp = float.IsFinite(timestamp) ? timestamp : (float.IsFinite(Time.time) && Time.time >= 0f ? Time.time : 0f),
                 sequenceNumber = sequence
             };
+        }
+
+        private static Vector3 SanitizeVector(Vector3 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z)
+                ? value
+                : Vector3.zero;
+        }
+
+        private static Quaternion SanitizeRotation(Quaternion value)
+        {
+            if (!float.IsFinite(value.x) || !float.IsFinite(value.y) ||
+                !float.IsFinite(value.z) || !float.IsFinite(value.w) ||
+                value.sqrMagnitude < 0.000001f)
+            {
+                return Quaternion.identity;
+            }
+
+            return Quaternion.Normalize(value);
         }
     }
 
@@ -70,15 +97,25 @@ namespace OpenGS.Network
         {
             return new PlayerInput
             {
-                playerId = playerId,
-                moveInput = move,
-                lookInput = look,
+                playerId = playerId ?? string.Empty,
+                moveInput = SanitizeInputVector(move),
+                lookInput = SanitizeInputVector(look),
                 jump = jump,
                 fire = fire,
                 sequenceNumber = seq,
-                timestamp = time,
-                deltaTime = dt
+                timestamp = float.IsFinite(time) ? time : (float.IsFinite(Time.time) && Time.time >= 0f ? Time.time : 0f),
+                deltaTime = float.IsFinite(dt) ? Mathf.Clamp(dt, 0f, 0.25f) : 0f
             };
+        }
+
+        private static Vector3 SanitizeInputVector(Vector3 value)
+        {
+            if (!float.IsFinite(value.x) || !float.IsFinite(value.y) || !float.IsFinite(value.z))
+            {
+                return Vector3.zero;
+            }
+
+            return value.sqrMagnitude > 1f ? value.normalized : value;
         }
     }
 }

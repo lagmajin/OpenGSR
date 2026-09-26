@@ -10,17 +10,18 @@ namespace OpenGS
     public class AutoDelete : MonoBehaviour
     {
         [SerializeField] private float deleteTime = 1.0f;
+
+        private void Awake()
+        {
+            deleteTime = Mathf.Max(0f, float.IsFinite(deleteTime) ? deleteTime : 1f);
+        }
+
         // Start is called before the first frame update
         void Start()
         {
             Destroy(gameObject,deleteTime);
         }
 
-        // Update is called once per frame
-        void Update()
-        {
-
-        }
     }
 
 

@@ -46,36 +46,70 @@ namespace OpenGS
         private CanvasGroup canvasGroup;
         private Sequence currentSequence;
         private RectTransform rectTransform;
+        private CTFMatchMainScript subscribedMatch;
 
         private void Awake()
         {
+            inDuration = NormalizeNonNegative(inDuration);
+            holdDuration = NormalizeNonNegative(holdDuration);
+            outDuration = NormalizeNonNegative(outDuration);
             canvasGroup = GetComponent<CanvasGroup>();
             rectTransform = GetComponent<RectTransform>();
             
             canvasGroup.alpha = 0f;
         }
 
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
+        }
+
         private void OnEnable()
         {
-            // CTFMatchMainScript のイベントを購読して自動的にメッセージを表示する
-            if (CTFMatchMainScript.Instance != null)
-            {
-                CTFMatchMainScript.Instance.OnFlagCaptured += HandleOnFlagCaptured;
-                CTFMatchMainScript.Instance.OnFlagReturned += HandleOnFlagReturned;
-                CTFMatchMainScript.Instance.OnFlagLost += HandleOnFlagLost;
-                CTFMatchMainScript.Instance.OnFlagPickedUp += HandleOnFlagPickedUp;
-            }
+            TrySubscribeToMatch();
         }
 
         private void OnDisable()
         {
-            if (CTFMatchMainScript.Instance != null)
+            if (subscribedMatch != null)
             {
-                CTFMatchMainScript.Instance.OnFlagCaptured -= HandleOnFlagCaptured;
-                CTFMatchMainScript.Instance.OnFlagReturned -= HandleOnFlagReturned;
-                CTFMatchMainScript.Instance.OnFlagLost -= HandleOnFlagLost;
-                CTFMatchMainScript.Instance.OnFlagPickedUp -= HandleOnFlagPickedUp;
+                subscribedMatch.OnFlagCaptured -= HandleOnFlagCaptured;
+                subscribedMatch.OnFlagReturned -= HandleOnFlagReturned;
+                subscribedMatch.OnFlagLost -= HandleOnFlagLost;
+                subscribedMatch.OnFlagPickedUp -= HandleOnFlagPickedUp;
+                subscribedMatch = null;
             }
+        }
+
+        private void Update()
+        {
+            if (subscribedMatch == null)
+            {
+                TrySubscribeToMatch();
+            }
+        }
+
+        private void TrySubscribeToMatch()
+        {
+            var match = CTFMatchMainScript.Instance;
+            if (match == null || subscribedMatch == match)
+            {
+                return;
+            }
+
+            if (subscribedMatch != null)
+            {
+                subscribedMatch.OnFlagCaptured -= HandleOnFlagCaptured;
+                subscribedMatch.OnFlagReturned -= HandleOnFlagReturned;
+                subscribedMatch.OnFlagLost -= HandleOnFlagLost;
+                subscribedMatch.OnFlagPickedUp -= HandleOnFlagPickedUp;
+            }
+
+            subscribedMatch = match;
+            subscribedMatch.OnFlagCaptured += HandleOnFlagCaptured;
+            subscribedMatch.OnFlagReturned += HandleOnFlagReturned;
+            subscribedMatch.OnFlagLost += HandleOnFlagLost;
+            subscribedMatch.OnFlagPickedUp += HandleOnFlagPickedUp;
         }
 
         private void HandleOnFlagCaptured(ETeam capturingTeam)

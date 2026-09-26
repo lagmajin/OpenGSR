@@ -37,8 +37,16 @@ namespace OpenGS
         // last time we damaged a specific instance id
         private Dictionary<int, float> lastHitTime = new Dictionary<int, float>();
 
+        private void OnDisable()
+        {
+            lastHitTime.Clear();
+        }
+
         private void OnValidate()
         {
+            if (!float.IsFinite(damage)) damage = 0f;
+            if (!float.IsFinite(damageInterval)) damageInterval = 0f;
+            if (!float.IsFinite(forceMagnitude)) forceMagnitude = 0f;
             damage = Mathf.Max(0f, damage);
             damageInterval = Mathf.Max(0f, damageInterval);
             forceMagnitude = Mathf.Max(0f, forceMagnitude);
@@ -54,10 +62,18 @@ namespace OpenGS
 
         private void HandleHit(GameObject other)
         {
-            if (!IsValidTarget(other)) return;
+            if (other == null) return;
 
-            var id = UnityObjectIdCompat.GetObjectId(other);
+            var abstractPlayer = other.GetComponentInParent<AbstractPlayer>();
+            var targetObject = abstractPlayer != null ? abstractPlayer.gameObject : other;
+            if (!IsValidTarget(targetObject)) return;
+
+            var id = UnityObjectIdCompat.GetObjectId(targetObject);
             var now = Time.time;
+            if (!float.IsFinite(now) || now < 0f)
+            {
+                return;
+            }
 
             if (oneShotPerTarget && lastHitTime.ContainsKey(id))
             {
@@ -77,7 +93,28 @@ namespace OpenGS
             lastHitTime[id] = now;
 
             // apply damage using IDamageable if present
-            var dmg = other.GetComponent<IDamageable>();
+            if (abstractPlayer != null && PlayerRegistry.Instance != null)
+            {
+                var source = (Vector2)(abstractPlayer.transform.position - transform.position);
+                PlayerRegistry.Instance.ApplyDamage(
+                    abstractPlayer.UniqueID(),
+                    source,
+                    damage,
+                    damageType,
+                    string.Empty,
+                    nameof(DamageOnContact),
+                    false,
+                    applyForce);
+
+                if (destroyOnHit)
+                {
+                    Destroy(gameObject);
+                }
+
+                return;
+            }
+
+            var dmg = other.GetComponentInParent<IDamageable>();
             if (dmg != null)
             {
                 var dir = (other.transform.position - transform.position);
@@ -104,7 +141,7 @@ namespace OpenGS
             else
             {
                 // try IDamagableObject marker - no action by default
-                var marker = other.GetComponent<IDamagableObject>();
+                var marker = other.GetComponentInParent<IDamagableObject>();
                 if (marker != null)
                 {
                     // marker exists but no IDamageable methods - nothing to call
@@ -120,17 +157,23 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            HandleHit(collision.gameObject);
+            if (collision != null)
+            {
+                HandleHit(collision.gameObject);
+            }
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
-            HandleHit(collision.gameObject);
+            if (collision != null && collision.collider != null)
+            {
+                HandleHit(collision.gameObject);
+            }
         }
 
         private void OnTriggerStay2D(Collider2D collision)
         {
-            if (damageInterval > 0f)
+            if (damageInterval > 0f && collision != null)
             {
                 HandleHit(collision.gameObject);
             }

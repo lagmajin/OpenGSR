@@ -56,6 +56,48 @@ namespace OpenGS
             };
         }
 
+        public static string GetStats(EPlayerCharacter character)
+        {
+            return character switch
+            {
+                EPlayerCharacter.Ami => "HP: 100\n攻撃力: 80\n防御力: 80\nスピード: 80",
+                EPlayerCharacter.Yumi => "HP: 85\n攻撃力: 75\n防御力: 65\nスピード: 100",
+                EPlayerCharacter.Jack => "HP: 110\n攻撃力: 100\n防御力: 75\nスピード: 65",
+                EPlayerCharacter.Jackle => "HP: 115\n攻撃力: 70\n防御力: 100\nスピード: 60",
+                EPlayerCharacter.Misty => "HP: 95\n攻撃力: 85\n防御力: 75\nスピード: 90",
+                EPlayerCharacter.Liu => "HP: 95\n攻撃力: 100\n防御力: 65\nスピード: 85",
+                EPlayerCharacter.Mary => "HP: 90\n攻撃力: 70\n防御力: 85\nスピード: 85",
+                EPlayerCharacter.Wolf => "HP: 105\n攻撃力: 95\n防御力: 70\nスピード: 90",
+                EPlayerCharacter.Wyvern => "HP: 100\n攻撃力: 90\n防御力: 70\nスピード: 95",
+                EPlayerCharacter.Seoul => "HP: 100\n攻撃力: 80\n防御力: 80\nスピード: 80",
+                EPlayerCharacter.LittleJ => "HP: 80\n攻撃力: 75\n防御力: 65\nスピード: 105",
+                EPlayerCharacter.Shue => "HP: 85\n攻撃力: 80\n防御力: 65\nスピード: 100",
+                EPlayerCharacter.Swaltz => "HP: 90\n攻撃力: 85\n防御力: 75\nスピード: 95",
+                _ => "HP: 100\n攻撃力: 80\n防御力: 70\nスピード: 90"
+            };
+        }
+
+        public static int GetRating(EPlayerCharacter character)
+        {
+            return character switch
+            {
+                EPlayerCharacter.Ami => 4,
+                EPlayerCharacter.Yumi => 4,
+                EPlayerCharacter.Jack => 4,
+                EPlayerCharacter.Jackle => 3,
+                EPlayerCharacter.Misty => 4,
+                EPlayerCharacter.Liu => 4,
+                EPlayerCharacter.Mary => 3,
+                EPlayerCharacter.Wolf => 4,
+                EPlayerCharacter.Wyvern => 4,
+                EPlayerCharacter.Seoul => 4,
+                EPlayerCharacter.LittleJ => 3,
+                EPlayerCharacter.Shue => 4,
+                EPlayerCharacter.Swaltz => 4,
+                _ => 3
+            };
+        }
+
         public static Sprite GetThumbnail(EPlayerCharacter character)
         {
             if (thumbnailCache.TryGetValue(character, out var cached))

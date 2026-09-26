@@ -21,6 +21,7 @@ namespace OpenGS
 
         private Image overlayImage;
         private SynchronizationContext mainThread;
+        private Coroutine splashCoroutine;
 
         public override SynchronizationContext MainThread()
         {
@@ -30,15 +31,38 @@ namespace OpenGS
         protected override void Awake()
         {
             base.Awake();
+            displayTime = NormalizeNonNegative(displayTime, 3f);
+            fadeTime = NormalizePositive(fadeTime, 1.2f);
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
             mainThread = SynchronizationContext.Current;
+        }
+
+        private static float NormalizeNonNegative(float value, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : fallback;
+        }
+
+        private static float NormalizePositive(float value, float fallback)
+        {
+            return float.IsFinite(value) && value > 0f ? value : fallback;
         }
 
         private void Start()
         {
             ResolveReferences();
             CreateOverlayIfNeeded();
-            StartCoroutine(SplashSequence());
+            splashCoroutine = StartCoroutine(SplashSequence());
+        }
+
+        protected override void OnDestroy()
+        {
+            if (splashCoroutine != null)
+            {
+                StopCoroutine(splashCoroutine);
+                splashCoroutine = null;
+            }
+
+            base.OnDestroy();
         }
 
         private void ResolveReferences()
@@ -93,7 +117,15 @@ namespace OpenGS
 
             while (t < safeFadeTime)
             {
-                t += Time.deltaTime;
+                var deltaTime = Time.deltaTime;
+                if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+                {
+                    yield return null;
+                    continue;
+                }
+                deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+                t = Mathf.Min(safeFadeTime, t + deltaTime);
                 float normalized = Mathf.Clamp01(t / safeFadeTime);
 
                 if (logoImage != null)

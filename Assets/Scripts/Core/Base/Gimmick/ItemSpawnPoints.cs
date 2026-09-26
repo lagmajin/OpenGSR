@@ -38,6 +38,8 @@ namespace OpenGS
             {
                 Default = Instances.Count > 0 ? Instances[0] : null;
             }
+
+            spawnPoints.Clear();
         }
 
         public static bool TryGetPoint(int spawnPointId, out ItemSpawnPoint point)

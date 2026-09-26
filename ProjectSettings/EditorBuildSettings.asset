@@ -15,12 +15,15 @@ EditorBuildSettings:
     path: Assets/Scenes/Lobby/LobbyScene.unity
     guid: e94296f71458d70419f896a47618f385
   - enabled: 1
+    path: Assets/Scenes/Result/ResultScene.unity
+    guid: de4f2f046ac38174794bf0c47756392f
+  - enabled: 1
     path: Assets/Scenes/Map/Battle/DryDays.unity
     guid: 1e34dff441ebe2044926a52031125118
   - enabled: 1
     path: Assets/Scenes/ConnectToServerScene.unity
     guid: ec98ae3486356da41909188ce6559d28
-  - enabled: 0
+  - enabled: 1
     path: Assets/Scenes/Setting/GameSettingScene.unity
     guid: 542fb38a093f52e4590610c446b6ffa7
   - enabled: 1
@@ -35,6 +38,69 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Map/Battle/GreenHill1.unity
     guid: 805b638796d59fd4aade37d92e8af677
+  - enabled: 1
+    path: Assets/Scenes/MissionLobbyScene.unity
+    guid: 66c657a5f756ece4e9291ae37eb12784
+  - enabled: 1
+    path: Assets/Scenes/Waitroom/MissionWaitroom.unity
+    guid: f78952327b6d1ef439ec6c975c96aed2
+  - enabled: 1
+    path: Assets/Scenes/Loading/OfflineLoadingScene.unity
+    guid: 0e8614df30e4f81418dac1efc13a3ad5
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/MissionResultScene.unity
+    guid: d5ce0f48cdfd3474d92c90c64ae84e20
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/Mission1.unity
+    guid: 4ccd80ceb5349a543a41771bb883638f
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/Mission2.unity
+    guid: 13d58329c4d3b15438a3191960f06a9b
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/Mission3.unity
+    guid: 7f1aa1dc85554cf428c9fa06a1de78e5
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/Mission4.unity
+    guid: 0b6f3b482fb160e498b706c257514016
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/Mission5.unity
+    guid: d2bcff329f4dce94faf7f3866410edd4
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/Quest1.unity
+    guid: a6fd03a6ac2777f4d8385086e0fd0977
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/Quest2.unity
+    guid: b396b86a54886a5478697ee7c360e275
+  - enabled: 1
+    path: Assets/Scenes/Map/Mission/Quest3.unity
+    guid: 16263013139a6924f947d62e283934d4
+  - enabled: 1
+    path: Assets/Scenes/ExportAssetScene.unity
+    guid: 8622daec07a401841b5835f56c33b31d
+  - enabled: 1
+    path: Assets/Scenes/Map/Battle/FullHouse.unity
+    guid: 7bd47e224605f4441a0aa950733ab62f
+  - enabled: 1
+    path: Assets/Scenes/Login/LoginServerScene.unity
+    guid: 1b9dcc0e877ba22409f883464bf4894b
+  - enabled: 1
+    path: Assets/Scenes/Waitroom/OfflineWaitRoom.unity
+    guid: 200e6fa1b38317443aff6d5bffb5af1c
+  - enabled: 1
+    path: Assets/Scenes/Map/Battle/Christmas.unity
+    guid: 187d7a45a1c9c1b4e8930ab6d816c720
+  - enabled: 1
+    path: Assets/Scenes/Map/Battle/Forest.unity
+    guid: d110913c2c9c9664587a0b49763f75fc
+  - enabled: 1
+    path: Assets/Scenes/Map/Battle/Jungle2.unity
+    guid: b685e02086851c642a9414a2151d5e6e
+  - enabled: 1
+    path: Assets/Scenes/Map/Battle/LavaCave.unity
+    guid: b0f45248fa8d58747a386d2b5500ea43
+  - enabled: 1
+    path: Assets/Scenes/Map/Battle/Nocturne.unity
+    guid: fdad3f9d0eb8ae84894b5a652bb441e6
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 089e42c240b1c874c96e43f372af0425,
       type: 3}

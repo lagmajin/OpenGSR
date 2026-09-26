@@ -75,6 +75,7 @@ namespace OpenGS
         private bool isMatchActive = false;
         private bool isPreparingMatch = false;
         private Coroutine matchCountdownRoutine;
+        private CTFMatchMainScript subscribedMatch;
 
         // フラッグの状態
         public enum FlagState
@@ -89,9 +90,33 @@ namespace OpenGS
 
         private void Awake()
         {
+            matchDuration = NormalizeNonNegative(matchDuration, 600f);
+            preMatchCountdownSeconds = NormalizeNonNegative(preMatchCountdownSeconds, 3f);
+            postMatchHoldSeconds = NormalizeNonNegative(postMatchHoldSeconds, 3f);
+            captureLimit = Mathf.Max(1, captureLimit);
+            scorePopDuration = NormalizeNonNegative(scorePopDuration, 0.3f);
+            scorePopScale = NormalizePositive(scorePopScale, 1.3f);
+
+            if (Instance != null && Instance != this)
+            {
+                Debug.LogWarning("[CTFScoreUIManager] Duplicate instance found; destroying duplicate.");
+                Destroy(gameObject);
+                return;
+            }
+
             Instance = this;
             remainingTime = matchDuration;
             if (victoryPanel != null) victoryPanel.SetActive(false);
+        }
+
+        private static float NormalizeNonNegative(float value, float fallback)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : fallback;
+        }
+
+        private static float NormalizePositive(float value, float fallback)
+        {
+            return float.IsFinite(value) && value > 0f ? value : fallback;
         }
 
         private void OnDestroy()
@@ -101,32 +126,50 @@ namespace OpenGS
 
         private void OnEnable()
         {
-            // CTFMatchMainScript のイベントを購読
-            if (CTFMatchMainScript.Instance != null)
-            {
-                CTFMatchMainScript.Instance.OnFlagCaptured += HandleFlagCaptured;
-                CTFMatchMainScript.Instance.OnFlagReturned += HandleFlagReturned;
-                CTFMatchMainScript.Instance.OnFlagLost += HandleFlagLost;
-                CTFMatchMainScript.Instance.OnFlagPickedUp += HandleFlagPickedUp;
-            }
+            TrySubscribeToMatch();
         }
 
         private void OnDisable()
         {
-            if (CTFMatchMainScript.Instance != null)
+            if (subscribedMatch != null)
             {
-                CTFMatchMainScript.Instance.OnFlagCaptured -= HandleFlagCaptured;
-                CTFMatchMainScript.Instance.OnFlagReturned -= HandleFlagReturned;
-                CTFMatchMainScript.Instance.OnFlagLost -= HandleFlagLost;
-                CTFMatchMainScript.Instance.OnFlagPickedUp -= HandleFlagPickedUp;
+                subscribedMatch.OnFlagCaptured -= HandleFlagCaptured;
+                subscribedMatch.OnFlagReturned -= HandleFlagReturned;
+                subscribedMatch.OnFlagLost -= HandleFlagLost;
+                subscribedMatch.OnFlagPickedUp -= HandleFlagPickedUp;
+                subscribedMatch = null;
             }
         }
 
         private void Start()
         {
+            TrySubscribeToMatch();
             UpdateScoreDisplay();
             UpdateFlagStatusDisplay();
             PrepareMatch();
+        }
+
+        private void TrySubscribeToMatch()
+        {
+            var match = CTFMatchMainScript.Instance;
+            if (match == null || subscribedMatch == match)
+            {
+                return;
+            }
+
+            if (subscribedMatch != null)
+            {
+                subscribedMatch.OnFlagCaptured -= HandleFlagCaptured;
+                subscribedMatch.OnFlagReturned -= HandleFlagReturned;
+                subscribedMatch.OnFlagLost -= HandleFlagLost;
+                subscribedMatch.OnFlagPickedUp -= HandleFlagPickedUp;
+            }
+
+            subscribedMatch = match;
+            subscribedMatch.OnFlagCaptured += HandleFlagCaptured;
+            subscribedMatch.OnFlagReturned += HandleFlagReturned;
+            subscribedMatch.OnFlagLost += HandleFlagLost;
+            subscribedMatch.OnFlagPickedUp += HandleFlagPickedUp;
         }
 
         /// <summary>
@@ -173,7 +216,15 @@ namespace OpenGS
             {
                 SetMatchStatusText($"START {Mathf.CeilToInt(countdown)}");
                 UpdateTimerDisplay();
-                countdown -= Time.deltaTime;
+                var deltaTime = Time.deltaTime;
+                if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+                {
+                    yield return null;
+                    continue;
+                }
+                deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+                countdown = Mathf.Max(0f, countdown - deltaTime);
                 yield return null;
             }
 
@@ -185,9 +236,21 @@ namespace OpenGS
 
         private void Update()
         {
+            if (subscribedMatch == null)
+            {
+                TrySubscribeToMatch();
+            }
+
             if (!isMatchActive) return;
 
-            remainingTime -= Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
+            {
+                return;
+            }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+
+            remainingTime = Mathf.Max(0f, remainingTime - deltaTime);
             UpdateTimerDisplay();
 
             if (remainingTime <= 0)
@@ -209,7 +272,10 @@ namespace OpenGS
             {
                 timerText.color = timerCriticalColor;
                 // 点滅効果
-                timerText.alpha = Mathf.PingPong(Time.time * 4f, 1f);
+                var now = Time.time;
+                timerText.alpha = float.IsFinite(now) && now >= 0f
+                    ? Mathf.PingPong(now * 4f, 1f)
+                    : 1f;
             }
             else if (remainingTime <= 60f)
             {
@@ -274,6 +340,8 @@ namespace OpenGS
         /// </summary>
         public void UpdateScoreFromServer(int redScore, int blueScore)
         {
+            redScore = Mathf.Max(0, redScore);
+            blueScore = Mathf.Max(0, blueScore);
             var redChanged = redScore != this.redScore;
             var blueChanged = blueScore != this.blueScore;
 
@@ -358,7 +426,9 @@ namespace OpenGS
 
             text.transform.DOKill();
             text.transform.localScale = Vector3.one * scorePopScale;
-            text.transform.DOScale(Vector3.one, scorePopDuration).SetEase(Ease.OutBack);
+            text.transform.DOScale(Vector3.one, scorePopDuration)
+                .SetEase(Ease.OutBack)
+                .SetLink(text.gameObject);
         }
 
         private void CheckVictoryCondition()
@@ -457,7 +527,7 @@ namespace OpenGS
         /// </summary>
         public void SetCaptureLimit(int limit)
         {
-            captureLimit = limit;
+            captureLimit = Mathf.Max(1, limit);
         }
 
         /// <summary>
@@ -465,8 +535,8 @@ namespace OpenGS
         /// </summary>
         public void SetMatchDuration(float duration)
         {
-            matchDuration = duration;
-            remainingTime = duration;
+            matchDuration = NormalizeNonNegative(duration, 600f);
+            remainingTime = matchDuration;
         }
 
         private void SetMatchStatusText(string message)

@@ -38,7 +38,7 @@ namespace OpenGS
         // ─── 内部状態 ───────────────────────────────────────────────
 
         private SettingsTab currentTab = SettingsTab.Graphics;
-        private bool hasUnsavedChanges = false;
+        private bool resetConfirmationPending;
 
         // ─── 列挙型 ─────────────────────────────────────────────────
 
@@ -63,7 +63,19 @@ namespace OpenGS
 
         private void OnEnable()
         {
+            CancelInvoke();
+            resetConfirmationPending = false;
             ShowTab(currentTab);
+        }
+
+        private void OnDestroy()
+        {
+            graphicsTabButton?.onClick.RemoveListener(OnGraphicsTabButtonClicked);
+            soundTabButton?.onClick.RemoveListener(OnSoundTabButtonClicked);
+            controlTabButton?.onClick.RemoveListener(OnControlTabButtonClicked);
+            applyButton?.onClick.RemoveListener(OnApplyButtonClicked);
+            resetButton?.onClick.RemoveListener(OnResetButtonClicked);
+            closeButton?.onClick.RemoveListener(OnCloseButtonClicked);
         }
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -89,17 +101,17 @@ namespace OpenGS
             // タブボタン
             if (graphicsTabButton != null)
             {
-                graphicsTabButton.onClick.AddListener(() => ShowTab(SettingsTab.Graphics));
+                graphicsTabButton.onClick.AddListener(OnGraphicsTabButtonClicked);
             }
 
             if (soundTabButton != null)
             {
-                soundTabButton.onClick.AddListener(() => ShowTab(SettingsTab.Sound));
+                soundTabButton.onClick.AddListener(OnSoundTabButtonClicked);
             }
 
             if (controlTabButton != null)
             {
-                controlTabButton.onClick.AddListener(() => ShowTab(SettingsTab.Control));
+                controlTabButton.onClick.AddListener(OnControlTabButtonClicked);
             }
 
             // 操作ボタン
@@ -132,6 +144,12 @@ namespace OpenGS
 
         // ─── イベントハンドラ ─────────────────────────────────────────
 
+        private void OnGraphicsTabButtonClicked() => ShowTab(SettingsTab.Graphics);
+
+        private void OnSoundTabButtonClicked() => ShowTab(SettingsTab.Sound);
+
+        private void OnControlTabButtonClicked() => ShowTab(SettingsTab.Control);
+
         private void OnApplyButtonClicked()
         {
             ApplySettings();
@@ -140,18 +158,37 @@ namespace OpenGS
 
         private void OnResetButtonClicked()
         {
+            if (!resetConfirmationPending)
+            {
+                resetConfirmationPending = true;
+                ShowStatus("もう一度押すと設定を初期化します", true);
+                CancelInvoke(nameof(ResetResetConfirmation));
+                Invoke(nameof(ResetResetConfirmation), 3f);
+                return;
+            }
+
+            ResetResetConfirmation();
+            if (SettingsManager.Instance == null)
+            {
+                ShowStatus("設定管理が利用できません", true);
+                return;
+            }
+
             SettingsManager.Instance.ResetSettings();
             ShowTab(currentTab);
             ShowStatus("設定をリセットしました", false);
         }
 
+        private void ResetResetConfirmation()
+        {
+            resetConfirmationPending = false;
+        }
+
         private void OnCloseButtonClicked()
         {
-            if (hasUnsavedChanges)
-            {
-                // 確認ダイアログを表示（実装は省略）
-                ApplySettings();
-            }
+            // 各設定パネルは現在値を保持しているため、変更フラグに依存せず
+            // 閉じる前に必ず適用して、UI上の変更が破棄されないようにする。
+            ApplySettings();
 
             CloseDialog();
         }
@@ -232,7 +269,6 @@ namespace OpenGS
                 controlPanelScript.ApplySettings();
             }
 
-            hasUnsavedChanges = false;
         }
 
         // ─── ステータス表示 ─────────────────────────────────────────

@@ -31,6 +31,7 @@ namespace OpenGS
     using System.IO;
     using UnityEngine;
     using System.Collections.Generic;
+    using System.Linq;
 
     public static class SavWav
     {
@@ -41,7 +42,19 @@ namespace OpenGS
         {
             try
             {
-                if (!filename.ToLower().EndsWith(".wav"))
+                if (string.IsNullOrWhiteSpace(filename) || clip == null)
+                {
+                    return false;
+                }
+
+                filename = filename.Trim();
+                if (Path.IsPathRooted(filename) || filename.Split(new[] { '/', '\\' }, StringSplitOptions.RemoveEmptyEntries)
+                    .Any(segment => segment == ".."))
+                {
+                    return false;
+                }
+
+                if (!filename.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
                 {
                     filename += ".wav";
                 }
@@ -70,6 +83,11 @@ namespace OpenGS
 
         public static AudioClip TrimSilence(AudioClip clip, float min)
         {
+            if (clip == null)
+            {
+                return null;
+            }
+
             var samples = new float[clip.samples];
 
             clip.GetData(samples, 0);
@@ -84,6 +102,12 @@ namespace OpenGS
 
         public static AudioClip TrimSilence(List<float> samples, float min, int channels, int hz, bool _3D, bool stream)
         {
+            if (samples == null || samples.Count == 0 || channels <= 0 || hz <= 0)
+            {
+                return null;
+            }
+
+            min = float.IsFinite(min) ? Mathf.Max(0f, min) : 0f;
             int i;
 
             for (i = 0; i < samples.Count; i++)
@@ -96,7 +120,12 @@ namespace OpenGS
 
             samples.RemoveRange(0, i);
 
-            for (i = samples.Count - 1; i > 0; i--)
+            if (samples.Count == 0)
+            {
+                return null;
+            }
+
+            for (i = samples.Count - 1; i >= 0; i--)
             {
                 if (Mathf.Abs(samples[i]) > min)
                 {
@@ -104,7 +133,12 @@ namespace OpenGS
                 }
             }
 
-            samples.RemoveRange(i, samples.Count - i);
+            samples.RemoveRange(i + 1, samples.Count - (i + 1));
+
+            if (samples.Count == 0)
+            {
+                return null;
+            }
 
             var clip = AudioClip.Create("TempClip", samples.Count, channels, hz, stream);
 

@@ -72,10 +72,33 @@ namespace OpenGS
 
         private void Awake()
         {
+            standingFps = NormalizePositive(standingFps, 6f);
+            jumpingFps = NormalizePositive(jumpingFps, 10f);
+            rollingFps = NormalizePositive(rollingFps, 12f);
+            standingDuration = NormalizePositive(standingDuration, 1.5f);
+            jumpingDuration = NormalizePositive(jumpingDuration, 0.8f);
+            rollingDuration = NormalizePositive(rollingDuration, 0.7f);
+            standingBobAmplitude = NormalizeNonNegative(standingBobAmplitude);
+            standingBobFrequency = NormalizeNonNegative(standingBobFrequency);
+            standingSwayDegrees = NormalizeNonNegative(standingSwayDegrees);
+            jumpHeight = NormalizeNonNegative(jumpHeight);
+            rollTravelDistance = NormalizeNonNegative(rollTravelDistance);
+            rollSpinDegrees = NormalizeNonNegative(rollSpinDegrees);
+            rollTiltDegrees = NormalizeNonNegative(rollTiltDegrees);
             CacheReferences();
             CacheInitialPose();
             CacheInitialSprite();
             motionSeed = Random.Range(0f, 10f);
+        }
+
+        private static float NormalizeNonNegative(float value)
+        {
+            return float.IsFinite(value) ? Mathf.Max(0f, value) : 0f;
+        }
+
+        private static float NormalizePositive(float value, float fallback)
+        {
+            return float.IsFinite(value) && value > 0f ? value : fallback;
         }
 
         private void OnEnable()
@@ -102,7 +125,13 @@ namespace OpenGS
         /// </summary>
         public void SyncFromGamePlayer()
         {
-            SetCharacter(GamePlayerManager.Instance.SelectedPlayerCharacter());
+            var gamePlayerManager = GamePlayerManager.Instance;
+            if (gamePlayerManager == null)
+            {
+                return;
+            }
+
+            SetCharacter(gamePlayerManager.SelectedPlayerCharacter());
         }
 
         /// <summary>
@@ -142,10 +171,11 @@ namespace OpenGS
 
         private void Tick(float deltaTime)
         {
-            if (deltaTime < 0f)
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f)
             {
-                deltaTime = 0f;
+                return;
             }
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
 
             stateTimer += deltaTime;
             frameTimer += deltaTime;
@@ -251,7 +281,13 @@ namespace OpenGS
             {
                 case MotionState.Standing:
                 {
-                    var t = Time.unscaledTime + motionSeed;
+                    var now = Time.unscaledTime;
+                    if (!float.IsFinite(now))
+                    {
+                        return;
+                    }
+
+                    var t = now + motionSeed;
                     var bob = Mathf.Sin(t * standingBobFrequency) * standingBobAmplitude;
                     var sway = Mathf.Sin(t * standingBobFrequency * 0.7f) * standingSwayDegrees;
                     targetRectTransform.anchoredPosition3D = basePos + new Vector3(0f, bob, 0f);

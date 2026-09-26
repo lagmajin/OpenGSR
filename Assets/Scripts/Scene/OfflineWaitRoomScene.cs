@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading;
 using DG.Tweening;
 using TMPro;
@@ -110,6 +111,8 @@ namespace OpenGS
         private MatchRoomManager matchRoomManager;
         private WaitRoom waitRoom;
         private OfflineGameModeSelect offlineSelect;
+        private bool gameStartRequested;
+        private bool navigationTransitionRequested;
 
         public Button chara;
         public Button map;
@@ -138,8 +141,8 @@ namespace OpenGS
             base.Awake();
             DebugFlagManager.SetFirstSceneName("OfflineWaitRoom");
 
-            mainThread = SynchronizationContext.Current;
-            matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            mainThread = SynchronizationContext.Current ?? new SynchronizationContext();
+            TryResolveMatchRoomManager();
 
             GameGeneralManager.GetInstance.CreatePlayerWaitRoomInfo("test");
             InitializeOfflineState();
@@ -154,12 +157,12 @@ namespace OpenGS
         protected override void Update()
         {
             base.Update();
-            if (Input.GetKey(KeyCode.F10))
+            if (Input.GetKeyDown(KeyCode.F10))
             {
                 GameStart();
             }
 
-            if (Input.GetKey(KeyCode.Escape))
+            if (Input.GetKeyDown(KeyCode.Escape))
             {
                 GotoTitleScene();
             }
@@ -264,10 +267,15 @@ namespace OpenGS
         {
             EnsureSelection();
 
+            if (offlineSelect == null || GameModeSelectManager.Instance == null)
+            {
+                return;
+            }
+
             offlineSelect.GameMode = mode;
             offlineSelect.Map = map;
             offlineSelect.Capacity = Mathf.Max(1, offlineSelect.Capacity);
-            GameModeSelectManager.Instance.OfflineGameSelect = offlineSelect;
+            PersistOfflineSelection();
 
             EnsureWaitRoom();
             ApplySelectionToWaitRoom();
@@ -326,6 +334,12 @@ namespace OpenGS
 
         public void GameStart()
         {
+            if (gameStartRequested)
+            {
+                return;
+            }
+
+            gameStartRequested = true;
             EnsureSelection();
             EnsureWaitRoom();
             ApplySelectionToWaitRoom();
@@ -338,7 +352,26 @@ namespace OpenGS
             Debug.Log($"GameStart mode={offlineSelect.GameMode} map={offlineSelect.Map} capacity={offlineSelect.Capacity}");
 
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().OfflineLoadingScene());
+            var loadingScene = GeneralSceneMasterData.Instance().OfflineLoadingScene();
+            if (string.IsNullOrWhiteSpace(loadingScene))
+            {
+                gameStartRequested = false;
+                Debug.LogError("[OfflineWaitRoomScene] Offline loading scene is not configured.");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(loadingScene))
+            {
+                gameStartRequested = false;
+                Debug.LogError($"[OfflineWaitRoomScene] Offline loading scene is not in build settings: {loadingScene}");
+                return;
+            }
+
+            if (SceneManager.LoadSceneAsync(loadingScene) == null)
+            {
+                gameStartRequested = false;
+                Debug.LogError($"[OfflineWaitRoomScene] Failed to load loading scene: {loadingScene}");
+            }
         }
 
         public void ChangeGameMode()
@@ -386,7 +419,7 @@ namespace OpenGS
                 offlineSelect.Map = GetDefaultMap(mode);
             }
 
-            GameModeSelectManager.Instance.OfflineGameSelect = offlineSelect;
+            PersistOfflineSelection();
             EnsureWaitRoom();
             ApplySelectionToWaitRoom();
             RefreshStatusText();
@@ -396,7 +429,7 @@ namespace OpenGS
         {
             EnsureSelection();
             offlineSelect.Map = map;
-            GameModeSelectManager.Instance.OfflineGameSelect = offlineSelect;
+            PersistOfflineSelection();
             EnsureWaitRoom();
             ApplySelectionToWaitRoom();
             RefreshStatusText();
@@ -406,7 +439,7 @@ namespace OpenGS
         {
             EnsureSelection();
             offlineSelect.TeamBalance = balance;
-            GameModeSelectManager.Instance.OfflineGameSelect = offlineSelect;
+            PersistOfflineSelection();
             RefreshStatusText();
         }
 
@@ -419,7 +452,7 @@ namespace OpenGS
                 offlineSelect.Capacity = 16;
             }
 
-            GameModeSelectManager.Instance.OfflineGameSelect = offlineSelect;
+            PersistOfflineSelection();
             EnsureWaitRoom();
             ApplySelectionToWaitRoom();
             RefreshStatusText();
@@ -434,7 +467,7 @@ namespace OpenGS
                 offlineSelect.Capacity = 1;
             }
 
-            GameModeSelectManager.Instance.OfflineGameSelect = offlineSelect;
+            PersistOfflineSelection();
             EnsureWaitRoom();
             ApplySelectionToWaitRoom();
             RefreshStatusText();
@@ -530,19 +563,56 @@ namespace OpenGS
 
         public void GotoTitleScene()
         {
+            if (navigationTransitionRequested)
+            {
+                return;
+            }
+
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().TitleScene());
+            LoadNavigationScene(GeneralSceneMasterData.Instance().TitleScene(), "GotoTitleScene");
         }
 
         public void GotoShopScene()
         {
+            if (navigationTransitionRequested)
+            {
+                return;
+            }
+
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadSceneAsync(GeneralSceneMasterData.Instance().ShopScene());
+            LoadNavigationScene(GeneralSceneMasterData.Instance().ShopScene(), "GotoShopScene");
+        }
+
+        private void LoadNavigationScene(string sceneName, string source)
+        {
+            if (navigationTransitionRequested)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogError($"[OfflineWaitRoomScene] Scene name is not configured. source={source}");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                Debug.LogError($"[OfflineWaitRoomScene] Scene is not in build settings: {sceneName}. source={source}");
+                return;
+            }
+
+            navigationTransitionRequested = true;
+            if (SceneManager.LoadSceneAsync(sceneName) == null)
+            {
+                navigationTransitionRequested = false;
+                Debug.LogError($"[OfflineWaitRoomScene] Failed to load scene: {sceneName}. source={source}");
+            }
         }
 
         public override SynchronizationContext MainThread()
         {
-            return mainThread ?? SynchronizationContext.Current;
+            return mainThread ?? SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
         protected override void OnStartUnityEditor()
@@ -557,6 +627,13 @@ namespace OpenGS
             CancelInvoke();
         }
 
+        protected override void OnDestroy()
+        {
+            SceneManager.sceneLoaded -= GameSceneLoaded;
+            CancelInvoke();
+            base.OnDestroy();
+        }
+
         protected override void OnStartFromEditorDirectly()
         {
             PrettyLogger.Log("System", "Offline wait room started from editor.");
@@ -565,6 +642,12 @@ namespace OpenGS
 
         private void PlayWaitRoomBgm()
         {
+            if (SoundManager.Instance == null)
+            {
+                Debug.LogWarning("[OfflineWaitRoomScene] SoundManager is not ready; skipping wait room BGM.");
+                return;
+            }
+
             if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
             {
                 return;
@@ -591,7 +674,14 @@ namespace OpenGS
 
         private void InitializeOfflineState()
         {
-            offlineSelect = GameModeSelectManager.Instance.OfflineGameSelect ?? new OfflineGameModeSelect();
+            var gameModeManager = GameModeSelectManager.Instance;
+            if (gameModeManager == null)
+            {
+                Debug.LogWarning("[OfflineWaitRoomScene] GameModeSelectManager is not ready.");
+                return;
+            }
+
+            offlineSelect = gameModeManager.OfflineGameSelect ?? new OfflineGameModeSelect();
 
             if (offlineSelect.GameMode == EGameMode.Unknown)
             {
@@ -608,7 +698,7 @@ namespace OpenGS
                 offlineSelect.Capacity = 8;
             }
 
-            GameModeSelectManager.Instance.OfflineGameSelect = offlineSelect;
+            gameModeManager.OfflineGameSelect = offlineSelect;
             EnsureWaitRoom();
             ApplySelectionToWaitRoom();
             RefreshStatusText();
@@ -616,9 +706,16 @@ namespace OpenGS
 
         private void EnsureSelection()
         {
+            var gameModeManager = GameModeSelectManager.Instance;
+            if (gameModeManager == null)
+            {
+                offlineSelect = null;
+                return;
+            }
+
             if (offlineSelect == null)
             {
-                offlineSelect = GameModeSelectManager.Instance.OfflineGameSelect ?? new OfflineGameModeSelect();
+                offlineSelect = gameModeManager.OfflineGameSelect ?? new OfflineGameModeSelect();
             }
 
             if (offlineSelect.GameMode == EGameMode.Unknown)
@@ -637,11 +734,24 @@ namespace OpenGS
             }
         }
 
+        private void PersistOfflineSelection()
+        {
+            if (offlineSelect == null || GameModeSelectManager.Instance == null)
+            {
+                Debug.LogWarning("[OfflineWaitRoomScene] Cannot persist selection before GameModeSelectManager is ready.");
+                return;
+            }
+
+            GameModeSelectManager.Instance.OfflineGameSelect = offlineSelect;
+        }
+
         private void EnsureWaitRoom()
         {
+            TryResolveMatchRoomManager();
             if (matchRoomManager == null)
             {
-                matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+                Debug.LogWarning("[OfflineWaitRoomScene] MatchRoomManager is not ready.");
+                return;
             }
 
             if (!matchRoomManager.IsValidOfflineWaitRoom())
@@ -656,6 +766,24 @@ namespace OpenGS
             }
 
             EnsureLocalPlayer();
+        }
+
+        private void TryResolveMatchRoomManager()
+        {
+            if (matchRoomManager != null)
+            {
+                return;
+            }
+
+            try
+            {
+                matchRoomManager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            }
+            catch (Exception exception)
+            {
+                matchRoomManager = null;
+                Debug.LogWarning($"[OfflineWaitRoomScene] MatchRoomManager is not ready: {exception.Message}");
+            }
         }
 
         private void EnsureLocalPlayer()
@@ -815,7 +943,7 @@ namespace OpenGS
 
         private static EMap[] GetMapsForMode(EGameMode mode)
         {
-            return mode switch
+            var configuredMaps = mode switch
             {
                 EGameMode.TeamDeathMatch => TeamDeathMatchMaps,
                 EGameMode.CaptureTheFlag => CaptureTheFlagMaps,
@@ -823,11 +951,23 @@ namespace OpenGS
                 EGameMode.TeamSurvival => SurvivalMaps,
                 _ => DeathMatchMaps,
             };
+
+            var enabledMaps = new List<EMap>(configuredMaps.Length);
+            foreach (var map in configuredMaps)
+            {
+                var info = MapVisualResolver.GetMapInfo(map);
+                if (info == null || (info.HasMapScene() && info.CanPlayForMode(mode)))
+                {
+                    enabledMaps.Add(map);
+                }
+            }
+
+            return enabledMaps.ToArray();
         }
 
         private static EMap GetDefaultMap(EGameMode mode)
         {
-            return mode switch
+            var preferred = mode switch
             {
                 EGameMode.TeamDeathMatch => EMap.GreenHillSide1,
                 EGameMode.CaptureTheFlag => EMap.BattlePortCTF,
@@ -835,6 +975,14 @@ namespace OpenGS
                 EGameMode.TeamSurvival => EMap.DryDays,
                 _ => EMap.DryDays,
             };
+
+            if (IsMapCompatible(mode, preferred))
+            {
+                return preferred;
+            }
+
+            var candidates = GetMapsForMode(mode);
+            return candidates.Length > 0 ? candidates[0] : preferred;
         }
     }
 }

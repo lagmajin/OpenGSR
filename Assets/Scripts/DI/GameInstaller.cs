@@ -17,26 +17,27 @@ namespace OpenGS
                 Container.BindInstance(effectPrefabs).AsSingle();
             }
             Container.Bind<IEffectService>().To<EffectService>().AsSingle();
-            Container.Bind<ISoundService>().To<SoundService>().AsSingle().WithArguments(
-                Resources.Load<SoundMasterData>("MasterData/SoundMasterData"),
-                Resources.Load<BGMMasterData>("MasterData/BGMMasterData"));
+            // Share the Autofac-owned service so event/stateful caches are not split across containers.
+            TryBindResolvedInstance<ISoundService>();
             Container.Bind<OnlineLoadingSceneNetworkManager>()
  .FromComponentInHierarchy()
  .AsSingle();
             Container.Bind<UnityInputService>().AsSingle();
-            Container.Bind<VirtualInputService>().AsSingle();
-            Container.Bind<IInputService>().To<VirtualInputService>().FromResolve().AsSingle();
+            Container.BindInterfacesAndSelfTo<VirtualInputService>().AsSingle();
             Container.Bind<ReplaySession>().AsSingle();
-            Container.BindInterfacesAndSelfTo<ReplayInputService>().AsSingle();
+            Container.Bind<ReplayInputService>().AsSingle();
+            Container.Bind<ITickable>().To<ReplayInputService>().FromResolve();
+            Container.Bind<ILateTickable>().To<ReplayInputService>().FromResolve();
             // ClientSessionData をシングルトンとして登録
             //Container.Bind<ClientSessionData>().AsSingle().NonLazy();
-            Container.BindInstance(DependencyInjectionConfig.Resolve<MatchRoomManager>()).AsSingle();
-            Container.BindInstance(DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>()).AsSingle();
-            Container.BindInstance(DependencyInjectionConfig.Resolve<OnlineLoadingManager>()).AsSingle();
-            Container.BindInstance(DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>()).AsSingle();
-            Container.BindInstance(DependencyInjectionConfig.Resolve<EquipmentSaveManager>()).AsSingle();
-            Container.BindInstance(DependencyInjectionConfig.Resolve<PlayerMatchManager>()).AsSingle();
-            Container.Bind<IShopService>().To<OnlineShopService>().AsSingle();
+            TryBindResolvedInstance<MatchRoomManager>();
+            TryBindResolvedInstance<MatchRUDPServerNetworkManager>();
+            TryBindResolvedInstance<OnlineLoadingManager>();
+            TryBindResolvedInstance<GeneralServerNetworkManager>();
+            TryBindResolvedInstance<EquipmentSaveManager>();
+            TryBindResolvedInstance<PlayerMatchManager>();
+            // Keep the same shop service instance used by the network layer.
+            TryBindResolvedInstance<IShopService>();
             // BindInstance は任意だけど、Resolve に使うならここで Bind
             //var manager = DependencyInjectionConfig.Resolve<OnlineLoadingSceneNetworkManager>();
             //Container.BindInstance(manager).AsSingle();
@@ -48,6 +49,22 @@ namespace OpenGS
         {
             // Bind が終わったので、Scene上のオブジェクトに Inject
            // Container.Inject(onlineLoadingSceneManagerGO);
+        }
+
+        private void TryBindResolvedInstance<T>()
+        {
+            try
+            {
+                var instance = DependencyInjectionConfig.Resolve<T>();
+                if (instance is object)
+                {
+                    Container.BindInstance(instance).AsSingle();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[GameInstaller] Optional shared service {typeof(T).Name} was not bound: {ex.Message}");
+            }
         }
     }
 }

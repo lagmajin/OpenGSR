@@ -34,3 +34,13 @@ Thumbs.db
 # NuGetForUnityのパッケージ本体はPackagesに展開されるが、
 # 本来は再生成可能なので除外候補（設定による）
 /[Aa]ssets/Packages/
+
+# --- ローカンツールとUnityの自動生成物 ---
+# Unity MCP / エディタ拡張のローカル補助スクリプトとキャッシュ
+__pycache__/
+*.pyc
+debug_mcp_bridge.py
+.commandcode/
+codex_mcp.json
+# AssetDatabase の再構築で作り直せる退避コピー
+/Recovered/

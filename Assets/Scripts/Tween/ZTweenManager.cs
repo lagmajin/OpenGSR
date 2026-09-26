@@ -22,8 +22,24 @@ namespace OpenGSR.Tween {
         private readonly List<ITweener> _activeTweens = new List<ITweener>(100);
         private readonly List<ITweener> _toRemove = new List<ITweener>(100);
 
+        private void OnDestroy()
+        {
+            if (_instance == this)
+            {
+                _instance = null;
+            }
+
+            _activeTweens.Clear();
+            _toRemove.Clear();
+        }
+
         private void Update() {
             float dt = Time.deltaTime;
+            if (!float.IsFinite(dt) || dt < 0f) {
+                return;
+            }
+            dt = Mathf.Min(dt, 0.1f);
+
             for (int i = 0; i < _activeTweens.Count; i++) {
                 if (_activeTweens[i].Update(dt)) {
                     _toRemove.Add(_activeTweens[i]);
@@ -37,7 +53,11 @@ namespace OpenGSR.Tween {
             }
         }
 
-        public void AddTween(ITweener tweener) => _activeTweens.Add(tweener);
+        public void AddTween(ITweener tweener) {
+            if (tweener != null && !_activeTweens.Contains(tweener)) {
+                _activeTweens.Add(tweener);
+            }
+        }
 
         public interface ITweener {
             bool Update(float deltaTime);

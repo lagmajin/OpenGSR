@@ -19,7 +19,7 @@ namespace OpenGS
 
         protected override void CreateBullet(EBulletType type = EBulletType.Normal)
         {
-            if (bulletPrefab == null) return;
+            if (bulletPrefab == null || muzzle == null) return;
 
             var bullet = Instantiate(bulletPrefab, muzzle.position, Quaternion.identity);
             var dir = GetShotDirection();
@@ -33,6 +33,10 @@ namespace OpenGS
                 var owner = GetOwnerPlayer();
                 bulletAgent.SetOwnerInfo(GetPlayerID(owner), Name, owner != null ? owner.Team() : ETeam.NoTeam);
                 bulletAgent.Launch(dir, bulletSpeed);
+            }
+            else
+            {
+                Destroy(bullet);
             }
         }
     }

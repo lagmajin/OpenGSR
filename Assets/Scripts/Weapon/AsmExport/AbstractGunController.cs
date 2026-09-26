@@ -83,16 +83,56 @@ namespace OpenGS
             this.effectService = effectService;
         }
 
+        private void OnValidate()
+        {
+            if (!float.IsFinite(damage) || damage < 0f) damage = 30f;
+            magazine = Mathf.Max(0, magazine);
+            if (!float.IsFinite(reloadTime) || reloadTime < 0f) reloadTime = 2f;
+            if (!float.IsFinite(bulletSpeed) || bulletSpeed < 0f) bulletSpeed = 100f;
+            if (!float.IsFinite(shotDelay) || shotDelay < 0.01f) shotDelay = 0.1f;
+            if (!float.IsFinite(baseSpread) || baseSpread < 0f) baseSpread = 0f;
+            if (!float.IsFinite(recoilPerShot) || recoilPerShot < 0f) recoilPerShot = 0.1f;
+            if (!float.IsFinite(recoilRecovery) || recoilRecovery < 0f) recoilRecovery = 1f;
+            if (!float.IsFinite(shakeIntensity) || shakeIntensity < 0f) shakeIntensity = 0.05f;
+            if (!float.IsFinite(visualRecoilAmount) || visualRecoilAmount < 0f) visualRecoilAmount = 0.1f;
+            if (!float.IsFinite(rand) || rand < 0f) rand = 0f;
+            if (!float.IsFinite(gravity) || gravity < 0f) gravity = 0f;
+            if (!float.IsFinite(heatMax) || heatMax < 0f) heatMax = 5f;
+            if (!float.IsFinite(heatPerShot) || heatPerShot < 0f) heatPerShot = 0.5f;
+            if (!float.IsFinite(heatDecayPerSecond) || heatDecayPerSecond < 0f) heatDecayPerSecond = 1f;
+        }
+
         private void Awake()
         {
+            damage = float.IsFinite(damage) ? Mathf.Max(0f, damage) : 30f;
+            magazine = Mathf.Max(0, magazine);
+            reloadTime = float.IsFinite(reloadTime) ? Mathf.Max(0f, reloadTime) : 2f;
+            bulletSpeed = float.IsFinite(bulletSpeed) ? Mathf.Max(0f, bulletSpeed) : 100f;
+            shotDelay = float.IsFinite(shotDelay) ? Mathf.Max(0.01f, shotDelay) : 0.1f;
+            baseSpread = float.IsFinite(baseSpread) ? Mathf.Clamp(baseSpread, 0f, 180f) : 0f;
+            recoilPerShot = float.IsFinite(recoilPerShot) ? Mathf.Max(0f, recoilPerShot) : 0.1f;
+            recoilRecovery = float.IsFinite(recoilRecovery) ? Mathf.Max(0f, recoilRecovery) : 1f;
+            gravity = float.IsFinite(gravity) ? Mathf.Max(0f, gravity) : 0f;
+            heatMax = float.IsFinite(heatMax) ? Mathf.Max(0f, heatMax) : 5f;
+            heatPerShot = float.IsFinite(heatPerShot) ? Mathf.Max(0f, heatPerShot) : 0.5f;
+            heatDecayPerSecond = float.IsFinite(heatDecayPerSecond) ? Mathf.Max(0f, heatDecayPerSecond) : 1f;
+            shotTimer = 0f;
+            heat = 0f;
             originalHeadPos = gameObject.transform.localPosition;
         }
 
         protected virtual void OnUpdate()
         {
             UpdateRotation();
-            
-            if (shotTimer > 0) shotTimer -= Time.deltaTime;
+
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f) return;
+            // Keep a frame hitch from skipping cooldown/reload/heat state in one tick.
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+            shotTimer = float.IsFinite(shotTimer) ? Mathf.Max(0f, shotTimer - deltaTime) : 0f;
+            reloadDelay = float.IsFinite(reloadDelay) ? Mathf.Max(0f, reloadDelay) : 0f;
+            heat = float.IsFinite(heat) ? Mathf.Max(0f, heat) : 0f;
+            remains = Mathf.Clamp(remains, 0, MagazineMaxCount());
 
             if (reloadingNow) UpdateReloading();
 
@@ -102,7 +142,10 @@ namespace OpenGS
                 Shot();
             }
 
-            if (heat > 0f) heat -= heatDecayPerSecond * Time.deltaTime;
+            if (heat > 0f)
+            {
+                heat = Mathf.Max(0f, heat - heatDecayPerSecond * deltaTime);
+            }
         }
 
         private void UpdateRotation()
@@ -110,6 +153,12 @@ namespace OpenGS
             if (inputService == null) return;
 
             var aimPos = inputService.GetAimWorldPosition();
+            if (!float.IsFinite(aimPos.x) || !float.IsFinite(aimPos.y) || !float.IsFinite(transform.position.x) ||
+                !float.IsFinite(transform.position.y))
+            {
+                return;
+            }
+
             var dir = (Vector3)aimPos - transform.position;
             var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
 
@@ -125,7 +174,10 @@ namespace OpenGS
 
         private void UpdateReloading()
         {
-            reloadDelay += Time.deltaTime;
+            var deltaTime = Time.deltaTime;
+            if (!float.IsFinite(deltaTime) || deltaTime < 0f) return;
+            deltaTime = Mathf.Min(deltaTime, 0.1f);
+            reloadDelay = Mathf.Max(0f, reloadDelay + deltaTime);
             if (reloadDelay >= reloadTime)
             {
                 ReloadComplete();
@@ -150,7 +202,8 @@ namespace OpenGS
             }
             else
             {
-                Instantiate(shotEffectPrefab, muzzle.position, muzzle.rotation);
+                var spawnedEffect = Instantiate(shotEffectPrefab, muzzle.position, muzzle.rotation);
+                Destroy(spawnedEffect, 3f);
             }
         }
 
@@ -159,10 +212,13 @@ namespace OpenGS
             var powerupable = GetComponentInParent<IPowerupable>();
             if (powerupable != null)
             {
-                return damage * (powerupable.IsIncreaseAttackNow() ? 2f : 1f);
+                var boostedDamage = damage * (powerupable.IsIncreaseAttackNow() ? 2f : 1f);
+                return float.IsFinite(boostedDamage) ? Mathf.Max(0f, boostedDamage) : 0f;
             }
 
-            return damage * (player != null ? player.AttackMultiplier() : 1f);
+            var multiplier = player != null ? player.AttackMultiplier() : 1f;
+            var effectiveDamage = damage * multiplier;
+            return float.IsFinite(effectiveDamage) ? Mathf.Max(0f, effectiveDamage) : 0f;
         }
 
         protected virtual void CreateBullet(EBulletType type = EBulletType.Normal) { }
@@ -196,7 +252,8 @@ namespace OpenGS
 
         public virtual void ReloadStart()
         {
-            if (reloadingNow || remains >= magazine) return;
+            var magazineLimit = MagazineMaxCount();
+            if (reloadingNow || remains >= magazineLimit) return;
 
             reloadCancelFlag = false;
             reloadingNow = true;
@@ -217,7 +274,7 @@ namespace OpenGS
             reloadingNow = false;
             reloadCancelFlag = false;
             reloadDelay = 0.0f;
-            remains = magazine;
+            remains = MagazineMaxCount();
             PublishAmmoUpdate();
             GetOwnerPlayer()?.PlayReloadCompleteEffect();
         }
@@ -251,13 +308,31 @@ namespace OpenGS
 
         protected Vector2 GetShotDirection()
         {
+            if (muzzle == null)
+            {
+                return transform.right;
+            }
+
             if (inputService == null) return muzzle.right;
 
             Vector2 baseDir = inputService.GetAimDirection(muzzle.position);
-            float currentSpread = baseSpread + (heat * 2.5f); 
+            if (!float.IsFinite(baseDir.x) || !float.IsFinite(baseDir.y) || baseDir.sqrMagnitude <= Mathf.Epsilon)
+            {
+                baseDir = muzzle.right;
+            }
+
+            baseDir.Normalize();
+            float currentSpread = baseSpread + (heat * 2.5f);
+            if (!float.IsFinite(currentSpread))
+            {
+                currentSpread = 0f;
+            }
+
+            currentSpread = Mathf.Clamp(currentSpread, 0f, 180f);
             float spreadAngle = UnityEngine.Random.Range(-currentSpread, currentSpread);
             
-            return Quaternion.Euler(0, 0, spreadAngle) * baseDir;
+            var direction = Quaternion.Euler(0, 0, spreadAngle) * baseDir;
+            return direction.sqrMagnitude > Mathf.Epsilon ? direction.normalized : Vector2.right;
         }
 
         public virtual float ReloadTime() => data != null ? data.reloadTime : 2.0f;
@@ -275,7 +350,7 @@ namespace OpenGS
 
         public void Shot()
         {
-            if (CanShot())
+            if (CanShot() && muzzle != null)
             {
                 remains--;
                 shotTimer = shotDelay;
@@ -299,7 +374,7 @@ namespace OpenGS
             }
         }
 
-        public virtual bool CanShot() => shotTimer <= 0 && remains > 0 && !reloadingNow;
+        public virtual bool CanShot() => float.IsFinite(shotTimer) && shotTimer <= 0f && remains > 0 && !reloadingNow;
 
         public bool CanReload() => magazine > remains;
 
@@ -332,6 +407,11 @@ namespace OpenGS
             }
         }
 
+        protected eDamageType ResolveBulletDamageType()
+        {
+            return GetComponentInParent<PlayerAgent>()?.CurrentBulletDamageType ?? eDamageType.Bullet;
+        }
+
         public int gunDirection() => transform.localScale.x > 0 ? 1 : -1;
 
         public void SetGunDirection(bool left = true)
@@ -347,7 +427,11 @@ namespace OpenGS
         public Sprite GunSilhouette() => gunSilhouette;
         public int MagazineCount() => remains;
         string IGunInfo.Name() => Name;
-        public int MagazineMaxCount() => data != null ? data.maxBullet : magazine;
+        public int MagazineMaxCount()
+        {
+            var configuredMax = data != null ? data.maxBullet : magazine;
+            return Mathf.Max(0, configuredMax);
+        }
 
         public void PlayShotSound()
         {
@@ -399,13 +483,27 @@ namespace OpenGS
 
         protected Vector2 CalculateSpreadDirection(Transform muzzle, float spreadAngle)
         {
+            if (muzzle == null)
+            {
+                return transform.right;
+            }
+
+            spreadAngle = float.IsFinite(spreadAngle) ? Mathf.Clamp(spreadAngle, -180f, 180f) : 0f;
+
             if (inputService == null) return muzzle.right;
             
             Vector2 dir = inputService.GetAimDirection(muzzle.position);
+            if (!float.IsFinite(dir.x) || !float.IsFinite(dir.y) || dir.sqrMagnitude <= Mathf.Epsilon)
+            {
+                dir = muzzle.right;
+            }
+
+            dir.Normalize();
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             angle += spreadAngle;
 
-            return Quaternion.Euler(0, 0, angle) * Vector2.right;
+            var direction = Quaternion.Euler(0, 0, angle) * Vector2.right;
+            return direction.sqrMagnitude > Mathf.Epsilon ? direction.normalized : Vector2.right;
         }
     }
 }

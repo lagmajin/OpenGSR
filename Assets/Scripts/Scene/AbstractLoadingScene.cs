@@ -16,13 +16,20 @@ namespace OpenGS
 
         public override SynchronizationContext MainThread()
         {
-            return SynchronizationContext.Current;
+            return SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
         public MatchRoomManager MatchRoomManager()
         {
-            return DependencyInjectionConfig.Resolve<MatchRoomManager>();
-            
+            try
+            {
+                return DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[{GetType().Name}] MatchRoomManager is not available: {ex.Message}");
+                return null;
+            }
         }
 
 

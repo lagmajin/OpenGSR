@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace OpenGS
@@ -42,6 +43,10 @@ namespace OpenGS
         private List<RankingEntry> currentRanking = new List<RankingEntry>();
         private string currentGameMode = null;
         private string playerName = "Player";
+        private RankingManager rankingManager;
+        private Coroutine rankingBindRoutine;
+        private Coroutine rankingRefreshRoutine;
+        private bool clearConfirmationPending;
 
         // ─── デリゲート ─────────────────────────────────────────────
 
@@ -57,7 +62,72 @@ namespace OpenGS
 
         private void OnEnable()
         {
+            rankingBindRoutine = StartCoroutine(BindRankingManagerWhenReady());
+        }
+
+        private void OnDisable()
+        {
+            CancelInvoke();
+            if (rankingManager != null)
+            {
+                rankingManager.OnRankingUpdated -= HandleRankingUpdated;
+            }
+
+            rankingManager = null;
+            if (rankingBindRoutine != null)
+            {
+                StopCoroutine(rankingBindRoutine);
+                rankingBindRoutine = null;
+            }
+            if (rankingRefreshRoutine != null)
+            {
+                StopCoroutine(rankingRefreshRoutine);
+                rankingRefreshRoutine = null;
+            }
+        }
+
+        private void OnDestroy()
+        {
+            gameModeDropdown?.onValueChanged.RemoveListener(OnGameModeChanged);
+            refreshButton?.onClick.RemoveListener(OnRefreshButtonClicked);
+            closeButton?.onClick.RemoveListener(OnCloseButtonClicked);
+            clearButton?.onClick.RemoveListener(OnClearButtonClicked);
+        }
+
+        private IEnumerator BindRankingManagerWhenReady()
+        {
+            while (isActiveAndEnabled && RankingManager.Instance == null)
+            {
+                yield return null;
+            }
+
+            if (!isActiveAndEnabled || RankingManager.Instance == null)
+            {
+                yield break;
+            }
+
+            rankingManager = RankingManager.Instance;
+            rankingManager.OnRankingUpdated += HandleRankingUpdated;
+            rankingBindRoutine = null;
             RefreshRanking();
+        }
+
+        private void HandleRankingUpdated(List<RankingEntry> ranking)
+        {
+            QueueRankingRefresh();
+        }
+
+        private void QueueRankingRefresh()
+        {
+            if (!isActiveAndEnabled || rankingRefreshRoutine != null) return;
+            rankingRefreshRoutine = StartCoroutine(RefreshRankingNextFrame());
+        }
+
+        private IEnumerator RefreshRankingNextFrame()
+        {
+            yield return null;
+            rankingRefreshRoutine = null;
+            if (isActiveAndEnabled) RefreshRanking();
         }
 
         // ─── 初期化 ─────────────────────────────────────────────────
@@ -173,10 +243,24 @@ namespace OpenGS
 
         private void OnClearButtonClicked()
         {
-            // 確認ダイアログを表示（実装は省略）
-            RankingManager.Instance.ClearRanking(currentGameMode);
+            if (!clearConfirmationPending)
+            {
+                clearConfirmationPending = true;
+                ShowStatus("もう一度押すとランキングを削除します", true);
+                CancelInvoke(nameof(ResetClearConfirmation));
+                Invoke(nameof(ResetClearConfirmation), 3f);
+                return;
+            }
+
+            ResetClearConfirmation();
+            rankingManager?.ClearRanking(currentGameMode);
             RefreshRanking();
             ShowStatus("ランキングをクリアしました", false);
+        }
+
+        private void ResetClearConfirmation()
+        {
+            clearConfirmationPending = false;
         }
 
         // ─── ランキング更新 ─────────────────────────────────────────
@@ -186,8 +270,19 @@ namespace OpenGS
         /// </summary>
         private void RefreshRanking()
         {
+            var manager = rankingManager ?? RankingManager.Instance;
+            if (manager == null)
+            {
+                currentRanking = new List<RankingEntry>();
+                ClearRankingList();
+                UpdatePlayerInfo();
+                return;
+            }
+
             // ランキングデータを取得
-            currentRanking = RankingManager.Instance.GetTopRanking(10, currentGameMode);
+            rankingManager = manager;
+            currentRanking = manager.GetTopRanking(10, currentGameMode) ?? new List<RankingEntry>();
+            currentRanking.RemoveAll(entry => entry == null);
 
             // リストをクリア
             ClearRankingList();
@@ -262,17 +357,25 @@ namespace OpenGS
         /// </summary>
         private void UpdatePlayerInfo()
         {
+            var manager = rankingManager ?? RankingManager.Instance;
+            if (manager == null)
+            {
+                if (playerRankText != null) playerRankText.text = "順位: 圏外";
+                if (playerHighScoreText != null) playerHighScoreText.text = "最高スコア: 0";
+                return;
+            }
+
             // プレイヤーの順位
             if (playerRankText != null)
             {
-                int rank = RankingManager.Instance.GetPlayerRank(playerName, currentGameMode);
+                int rank = manager.GetPlayerRank(playerName, currentGameMode);
                 playerRankText.text = rank > 0 ? $"順位: {rank}位" : "順位: 圏外";
             }
 
             // プレイヤーの最高スコア
             if (playerHighScoreText != null)
             {
-                int highScore = RankingManager.Instance.GetPlayerHighScore(playerName, currentGameMode);
+                int highScore = manager.GetPlayerHighScore(playerName, currentGameMode);
                 playerHighScoreText.text = $"最高スコア: {highScore}";
             }
         }

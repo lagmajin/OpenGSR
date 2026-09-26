@@ -19,14 +19,80 @@ namespace OpenGS
         {
             base.Start();
 
-            var manager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            MatchRoomManager manager = null;
+            try
+            {
+                manager = DependencyInjectionConfig.Resolve<MatchRoomManager>();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[OfflineResultScene] MatchRoomManager resolution failed: {ex.Message}");
+            }
             var result = manager != null ? manager.LastOfflineMatchResult : null;
 
             string winningTeam = result?["WinningTeam"]?.ToString() ?? "Draw";
             string myTeam = ResolveMyTeam(result) ?? "Draw";
 
             ShowResult(winningTeam, myTeam);
+            RecordHistory(result, winningTeam, myTeam);
             ShowPlayerList(result);
+        }
+
+        private static void RecordHistory(JObject result, string winningTeam, string myTeam)
+        {
+            var profile = AccountManager.Instance?.CurrentProfile;
+            var playerName = profile != null ? profile.DisplayName : string.Empty;
+            var playerId = profile != null ? profile.GlobalUserId : string.Empty;
+            if (string.IsNullOrWhiteSpace(playerName))
+            {
+                playerName = "Player";
+            }
+
+            var outcome = string.Equals(winningTeam, "Draw", System.StringComparison.OrdinalIgnoreCase)
+                || string.Equals(myTeam, "Draw", System.StringComparison.OrdinalIgnoreCase)
+                ? "Draw"
+                : string.Equals(winningTeam, myTeam, System.StringComparison.OrdinalIgnoreCase)
+                    ? "Win"
+                    : "Lose";
+
+            var score = 0;
+            var kills = 0;
+            var deaths = 0;
+            if (result?["Players"] is JArray players)
+            {
+                foreach (var token in players)
+                {
+                    if (token is not JObject player)
+                    {
+                        continue;
+                    }
+
+                    var resultPlayerId = player["PlayerId"]?.ToString()
+                        ?? player["PlayerID"]?.ToString()
+                        ?? player["Id"]?.ToString();
+                    var name = player["Name"]?.ToString() ?? player["PlayerName"]?.ToString();
+                    var isLocalPlayer = !string.IsNullOrWhiteSpace(playerId)
+                        && string.Equals(resultPlayerId, playerId, System.StringComparison.OrdinalIgnoreCase);
+                    if (!isLocalPlayer && string.IsNullOrWhiteSpace(resultPlayerId))
+                    {
+                        isLocalPlayer = !string.IsNullOrWhiteSpace(name)
+                            && string.Equals(name, playerName, System.StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    if (isLocalPlayer)
+                    {
+                        kills = ReadNonNegativeInt(player["Kills"]);
+                        deaths = ReadNonNegativeInt(player["Deaths"]);
+                        score = ReadNonNegativeInt(player["Score"], kills);
+                        break;
+                    }
+                }
+            }
+
+            if (MatchHistoryManager.Instance != null)
+            {
+                MatchHistoryManager.Instance.RecordMatch(playerName, "Offline", outcome, score, kills, deaths);
+            }
         }
 
         protected override void GoToNextScene()
@@ -47,6 +113,11 @@ namespace OpenGS
                 return "Draw";
             }
 
+            var profile = AccountManager.Instance?.CurrentProfile;
+            var localId = profile?.GlobalUserId;
+            var localName = profile?.DisplayName;
+            string fallbackTeam = null;
+
             foreach (var token in players)
             {
                 var player = token as JObject;
@@ -58,11 +129,28 @@ namespace OpenGS
                 var team = player["Team"]?.ToString();
                 if (!string.IsNullOrWhiteSpace(team) && team != "NoTeam")
                 {
-                    return team;
+                    fallbackTeam ??= team;
+
+                    var playerId = player["PlayerId"]?.ToString()
+                        ?? player["PlayerID"]?.ToString()
+                        ?? player["Id"]?.ToString();
+                    var playerName = player["Name"]?.ToString() ?? player["PlayerName"]?.ToString();
+                    var isLocal = !string.IsNullOrWhiteSpace(localId)
+                        && string.Equals(playerId, localId, System.StringComparison.OrdinalIgnoreCase);
+                    if (!isLocal && string.IsNullOrWhiteSpace(playerId))
+                    {
+                        isLocal = !string.IsNullOrWhiteSpace(localName)
+                            && string.Equals(playerName, localName, System.StringComparison.OrdinalIgnoreCase);
+                    }
+
+                    if (isLocal)
+                    {
+                        return team;
+                    }
                 }
             }
 
-            return "Draw";
+            return fallbackTeam ?? "Draw";
         }
 
         private void ShowPlayerList(JObject result)
@@ -91,13 +179,26 @@ namespace OpenGS
                     PlayerId = p["PlayerId"]?.ToString() ?? p["Id"]?.ToString() ?? "",
                     PlayerName = p["Name"]?.ToString() ?? p["PlayerName"]?.ToString() ?? "Unknown",
                     Team = p["Team"]?.ToString() ?? p["TeamName"]?.ToString() ?? "None",
-                    Kills = p["Kills"]?.ToObject<int>() ?? 0,
-                    Deaths = p["Deaths"]?.ToObject<int>() ?? 0,
-                    Score = p["Score"]?.ToObject<int>() ?? p["Kills"]?.ToObject<int>() ?? 0
+                    Kills = ReadNonNegativeInt(p["Kills"]),
+                    Deaths = ReadNonNegativeInt(p["Deaths"]),
+                    Score = ReadNonNegativeInt(p["Score"], ReadNonNegativeInt(p["Kills"]))
                 });
             }
 
             resultUIManager.UpdateResultList(parsedData);
+        }
+
+        private static int ReadNonNegativeInt(JToken token, int fallback = 0)
+        {
+            try
+            {
+                return Mathf.Max(0, token?.ToObject<int>() ?? fallback);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[OfflineResultScene] Invalid result number: {ex.Message}");
+                return Mathf.Max(0, fallback);
+            }
         }
     }
 }

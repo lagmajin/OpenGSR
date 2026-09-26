@@ -11,6 +11,7 @@ namespace OpenGS
     public class TitleScene : MonoBehaviour
     {
         private string testName = "Player1234";
+        private bool sceneTransitionRequested;
 
         static bool bgmFlag = false;
 
@@ -36,14 +37,21 @@ namespace OpenGS
             }
 
             var args = System.Environment.GetCommandLineArgs();
-            if (args != null && args.Length > 0 && "ExportAssetFiles" == args[0])
+            if (args != null && System.Array.Exists(args, arg => string.Equals(arg, "ExportAssetFiles", System.StringComparison.OrdinalIgnoreCase)))
             {
                 GoToExportAssetsScene();
             }
 
             Debug.Log("TitleScene");
 
-            SoundManager.Instance.EnsureBgm(EBgm.Title, 0f);
+            if (SoundManager.Instance != null)
+            {
+                SoundManager.Instance.EnsureBgm(EBgm.Title, 0f);
+            }
+            else
+            {
+                Debug.LogWarning("[TitleScene] SoundManager is not ready; skipping title BGM setup.");
+            }
 
             var gameManager = GameGeneralManager.GetInstance;
 
@@ -55,20 +63,6 @@ namespace OpenGS
 
         void Update()
         {
-            if (Input.GetKey(KeyCode.Keypad1))
-            {
-                //Invoke("gotoTitleScene", 1.5f);
-            }
-
-            if (Input.GetKey(KeyCode.Keypad2))
-            {
-                //Invoke("gotoTitleScene", 1.5f);
-            }
-
-            if (Input.GetKey(KeyCode.Keypad3))
-            {
-            }
-
             if (Input.GetKeyDown(KeyCode.Escape))
             {
                 quit();
@@ -145,7 +139,7 @@ namespace OpenGS
         {
             bgmFlag = true;
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(GeneralSceneMasterData.Instance().ConnectToServerScene());
+            LoadConfiguredScene(GeneralSceneMasterData.Instance().ConnectToServerScene(), "ConnectOnlineLobby");
         }
 
         [Button("オフラインウェイトルーム")]
@@ -153,7 +147,7 @@ namespace OpenGS
         {
             bgmFlag = true;
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene());
+            LoadConfiguredScene(GeneralSceneMasterData.Instance().OfflineWaitRoomScene(), "GoToOfflineWaitRoom");
         }
 
         [Button("アセットエクスポートシーンへ移動")]
@@ -162,7 +156,30 @@ namespace OpenGS
             bgmFlag = true;
             Debug.Log("[TitleScene] GoToExportAssetsScene");
             GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
-            SceneManager.LoadScene(GeneralSceneMasterData.Instance().ExportAssetScene());
+            LoadConfiguredScene(GeneralSceneMasterData.Instance().ExportAssetScene(), "GoToExportAssetsScene");
+        }
+
+        private void LoadConfiguredScene(string sceneName, string source)
+        {
+            if (sceneTransitionRequested)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(sceneName))
+            {
+                Debug.LogError($"[TitleScene] Scene name is not configured. source={source}");
+                return;
+            }
+
+            if (!Application.CanStreamedLevelBeLoaded(sceneName))
+            {
+                Debug.LogError($"[TitleScene] Scene is not in build settings: {sceneName}. source={source}");
+                return;
+            }
+
+            sceneTransitionRequested = true;
+            SceneManager.LoadScene(sceneName);
         }
 
         [Button("自動セット")]

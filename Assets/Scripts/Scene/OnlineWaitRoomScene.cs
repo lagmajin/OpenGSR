@@ -1,8 +1,10 @@
 #pragma warning disable 0219
 #pragma warning disable 0105
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using DG.Tweening;
 using Newtonsoft.Json.Linq;
@@ -55,16 +57,18 @@ namespace OpenGS
 
         private bool roomOwner = true;
         private bool forceLocalPlayerOwnerInEditorDirect = false;
+        private bool waitRoomRefreshQueued;
 
         [SerializeField] private WaitRoomPlayerSlot mySlot;
 
         private readonly List<GameObject> activePlayerSlotObjects = new List<GameObject>();
         private SynchronizationContext mainThread;
         private Coroutine startCountdownCoroutine;
+        private Coroutine waitRoomRefreshRoutine;
 
         public override SynchronizationContext MainThread()
         {
-            return mainThread;
+            return mainThread ?? SynchronizationContext.Current ?? new SynchronizationContext();
         }
 
         protected override void Awake()
@@ -72,22 +76,110 @@ namespace OpenGS
             base.Awake();
             DebugFlagManager.SetFirstSceneName(this.GetType().FullName);
 
-            mainThread = SynchronizationContext.Current;
-            generalNetworkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+            mainThread = SynchronizationContext.Current ?? new SynchronizationContext();
+            try
+            {
+                generalNetworkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
+            }
+            catch (Exception ex)
+            {
+                generalNetworkManager = null;
+                Debug.LogWarning($"[OnlineWaitRoomScene] GeneralServerNetworkManager is not ready: {ex.Message}");
+            }
+            if (networkManager == null)
+            {
+                networkManager = FindFirstObjectByType<WaitRoomNetworkManager>();
+            }
             AutoBindIfNeeded();
+            DisableUnavailableDialogButtons();
             SetupListeners();
+        }
+
+        private void DisableUnavailableDialogButtons()
+        {
+            if (inviteButton != null && inviteDialog == null)
+            {
+                inviteButton.interactable = false;
+                Debug.LogWarning("[OnlineWaitRoomScene] InviteButton is present but InviteDialog is not configured; disabling the button.");
+            }
+
+            if (chara != null && characterSelectDialog == null)
+            {
+                chara.interactable = false;
+                Debug.LogWarning("[OnlineWaitRoomScene] CharacterSelectButton is present but CharacterSelectDialog is not configured; disabling the button.");
+            }
+
+            if (weaponLimitButton != null && weaponLimitDialog == null)
+            {
+                weaponLimitButton.interactable = false;
+                Debug.LogWarning("[OnlineWaitRoomScene] WeaponLimitButton is present but WeaponLimitDialog is not configured; disabling the button.");
+            }
         }
 
         void Start()
         {
             PlayWaitRoomBgm();
 
-            timer.timeupEvent.AddListener(TimeUp);
+            // A match endpoint belongs to one match session. Do not let a
+            // previous match suppress the next loading-scene request.
+            if (OnlineManager.Instance != null)
+            {
+                OnlineManager.Instance.MatchServerInfo.Clear();
+            }
+            else
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] OnlineManager is not ready; match endpoint cache was not cleared.");
+            }
+
+            if (timer != null && timer.timeupEvent != null)
+            {
+                timer.timeupEvent.AddListener(TimeUp);
+            }
+            else
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] GameTimer is not configured.");
+            }
 
             LoadRoomSetting();
             InitializePlayerInfoUi();
+            if (networkManager == null)
+            {
+                networkManager = FindFirstObjectByType<WaitRoomNetworkManager>();
+            }
             BindNetworkStreams();
             RefreshWaitRoomUi();
+        }
+
+        protected override void OnDestroy()
+        {
+            if (inputField != null)
+            {
+                inputField.onEndEdit.RemoveListener(SendChat);
+            }
+
+            if (characterSelectDialog != null)
+            {
+                characterSelectDialog.OnCharacterSelected -= HandleCharacterSelected;
+            }
+
+            if (timer != null && timer.timeupEvent != null)
+            {
+                timer.timeupEvent.RemoveListener(TimeUp);
+            }
+
+            if (startCountdownCoroutine != null)
+            {
+                StopCoroutine(startCountdownCoroutine);
+                startCountdownCoroutine = null;
+            }
+            if (waitRoomRefreshRoutine != null)
+            {
+                StopCoroutine(waitRoomRefreshRoutine);
+                waitRoomRefreshRoutine = null;
+            }
+            waitRoomRefreshQueued = false;
+
+            base.OnDestroy();
         }
 
         protected override void Update()
@@ -98,14 +190,20 @@ namespace OpenGS
                 RequestGameStart();
             }
 
-            if (Input.anyKey)
+            if (Input.anyKeyDown)
             {
-                timer.ReStartTimer();
+                timer?.ReStartTimer();
             }
         }
 
         private void PlayWaitRoomBgm()
         {
+            if (SoundManager.Instance == null)
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] SoundManager is not ready; skipping wait room BGM.");
+                return;
+            }
+
             if (SoundManager.Instance.IsBgmPlaying(EBgm.WaitRoom))
             {
                 return;
@@ -199,6 +297,20 @@ namespace OpenGS
             if (room != null)
             {
                 room.GameMode = mode;
+
+                var currentMapInfo = MapVisualResolver.GetMapInfo(room.Map);
+                if (currentMapInfo != null && !currentMapInfo.CanPlayForMode(mode)
+                    && MapVisualResolver.TryGetFirstPlayableMap(mode, out var fallbackMap))
+                {
+                    room.Map = fallbackMap;
+                    if (sendToServer)
+                    {
+                        SendWaitRoomSettingsChange(new JObject
+                        {
+                            ["Map"] = fallbackMap.ToString()
+                        });
+                    }
+                }
             }
 
             if (sendToServer)
@@ -216,6 +328,15 @@ namespace OpenGS
         {
             if (!IsRoomOwner())
             {
+                return;
+            }
+
+            var room = ResolveWaitRoom();
+            var mode = room != null ? room.GameMode : EGameMode.DeathMatch;
+            var mapInfo = MapVisualResolver.GetMapInfo(map);
+            if (mapInfo != null && !mapInfo.CanPlayForMode(mode))
+            {
+                Debug.LogWarning($"[OnlineWaitRoomScene] Map {map} is disabled for mode {mode}.");
                 return;
             }
 
@@ -278,7 +399,12 @@ namespace OpenGS
             }
         }
 
-        void LoadGameScene()
+        private void LoadGameScene()
+        {
+            LoadGameSceneFromNetwork();
+        }
+
+        public void LoadGameSceneFromNetwork()
         {
             Debug.Log("Go to loading Scene...");
             CacheOnlineSelectionForLoading();
@@ -291,6 +417,12 @@ namespace OpenGS
             var room = ResolveWaitRoom();
             if (room == null)
             {
+                return;
+            }
+
+            if (GameModeSelectManager.Instance == null)
+            {
+                Debug.LogWarning("[OnlineWaitRoomScene] GameModeSelectManager is not ready.");
                 return;
             }
 
@@ -353,7 +485,7 @@ namespace OpenGS
                 return;
             }
 
-            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            var playerName = AccountManager.Instance?.CurrentProfile?.DisplayName;
             if (string.IsNullOrWhiteSpace(playerName))
             {
                 playerName = "Player";
@@ -395,11 +527,28 @@ namespace OpenGS
             var dialog = weaponLimitDialog.GetComponent<WeaponLimitDialog>();
             if (dialog != null)
             {
+                dialog.SelectionApplied -= HandleWeaponLimitApplied;
+                dialog.SelectionApplied += HandleWeaponLimitApplied;
                 dialog.Open(roomOwner);
                 return;
             }
 
             weaponLimitDialog.SetActive(true);
+        }
+
+        private void HandleWeaponLimitApplied(IReadOnlyCollection<eWeaponType> bannedWeapons)
+        {
+            var settings = new JObject
+            {
+                ["BannedWeapons"] = new JArray()
+            };
+
+            foreach (var weapon in bannedWeapons ?? Array.Empty<eWeaponType>())
+            {
+                ((JArray)settings["BannedWeapons"]).Add(weapon.ToString());
+            }
+
+            SendWaitRoomSettingsChange(settings);
         }
 
         public void showWeaponLimitDialog()
@@ -590,56 +739,62 @@ namespace OpenGS
 
             if (readyButton != null)
             {
-                readyButton.onClick.RemoveAllListeners();
+                readyButton.onClick.RemoveListener(ToggleReadyState);
                 readyButton.onClick.AddListener(ToggleReadyState);
             }
 
             if (startButton != null)
             {
-                startButton.onClick.RemoveAllListeners();
+                startButton.onClick.RemoveListener(RequestGameStart);
                 startButton.onClick.AddListener(RequestGameStart);
             }
 
             if (exitButton != null)
             {
-                exitButton.onClick.RemoveAllListeners();
+                exitButton.onClick.RemoveListener(ExitWaitRoom);
                 exitButton.onClick.AddListener(ExitWaitRoom);
             }
 
             if (plusButton != null)
             {
-                plusButton.onClick.RemoveAllListeners();
+                plusButton.onClick.RemoveListener(Plus);
                 plusButton.onClick.AddListener(Plus);
             }
 
             if (minusButton != null)
             {
-                minusButton.onClick.RemoveAllListeners();
+                minusButton.onClick.RemoveListener(Minus);
                 minusButton.onClick.AddListener(Minus);
             }
 
             if (gameModeButton != null)
             {
-                gameModeButton.onClick.RemoveAllListeners();
+                gameModeButton.onClick.RemoveListener(ChangeGameMode);
                 gameModeButton.onClick.AddListener(ChangeGameMode);
             }
 
             if (inviteButton != null)
             {
-                inviteButton.onClick.RemoveAllListeners();
+                inviteButton.onClick.RemoveListener(ShowInviteDialog);
                 inviteButton.onClick.AddListener(ShowInviteDialog);
             }
 
             if (roomNameApplyButton != null)
             {
-                roomNameApplyButton.onClick.RemoveAllListeners();
+                roomNameApplyButton.onClick.RemoveListener(ApplyRoomNameFromInput);
                 roomNameApplyButton.onClick.AddListener(ApplyRoomNameFromInput);
             }
 
             if (chara != null)
             {
-                chara.onClick.RemoveAllListeners();
+                chara.onClick.RemoveListener(ShowCharacterSelectDialog);
                 chara.onClick.AddListener(ShowCharacterSelectDialog);
+            }
+
+            if (inputField != null)
+            {
+                inputField.onEndEdit.RemoveListener(SendChat);
+                inputField.onEndEdit.AddListener(SendChat);
             }
         }
 
@@ -652,27 +807,27 @@ namespace OpenGS
 
             networkManager.OnPlayerListStream
                 .ObserveOnMainThread()
-                .Subscribe(_ => RefreshWaitRoomUi())
+                .Subscribe(_ => QueueWaitRoomUiRefresh())
                 .AddTo(this);
 
             networkManager.OnRoomSettingsChangedStream
                 .ObserveOnMainThread()
-                .Subscribe(_ => RefreshWaitRoomUi())
+                .Subscribe(_ => QueueWaitRoomUiRefresh())
                 .AddTo(this);
 
             networkManager.OnPlayerReadyStream
                 .ObserveOnMainThread()
-                .Subscribe(_ => RefreshWaitRoomUi())
+                .Subscribe(_ => QueueWaitRoomUiRefresh())
                 .AddTo(this);
 
             networkManager.OnPlayerJoinedStream
                 .ObserveOnMainThread()
-                .Subscribe(_ => RefreshWaitRoomUi())
+                .Subscribe(_ => QueueWaitRoomUiRefresh())
                 .AddTo(this);
 
             networkManager.OnPlayerLeftStream
                 .ObserveOnMainThread()
-                .Subscribe(_ => RefreshWaitRoomUi())
+                .Subscribe(_ => QueueWaitRoomUiRefresh())
                 .AddTo(this);
 
             networkManager.OnStartCountdownStream
@@ -699,6 +854,29 @@ namespace OpenGS
                 .ObserveOnMainThread()
                 .Subscribe(_ => GoToLobby())
                 .AddTo(this);
+        }
+
+        private void QueueWaitRoomUiRefresh()
+        {
+            if (waitRoomRefreshQueued)
+            {
+                return;
+            }
+
+            waitRoomRefreshQueued = true;
+            waitRoomRefreshRoutine = StartCoroutine(RefreshWaitRoomUiNextFrame());
+        }
+
+        private IEnumerator RefreshWaitRoomUiNextFrame()
+        {
+            yield return null;
+            waitRoomRefreshRoutine = null;
+            waitRoomRefreshQueued = false;
+
+            if (this != null)
+            {
+                RefreshWaitRoomUi();
+            }
         }
 
         private void RefreshWaitRoomUi()
@@ -744,7 +922,8 @@ namespace OpenGS
 
         private static PlayerInfo BuildLocalPlaceholderPlayer()
         {
-            var playerName = AccountManager.Instance.CurrentProfile.DisplayName;
+            var profile = AccountManager.Instance?.CurrentProfile;
+            var playerName = profile?.DisplayName;
             if (string.IsNullOrWhiteSpace(playerName))
             {
                 playerName = "Player";
@@ -753,12 +932,14 @@ namespace OpenGS
             return new PlayerInfo(
                 id: ResolveLocalPlayerId(),
                 name: playerName,
-                currentIp: AccountManager.Instance.CurrentProfile.GlobalMyIP)
+                currentIp: profile?.GlobalMyIP ?? string.Empty)
             {
                 IsReady = false,
                 Team = OpenGSCore.ETeam.NoTeam,
                 IsBot = false,
-                playerCharacter = GamePlayerManager.Instance.SelectedPlayerCharacter()
+                playerCharacter = GamePlayerManager.Instance != null
+                    ? GamePlayerManager.Instance.SelectedPlayerCharacter()
+                    : EPlayerCharacter.Misty
             };
         }
 
@@ -993,7 +1174,8 @@ namespace OpenGS
         private void StartCountdown(int seconds)
         {
             CancelCountdown();
-            startCountdownCoroutine = StartCoroutine(StartCountdownCoroutine(seconds));
+            var safeSeconds = Mathf.Clamp(seconds, 0, 300);
+            startCountdownCoroutine = StartCoroutine(StartCountdownCoroutine(safeSeconds));
         }
 
         private void CancelCountdown()
@@ -1009,9 +1191,12 @@ namespace OpenGS
 
         private IEnumerator StartCountdownCoroutine(int seconds)
         {
-            yield return new WaitForSeconds(Mathf.Max(0, seconds));
+            yield return new WaitForSecondsRealtime(Mathf.Max(0, seconds));
             startCountdownCoroutine = null;
-            LoadGameScene();
+            if (isActiveAndEnabled)
+            {
+                LoadGameScene();
+            }
         }
 
         private ClientWaitRoom ResolveWaitRoom()
@@ -1164,7 +1349,7 @@ namespace OpenGS
 
         private static string ResolveLocalPlayerId()
         {
-            var playerId = AccountManager.Instance.CurrentProfile.GlobalUserId;
+            var playerId = AccountManager.Instance?.CurrentProfile?.GlobalUserId;
             return string.IsNullOrWhiteSpace(playerId) ? "local_player" : playerId;
         }
 
@@ -1181,6 +1366,19 @@ namespace OpenGS
             var room = ResolveWaitRoom();
             var roomId = room != null ? room.RoomId : string.Empty;
             var roomName = room != null ? room.RoomName : BuildRoomTitle();
+            var friends = (FriendManager.Instance?.GetFriends() ?? new List<FriendEntry>())
+                .Where(friend => friend != null && !string.IsNullOrWhiteSpace(friend.PlayerId))
+                .Select(friend => new PlayerInfo(
+                    id: friend.PlayerId,
+                    name: string.IsNullOrWhiteSpace(friend.PlayerName) ? friend.PlayerId : friend.PlayerName,
+                    currentIp: string.Empty)
+                {
+                    IsReady = false,
+                    Team = OpenGSCore.ETeam.NoTeam,
+                    IsBot = false
+                })
+                .ToList();
+            inviteDialog.UpdateFriendList(friends);
             inviteDialog.Show(roomId, roomName);
         }
 
@@ -1201,12 +1399,18 @@ namespace OpenGS
 
             characterSelectDialog.OnCharacterSelected -= HandleCharacterSelected;
             characterSelectDialog.OnCharacterSelected += HandleCharacterSelected;
-            characterSelectDialog.Show(GamePlayerManager.Instance.SelectedPlayerCharacter());
+            var selectedCharacter = GamePlayerManager.Instance != null
+                ? GamePlayerManager.Instance.SelectedPlayerCharacter()
+                : EPlayerCharacter.Misty;
+            characterSelectDialog.Show(selectedCharacter);
         }
 
         private void HandleCharacterSelected(EPlayerCharacter character)
         {
-            GamePlayerManager.Instance.SetPlayerCharacter(character);
+            if (GamePlayerManager.Instance != null)
+            {
+                GamePlayerManager.Instance.SetPlayerCharacter(character);
+            }
             SendWaitRoomSettingsChange(new JObject
             {
                 ["PlayerCharacter"] = character.ToString()
@@ -1232,8 +1436,9 @@ namespace OpenGS
                     localPlayer.playerCharacter = character;
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.LogWarning($"[OnlineWaitRoomScene] Failed to apply local character selection: {ex.Message}");
             }
         }
 

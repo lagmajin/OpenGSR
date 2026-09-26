@@ -4,6 +4,7 @@
 using OpenGSCore;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace OpenGS
 {
@@ -23,7 +24,8 @@ namespace OpenGS
 
         [SerializeField] [Required] public string mapDisplayName;
 
-        [SerializeField] private SceneObject mapScene;
+        // Keep existing MapInfo assets authored with the former "stage" field usable.
+        [SerializeField] [FormerlySerializedAs("stage")] private SceneObject mapScene;
 
 
         [SerializeField] public float boosterPower = 1.0f;
@@ -57,6 +59,11 @@ namespace OpenGS
             return mapScene;
         }
 
+        public bool HasMapScene()
+        {
+            return mapScene != null && !string.IsNullOrWhiteSpace(mapScene.SceneName());
+        }
+
         public Sprite SmallThumbnail()
         {
             return smallThumbnail;
@@ -70,6 +77,19 @@ namespace OpenGS
         public eDifficulty Difficulty()
         {
             return difficulty;
+        }
+
+        public bool CanPlayForMode(EGameMode mode)
+        {
+            return mode switch
+            {
+                EGameMode.DeathMatch => canPlayDM,
+                EGameMode.TeamDeathMatch => canPlayTDM,
+                EGameMode.Survival => canPlaySuv,
+                EGameMode.TeamSurvival => canPlaySuv,
+                // This asset predates CTF-specific availability metadata.
+                _ => true
+            };
         }
 
         #if UNITY_EDITOR

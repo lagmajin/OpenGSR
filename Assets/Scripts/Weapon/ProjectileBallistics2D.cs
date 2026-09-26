@@ -24,24 +24,28 @@ namespace OpenGS
             bool alignVelocity,
             float angleOffset)
         {
-            direction = initialDirection.sqrMagnitude > 0f ? initialDirection.normalized : Vector2.right;
-            speed = Mathf.Max(0f, initialSpeed);
-            gravityStrength = Mathf.Max(0f, gravity);
+            direction = IsFinite(initialDirection) && initialDirection.sqrMagnitude > 0f
+                ? initialDirection.normalized
+                : Vector2.right;
+            speed = IsFinite(initialSpeed) ? Mathf.Max(0f, initialSpeed) : 0f;
+            gravityStrength = IsFinite(gravity) ? Mathf.Max(0f, gravity) : 0f;
             gravityEnabled = enableGravity;
             alignToVelocity = alignVelocity;
-            spriteAngleOffset = angleOffset;
+            spriteAngleOffset = IsFinite(angleOffset) ? angleOffset : 0f;
             velocity = direction * speed;
         }
 
         public void SetDirection(Vector2 newDirection)
         {
-            direction = newDirection.sqrMagnitude > 0f ? newDirection.normalized : Vector2.right;
+            direction = IsFinite(newDirection) && newDirection.sqrMagnitude > 0f
+                ? newDirection.normalized
+                : Vector2.right;
             velocity = direction * speed;
         }
 
         public void SetSpeed(float newSpeed)
         {
-            speed = Mathf.Max(0f, newSpeed);
+            speed = IsFinite(newSpeed) ? Mathf.Max(0f, newSpeed) : 0f;
             velocity = direction * speed;
         }
 
@@ -56,7 +60,7 @@ namespace OpenGS
 
         public void SetGravityStrength(float newGravity)
         {
-            gravityStrength = Mathf.Max(0f, newGravity);
+            gravityStrength = IsFinite(newGravity) ? Mathf.Max(0f, newGravity) : 0f;
         }
 
         public void SetAlignment(bool alignVelocity)
@@ -66,14 +70,25 @@ namespace OpenGS
 
         public void SetSpriteAngleOffset(float angleOffset)
         {
-            spriteAngleOffset = angleOffset;
+            spriteAngleOffset = IsFinite(angleOffset) ? angleOffset : 0f;
         }
 
         public Vector2 Step(float dt)
         {
+            if (!IsFinite(dt) || dt <= 0f)
+            {
+                return Vector2.zero;
+            }
+
             if (gravityEnabled)
             {
                 velocity += Vector2.down * gravityStrength * dt;
+                if (!IsFinite(velocity))
+                {
+                    velocity = Vector2.zero;
+                    return Vector2.zero;
+                }
+
                 return velocity * dt;
             }
 
@@ -94,7 +109,22 @@ namespace OpenGS
             }
 
             var angle = Mathf.Atan2(basis.y, basis.x) * Mathf.Rad2Deg + spriteAngleOffset;
+            if (!IsFinite(angle))
+            {
+                angle = 0f;
+            }
+
             return Quaternion.Euler(0f, 0f, angle);
+        }
+
+        private static bool IsFinite(Vector2 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y);
+        }
+
+        private static bool IsFinite(float value)
+        {
+            return float.IsFinite(value);
         }
     }
 }
