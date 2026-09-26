@@ -118,6 +118,16 @@ namespace OpenGS
             localServer = null;
             if (isLocal)
             {
+                // S1: the local simulation is only ever used when the gate says
+                // so, so a stray ConnectToLocalServer cannot quietly bypass
+                // the authoritative server.
+                if (!NetworkAuthorityGate.IsLocalSimulation())
+                {
+                    Debug.LogWarning("[MatchRUDPServerNetworkManager] Local connect requested but the authority gate is not in local mode.");
+                    connected = false;
+                    return;
+                }
+
                 try
                 {
                     localServer = DependencyInjectionConfig.Resolve<LocalTestMatchRUDPServer>();

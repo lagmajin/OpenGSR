@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using Autofac;
@@ -204,7 +204,7 @@ namespace OpenGS
 
                 DebugSettingsManager.EnsureLoaded();
                 var settings = DebugSettingsManager.settings;
-                if (settings == null || !settings.localServerTestMode || settings.localTCPPort <= 0)
+                if (settings == null || !NetworkAuthorityGate.IsLocalSimulation() || NetworkAuthorityGate.LocalTcpPort() <= 0)
                 {
                     Debug.Log($"DependencyInjectionConfig: LocalTestTcpServer not started. testMode={settings?.localServerTestMode}, localTCPPort={settings?.localTCPPort}");
                     return false;
@@ -216,7 +216,7 @@ namespace OpenGS
                     return false;
                 }
 
-                localTestServer.port = settings.localTCPPort;
+                localTestServer.port = NetworkAuthorityGate.LocalTcpPort();
                 _ = localTestServer.StartAsync(localTestServer.port);
                 Debug.Log($"DependencyInjectionConfig: LocalTestTcpServer started on port {localTestServer.port} (requested by scene/startup)");
                 return true;
