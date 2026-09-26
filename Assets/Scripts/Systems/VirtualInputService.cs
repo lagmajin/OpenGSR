@@ -108,6 +108,12 @@ namespace OpenGS
         public bool IsBoosterPressed() => booster || physical.IsBoosterPressed();
         public bool IsScoreboardJustPressed() => physical.IsScoreboardJustPressed();
         public bool IsScoreboardJustReleased() => physical.IsScoreboardJustReleased();
+        public bool IsMoveRightJustPressed() => physical.IsMoveRightJustPressed();
+        public bool IsMoveLeftJustPressed() => physical.IsMoveLeftJustPressed();
+        public bool IsCrouchJustReleased() => physical.IsCrouchJustReleased();
+        public bool IsLieDownJustReleased() => physical.IsLieDownJustReleased();
+        public bool IsSprintPressed() => physical.IsSprintPressed();
+        public bool IsDashJustPressed() => physical.IsDashJustPressed();
 
         private static bool Take(ref bool value)
         {

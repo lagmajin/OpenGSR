@@ -104,8 +104,8 @@ namespace OpenGS
 
             var damageableComponent = damageable as Component;
             var targetId = damageableComponent != null
-                ? damageableComponent.gameObject.GetInstanceID()
-                : hit.gameObject.GetInstanceID();
+                ? UnityObjectIdCompat.GetObjectId(damageableComponent.gameObject)
+                : UnityObjectIdCompat.GetObjectId(hit.gameObject);
             if (damageable == null || !affectedObjects.Add(targetId))
             {
                 return;
@@ -114,7 +114,7 @@ namespace OpenGS
             var directionOffset = hit.transform.position - transform.position;
             var direction = directionOffset.sqrMagnitude > 0.000001f
                 ? directionOffset.normalized
-                : Vector2.zero;
+                : Vector3.zero;
             if (damageable is AbstractPlayer player && PlayerRegistry.Instance != null)
             {
                 PlayerRegistry.Instance.ApplyDamage(

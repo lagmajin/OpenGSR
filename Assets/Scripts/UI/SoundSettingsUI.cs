@@ -329,7 +329,7 @@ namespace OpenGS
         {
             Debug.Log("[SoundSettingsUI] BGMテスト再生");
             if (SoundManager.Instance == null) return;
-            SoundManager.Instance.PlayBGM(EBgm.WaitRoom, 0.15f);
+            SoundManager.Instance.PlayBgm(EBgm.WaitRoom, 0.15f);
         }
 
         private void OnTestSEClicked()

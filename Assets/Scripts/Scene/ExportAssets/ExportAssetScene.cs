@@ -1,4 +1,8 @@
-﻿//using SFB;
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
+
+//using SFB;
 using System.Collections.Generic;
 //using System.Windows.Forms;
 using Sirenix.OdinInspector;

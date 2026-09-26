@@ -121,6 +121,12 @@ namespace OpenGS
 
         public bool IsScoreboardJustPressed() => liveInput.IsScoreboardJustPressed();
         public bool IsScoreboardJustReleased() => liveInput.IsScoreboardJustReleased();
+        public bool IsMoveRightJustPressed() => liveInput.IsMoveRightJustPressed();
+        public bool IsMoveLeftJustPressed() => liveInput.IsMoveLeftJustPressed();
+        public bool IsCrouchJustReleased() => liveInput.IsCrouchJustReleased();
+        public bool IsLieDownJustReleased() => liveInput.IsLieDownJustReleased();
+        public bool IsSprintPressed() => liveInput.IsSprintPressed();
+        public bool IsDashJustPressed() => liveInput.IsDashJustPressed();
 
         public ReplaySession Session => session;
 

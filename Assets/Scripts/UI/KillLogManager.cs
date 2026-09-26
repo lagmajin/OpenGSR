@@ -44,11 +44,6 @@ namespace OpenGS
         /// </summary>
         public void AddLog(KillLogEntryData entry, Sprite weaponSprite = null)
         {
-            if (entry == null)
-            {
-                Debug.LogWarning("KillLogManager: log entry is null.");
-                return;
-            }
 
             if (logPrefab == null)
             {

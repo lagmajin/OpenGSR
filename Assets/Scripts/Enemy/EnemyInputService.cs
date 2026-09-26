@@ -53,6 +53,12 @@ namespace OpenGS
         public bool IsBoosterPressed() => BoosterPressed;
         public bool IsScoreboardJustPressed() => false;
         public bool IsScoreboardJustReleased() => false;
+        public bool IsMoveRightJustPressed() => false;
+        public bool IsMoveLeftJustPressed() => false;
+        public bool IsCrouchJustReleased() => false;
+        public bool IsLieDownJustReleased() => false;
+        public bool IsSprintPressed() => false;
+        public bool IsDashJustPressed() => false;
 
         /// <summary>
         /// 全入力をリセットする

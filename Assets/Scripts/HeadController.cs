@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -114,7 +114,7 @@ namespace OpenGS
 
             var aimWorldPosition = owner != null
                 ? owner.GetAimWorldPosition()
-                : camera.ScreenToWorldPoint(Input.mousePosition);
+                : (Vector2)camera.ScreenToWorldPoint(Input.mousePosition);
             if (!IsFinite(aimWorldPosition) || !IsFinite(transform.position))
             {
                 return;

@@ -1,4 +1,4 @@
-﻿using OpenGSCore;
+using OpenGSCore;
 using System;
 using System.Collections;
 using JetBrains.Annotations;
@@ -767,21 +767,6 @@ namespace OpenGS
         /// </summary>
         public int GetFacingDirection()
         {
-            var playerAgent = this as PlayerAgent;
-            if (playerAgent != null)
-            {
-                var aimPosition = playerAgent.GetAimWorldPosition();
-                if (!float.IsNaN(aimPosition.x) && !float.IsInfinity(aimPosition.x)
-                    && !float.IsNaN(aimPosition.y) && !float.IsInfinity(aimPosition.y))
-                {
-                    var delta = aimPosition.x - transform.position.x;
-                    if (Mathf.Abs(delta) > 0.0001f)
-                    {
-                        return delta >= 0f ? 1 : -1;
-                    }
-                }
-            }
-
             if (Camera.main == null) return 1;
             var screenPos = Camera.main.WorldToScreenPoint(transform.position);
             var direction = Input.mousePosition - screenPos;

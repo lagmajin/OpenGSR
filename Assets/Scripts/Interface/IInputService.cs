@@ -88,5 +88,23 @@ namespace OpenGS
 
         bool IsScoreboardJustPressed();
         bool IsScoreboardJustReleased();
+
+        /// <summary>右移動入力が押された瞬間か（ダブルタップのダッシュ判定に使う）</summary>
+        bool IsMoveRightJustPressed();
+
+        /// <summary>左移動入力が押された瞬間か（ダブルタップのダッシュ判定に使う）</summary>
+        bool IsMoveLeftJustPressed();
+
+        /// <summary>しゃがみ状態を解除した瞬間か</summary>
+        bool IsCrouchJustReleased();
+
+        /// <summary>伏せを解除した瞬間か</summary>
+        bool IsLieDownJustReleased();
+
+        /// <summary>ダッシュ（スプリント）ボタンが押されているか</summary>
+        bool IsSprintPressed();
+
+        /// <summary>ダッシュ入力が押された瞬間か</summary>
+        bool IsDashJustPressed();
     }
 }

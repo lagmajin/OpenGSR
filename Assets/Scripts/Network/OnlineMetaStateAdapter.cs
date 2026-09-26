@@ -95,7 +95,7 @@ namespace OpenGS
             }
         }
 
-        private static bool ShouldRefreshGuildList(OpenGSCore.MessageType type)
+        private static bool ShouldRefreshGuildList(string type)
         {
             return type == OpenGSCore.MessageType.GuildCreateResponse ||
                    type == OpenGSCore.MessageType.GuildJoinResponse ||

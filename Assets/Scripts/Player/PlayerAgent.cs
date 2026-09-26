@@ -19,9 +19,9 @@ namespace OpenGS
         [FormerlySerializedAs("sitingCollider")]
         [SerializeField] private BoxCollider2D sittingCollider;
 
-        [SerializeField]private GameObject head;
+        [SerializeField] private Transform head;
         [SerializeField]private HeadController headController;
-        [SerializeField] private GameObject weaponArm;
+        [SerializeField] private Transform weaponArm;
         [SerializeField] private AbstractGunController primaryGunController;
         [SerializeField]private WeaponArmController armController;
         [SerializeField] private WeaponSlots weaponSlots;
@@ -436,7 +436,7 @@ namespace OpenGS
             }
 
             matchEventProvider ??= GetComponent<MatchEventProvider>();
-            matchEventProvider?.UseInstantItem(this, type);
+            matchEventProvider?.UseInstantItem(GetComponent<AbstractPlayer>(), type);
             Debug.Log($"[PlayerAgent] Instant item used: {type}, slot={slotNumber}");
             return true;
         }
