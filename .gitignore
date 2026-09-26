@@ -44,3 +44,7 @@ debug_mcp_bridge.py
 codex_mcp.json
 # AssetDatabase の再構築で作り直せる退避コピー
 /Recovered/
+
+# --- Unity が自動生成するローカル噪声 ---
+# エディタレイアウトは個人環境依存。slnx は Unity が regenerated する。
+/UserSettings/Layouts/

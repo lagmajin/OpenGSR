@@ -48,6 +48,7 @@
   <Project Path="Unity.InputSystem.TestFramework.csproj" />
   <Project Path="Unity.VisualScripting.Shared.Editor.csproj" />
   <Project Path="Zenject-PoolMonitor-Editor.csproj" />
+  <Project Path="OpenGSCore.Tests.csproj" />
   <Project Path="DOTweenPro.EditorScripts.csproj" />
   <Project Path="Unity.CollabProxy.Editor.csproj" />
   <Project Path="UniTask.Editor.csproj" />
@@ -60,6 +61,5 @@
   <Project Path="MessagePack.Annotations.csproj" />
   <Project Path="Unity.PlasticSCM.Editor.Entities.csproj" />
   <Project Path="UniTask.Addressables.csproj" />
-  <Project Path="OpenGSCore.Tests.csproj" />
   <Project Path="UniTask.DOTween.csproj" />
 </Solution>
