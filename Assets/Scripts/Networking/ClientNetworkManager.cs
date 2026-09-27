@@ -1163,6 +1163,9 @@ namespace OpenGS
                     break;
                 case RUDPMessageTypes.PlayerDeath:
                 case RUDPMessageTypes.PlayerKilled:
+                    HandleAuthoritativeDeath(message);
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
                 case RUDPMessageTypes.PlayerDamage:
                 case RUDPMessageTypes.PlayerDamaged:
                     ApplyAuthoritativeHealth(message);
@@ -1277,6 +1280,51 @@ namespace OpenGS
         /// moved by someone else's hit.
         /// </para>
         /// </summary>
+        /// <summary>
+        /// Applies a death the server ruled on.
+        /// <para>
+        /// The server sends PlayerKilled, while the client side match scripts
+        /// listen for PlayerDeath, so both names are routed here. The local
+        /// player is marked dead without a fresh report, because the server has
+        /// already ruled on it and reporting again would be a claim.
+        /// </para>
+        /// </summary>
+        private void HandleAuthoritativeDeath(JObject message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+
+            // The dead player is named by KilledPlayerID on the server side and
+            // by PlayerId on the older death message, so both are read.
+            var deadId = message["KilledPlayerID"]?.ToString()
+                ?? message["DeadPlayerID"]?.ToString()
+                ?? message["PlayerId"]?.ToString()
+                ?? message["PlayerID"]?.ToString();
+            if (string.IsNullOrWhiteSpace(deadId))
+            {
+                return;
+            }
+
+            var registry = PlayerRegistry.Instance;
+            if (registry == null || !Guid.TryParse(deadId, out var parsed))
+            {
+                return;
+            }
+
+            if (!registry.TryGetPlayer(parsed, out var player) || player == null)
+            {
+                return;
+            }
+
+            if (player is IDamageable damageable)
+            {
+                // Health of zero is the server's ruling that the player is out.
+                damageable.ApplyServerHealth(0, 0);
+            }
+        }
+
         private void ApplyAuthoritativeHealth(JObject message)
         {
             if (message == null)
