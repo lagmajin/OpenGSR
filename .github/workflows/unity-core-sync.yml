@@ -1,0 +1,87 @@
+name: OpenGSR core sync
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  core-sync:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout client
+        uses: actions/checkout@v4
+        with:
+          # The shared package is a submodule; the check below needs the sources
+          # from OpenGSCore, not the pinned package commit, so the submodule
+          # itself is left alone and refreshed by the sync step.
+          submodules: false
+
+      - name: Checkout shared logic
+        uses: actions/checkout@v4
+        with:
+          repository: lagmajin/OpenGSCore
+          path: OpenGSCore
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      # Fail when the package is behind, before anything else runs. The gap
+      # between the two repositories is silent, so it has to be checked rather
+      # than assumed: the server picks up a change in OpenGSCore, the client
+      # does not, and the mismatch only surfaces later as a missing type.
+      - name: Check the shared package is in sync
+        shell: pwsh
+        run: ./tools/sync_core.ps1 -Check
+
+      - name: Sync
+        shell: pwsh
+        run: ./tools/sync_core.ps1
+
+      - name: Build shared logic
+        run: dotnet build OpenGSCore/OpenGSCore.csproj --configuration Release
+
+      - name: Test shared logic
+        run: >-
+          dotnet test OpenGSCore/Tests/OpenGSCore.Tests.csproj
+          --configuration Release
+          --logger "trx;LogFileName=core-tests.trx"
+          --results-directory OpenGSCore/TestResults
+
+      - name: Publish shared test report
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: OpenGSCore tests
+          path: OpenGSCore/TestResults/*.trx
+          reporter: dotnet-trx
+          fail-on-error: true
+          fail-on-empty: true
+
+      # The compile is the point of the sync: it proves the client actually sees
+      # the shared types, which is exactly what drifted when the copy was manual.
+      - name: Compile the Unity project
+        run: >-
+          & "C:\Program Files\Unity\Hub\Editor\6000.6.0a7\Editor\Unity.exe"
+          -batchmode -quit -nographics
+          -projectPath $PWD
+          -logFile unity.log
+        shell: pwsh
+
+      - name: Report compiler errors
+        if: always()
+        shell: pwsh
+        run: |
+          $errors = Select-String -Path unity.log -Pattern 'error CS' -ErrorAction SilentlyContinue
+          $summary = $env:GITHUB_STEP_SUMMARY
+          if ($errors) {
+            $errors | Select-Object -First 40 | ForEach-Object { $_.Line } |
+              Out-File -Append -FilePath $summary
+            throw "Unity compile reported $($errors.Count) errors."
+          }
+          'Unity compile reported no errors.' |
+            Out-File -Append -FilePath $summary
