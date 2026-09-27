@@ -1428,16 +1428,17 @@ namespace OpenGS
         /// </summary>
         public bool ApplyServerHealth(int remainingHealth, int maxHealth)
         {
-            // The local prediction is replaced, not decremented, so a hit the
-            // client already guessed at is not counted twice.
-            if (maxHealth > 0)
+            // The rule lives in the shared package so it can be tested without
+            // a scene, and so the server and the client agree on what a message
+            // means. What is left here is applying the result to this player.
+            var ceiling = AuthoritativeHealth.AdoptCeiling(Mathf.RoundToInt(this.maxHealth), maxHealth);
+            if (ceiling.Changed)
             {
-                var cappedMax = Mathf.Clamp(maxHealth, 1, 100000);
-                this.maxHealth = cappedMax;
+                this.maxHealth = ceiling.Ceiling;
             }
 
-            var clamped = Mathf.Clamp(remainingHealth, 0, Mathf.RoundToInt(this.maxHealth));
-            if (Mathf.Approximately(clamped, currentHealth))
+            var clamped = AuthoritativeHealth.ClampRemaining(remainingHealth, Mathf.RoundToInt(this.maxHealth));
+            if (!AuthoritativeHealth.IsMeaningfulChange(currentHealth, clamped))
             {
                 return false;
             }
