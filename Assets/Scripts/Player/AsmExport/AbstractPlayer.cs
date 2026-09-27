@@ -473,6 +473,21 @@ namespace OpenGS
             AddDamageAndForce(damage, new Vector3(point.x, point.y, 0f), 1.0f);
         }
 
+        /// <summary>
+        /// Adopts the health the server says this player has.
+        /// <para>
+        /// The server owns health, so the value it broadcasts is the truth and
+        /// the local one is only a prediction. This base type carries no health
+        /// of its own, so it does nothing; a hierarchy that keeps a health bar
+        /// overrides it to replace its local value with the server one.
+        /// </para>
+        /// </summary>
+        public virtual bool ApplyServerHealth(int remainingHealth, int maxHealth)
+        {
+            return false;
+        }
+
+
         public void Heal(float heal = 0)
         {
             if (!float.IsFinite(heal) || heal <= 0f || Status == null) return;

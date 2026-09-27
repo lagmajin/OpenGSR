@@ -91,6 +91,17 @@ namespace OpenGS
             ApplyDamage(damage, point, "Force2");
         }
 
+        /// <summary>
+        /// A training dummy has no server authority, so the server value is
+        /// accepted only when it matches what the dummy already shows. This keeps
+        /// the interface satisfied without letting a health message rewrite a
+        /// sandbox object that is deliberately not authoritative.
+        /// </summary>
+        public bool ApplyServerHealth(int remainingHealth, int maxHealth)
+        {
+            return false;
+        }
+
         public void Heal(float heal = 0)
         {
             if (heal <= 0f)

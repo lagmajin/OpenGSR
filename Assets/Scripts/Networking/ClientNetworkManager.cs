@@ -1165,6 +1165,9 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerKilled:
                 case RUDPMessageTypes.PlayerDamage:
                 case RUDPMessageTypes.PlayerDamaged:
+                    ApplyAuthoritativeHealth(message);
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
                 case RUDPMessageTypes.PlayerKill:
                 case RUDPMessageTypes.PlayerAssist:
                 case RUDPMessageTypes.KillScoreUpdate:
@@ -1259,6 +1262,57 @@ namespace OpenGS
         /// the server's value.
         /// </para>
         /// </summary>
+        /// <summary>
+        /// Adopts the health the server reports on the local player.
+        /// <para>
+        /// The server owns health, so its number is the truth and the local one
+        /// is only a prediction made when the player expected to be hit. The two
+        /// drift apart otherwise: a miss the client predicted but the server did
+        /// not count, or a delay in a message, and the local health bar stops
+        /// agreeing with whether the player is actually alive.
+        /// </para>
+        /// <para>
+        /// Only the local player is corrected. A damage message about another
+        /// player drives their own representation, and the local bar must not be
+        /// moved by someone else's hit.
+        /// </para>
+        /// </summary>
+        private void ApplyAuthoritativeHealth(JObject message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+
+            if (message["RemainingHealth"] == null)
+            {
+                // An older server that does not report health. The local value
+                // is left alone rather than guessed at.
+                return;
+            }
+
+            var remaining = message["RemainingHealth"]?.ToObject<int>() ?? 0;
+            var maximum = message["MaxHealth"]?.ToObject<int>() ?? 0;
+
+            var registry = PlayerRegistry.Instance;
+            if (registry == null || !Guid.TryParse(ClientPlayerId, out var localId))
+            {
+                return;
+            }
+
+            if (!registry.TryGetPlayer(localId, out var player))
+            {
+                return;
+            }
+
+            // AbstractPlayer and PlayerAgent are separate hierarchies, so the
+            // contract is the shared interface rather than a cast to one class.
+            // AbstractPlayer and PlayerAgent are separate hierarchies and only one
+            // of them keeps a health bar, so the server value is adopted through
+            // the interface rather than by casting to a class.
+            (player as IDamageable)?.ApplyServerHealth(remaining, maximum);
+        }
+
         private void HandleFieldItemPickupResponse(JObject message)
         {
             var manager = WorldItemNetworkManager.Instance;

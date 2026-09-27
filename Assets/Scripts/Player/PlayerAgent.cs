@@ -1412,6 +1412,47 @@ namespace OpenGS
             }
         }
 
+        /// <summary>
+        /// Adopts the health the server says this player has.
+        /// <para>
+        /// The server owns health, so the value it broadcasts is the truth and
+        /// the local one is only a prediction. A client that kept subtracting
+        /// its own damage on top of that would drift away from the server and
+        /// eventually disagree about whether the player is alive.
+        /// </para>
+        /// <para>
+        /// The local prediction is replaced rather than applied, so a hit the
+        /// client already guessed at is not counted twice, and the die event is
+        /// raised here if the server says the player is out.
+        /// </para>
+        /// </summary>
+        public bool ApplyServerHealth(int remainingHealth, int maxHealth)
+        {
+            // The local prediction is replaced, not decremented, so a hit the
+            // client already guessed at is not counted twice.
+            if (maxHealth > 0)
+            {
+                var cappedMax = Mathf.Clamp(maxHealth, 1, 100000);
+                this.maxHealth = cappedMax;
+            }
+
+            var clamped = Mathf.Clamp(remainingHealth, 0, Mathf.RoundToInt(this.maxHealth));
+            if (Mathf.Approximately(clamped, currentHealth))
+            {
+                return false;
+            }
+
+            currentHealth = clamped;
+
+            if (currentHealth <= 0f)
+            {
+                // The server already ruled the player out, so this must not be
+                // reported back as a fresh death.
+                Die(EDeadReason.Unknown, notifyServer: false);
+            }
+
+            return true;
+        }
         public void AddDamageAndForce(float damage, Vector3 vec, float force = 1.0f)
         {
             if (!float.IsFinite(damage) || damage <= 0f
