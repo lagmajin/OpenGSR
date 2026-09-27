@@ -1,6 +1,7 @@
-﻿
+
 using System.Collections;
 using UnityEngine;
+using OpenGSCore;
 using Sirenix.OdinInspector;
 
 
@@ -32,20 +33,20 @@ namespace OpenGS
         {
             if(generateType==eWeaponItemGenerateType.FlameThrowerFirst)
             {
-                nextItem = eFieldItemType.FlameThrower;
+                nextItem = EFieldItemType.FlameThrower;
             }
 
             if(generateType==eWeaponItemGenerateType.RocketLauncherFirst)
             {
-                nextItem = eFieldItemType.RocketLauncher;
+                nextItem = EFieldItemType.GranadeLauncher;
             }
 
             if (generateType == eWeaponItemGenerateType.Random)
             {
-                nextItem = eFieldItemType.FlameThrower;
+                nextItem = EFieldItemType.FlameThrower;
             }
 
-            Debug.Log($"[WeaponItemSpawnPoint] Initial item: {WorldItemVisualResolver.GetDisplayName(nextItem ?? eFieldItemType.None)}");
+            Debug.Log($"[WeaponItemSpawnPoint] Initial item: {WorldItemVisualResolver.GetDisplayName(nextItem ?? EFieldItemType.PowerUpItem)}");
             if (startImmidietry)
             {
                 StartWorking();
@@ -55,7 +56,7 @@ namespace OpenGS
         public override void GenerateItem()
         {
 
-           if(nextItem==eFieldItemType.FlameThrower)
+           if(nextItem==EFieldItemType.FlameThrower)
             {
 
                 if (gameObject.transform.childCount == 0)
@@ -72,11 +73,11 @@ namespace OpenGS
 
                     obj.transform.parent = transform;
 
-                    nextItem = eFieldItemType.RocketLauncher;
+                    nextItem = EFieldItemType.GranadeLauncher;
                 }
             }
             
-           if(nextItem==eFieldItemType.RocketLauncher)
+           if(nextItem==EFieldItemType.GranadeLauncher)
             {
                 if (gameObject.transform.childCount == 0)
                 {
@@ -93,7 +94,7 @@ namespace OpenGS
                     obj.transform.parent = transform;
 
 
-                    nextItem = eFieldItemType.FlameThrower;
+                    nextItem = EFieldItemType.FlameThrower;
 
                 }
             }

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using OpenGSCore;
 using Newtonsoft.Json.Linq;
 
 namespace OpenGS
@@ -126,7 +127,7 @@ namespace OpenGS
 
                 if (!FieldItemVisualResolver.TryParseLegacy(itemTypeStr, out var itemType))
                 {
-                    itemType = eFieldItemType.PowerUpItem;
+                    itemType = EFieldItemType.PowerUpItem;
                 }
 
                 float x = json["PositionX"]?.Value<float>() ?? 0;
@@ -186,7 +187,7 @@ namespace OpenGS
     {
         [Header("Field Item Info")]
         [SerializeField] private string _itemId = "";
-        [SerializeField] private eFieldItemType _itemType = eFieldItemType.PowerUpItem;
+        [SerializeField] private EFieldItemType _itemType = EFieldItemType.PowerUpItem;
         [SerializeField] private int _spawnPointId = -1;
 
         private WorldItemNetworkManager _manager;
@@ -194,9 +195,9 @@ namespace OpenGS
         private bool _pickupSent;
 
         public string ItemId => _itemId;
-        public eFieldItemType ItemType => _itemType;
+        public EFieldItemType ItemType => _itemType;
 
-        public void Initialize(string itemId, eFieldItemType itemType, int spawnPointId = -1)
+        public void Initialize(string itemId, EFieldItemType itemType, int spawnPointId = -1)
         {
             if (_manager != null)
             {

@@ -1,4 +1,4 @@
-﻿//using RuntimeScriptField;
+//using RuntimeScriptField;
 using UnityEngine;
 
 using OpenGSCore;

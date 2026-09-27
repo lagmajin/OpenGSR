@@ -1,5 +1,6 @@
-﻿#nullable enable
+#nullable enable
 using System;
+using OpenGSCore;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,7 +31,7 @@ namespace OpenGS
         public class WorldItemData
         {
             public string ItemId;
-            public eFieldItemType ItemType;
+            public EFieldItemType ItemType;
             public Vector3 Position;
             public ItemState State;
             public string PickedUpByPlayerId = string.Empty;
@@ -38,7 +39,7 @@ namespace OpenGS
             public float RespawnTime;
             public bool IsActive;
 
-            public WorldItemData(string itemId, eFieldItemType type, Vector3 position)
+            public WorldItemData(string itemId, EFieldItemType type, Vector3 position)
             {
                 ItemId = itemId;
                 ItemType = type;
@@ -63,12 +64,12 @@ namespace OpenGS
         /// <summary>
         /// アイテム取得イベント
         /// </summary>
-        public event Action<string, string, eFieldItemType>? OnItemPickedUp; // (itemId, playerId, itemType)
+        public event Action<string, string, EFieldItemType>? OnItemPickedUp; // (itemId, playerId, itemType)
 
         /// <summary>
         /// アイテムスポーンイベント
         /// </summary>
-        public event Action<string, eFieldItemType, Vector3>? OnItemSpawned; // (itemId, itemType, position)
+        public event Action<string, EFieldItemType, Vector3>? OnItemSpawned; // (itemId, itemType, position)
 
         /// <summary>
         /// アイテム消滅イベント
@@ -103,7 +104,7 @@ namespace OpenGS
         /// <summary>
         /// アイテムを出現させる
         /// </summary>
-        public string SpawnItem(eFieldItemType itemType, Vector3 position)
+        public string SpawnItem(EFieldItemType itemType, Vector3 position)
         {
             string itemId = Guid.NewGuid().ToString("N").Substring(0, 8);
 
@@ -257,7 +258,7 @@ namespace OpenGS
                     itemId,
                     WorldItemVisualResolver.TryParseLegacy(item["ItemType"]?.ToString() ?? "PowerUp", out var parsedType)
                         ? parsedType
-                        : eFieldItemType.PowerUpItem,
+                        : EFieldItemType.PowerUpItem,
                     new Vector3(positionX, positionY, positionZ)
                 );
 
@@ -269,14 +270,14 @@ namespace OpenGS
             }
         }
 
-        private static void InvokeSafely(Action<string, string, eFieldItemType> handlers, string itemId, string playerId, eFieldItemType itemType, string eventName)
+        private static void InvokeSafely(Action<string, string, EFieldItemType> handlers, string itemId, string playerId, EFieldItemType itemType, string eventName)
         {
             if (handlers == null)
             {
                 return;
             }
 
-            foreach (Action<string, string, eFieldItemType> handler in handlers.GetInvocationList())
+            foreach (Action<string, string, EFieldItemType> handler in handlers.GetInvocationList())
             {
                 try
                 {
@@ -289,14 +290,14 @@ namespace OpenGS
             }
         }
 
-        private static void InvokeSafely(Action<string, eFieldItemType, Vector3> handlers, string itemId, eFieldItemType itemType, Vector3 position, string eventName)
+        private static void InvokeSafely(Action<string, EFieldItemType, Vector3> handlers, string itemId, EFieldItemType itemType, Vector3 position, string eventName)
         {
             if (handlers == null)
             {
                 return;
             }
 
-            foreach (Action<string, eFieldItemType, Vector3> handler in handlers.GetInvocationList())
+            foreach (Action<string, EFieldItemType, Vector3> handler in handlers.GetInvocationList())
             {
                 try
                 {

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using OpenGSR.Audio;
 //using Cinemachine;
 using Newtonsoft.Json.Linq;

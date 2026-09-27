@@ -1,5 +1,6 @@
-﻿using System.Collections;
+using System.Collections;
 using Sirenix.OdinInspector;
+using OpenGSCore;
 using UnityEngine;
 
 
@@ -36,9 +37,9 @@ namespace OpenGS
         private Coroutine generateCoroutine;
         private bool isGenerating = false;
 
-        protected eFieldItemType? beforeGeneratedItem=null;
+        protected EFieldItemType? beforeGeneratedItem=null;
 
-        protected eFieldItemType? nextItem = null;
+        protected EFieldItemType? nextItem = null;
 
         private void OnValidate()
         {
@@ -120,7 +121,7 @@ namespace OpenGS
             }
         }
 
-        public eFieldItemType? BeforeGeneratedItem()
+        public EFieldItemType? BeforeGeneratedItem()
         {
 
             return beforeGeneratedItem;

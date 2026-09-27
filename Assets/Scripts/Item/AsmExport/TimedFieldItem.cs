@@ -1,4 +1,5 @@
 using System;
+using OpenGSCore;
 using UnityEngine;
 
 namespace OpenGS

@@ -1,10 +1,10 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
 namespace OpenGS
 {
 
-    // eFieldItemType enum moved to Interface/eFieldItemType.cs
+    // EFieldItemType enum moved to Interface/EFieldItemType.cs
 
     public interface IWorldItem
     {
