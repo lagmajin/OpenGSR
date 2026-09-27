@@ -43,8 +43,38 @@ namespace OpenGS
             }
 
             consumed = true;
+
+            // The effect is applied optimistically so the pickup feels instant,
+            // but it is registered as pending: if the server refuses the claim
+            // the revert runs and takes the buff back. The server also decides
+            // the duration, and the grant re-applies with its value.
+            var player = collision.GetComponentInParent<AbstractPlayer>();
+            var playerId = player != null ? player.UniqueID().ToString() : string.Empty;
+            var itemId = ClaimItemId(playerId);
+            var duration = GetSafeEffectDuration();
+
+            var manager = WorldItemNetworkManager.Instance;
+            if (manager == null)
+            {
+                // No networking available, so there is nobody to answer and
+                // nothing to take back: apply and move on.
+                apply(powerupable);
+                SendPickupToNetwork(collision, duration);
+                Destroy(gameObject);
+                return true;
+            }
+
+            if (!manager.BeginPendingPickup(
+                    itemId,
+                    playerId,
+                    ResolveNetworkItemType(),
+                    () => UndoBuff(powerupable)))
+            {
+                return false;
+            }
+
             apply(powerupable);
-            SendPickupToNetwork(collision, GetSafeEffectDuration());
+            SendPickupToNetwork(collision, duration);
             Destroy(gameObject);
             return true;
         }
@@ -54,6 +84,30 @@ namespace OpenGS
             return collision != null && TryApplyToPlayer(collision.collider, apply);
         }
 
+        /// <summary>
+        /// Takes back a buff the client applied before the server answered.
+        /// </summary>
+        private static void UndoBuff(IPowerupable powerupable)
+        {
+            // Only a timed buff can be taken back. A refill or a heal has
+            // already changed a number that cannot be un-applied, which is why
+            // only the timed items register a revert.
+            if (powerupable is AbstractPlayer player)
+            {
+                player.CancelTimedBuffs();
+            }
+        }
+
+        private string ClaimItemId(string playerId)
+        {
+            var manager = WorldItemNetworkManager.Instance;
+            if (manager != null && !string.IsNullOrEmpty(playerId))
+            {
+                return manager.SpawnItem(ResolveNetworkItemType(), transform.position);
+            }
+
+            return Guid.NewGuid().ToString("N");
+        }
         private void SendPickupToNetwork(Collider2D collision, float duration)
         {
             var player = collision != null ? collision.GetComponentInParent<AbstractPlayer>() : null;
@@ -68,23 +122,27 @@ namespace OpenGS
 
             NetworkEventSerializer.SerializeAndSend(new ItemPickupEvent(
                 player.UniqueID().ToString(),
-                itemType,
+                FieldItemTypeNames.ToWireName(itemType),
                 spawnPointId,
                 (Vector2)transform.position,
                 0f,
                 duration));
         }
 
-        private string ResolveNetworkItemType()
+        /// <summary>
+        /// The shared item type for this component, resolved from the class
+        /// name so a new timed item does not need another switch arm.
+        /// </summary>
+        private EFieldItemType ResolveNetworkItemType()
         {
             return GetType().Name switch
             {
-                nameof(PowerUpItem) => OpenGSCore.EFieldItemType.PowerUpItem.ToString(),
-                nameof(DefenceUpItem) => OpenGSCore.EFieldItemType.DefenceUpItem.ToString(),
-                nameof(SpeedUpItem) => OpenGSCore.EFieldItemType.SpeedUpItem.ToString(),
-                nameof(StealthItem) => OpenGSCore.EFieldItemType.StealthItem.ToString(),
-                nameof(NormalGrenadePackItem) => OpenGSCore.EFieldItemType.GrenadePack.ToString(),
-                _ => GetType().Name
+                nameof(PowerUpItem) => EFieldItemType.PowerUpItem,
+                nameof(DefenceUpItem) => EFieldItemType.DefenceUpItem,
+                nameof(SpeedUpItem) => EFieldItemType.SpeedUpItem,
+                nameof(StealthItem) => EFieldItemType.StealthItem,
+                nameof(NormalGrenadePackItem) => EFieldItemType.GrenadePack,
+                _ => EFieldItemType.PowerUpItem
             };
         }
     }

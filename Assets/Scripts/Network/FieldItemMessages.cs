@@ -123,9 +123,9 @@ namespace OpenGS
                     return null;
                 }
 
-                string itemTypeStr = json["ItemType"]?.ToString() ?? "PowerUp";
+                string itemTypeStr = json["ItemType"]?.ToString() ?? string.Empty;
 
-                if (!FieldItemVisualResolver.TryParseLegacy(itemTypeStr, out var itemType))
+                if (!OpenGSCore.FieldItemTypeNames.TryParse(itemTypeStr, out var itemType))
                 {
                     itemType = EFieldItemType.PowerUpItem;
                 }

@@ -1148,6 +1148,9 @@ namespace OpenGS
                     LogUdpEvent("ObjectDestroyed", message.GetStringOrNull("RoomID"), message.GetStringOrNull("ObjectType"), message.GetStringOrNull("ObjectId"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
+                // The server sends FieldItemPickup, which is the same label as
+                // RUDPMessageTypes.ItemPickup, so the case above covers both.
+                    break;
                 case RUDPMessageTypes.PlayerPose:
                     LogUdpEvent("PlayerPose", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("PoseState"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
@@ -1196,12 +1199,14 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerDebuff:
                 case RUDPMessageTypes.BuffExpired:
                 case RUDPMessageTypes.ItemPickup:
-                    if (messageType == RUDPMessageTypes.MatchEnd)
-                    {
-                        ForwardMatchResult(message);
-                    }
+                    // The server ruling on a pickup, not a fresh request:
+                    // resolve what the client applied optimistically and let it
+                    // run the revert if the claim was refused.
+                    HandleFieldItemPickupResponse(message);
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
+                // The server sends FieldItemPickup, which is the same label as
+                // RUDPMessageTypes.ItemPickup, so the case above covers both.
                 // これらは AbstractMatchMainScript が生JSON経路で処理する。
                 // ゲームイベントデシリアライズを通すと未対応イベント警告になるため、ここでは二重配信しない。
                 case RUDPMessageTypes.ItemUse:
@@ -1244,6 +1249,52 @@ namespace OpenGS
             }
         }
 
+        /// <summary>
+        /// Applies the server's ruling on a field item pickup.
+        /// <para>
+        /// A pickup is applied locally the moment it is touched and only then
+        /// asked about, so this reply either confirms the claim or takes the
+        /// effect back. The server also decides the duration, which is not
+        /// necessarily the one the client assumed, so a grant re-applies with
+        /// the server's value.
+        /// </para>
+        /// </summary>
+        private void HandleFieldItemPickupResponse(JObject message)
+        {
+            var manager = WorldItemNetworkManager.Instance;
+            if (manager == null)
+            {
+                return;
+            }
+
+            var itemId = message.GetStringOrNull("ItemId");
+            if (string.IsNullOrEmpty(itemId))
+            {
+                return;
+            }
+
+            var granted = message["Success"]?.Value<bool>() ?? false;
+            var duration = message["Duration"]?.Value<float>() ?? 0f;
+            var type = OpenGSCore.EFieldItemType.PowerUpItem;
+            if (!OpenGSCore.FieldItemTypeNames.TryParse(message.GetStringOrNull("ItemType"), out var parsed))
+            {
+                parsed = OpenGSCore.EFieldItemType.PowerUpItem;
+            }
+
+            type = parsed;
+
+            if (!manager.ResolvePickup(itemId, granted, type, duration))
+            {
+                // Nothing is waiting on this id, so the reply is either late or
+                // belongs to a room this client is not part of.
+                return;
+            }
+
+            if (!granted)
+            {
+                Debug.LogWarning($"[ClientNetwork] Server refused the pickup of item '{itemId}'");
+            }
+        }
         private void HandlePlayerPositionUpdate(JObject message)
         {
             var playerId = message.GetStringOrNull("PlayerID") ?? message.GetStringOrNull("PlayerId");

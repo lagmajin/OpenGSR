@@ -87,6 +87,18 @@ namespace OpenGS
             SceneManager.sceneLoaded += OnSceneLoaded;
         }
 
+        private void Update()
+        {
+            // A pickup the server never answers must not leave the effect
+            // applied forever, so give up on the ones that time out and let
+            // them run the revert they registered.
+            if (_pendingPickups.Count > 0)
+            {
+                ExpirePendingPickups();
+            }
+        }
+
+
         private void OnDestroy()
         {
             SceneManager.sceneLoaded -= OnSceneLoaded;
@@ -119,6 +131,144 @@ namespace OpenGS
         /// <summary>
         /// アイテムを拾う
         /// </summary>
+        private readonly Dictionary<string, EFieldItemType> _pendingTypes =
+            new Dictionary<string, EFieldItemType>(StringComparer.Ordinal);
+        private readonly Dictionary<string, Action> _pendingReverts =
+            new Dictionary<string, Action>(StringComparer.Ordinal);
+        private readonly Dictionary<string, PendingPickup> _pendingPickups =
+            new Dictionary<string, PendingPickup>(StringComparer.Ordinal);
+
+        /// <summary>
+        /// A pickup the client asked for and the server has not answered yet.
+        /// </summary>
+        public sealed class PendingPickup
+        {
+            public PendingPickup(string itemId, string playerId)
+            {
+                ItemId = itemId;
+                PlayerId = playerId;
+            }
+
+            public string ItemId { get; }
+            public string PlayerId { get; }
+            public float RequestedAt { get; set; }
+        }
+
+        /// <summary>
+        /// How long a pickup may wait for the server before the client gives up
+        /// and does not keep the effect. Without this an unanswered request
+        /// would leave the effect in limbo forever.
+        /// </summary>
+        public const float PickupTimeoutSeconds = 2.0f;
+
+        /// <summary>
+        /// Raised once the server grants a pickup. The argument is the duration
+        /// the server decided, which is not necessarily the one the client
+        /// asked for.
+        /// </summary>
+        public event Action<string, string, EFieldItemType, float>? OnPickupGranted;
+
+        /// <summary>
+        /// Raised when the server refuses a pickup, so the client can undo
+        /// anything it applied optimistically.
+        /// </summary>
+        public event Action<string, string, EFieldItemType>? OnPickupRefused;
+
+        /// <summary>
+        /// Records a pickup request and applies the effect optimistically so the
+        /// pickup feels instant. The revert is kept so a refusal can take it
+        /// back, and the server still decides the duration.
+        /// </summary>
+        public bool BeginPendingPickup(
+            string itemId,
+            string playerId,
+            EFieldItemType type,
+            Action revert)
+        {
+            if (string.IsNullOrEmpty(itemId) || string.IsNullOrEmpty(playerId))
+            {
+                return false;
+            }
+
+            if (_pendingPickups.ContainsKey(itemId))
+            {
+                return false;
+            }
+
+            _pendingPickups[itemId] = new PendingPickup(itemId, playerId)
+            {
+                RequestedAt = Time.time
+            };
+            _pendingTypes[itemId] = type;
+            _pendingReverts[itemId] = revert;
+            return true;
+        }
+
+        /// <summary>
+        /// Applies the server's ruling to a pending pickup: granted drops the
+        /// revert, refused runs it.
+        /// </summary>
+        public bool ResolvePickup(string itemId, bool granted, EFieldItemType type, float serverDuration)
+        {
+            if (string.IsNullOrEmpty(itemId))
+            {
+                return false;
+            }
+
+            if (!_pendingPickups.TryGetValue(itemId, out var pending))
+            {
+                return false;
+            }
+
+            _pendingPickups.Remove(itemId);
+            _pendingTypes.Remove(itemId);
+
+            if (granted)
+            {
+                _pendingReverts.Remove(itemId);
+                InvokeSafely(OnPickupGranted, itemId, pending.PlayerId, type, serverDuration, nameof(OnPickupGranted));
+            }
+            else
+            {
+                if (_pendingReverts.TryGetValue(itemId, out var revert) && revert != null)
+                {
+                    revert();
+                }
+
+                _pendingReverts.Remove(itemId);
+                InvokeSafely(OnPickupRefused, itemId, pending.PlayerId, type, nameof(OnPickupRefused));
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Abandons pickups the server never answered. Returns how many timed
+        /// out so a caller can log it.
+        /// </summary>
+        public int ExpirePendingPickups()
+        {
+            var now = Time.time;
+            var expired = new List<string>();
+
+            foreach (var entry in _pendingPickups)
+            {
+                if (now - entry.Value.RequestedAt > PickupTimeoutSeconds)
+                {
+                    expired.Add(entry.Key);
+                }
+            }
+
+            foreach (var itemId in expired)
+            {
+                var type = _pendingTypes.TryGetValue(itemId, out var known)
+                    ? known
+                    : EFieldItemType.PowerUpItem;
+                ResolvePickup(itemId, granted: false, type, 0f);
+            }
+
+            return expired.Count;
+        }
         public void PickupItem(string itemId, string playerId)
         {
             if (_fieldItems.TryGetValue(itemId, out var itemData))
@@ -207,6 +357,9 @@ namespace OpenGS
         public void ClearAll()
         {
             _fieldItems.Clear();
+            _pendingPickups.Clear();
+            _pendingTypes.Clear();
+            _pendingReverts.Clear();
         }
 
         private static float GetSafeTime()
@@ -221,6 +374,9 @@ namespace OpenGS
         public void LoadFromJson(JArray itemsArray)
         {
             _fieldItems.Clear();
+            _pendingPickups.Clear();
+            _pendingTypes.Clear();
+            _pendingReverts.Clear();
             if (itemsArray == null)
             {
                 return;
@@ -256,7 +412,7 @@ namespace OpenGS
 
                 var data = new WorldItemData(
                     itemId,
-                    WorldItemVisualResolver.TryParseLegacy(item["ItemType"]?.ToString() ?? "PowerUp", out var parsedType)
+                    OpenGSCore.FieldItemTypeNames.TryParse(item["ItemType"]?.ToString(), out var parsedType)
                         ? parsedType
                         : EFieldItemType.PowerUpItem,
                     new Vector3(positionX, positionY, positionZ)
@@ -270,6 +426,31 @@ namespace OpenGS
             }
         }
 
+        private static void InvokeSafely(
+            Action<string, string, EFieldItemType, float> handlers,
+            string itemId,
+            string playerId,
+            EFieldItemType itemType,
+            float duration,
+            string eventName)
+        {
+            if (handlers == null)
+            {
+                return;
+            }
+
+            foreach (Action<string, string, EFieldItemType, float> handler in handlers.GetInvocationList())
+            {
+                try
+                {
+                    handler(itemId, playerId, itemType, duration);
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError($"[FieldItem] {eventName} handler failed: {ex.Message}");
+                }
+            }
+        }
         private static void InvokeSafely(Action<string, string, EFieldItemType> handlers, string itemId, string playerId, EFieldItemType itemType, string eventName)
         {
             if (handlers == null)

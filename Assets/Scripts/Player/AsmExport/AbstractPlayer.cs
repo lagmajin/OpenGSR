@@ -842,6 +842,29 @@ namespace OpenGS
             }
         }
 
+        /// <summary>
+        /// Cancels a timed buff that was applied optimistically.
+        /// <para>
+        /// A field item is applied locally the moment it is touched so the
+        /// pickup feels instant, and the server is asked afterwards. If it
+        /// refuses, the buff has to be taken back. Bumping the version counter
+        /// makes the running coroutine skip its restore, so the reset has to
+        /// happen here as well.
+        /// </para>
+        /// </summary>
+        public virtual void CancelTimedBuffs()
+        {
+            attackBuffVersion++;
+            defenseBuffVersion++;
+            speedBuffVersion++;
+            invisibleBuffVersion++;
+
+            attackMultiplier = 1f;
+            defenseMultiplier = 1f;
+            moveSpeedMultiplier = 1f;
+            invisible = false;
+            moveSpeed = baseMoveSpeed;
+        }
         protected IEnumerator IncreaseAttackCounter(float time = 30.0f)
         {
             if (!float.IsFinite(time) || time <= 0) time = 30.0f;
