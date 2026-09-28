@@ -596,6 +596,13 @@ namespace OpenGS
                 case MessageType.RoomNotFound:
                     HandleRoomNotFound(json);
                     break;
+                // The server's answer when it will not do what was asked: a match
+                // that cannot start because the room is gone or the players are
+                // not ready. It had no case anywhere, so the answer was dropped on
+                // arrival and a player who pressed start was told nothing at all.
+                case MessageType.ErrorNotification:
+                    HandleErrorNotification(json);
+                    break;
                 case MessageType.RoomSettingChanged:
                     HandleRoomSettingChanged(json);
                     break;
@@ -886,6 +893,29 @@ namespace OpenGS
             var roomId = roomInfo.RoomId;
             
             PrettyLogger.Bold("RoomList", $"満室ルーム: {roomId}");
+        }
+
+        /// <summary>
+        /// The server declining to do something.
+        /// <para>
+        /// The wording is the server's rather than one written here, because the
+        /// server is the side that knows why: it knows which room it could not
+        /// find and which players were not ready, and a client guessing would be
+        /// guessing about the server's own state.
+        /// </para>
+        /// <para>
+        /// This records it in the same place the other refusals are recorded. It
+        /// is not yet on the screen: the refusals beside it are not either, and
+        /// giving this one a panel on its own would leave the others looking
+        /// deliberate. They need one place between them.
+        /// </para>
+        /// </summary>
+        private void HandleErrorNotification(JObject json)
+        {
+            var reason = json["ErrorMessage"]?.ToString() ?? "the server declined";
+            var roomId = json["RoomID"]?.ToString() ?? string.Empty;
+
+            PrettyLogger.Bold("WaitRoom", $"サーバーエラー: {reason}{(string.IsNullOrEmpty(roomId) ? "" : $" (room {roomId})")}");
         }
 
         private void HandleRoomNotFound(JObject json)
