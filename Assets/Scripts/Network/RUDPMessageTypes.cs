@@ -23,19 +23,35 @@ namespace OpenGS
         public const string LegacyMatchEnd = "MatchEnd";
         public const string ClientConnect = "ClientConnect";
         public const string TeamKill = "TeamKill";
-        public const string Snapshot = "Snapshot";
-        public const string MatchJoined = "MatchJoined";
+
+        // The room state, and the answer to a client that has just been admitted
+        // to the realtime channel. Both are named in the shared contract: the
+        // client read them under a local copy of these strings while the server
+        // sent neither, so a client that connected knew nothing about the room it
+        // was in and waited for a room state that never arrived.
+        public const string Snapshot = MessageType.Snapshot;
+        public const string MatchJoined = MessageType.MatchJoined;
         public const string PositionUpdateAck = "PositionUpdateAck";
-        public const string PlayerKilled = "PlayerKilled";
-        public const string PlayerDamaged = "PlayerDamaged";
+        // The server's rulings come from the shared contract too. They used to
+        // be literals here that happened to match what the server sent, which
+        // is not the same as being the same name: the server is the side that
+        // has to be right, so it names the fact and the client reads that.
+        public const string PlayerKilled = MessageType.PlayerKilled;
+        public const string PlayerDamaged = MessageType.PlayerDamaged;
 
         // CTF (Flag) 関連 - サーバー → クライアント
-        public const string FlagCaptured = "FlagCaptured";        // フラッグキャプチャ
-        public const string FlagLost = "FlagLost";                // フラッグロスト（落下）
-        public const string FlagReturn = "FlagReturn";            // フラッグリターン（復帰）
-        public const string FlagBurst = "FlagBurst";              // フラッグバースト（爆破）
-        public const string FlagPickup = "FlagPickup";            // フラッグピックアップ
-        public const string FlagScoreUpdate = "FlagScoreUpdate";  // フラッグスコア更新
+        public const string FlagCaptured = MessageType.FlagCaptured;   // フラッグキャプチャ
+        public const string FlagLost = MessageType.FlagLost;           // フラッグロスト（落下）
+        public const string FlagReturn = MessageType.FlagReturn;       // フラッグリターン（復帰）
+        // A flag being destroyed. The server decides this, because a flag going is
+        // a rule outcome: the client used to claim it and to wait for the same
+        // name back, so a flag the server destroyed was a flag nobody heard about.
+        public const string FlagBurst = MessageType.FlagBurst;
+
+        // A delivery that did not score, answered to the player who made it.
+        public const string FlagCaptureRefused = MessageType.FlagCaptureRefused;
+        public const string FlagPickup = MessageType.FlagPickup;         // フラッグピックアップ
+        public const string FlagScoreUpdate = MessageType.FlagScoreUpdate; // フラッグスコア更新
 
         // DM/TDM (Death Match) 関連 - サーバー → クライアント
         public const string PlayerKill = "PlayerKill";            // プレイヤーキル
@@ -55,10 +71,28 @@ namespace OpenGS
         public const string ChatBroadcast = "ChatBroadcast";       // ブロードキャストメッセージ
 
         // フィールドアイテム関連
-        public const string ItemPickup = "ItemPickup";            // アイテムを拾う
+        // The pickup name is the shared one. It used to be a second literal
+        // here, "ItemPickup", while the server ruled with "FieldItemPickup",
+        // so the ruling never reached the case that resolves a pending pickup
+        // and every granted pickup was taken back by the local timeout.
+        public const string ItemPickup = MessageType.FieldItemPickup;   // アイテムを拾う
         public const string ItemUse = "ItemUse";                  // アイテムを使用
-        public const string ItemSpawn = "ItemSpawn";              // アイテムが出現
-        public const string ItemDespawn = "ItemDespawn";          // アイテムが消滅
+
+        // A spawn and a despawn. The client spelled these without the FieldItem
+        // prefix while the server sent ItemSpawnNotification, so an item the
+        // server put on the map reached a client under none of the names any of
+        // them dispatched on. They are the shared contract's names, so the two
+        // sides are reading and writing the same label again.
+        public const string ItemSpawn = MessageType.FieldItemSpawn;
+        public const string ItemDespawn = MessageType.FieldItemDespawn;
+        public const string ItemStateSync = MessageType.FieldItemStateSync;
+
+        // What the server decided a spent instant item was worth. The client
+        // used to look for the answer under the name it sent the request with,
+        // so it read its own request back as the ruling and the health the
+        // server decided never reached the screen.
+        public const string ItemUsed = MessageType.ItemUsed;
+        public const string ItemUseRefused = MessageType.ItemUseRefused;
 
         // ======== システム系通信 ========
 
@@ -89,6 +123,15 @@ namespace OpenGS
         public const string WeaponPickup = "WeaponPickup";        // 武器拾得
         public const string WeaponReserve = "WeaponReserve";      // 武器予約
         public const string WeaponRelease = "WeaponRelease";      // 武器予約解除
+
+        // What the server ruled about a weapon on the ground. The server holds
+        // the claim, so the ruling is the only thing that can make the other
+        // clients honour it: without it a reservation the server accepted
+        // changed nobody's behaviour, which is the case it exists to prevent.
+        public const string WeaponReserved = MessageType.WeaponReserved;
+        public const string WeaponReleased = MessageType.WeaponReleased;
+        public const string WeaponDropped = MessageType.WeaponDropped;
+
         public const string AmmoUpdate = "AmmoUpdate";            // アモ更新
         public const string GrenadeThrow = "GrenadeThrow";        // グレネード投擲
         public const string PlayerReload = "PlayerReload";       // リロード
@@ -111,8 +154,10 @@ namespace OpenGS
         public const string ObjectDestroyed = "ObjectDestroyed";  // オブジェクト破壊
 
         // ネットワーク状態 - 双方向
-        public const string PingRequest = "PingRequest";          // ピング要求
-        public const string PingResponse = "PingResponse";        // ピング応答
+// The keepalive pair, from the shared contract. The server answered a ping with
+// Pong, which is a name no client reads, so the answer was dropped on arrival.
+public const string PingRequest = MessageType.PingRequest;          // ピング要求
+public const string PingResponse = MessageType.PingResponse;        // ピング応答
         public const string ServerInfo = "ServerInfo";           // サーバー情報
         public const string ErrorMessage = "ErrorMessage";        // エラーメッセージ
 

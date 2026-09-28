@@ -12,11 +12,15 @@ namespace OpenGS
     {
         #region Message Types
 
-        public const string ItemSpawn = "FieldItemSpawn";
-        public const string ItemPickup = "FieldItemPickup";
-        public const string ItemDespawn = "FieldItemDespawn";
-        public const string ItemStateSync = "FieldItemStateSync";
-        public const string ItemSpawnBatch = "FieldItemSpawnBatch";
+        // These are the shared contract's names now. The three spellings a spawn
+        // and a despawn had between the two sides are collapsed onto the one the
+        // server sends, so a client that dispatches on any of them is reading the
+        // same fact the server announced.
+        public const string ItemSpawn = MessageType.FieldItemSpawn;
+        public const string ItemPickup = MessageType.FieldItemPickup;
+        public const string ItemDespawn = MessageType.FieldItemDespawn;
+        public const string ItemStateSync = MessageType.FieldItemStateSync;
+        public const string ItemSpawnBatch = MessageType.FieldItemSpawnBatch;
 
         #endregion
 
