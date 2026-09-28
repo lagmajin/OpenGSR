@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Linq;
 using OpenGSCore;
 using System.Collections.Generic;
 using UnityEngine;
@@ -300,6 +301,148 @@ namespace OpenGS
 
                 InvokeSafely(OnItemDespawned, itemId, nameof(OnItemDespawned));
             }
+        }
+
+        /// <summary>
+        /// Takes an item off the map because the server said it had gone.
+        /// <para>
+        /// The server names the item, so it is removed by that name rather than by
+        /// position: a client that guessed a position would take down whichever
+        /// item happened to be nearest, which is not the item the server meant.
+        /// </para>
+        /// </summary>
+        /// <returns>Whether this client had the item, so the caller can tell a
+        /// ruling about something it knows from one it never had.</returns>
+        public bool DespawnItemByServer(string itemId)
+        {
+            if (string.IsNullOrWhiteSpace(itemId) || !_fieldItems.ContainsKey(itemId))
+            {
+                return false;
+            }
+
+            DespawnItem(itemId);
+            return true;
+        }
+
+        /// <summary>
+        /// Records an item the server put into the world, under the name the
+        /// server gave it.
+        /// <para>
+        /// The client used to invent its own id when it picked something up, and
+        /// the id the server answered with was an id the client had never heard
+        /// of, so the answer resolved nothing. An item the server announced
+        /// first has to be held under the server's name for the later ruling to
+        /// find it.
+        /// </para>
+        /// </summary>
+        public void AdoptServerSpawn(string itemId, EFieldItemType type, Vector3 position)
+        {
+            if (string.IsNullOrWhiteSpace(itemId))
+            {
+                return;
+            }
+
+            if (_fieldItems.TryGetValue(itemId, out var existing))
+            {
+                if (existing.State == ItemState.Spawned && existing.IsActive)
+                {
+                    return;
+                }
+
+                existing.ItemType = type;
+                existing.Position = position;
+                existing.State = ItemState.Spawned;
+                existing.IsActive = true;
+                existing.SpawnTime = GetSafeTime();
+                existing.PickedUpByPlayerId = string.Empty;
+
+                InvokeSafely(OnItemSpawned, itemId, type, position, nameof(OnItemSpawned));
+                return;
+            }
+
+            _fieldItems[itemId] = new WorldItemData(itemId, type, position);
+            InvokeSafely(OnItemSpawned, itemId, type, position, nameof(OnItemSpawned));
+        }
+
+        /// <summary>
+        /// Replaces the whole list with the set the server reports.
+        /// <para>
+        /// Anything the client was holding that the server does not list has gone
+        /// as far as the server is concerned, so it is removed rather than kept.
+        /// Merging instead would leave an item on this client's map that no longer
+        /// exists for anybody else, and a client joining a match part way through
+        /// would never be told about the items that were already there.
+        /// </para>
+        /// </summary>
+        public void AdoptServerState(JArray items)
+        {
+            if (items == null)
+            {
+                return;
+            }
+
+            var adopted = new HashSet<string>(StringComparer.Ordinal);
+            var respawned = new List<(string ItemId, EFieldItemType Type, Vector3 Position)>();
+
+            foreach (var token in items)
+            {
+                if (token is not JObject entry)
+                {
+                    continue;
+                }
+
+                var itemId = entry["ItemId"]?.ToString() ?? string.Empty;
+                if (string.IsNullOrWhiteSpace(itemId))
+                {
+                    continue;
+                }
+
+                if (!FieldItemTypeNames.TryParse(entry["ItemType"]?.ToString(), out var type))
+                {
+                    continue;
+                }
+
+                var position = new Vector3(
+                    ReadFinite(entry, "PositionX"),
+                    ReadFinite(entry, "PositionY"),
+                    0f);
+
+                if (!string.Equals(entry["State"]?.ToString(), "Spawned", StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
+
+                adopted.Add(itemId);
+                respawned.Add((itemId, type, position));
+            }
+
+            foreach (var gone in _fieldItems.Keys.Where(id => !adopted.Contains(id)).ToList())
+            {
+                var data = _fieldItems[gone];
+                data.State = ItemState.Despawned;
+                data.IsActive = false;
+                InvokeSafely(OnItemDespawned, gone, nameof(OnItemDespawned));
+            }
+
+            foreach (var (itemId, type, position) in respawned)
+            {
+                AdoptServerSpawn(itemId, type, position);
+            }
+        }
+
+        private static float ReadFinite(JObject entry, string key)
+        {
+            float value;
+            try
+            {
+                value = entry[key]?.Value<float>() ?? 0f;
+            }
+            catch
+            {
+                return 0f;
+            }
+
+            return float.IsFinite(value) ? value : 0f;
         }
 
         /// <summary>

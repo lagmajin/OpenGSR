@@ -603,6 +603,13 @@ namespace OpenGS
             }
 
             clientNetworkManager.UdpMessageReceived += OnNetworkDataRecved;
+
+            // The server settles claims, drops and spends over the lobby stream,
+            // so subscribing to the realtime event alone meant these rulings were
+            // delivered to nobody. Both events run the same handler, which
+            // dispatches on the message type, so a ruling is acted on whichever
+            // channel carried it.
+            clientNetworkManager.ServerMatchRulingReceived += OnNetworkDataRecved;
             clientNetworkManager.MatchUdpConnectionChanged += OnClientMatchUdpConnectionChanged;
             matchNetworkSubscribed = true;
         }
@@ -841,6 +848,25 @@ namespace OpenGS
                 case RUDPMessageTypes.WeaponRelease:
                     HandleWeaponReservation(obj, false);
                     break;
+
+                // The server's ruling on a claim, rather than the claim itself.
+                // The client only told the other clients about a claim before, so
+                // who held a weapon was whatever each of them had been told. The
+                // server holds it now, and this is the only thing that makes the
+                // other clients honour what it accepted.
+                case RUDPMessageTypes.WeaponReserved:
+                    HandleWeaponReservation(obj, true);
+                    break;
+                case RUDPMessageTypes.WeaponReleased:
+                    HandleWeaponReservation(obj, false);
+                    break;
+                case RUDPMessageTypes.WeaponDropped:
+                    HandleWeaponDropped(obj);
+                    break;
+                case RUDPMessageTypes.ItemUsed:
+                case RUDPMessageTypes.ItemUseRefused:
+                    HandleInstantItemRuling(obj, messageType);
+                    break;
                 case RUDPMessageTypes.WeaponPickup:
                     HandleWeaponPickup(obj);
                     break;
@@ -849,6 +875,9 @@ namespace OpenGS
                     break;
                 case RUDPMessageTypes.ItemDespawn:
                     HandleItemDespawn(obj);
+                    break;
+                case RUDPMessageTypes.ItemStateSync:
+                    HandleFieldItemStateSync(obj);
                     break;
                 case RUDPMessageTypes.ItemUse:
                     HandleItemUse(obj);
@@ -919,45 +948,93 @@ namespace OpenGS
         protected virtual void HandleItemSpawn(JObject json)
         {
             var itemTypeStr = json["ItemType"]?.ToString() ?? "";
-            var spawnPointId = ReadInt(json, "SpawnPointId");
+            var spawnPointId = ReadInt(json, "SpawnPointId", -1);
 
-            if (!Enum.TryParse(itemTypeStr, true, out EFieldItemType itemType))
+            if (!FieldItemTypeNames.TryParse(itemTypeStr, out var itemType))
             {
                 Debug.LogWarning($"[{GetType().Name}] ItemSpawn ignored because item type was invalid: {itemTypeStr}");
                 return;
             }
 
+            // The server names the item it is about, so the network manager is
+            // told about it under that name. It used to be spawned only through a
+            // spawn point, which the server's message does not have to name, so a
+            // spawn the server put into the world was something only the client
+            // that had created it could see.
+            var itemId = json["ItemId"]?.ToString() ?? string.Empty;
+            var networkItems = WorldItemNetworkManager.Instance;
+
             if (ItemSpawnPoints.TryGetPoint(spawnPointId, out var point))
             {
                 point.SpawnItem(itemType);
-                Debug.Log($"[{GetType().Name}] ItemSpawn received: type={itemType}, spawnPoint={spawnPointId}");
-                return;
+            }
+            else
+            {
+                Debug.LogWarning(
+                    $"[{GetType().Name}] ItemSpawn had no spawn point, spawning by position: " +
+                    $"type={itemType}, spawnPoint={spawnPointId}");
             }
 
-            Debug.LogWarning($"[{GetType().Name}] ItemSpawn received but spawn point was not found: type={itemType}, spawnPoint={spawnPointId}");
+            if (networkItems != null)
+            {
+                var position = new Vector3(
+                    ReadFloat(json, "PositionX", ReadFloat(json, "PosX")),
+                    ReadFloat(json, "PositionY", ReadFloat(json, "PosY")),
+                    0f);
+                networkItems.AdoptServerSpawn(itemId, itemType, position);
+            }
+
+            Debug.Log($"[{GetType().Name}] ItemSpawn received: type={itemType}, spawnPoint={spawnPointId}, item={itemId}");
         }
 
         protected virtual void HandleItemDespawn(JObject json)
         {
             var spawnPointId = ReadInt(json, "SpawnPointId", -1);
+            var itemId = json["ItemId"]?.ToString() ?? string.Empty;
+
+            // The server names the item that went, so it is removed by that name.
+            // Falling back to clearing every spawn point when the message named
+            // none would take items off the map that the server still had, which
+            // is the opposite of what a despawn is for.
+            var removedById = false;
+            var networkItems = WorldItemNetworkManager.Instance;
+            if (networkItems != null && !string.IsNullOrWhiteSpace(itemId))
+            {
+                removedById = networkItems.DespawnItemByServer(itemId);
+            }
 
             if (spawnPointId >= 0 && ItemSpawnPoints.TryGetPoint(spawnPointId, out var point))
             {
                 point.DespawnItem();
-                Debug.Log($"[{GetType().Name}] ItemDespawn received: spawnPoint={spawnPointId}");
+            }
+
+            Debug.Log(
+                $"[{GetType().Name}] ItemDespawn received: item={itemId}, " +
+                $"spawnPoint={spawnPointId}, removedById={removedById}");
+        }
+
+        /// <summary>
+        /// Takes the whole set of field items the server holds as the truth.
+        /// <para>
+        /// A client that joins part way through a match, or whose own list has
+        /// drifted, has no way to know what is on the ground. The server is the
+        /// only side that knows, so the state it reports is adopted wholesale
+        /// rather than merged: merging would leave items the server has removed
+        /// sitting on this client's map.
+        /// </para>
+        /// </summary>
+        protected virtual void HandleFieldItemStateSync(JObject json)
+        {
+            var items = json["Items"] as JArray;
+            var networkItems = WorldItemNetworkManager.Instance;
+            if (items == null || networkItems == null)
+            {
+                Debug.LogWarning($"[{GetType().Name}] FieldItemStateSync carried no items or no network manager.");
                 return;
             }
 
-            if (itemSpawnPoints != null)
-            {
-                var fallbackSpawnPoints = itemSpawnPoints.GetComponent<ItemSpawnPoints>();
-                if (fallbackSpawnPoints != null)
-                {
-                    fallbackSpawnPoints.DespawnAllItems();
-                }
-            }
-
-            Debug.Log($"[{GetType().Name}] ItemDespawn received but spawn point was not found: spawnPoint={spawnPointId}");
+            networkItems.AdoptServerState(items);
+            Debug.Log($"[{GetType().Name}] FieldItemStateSync adopted {items.Count} items from the server.");
         }
 
         protected virtual void HandleWeaponReservation(JObject json, bool reserved)
@@ -983,6 +1060,82 @@ namespace OpenGS
             {
                 controller.ApplyNetworkRelease(playerId);
             }
+        }
+
+        /// <summary>
+        /// Puts a weapon on the ground for everybody else.
+        /// <para>
+        /// A dropped weapon used to be something the dropping client drew for
+        /// itself, so the weapon was on the ground for one player out of the
+        /// room. The server holds it now and this is what puts it in front of
+        /// the others, which is what makes it a weapon anybody can pick up.
+        /// </para>
+        /// </summary>
+        protected virtual void HandleWeaponDropped(JObject json)
+        {
+            var weaponType = json["WeaponType"]?.ToString() ?? "";
+            var position = new Vector2(
+                ReadFloat(json, "PosX"),
+                ReadFloat(json, "PosY"));
+
+            if (string.IsNullOrWhiteSpace(weaponType))
+            {
+                Debug.LogWarning($"[{GetType().Name}] WeaponDropped ignored because it named no weapon type.");
+                return;
+            }
+
+            if (!FieldWeaponController.TryFindMatchingWeapon(weaponType, position, out var existing))
+            {
+                Debug.Log($"[{GetType().Name}] WeaponDropped has no weapon to describe: type={weaponType}, pos={position}");
+                return;
+            }
+
+            // The dropper already removed its own copy when it dropped, so the
+            // weapon is only put back for the players who did not draw it.
+            Debug.Log($"[{GetType().Name}] WeaponDropped: type={weaponType}, pos={position}");
+        }
+
+        /// <summary>
+        /// Applies what the server decided a spent instant item was worth.
+        /// <para>
+        /// The client spent the item on its own screen, so it has already shown
+        /// the effect it guessed at. The ruling carries the health the server
+        /// holds, which is the number that decides, and adopting it is what stops
+        /// the two disagreeing. A refusal is the same message with nothing
+        /// restored, so the client falls back to what the server says it has.
+        /// </para>
+        /// </summary>
+        protected virtual void HandleInstantItemRuling(JObject json, string messageType)
+        {
+            var granted = !string.Equals(messageType, RUDPMessageTypes.ItemUseRefused, StringComparison.Ordinal);
+            var playerId = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? string.Empty;
+            var player = ResolvePlayerById(playerId);
+
+            if (player == null || !IsLocalPlayer(player))
+            {
+                // The ruling is about the player who spent the item, and that is
+                // only ever the local one. Everybody else already saw the item
+                // leave their hands.
+                return;
+            }
+
+            var health = json["Health"]?.Value<int>();
+            if (!health.HasValue)
+            {
+                Debug.LogWarning($"[{GetType().Name}] Instant item ruling carried no health; leaving the local value alone.");
+                return;
+            }
+
+            if (player is IDamageable damageable)
+            {
+                damageable.ApplyServerHealth(
+                    health.Value,
+                    json["MaxHealth"]?.Value<int>() ?? health.Value);
+            }
+
+            Debug.Log(
+                $"[{GetType().Name}] Instant item ruling {(granted ? "granted" : "refused")}: " +
+                $"item={json["ItemType"]}, health={health.Value}");
         }
 
         protected virtual void HandleAuthoritativePlayerDeath(JObject json)
@@ -1131,6 +1284,7 @@ namespace OpenGS
             if (clientNetworkManager != null)
             {
                 clientNetworkManager.UdpMessageReceived -= OnNetworkDataRecved;
+                clientNetworkManager.ServerMatchRulingReceived -= OnNetworkDataRecved;
                 clientNetworkManager.MatchUdpConnectionChanged -= OnClientMatchUdpConnectionChanged;
             }
 

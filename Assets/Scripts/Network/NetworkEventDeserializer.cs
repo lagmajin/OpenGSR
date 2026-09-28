@@ -157,11 +157,15 @@ namespace OpenGS
 
         private static PlayerDamageEvent DeserializePlayerDamage(JObject json)
         {
+            // The server writes RemainingHealth and the client's own serializer
+            // writes RemainingHp, and only the first was read here, so a ruling
+            // that arrived from the server was read as zero health left. The
+            // spelling that names the value on the wire wins.
             return new PlayerDamageEvent(
                 S(json, "TargetId", S(json, "DamagedPlayerID")),
                 S(json, "AttackerId", S(json, "AttackerID")),
                 I(json, "Damage"),
-                I(json, "RemainingHp")
+                I(json, "RemainingHealth", I(json, "RemainingHp"))
             );
         }
 
