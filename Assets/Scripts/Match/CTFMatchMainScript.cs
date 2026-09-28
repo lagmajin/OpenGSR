@@ -259,6 +259,31 @@ namespace OpenGS
         }
 
         /// <summary>
+        /// Where a team's flag is lying in the world, if it is lying anywhere.
+        /// <para>
+        /// A drop has to carry its position so the server can refuse a pickup from
+        /// somebody standing on the other side of the map. Without it the server
+        /// knows the flag is loose and not where, so the reach check it now
+        /// performs has nothing to measure against.
+        /// </para>
+        /// </summary>
+        private bool TryGetFlagWorldPosition(ETeam flagTeam, out Vector2 position)
+        {
+            position = Vector2.zero;
+
+            foreach (var flag in FindObjectsByType<FlagController>(FindObjectsSortMode.None))
+            {
+                if (flag != null && flag.team == flagTeam)
+                {
+                    position = (Vector2)flag.transform.position;
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Tells the server a flag moved, naming which flag rather than which
         /// side the carrier is on.
         /// <para>
@@ -280,8 +305,12 @@ namespace OpenGS
             }
 
             var carrierId = carrier != null ? carrier.UniqueID().ToString() : string.Empty;
-            if (string.IsNullOrWhiteSpace(carrierId))
+            var isReturnByItself = string.Equals(returnReason, nameof(EFlagReturnReason.AutoReturn), StringComparison.Ordinal);
+            if (string.IsNullOrWhiteSpace(carrierId) && !isReturnByItself)
             {
+                // A claim is a statement about a player, so without one there is
+                // nothing being claimed. The one exception is a flag that went
+                // home by itself, which belongs to nobody.
                 Debug.LogWarning($"[CTF] {messageType} was not reported: the flag's carrier is not a local player.");
                 return;
             }
@@ -313,6 +342,16 @@ namespace OpenGS
             if (!string.IsNullOrWhiteSpace(returnReason))
             {
                 json["ReturnReason"] = returnReason;
+            }
+
+            // A drop carries where the flag landed, and a pickup has to be refused
+            // unless the player is actually next to it. Without the position the
+            // server knows the flag is loose and not where, so the reach check
+            // has nothing to measure against and a claim is believed on its own.
+            if (messageType == MessageType.FlagLost && TryGetFlagWorldPosition(flagTeam, out var where))
+            {
+                json["PosX"] = where.x;
+                json["PosY"] = where.y;
             }
 
             AttachRoomIdentifiers(json, ResolveCurrentMatchRoom());

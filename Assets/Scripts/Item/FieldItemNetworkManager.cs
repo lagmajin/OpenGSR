@@ -430,6 +430,28 @@ namespace OpenGS
             }
         }
 
+        /// <summary>
+        /// Where a field item is on the ground, for a caller that has to be near
+        /// something to be allowed to touch it.
+        /// <para>
+        /// The server checks reach against its own record of where a player is, so
+        /// a client asking this is asking what the server already believes, not
+        /// what this client's copy of the world says. The two are not the same
+        /// once anything has drifted, and the one that decides is the server's.
+        /// </para>
+        /// </summary>
+        public bool TryGetItemPosition(string itemId, out Vector3 position)
+        {
+            position = Vector3.zero;
+            if (string.IsNullOrEmpty(itemId) || !_fieldItems.TryGetValue(itemId, out var data))
+            {
+                return false;
+            }
+
+            position = data.Position;
+            return true;
+        }
+
         private static float ReadFinite(JObject entry, string key)
         {
             float value;
