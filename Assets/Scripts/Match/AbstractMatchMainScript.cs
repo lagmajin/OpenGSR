@@ -847,6 +847,15 @@ namespace OpenGS
 
             switch (messageType)
             {
+                // The room publishes the settings it is playing under, and every
+                // mode needs them rather than only the one that reads them here.
+                // A survival client deriving the health multiplier from the mode
+                // instead of the room was applying its own guess while the server
+                // applied the configured one, so the two sides disagreed about
+                // how much health anybody had.
+                case MessageType.Snapshot:
+                    ApplyServerRoomSettings(obj);
+                    break;
                 case RUDPMessageTypes.WeaponReserve:
                     HandleWeaponReservation(obj, true);
                     break;
@@ -899,6 +908,29 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerDebuff:
                     HandlePlayerDebuff(obj);
                     break;
+            }
+        }
+
+        /// <summary>
+        /// Adopts the settings the server says this room is playing under.
+        /// <para>
+        /// A setting is not something a client guesses. Anything the server
+        /// configured, and a client that keeps a value of its own for, is a
+        /// number the two sides can disagree about and the player sees whichever
+        /// one the client happens to be using.
+        /// </para>
+        /// </summary>
+        protected virtual void ApplyServerRoomSettings(JObject json)
+        {
+            if (json == null)
+            {
+                return;
+            }
+
+            var multiplier = json["HealthMultiplier"]?.ToObject<float>();
+            if (multiplier.HasValue)
+            {
+                MatchModeResolver.AdoptServerHealthMultiplier(multiplier.Value);
             }
         }
 
