@@ -1,0 +1,26 @@
+###############################################################################
+# Line endings.
+#
+# The tree is LF. Several scripts were committed with mixed endings, per line,
+# and because git compares bytes, every edit to one of them read as a change to
+# every line in the file: the flag work touched about sixty lines and the diff
+# showed fourteen hundred. That is what made the change unreviewable, so the
+# endings are stated here rather than left to whichever tool last saved a file.
+###############################################################################
+* text=auto eol=lf
+
+# Unity rewrites these on save and imports them by content, so a normalisation
+# pass over them would churn every scene and prefab in the project for nothing.
+*.meta -text
+*.unity -text
+*.prefab -text
+*.asset -text
+
+# Unity's own library and generated project files are not source.
+[Ll]ibrary/ -text -diff
+[Tt]emp/ -text -diff
+[Oo]bj/ -text -diff
+[Ll]ogs/ -text -diff
+[Uu]ser[Ss]ettings/ -text -diff
+*.csproj -text -diff
+*.sln -text -diff
