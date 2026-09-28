@@ -141,13 +141,41 @@ namespace OpenGS
         protected override void OnNetworkDataRecved(JObject obj)
         {
             var messageType = MessageType.Normalize(obj["MessageType"]?.ToString());
-            if (messageType == RUDPMessageTypes.PlayerDeath)
+
+            if (messageType == MessageType.MatchEndNotification)
             {
-                HandlePlayerEliminated();
+                HandleMatchEnd(obj);
                 return;
             }
 
             base.OnNetworkDataRecved(obj);
+        }
+
+        /// <summary>
+        /// The server has ended the match, and it says who won.
+        /// <para>
+        /// This script had no handler for the end of a match at all, so it never
+        /// learned one had happened from the server and worked it out from its own
+        /// count of who was alive. That count was the wait room roster rather than
+        /// live state, and it was reduced from three sources at once with no
+        /// dedup, so one death could count two or three times and end the match
+        /// early. The server is the one that knows who is still in.
+        /// </para>
+        /// </summary>
+        private void HandleMatchEnd(JObject json)
+        {
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
+
+            var winningTeam = json["WinningTeam"]?.ToString() ?? "None";
+            var winningPlayerId = json["WinningPlayerId"]?.ToString() ?? string.Empty;
+
+            Debug.Log($"[SUV] Match ended: team={winningTeam}, player={winningPlayerId}");
+
+            StoreOfflineMatchResult();
+            Invoke(nameof(GoToResultScene), gotoResultSceneWaitTime);
         }
 
         private void HandlePlayerEliminated()
@@ -159,6 +187,14 @@ namespace OpenGS
 
             aliveCount = Math.Max(0, aliveCount - 1);
             Debug.Log($"[SUV] Player eliminated. Alive={aliveCount}");
+
+            if (IsOnlineMatch())
+            {
+                // The count is this client's guess, and the server ends the match
+                // when it decides. Ending it here as well would leave the two
+                // disagreeing about whether the match was still running.
+                return;
+            }
 
             if (aliveCount > 1)
             {
