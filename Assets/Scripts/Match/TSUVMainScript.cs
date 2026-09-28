@@ -219,10 +219,6 @@ namespace OpenGS
             CheckTeamElimination();
         }
 
-        protected override float ResolveMatchDuration()
-        {
-            return 600f;
-        }
 
         protected override void OnLocalTimeUp()
         {

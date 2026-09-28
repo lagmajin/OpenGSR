@@ -691,6 +691,17 @@ namespace OpenGSCore
             // Only the first was published, so a client that joined late was told
             // three minutes and read that as the whole match.
             json["MatchLengthSeconds"] = rule?.MatchTimeMSec() / 1000f;
+            // The running team totals, so a client is not left counting kills
+            // itself and hoping. It already sends its own kill claims, so a
+            // client that was never told the real totals would be showing a
+            // score of its own making for the whole match, and the two sides
+            // would disagree about it.
+            if (situation is AbstractTeamMatchSituation teamSituation)
+            {
+                json["RedTeamKills"] = teamSituation.RedTeamKill;
+                json["BlueTeamKills"] = teamSituation.BlueTeamKill;
+            }
+
             AddRuleSettings(json);
 
             // GameSceneのスナップショットを追加

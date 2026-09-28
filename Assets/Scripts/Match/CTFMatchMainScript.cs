@@ -699,10 +699,6 @@ namespace OpenGS
             base.OnDestroy();
         }
 
-        protected override float ResolveMatchDuration()
-        {
-            return 600f;
-        }
 
         protected override void OnLocalTimeUp()
         {

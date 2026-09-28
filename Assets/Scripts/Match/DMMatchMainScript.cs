@@ -160,10 +160,6 @@ namespace OpenGS
             Debug.Log("[DM] SetUpUI");
         }
 
-        protected override float ResolveMatchDuration()
-        {
-            return 600f;
-        }
 
         protected override void OnLocalTimeUp()
         {

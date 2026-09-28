@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 //using RuntimeScriptField;
 using Sirenix.OdinInspector;
 using Sirenix.Serialization;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -27,12 +28,65 @@ namespace OpenGS
         [Required, AutoCreateIfMissing("DMMatchMainScript", typeof(DMMatchMainScript))] public GameObject dmMatchMainScript;
         [Required, AutoCreateIfMissing("TDMMatchMainScript", typeof(TDMMatchMainScript))] public GameObject tdmMatchMainScript;
 
-        [Required, AutoCreateIfMissing("SUVMatchMainScript")] public GameObject suvMatchMainScript;
+        [Required, AutoCreateIfMissing("SUVMatchMainScript", typeof(SurvivalMatchMainScript))] public GameObject suvMatchMainScript;
         [Required, AutoCreateIfMissing("TSUVMatchMainScript", typeof(TSUVMainScript))] public GameObject tsuvMatchMainScript;
         [Required, AutoCreateIfMissing("CTFMatchMainScript", typeof(CTFMatchMainScript))] public GameObject ctfMatchMainScript;
 
         [Required, AutoCreateIfMissing("ArmMatchMainScript")] public GameObject armMatchMainScript;
         [Required, AutoCreateIfMissing("GodModeMainScript", typeof(GodModeMainScript))] public GameObject godModeMainScript;
+
+        /// <summary>
+        /// Builds the match scripts a scene left out.
+        /// <para>
+        /// Every mode has a slot here and the attribute on it says the slot is
+        /// meant to be filled, but the attribute is an editor drawer, so it does
+        /// nothing when the game runs. A scene that shipped with an empty slot
+        /// therefore started with that mode unplayable and said so only in a log
+        /// line nobody reads: the mode was selectable in the lobby, the match
+        /// began, and nothing ever happened because the script that was supposed
+        /// to be running was not there.
+        /// </para>
+        /// <para>
+        /// Each one is built on its own object rather than added to this one,
+        /// because a mode script is a singleton that destroys a duplicate, and
+        /// sharing an object with the collection would make the two destroy each
+        /// other.
+        /// </para>
+        /// </summary>
+        private void Awake()
+        {
+            suvMatchMainScript = EnsureMatchScript(suvMatchMainScript, "SUVMatchMainScript", typeof(SurvivalMatchMainScript));
+            tsuvMatchMainScript = EnsureMatchScript(tsuvMatchMainScript, "TSUVMatchMainScript", typeof(TSUVMainScript));
+            ctfMatchMainScript = EnsureMatchScript(ctfMatchMainScript, "CTFMatchMainScript", typeof(CTFMatchMainScript));
+            armMatchMainScript = EnsureMatchScript(armMatchMainScript, "ArmMatchMainScript", null);
+            godModeMainScript = EnsureMatchScript(godModeMainScript, "GodModeMainScript", typeof(GodModeMainScript));
+        }
+
+        /// <summary>
+        /// Returns the assigned script, or one built now when the scene left the
+        /// slot empty. A mode with no script behind it cannot be played, so the
+        /// alternative is a mode that is offered and does nothing.
+        /// </summary>
+        private GameObject EnsureMatchScript(GameObject assigned, string objectName, Type? componentType)
+        {
+            if (assigned != null)
+            {
+                return assigned;
+            }
+
+            var created = new GameObject(objectName);
+
+            if (componentType != null)
+            {
+                created.AddComponent(componentType);
+            }
+
+            Debug.Log(
+                $"[GameModeCollection] {objectName} was not assigned in this scene, so it was built at runtime. " +
+                "Assign it in the scene to stop the mode being assembled on every load.");
+            return created;
+        }
+
 
 
 

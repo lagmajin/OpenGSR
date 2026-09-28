@@ -488,10 +488,28 @@ namespace OpenGS
         /// <summary>
         /// Match duration in seconds per mode. Override in derived classes. Default 10 minutes.
         /// </summary>
+        /// <summary>
+        /// The match length this client starts counting down from, before the
+        /// server has said otherwise.
+        /// <para>
+        /// Four modes each answered this with the same ten minutes while the
+        /// server played whatever the room was configured for, and a fifth mode
+        /// answered it with the same number too. It is only the value the
+        /// countdown holds between the match starting and the room's clock
+        /// arriving, and the room's clock replaces it either way. So it is one
+        /// number in one place rather than five that happen to agree.
+        /// </para>
+        /// </summary>
         protected virtual float ResolveMatchDuration()
         {
-            return 600f;
+            return DefaultMatchDurationSeconds;
         }
+
+        /// <summary>
+        /// The guess this client counts down from until the room says what the
+        /// match is really.
+        /// </summary>
+        public const float DefaultMatchDurationSeconds = 600f;
 
         /// <summary>
         /// The clock the server is running this match on, once the room has said.
@@ -1078,6 +1096,26 @@ namespace OpenGS
             {
                 timer.SetMatchDuration(length.Value);
             }
+
+            // The running team totals, for a mode that shows a score.
+            var redKills = json["RedTeamKills"]?.ToObject<int>();
+            var blueKills = json["BlueTeamKills"]?.ToObject<int>();
+            if (redKills.HasValue || blueKills.HasValue)
+            {
+                ApplyServerTeamKills(redKills ?? 0, blueKills ?? 0);
+            }
+        }
+
+        /// <summary>
+        /// The room's own tally of what each team has scored.
+        /// <para>
+        /// A client counts its own kills and hopes, and sends its own claims, so a
+        /// score it worked out for itself is a score of its own making for the
+        /// whole match. The room keeps the real one.
+        /// </para>
+        /// </summary>
+        protected virtual void ApplyServerTeamKills(int red, int blue)
+        {
         }
 
         protected virtual void HandleItemUse(JObject json)

@@ -85,10 +85,6 @@ namespace OpenGS
             }
         }
 
-        protected override float ResolveMatchDuration()
-        {
-            return 600f;
-        }
 
         protected override void OnLocalTimeUp()
         {
@@ -551,6 +547,22 @@ namespace OpenGS
 
             InvokeSafely(OnTeamKill, killerTeam, victimTeam, nameof(OnTeamKill));
             Debug.Log($"[TDM] Received team kill from server: {killerTeam} killed {victimTeam}");
+        }
+
+        /// <summary>
+        /// The room's tally replaces what this client counted.
+        /// <para>
+        /// The client counts its own kills and sends its own claims, so a score it
+        /// worked out for itself is a score of its own making for the whole match,
+        /// and the two sides disagree about a number on the scoreboard.
+        /// </para>
+        /// </summary>
+        protected override void ApplyServerTeamKills(int red, int blue)
+        {
+            redTeamKills = Math.Max(0, red);
+            blueTeamKills = Math.Max(0, blue);
+
+            scoreUIManager?.UpdateScoreFromServer(redTeamKills, blueTeamKills);
         }
 
         private void HandleScoreUpdate(JObject json)
