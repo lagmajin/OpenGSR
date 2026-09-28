@@ -1013,16 +1013,36 @@ namespace OpenGS
         /// </summary>
         private void HandleFlagCaptureRefused(JObject json)
         {
+            // The server answers a refusal to the player whose delivery it was, so
+            // this is about the local player. Checking anyway means a refusal that
+            // arrives for somebody else cannot put a notice on this screen that
+            // has nothing to do with the player watching it.
+            var subject = json["PlayerId"]?.ToString() ?? json["PlayerID"]?.ToString() ?? string.Empty;
+            var localPlayerId = ResolveLocalPlayerId();
+            if (!string.IsNullOrWhiteSpace(subject) && !IsLocalPlayerId(subject))
+            {
+                return;
+            }
+
             var team = ReadTeam(json);
             var reason = json["Reason"]?.ToString() ?? string.Empty;
 
-            Debug.LogWarning($"[CTF] The {team} delivery did not score: {reason}");
+            Debug.LogWarning($"[CTF] The {team} delivery by {localPlayerId} did not score: {reason}");
 
             if (CTFScoreUIManager.Instance != null &&
                 Enum.TryParse(reason, ignoreCase: true, out EFlagRefusal refusal))
             {
                 CTFScoreUIManager.Instance.ShowCaptureRefused(team, refusal);
             }
+        }
+
+        /// <summary>
+        /// Whether an id names the player this client is.
+        /// </summary>
+        private bool IsLocalPlayerId(string playerId)
+        {
+            var localPlayerId = ResolveLocalPlayerId();
+            return string.Equals(playerId, localPlayerId, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>

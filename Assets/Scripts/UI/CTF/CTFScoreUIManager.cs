@@ -61,6 +61,12 @@ namespace OpenGS
         [SerializeField, Min(0f)] private float preMatchCountdownSeconds = 3f;
         [SerializeField, Min(0f)] private float postMatchHoldSeconds = 3f;
         [SerializeField] private TextMeshProUGUI matchStatusText;
+        [Tooltip("How long a ruling about a delivery stays on the status line.")]
+        [SerializeField, Min(0.5f)] private float noticeSeconds = 4f;
+
+        // The notice that is currently up, and the text to put back after it.
+        private string noticeShownText = string.Empty;
+        private Coroutine noticeRoutine;
 
         [Header("Animation")]
         [SerializeField] private float scorePopDuration = 0.3f;
@@ -130,6 +136,15 @@ namespace OpenGS
 
         private void OnDisable()
         {
+            // A notice that is still up when the panel goes away would otherwise
+            // be left on a disabled object, and restoring it would write to a line
+            // nobody is looking at.
+            if (noticeRoutine != null)
+            {
+                StopCoroutine(noticeRoutine);
+                noticeRoutine = null;
+            }
+
             if (subscribedMatch != null)
             {
                 subscribedMatch.OnFlagCaptured -= HandleFlagCaptured;
@@ -399,15 +414,52 @@ namespace OpenGS
             var message = refusal switch
             {
                 EFlagRefusal.OwnFlagNotAtBase =>
-                    "Your own flag is not at base, so that capture does not count.",
+                    "YOUR FLAG IS NOT AT BASE",
                 EFlagRefusal.NoEnemyFlagCarried =>
-                    "You are not carrying the enemy flag, so there is nothing to deliver.",
+                    "NO ENEMY FLAG TO DELIVER",
                 EFlagRefusal.NotATeam =>
-                    "You are not on a team, so the delivery does not count.",
-                _ => "That capture did not count."
+                    "YOU ARE NOT ON A TEAM",
+                _ => "CAPTURE DID NOT COUNT"
             };
 
-            Debug.LogWarning($"[CTF] {message} (team {scoringTeam})");
+            // The reason is the useful part. A player who carried a flag across
+            // the map and got nothing back cannot tell that from a message that
+            // was lost, and the flag indicators only say where the flags are: they
+            // do not connect that to what just happened to them. This is the
+            // connection, and it is the whole reason the server answers a refusal
+            // to the player who made the delivery rather than logging it.
+            Debug.LogWarning($"[CTF] {message} (team {scoringTeam}, {refusal})");
+
+            if (matchStatusText == null)
+            {
+                return;
+            }
+
+            // The status line is also the countdown's, so what was there is put
+            // back afterwards rather than assumed to be empty.
+            StopCoroutine(noticeRoutine);
+            var previous = matchStatusText.text;
+            noticeShownText = message;
+            matchStatusText.text = message;
+            noticeRoutine = StartCoroutine(ShowNoticeThen(previous));
+        }
+
+        private System.Collections.IEnumerator ShowNoticeThen(string previous)
+        {
+            var shown = Time.unscaledTime;
+            while (Time.unscaledTime - shown < noticeSeconds)
+            {
+                yield return null;
+            }
+
+            noticeRoutine = null;
+
+            // The match may have ended while the notice was up, and the end
+            // clears the line, so only a line that is still ours is replaced.
+            if (matchStatusText != null && matchStatusText.text == noticeShownText)
+            {
+                matchStatusText.text = previous;
+            }
         }
 
         #endregion
