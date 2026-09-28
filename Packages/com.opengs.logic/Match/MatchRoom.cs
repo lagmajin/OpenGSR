@@ -86,6 +86,16 @@ namespace OpenGSCore
         /// <summary>
         /// プレイヤーをルームから削除する
         /// </summary>
+        /// <summary>
+        /// Takes a player out of the room and brings the match's view of who is
+        /// still in it up to date.
+        /// <para>
+        /// Removing them and counting them are one thing. A player who has gone
+        /// is not on a team any more, and a room that still counted them would
+        /// keep a team alive that has nobody standing in it, so the wipe that
+        /// ends a team survival match would never arrive.
+        /// </para>
+        /// </summary>
         public void RemovePlayer(string playerId)
         {
             lock (playerSyncLock)
@@ -100,6 +110,8 @@ namespace OpenGSCore
                 Players.Remove(player);
                 playerPoseStates.Remove(player.Id);
             }
+
+            RefreshAliveCounts();
         }
 
         public MatchRoom(int roomNumber, in string roomName, in string roomOwnerId, AbstractMatchSetting setting, MatchRoomEventBus bus) : base(roomNumber, roomOwnerId)
