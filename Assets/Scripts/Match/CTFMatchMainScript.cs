@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using OpenGSCore;
 using UnityEngine;
@@ -191,22 +191,33 @@ namespace OpenGS
             }
 
             PlayerFlagPickedUp(flagController.team, player != null ? player.gameObject.name : string.Empty, false);
+
+            // The server holds where each flag is, so it has to be told. This was
+            // raised as a local event and sent nowhere, so the server never knew a
+            // flag had been picked up and every capture it was asked to judge was
+            // refused for want of a carrier.
+            ReportFlagTransitionToServer(MessageType.FlagPickup, flagController.team, player);
         }
 
-        private void HandleFlagReturnedToBase(FlagController flagController, AbstractPlayer player, FlagController.EFlagReturnReason reason)
+        private void HandleFlagReturnedToBase(FlagController flagController, AbstractPlayer player, EFlagReturnReason reason)
         {
             if (flagController == null)
             {
                 return;
             }
 
-            if (reason == FlagController.EFlagReturnReason.CapturedAtBase)
+            if (reason == EFlagReturnReason.CapturedAtBase)
             {
+                // A delivery is not a return. The server decides when a flag is
+                // captured and says so; hearing it back as a return would undo the
+                // score it just gave.
                 return;
             }
 
             PlayFlagEffect(effectPrefabMasterData != null ? effectPrefabMasterData.flagReturnEffect : null, flagController.transform.position);
             PlayerFlagReturned(flagController.team, false);
+
+            ReportFlagTransitionToServer(MessageType.FlagReturn, flagController.team, player, reason.ToString());
         }
 
         private void HandleFlagDropped(FlagController flagController)
@@ -218,6 +229,8 @@ namespace OpenGS
 
             PlayFlagEffect(effectPrefabMasterData != null ? effectPrefabMasterData.HitEffect : null, flagController.transform.position);
             PlayerFlagLost(flagController.team, false);
+
+            ReportFlagTransitionToServer(MessageType.FlagLost, flagController.team, LocalFlagCarrier());
         }
 
         private void HandleFlagCapturedFromStand(FlagStand stand, AbstractPlayer player)
@@ -228,11 +241,82 @@ namespace OpenGS
             }
 
             PlayFlagEffect(effectPrefabMasterData != null ? effectPrefabMasterData.flagReturnEffect : null, stand.transform.position);
-            PlayerFlagCaptured(stand.Team, false);
+
             if (player != null)
             {
                 player.EnemyFlagReturnedToBase(true);
             }
+
+            // The flag that reached a stand belonged to the team that stand is
+            // not, so the stand names the flag and the claim is about carrying it
+            // home. The server judges it against the flags it holds.
+            ReportFlagTransitionToServer(MessageType.FlagCaptured, stand.Team, player);
+        }
+
+        private AbstractPlayer LocalFlagCarrier()
+        {
+            return player != null ? player.GetComponent<AbstractPlayer>() : null;
+        }
+
+        /// <summary>
+        /// Tells the server a flag moved, naming which flag rather than which
+        /// side the carrier is on.
+        /// <para>
+        /// A flag belongs to a team, and a red player picks up the blue flag, so
+        /// the carrier's own team is not the fact the server needs. Without the
+        /// flag's team the server has to guess which flag somebody is holding,
+        /// and guessing that is how a team ends up recorded as carrying its own.
+        /// </para>
+        /// </summary>
+        private void ReportFlagTransitionToServer(
+            string messageType,
+            ETeam flagTeam,
+            AbstractPlayer carrier,
+            string returnReason = null)
+        {
+            if (networkManager == null || !networkManager.IsConnected())
+            {
+                return;
+            }
+
+            var carrierId = carrier != null ? carrier.UniqueID().ToString() : string.Empty;
+            if (string.IsNullOrWhiteSpace(carrierId))
+            {
+                Debug.LogWarning($"[CTF] {messageType} was not reported: the flag's carrier is not a local player.");
+                return;
+            }
+
+            var position = carrier != null ? (Vector2)carrier.transform.position : Vector2.zero;
+            var eventKey = CreateFlagEventKey(messageType, flagTeam.ToString(), carrierId, position.x, position.y);
+
+            JObject json = messageType switch
+            {
+                MessageType.FlagPickup => RUDPMessageBuilder.CreateFlagPickup(
+                    carrierId, flagTeam.ToString(), position, eventKey),
+                MessageType.FlagLost => RUDPMessageBuilder.CreateFlagLost(
+                    carrierId, flagTeam.ToString(), position, eventKey),
+                MessageType.FlagReturn => RUDPMessageBuilder.CreateFlagReturn(
+                    flagTeam.ToString(), carrierId, eventKey),
+                MessageType.FlagCaptured => RUDPMessageBuilder.CreateFlagCaptured(
+                    carrierId, flagTeam.ToString(), position, eventKey),
+                _ => null
+            };
+
+            if (json == null)
+            {
+                return;
+            }
+
+            // The flag's own team, which the builders do not carry because they
+            // were written before the server needed it.
+            json["FlagTeam"] = flagTeam.ToString();
+            if (!string.IsNullOrWhiteSpace(returnReason))
+            {
+                json["ReturnReason"] = returnReason;
+            }
+
+            AttachRoomIdentifiers(json, ResolveCurrentMatchRoom());
+            networkManager.SendToServer(json);
         }
 
         private static bool TryResolveTeam(in TeamEventPlayerInfo info, out ETeam team)
@@ -696,8 +780,13 @@ namespace OpenGS
                     EFlagEventType.Captured => RUDPMessageBuilder.CreateFlagCaptured(playerId, teamStr, pos, eventKey),
                     EFlagEventType.Lost => RUDPMessageBuilder.CreateFlagLost(playerId, teamStr, pos, eventKey),
                     EFlagEventType.Returned => RUDPMessageBuilder.CreateFlagReturn(teamStr, playerId, eventKey),
-                    EFlagEventType.Burst => RUDPMessageBuilder.CreateFlagBurst(teamStr, pos, playerId, eventKey),
                     EFlagEventType.Pickup => RUDPMessageBuilder.CreateFlagPickup(playerId, teamStr, pos, eventKey),
+
+                    // A burst is not claimed. A flag going is the rule's outcome
+                    // and the server says whose flag it was, so a client that
+                    // could assert it could destroy a flag sitting safely on its
+                    // own stand. Sending it used to be dropped on arrival, and the
+                    // flag the server destroyed was a flag nobody heard about.
                     _ => null
                 };
 
@@ -733,6 +822,13 @@ namespace OpenGS
                     break;
                 case RUDPMessageTypes.FlagPickup:
                     HandleFlagEvent(obj, EFlagEventType.Pickup);
+                    // The server holds where each flag is, so its ruling is what
+                    // the indicators show. The local flag state was a guess the
+                    // client made about its own copy of a flag the server owns.
+                    ApplyServerFlagState(obj, EFlagEventType.Pickup);
+                    break;
+                case RUDPMessageTypes.FlagCaptureRefused:
+                    HandleFlagCaptureRefused(obj);
                     break;
                 case RUDPMessageTypes.FlagScoreUpdate:
                     HandleFlagScoreUpdate(obj);
@@ -788,6 +884,72 @@ namespace OpenGS
         /// <summary>
         /// フラッグスコア更新を処理
         /// </summary>
+        /// <summary>
+        /// Applies what the server said a flag is doing, to the indicator that
+        /// shows it.
+        /// <para>
+        /// The server holds the flags, so a ruling is the only thing that can say
+        /// where one is. The client kept its own copy and the indicator showed
+        /// that, which meant the two sides could disagree about whether a flag
+        /// was safe with nothing to correct it.
+        /// </para>
+        /// </summary>
+        private void ApplyServerFlagState(JObject json, EFlagEventType eventType)
+        {
+            var team = ReadTeam(json);
+            if (team == ETeam.NoTeam)
+            {
+                return;
+            }
+
+            var state = eventType switch
+            {
+                EFlagEventType.Pickup => EFlagState.FlagCapturedPlayer,
+                EFlagEventType.Lost => EFlagState.FlagOnGround,
+                EFlagEventType.Returned => EFlagState.FlagOnStand,
+                EFlagEventType.Captured => EFlagState.FlagOnGround,
+                _ => EFlagState.FlagOnStand
+            };
+
+            CTFScoreUIManager.Instance?.UpdateFlagStateFromServer(team, state);
+        }
+
+        /// <summary>
+        /// The server ruled that a delivery did not score.
+        /// <para>
+        /// A refusal used to be logged and dropped. The player had walked the flag
+        /// to the enemy stand and got nothing back, which is indistinguishable
+        /// from the message being lost, and the flag stayed in their hands
+        /// looking like it had been delivered. The reason travels with the
+        /// refusal because the rule has more than one reason: a team whose own
+        /// flag is not home cannot score, and that is worth saying out loud
+        /// because it is the whole point of the mode.
+        /// </para>
+        /// </summary>
+        private void HandleFlagCaptureRefused(JObject json)
+        {
+            var team = ReadTeam(json);
+            var reason = json["Reason"]?.ToString() ?? string.Empty;
+
+            Debug.LogWarning($"[CTF] The {team} delivery did not score: {reason}");
+
+            if (CTFScoreUIManager.Instance != null &&
+                Enum.TryParse(reason, ignoreCase: true, out EFlagRefusal refusal))
+            {
+                CTFScoreUIManager.Instance.ShowCaptureRefused(team, refusal);
+            }
+        }
+
+        /// <summary>
+        /// Reads the team a flag message is about, accepting both spellings the
+        /// server and the older client used.
+        /// </summary>
+        private static ETeam ReadTeam(JObject json)
+        {
+            var named = json["FlagTeam"]?.ToString() ?? json["Team"]?.ToString() ?? string.Empty;
+            return Enum.TryParse(named, ignoreCase: true, out ETeam team) ? team : ETeam.NoTeam;
+        }
+
         private void HandleFlagScoreUpdate(JObject json)
         {
             var eventKey = json["EventKey"]?.ToString();
@@ -817,10 +979,21 @@ namespace OpenGS
                 CTFScoreUIManager.Instance.UpdateScore(redScore, blueScore);
             }
 
+            // Ending the match is the server's call in an online match: it owns the
+            // rule and the timer. A client that ended it from its own score would
+            // leave the match before the server did, and the two would disagree
+            // about whether the game was still running.
             if (!endFlag && room?.Rule is CTFMatchRule rule && room.MatchData != null && rule.D(room.MatchData))
             {
-                endFlag = true;
-                HandleMatchEndFromScores(redScore, blueScore);
+                if (IsOnlineMatch())
+                {
+                    Debug.Log("[CTF] Flag limit reached; waiting for the server to end the match.");
+                }
+                else
+                {
+                    endFlag = true;
+                    HandleMatchEndFromScores(redScore, blueScore);
+                }
             }
 
             Debug.Log($"[CTF] Score update: Red={redScore}, Blue={blueScore}");
@@ -854,10 +1027,35 @@ namespace OpenGS
         {
             Debug.Log("FlagCaptured: " + team);
             InvokeSafely(OnFlagCaptured, team, nameof(OnFlagCaptured));
-            if (!fromNetwork)
+
+            if (fromNetwork)
             {
-                RegisterFlagCapture(team);
+                // The server already ruled and already told the room through the
+                // score update that travels with it. Counting it again here is
+                // how a client ends up showing a score the server never gave.
+                return;
             }
+
+            if (IsOnlineMatch())
+            {
+                // An online capture is the server's to judge. The claim has
+                // already been sent by the flag reaching a stand, so the score
+                // arrives as a ruling rather than being made here.
+                RegisterFlagCapture(team);
+                return;
+            }
+
+            // Offline there is no server to ask, so the local match is the whole
+            // authority and has to keep its own score.
+            var room = ResolveCurrentMatchRoom();
+            if (room?.MatchData == null)
+            {
+                ShowScoreLocally(team == ETeam.Red ? 1 : 0, team == ETeam.Blue ? 1 : 0);
+                return;
+            }
+
+            var scores = room.AddFlagScore(team, 1);
+            ShowScoreLocally(scores.RedScore, scores.BlueScore);
         }
 
         [Button("フラッグロストテスト")]
@@ -929,40 +1127,24 @@ namespace OpenGS
 
         private void RegisterFlagCapture(ETeam scoringTeam)
         {
-            var room = ResolveCurrentMatchRoom();
-            if (room?.MatchData == null)
-            {
-                PushFlagScoreUpdate(scoringTeam == ETeam.Red ? 1 : 0, scoringTeam == ETeam.Blue ? 1 : 0);
-                return;
-            }
-
-            var scores = room.AddFlagScore(scoringTeam, 1);
-            PushFlagScoreUpdate(scores.RedScore, scores.BlueScore);
-
-            if (!endFlag && room.Rule is CTFMatchRule rule && rule.D(room.MatchData))
-            {
-                endFlag = true;
-                HandleMatchEndFromScores(scores.RedScore, scores.BlueScore);
-            }
+            // The server scores. The client used to count the capture itself and
+            // push the number, so the two sides each kept their own score: the
+            // server recomputed from state it had never been told about and told
+            // the room zero, while this client showed itself a point. Nothing is
+            // added here; the room applies the score the server sends.
+            Debug.Log($"[CTF] Waiting for the server to rule on a {scoringTeam} capture.");
         }
 
-        private void PushFlagScoreUpdate(int redScore, int blueScore)
+        /// <summary>
+        /// Shows a score on this client without telling the server about it.
+        /// <para>
+        /// A score is the server's to keep, so nothing here sends one. This only
+        /// exists for offline play, where there is no server to ask and the local
+        /// match is the whole authority.
+        /// </para>
+        /// </summary>
+        private void ShowScoreLocally(int redScore, int blueScore)
         {
-            var room = ResolveCurrentMatchRoom();
-            var scoreUpdate = RUDPMessageBuilder.CreateFlagScoreUpdate(redScore, blueScore, 0, 0, CreateFlagEventKey("score", string.Empty, string.Empty));
-            AttachRoomIdentifiers(scoreUpdate, room);
-
-            if (networkManager != null && networkManager.IsConnected())
-            {
-                if (CTFScoreUIManager.Instance != null)
-                {
-                    CTFScoreUIManager.Instance.UpdateScoreFromServer(redScore, blueScore);
-                }
-
-                networkManager.SendToServer(scoreUpdate);
-                return;
-            }
-
             if (CTFScoreUIManager.Instance != null)
             {
                 CTFScoreUIManager.Instance.UpdateScoreFromServer(redScore, blueScore);
@@ -1121,3 +1303,4 @@ namespace OpenGS
         }
     }
 }
+
