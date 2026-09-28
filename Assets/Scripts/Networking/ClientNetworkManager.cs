@@ -21,6 +21,24 @@ namespace OpenGS
         public event Action<JObject> UdpMessageReceived;
         /// <summary>Lobby TCP messages, including room and loading notifications not yet mapped to a dedicated event.</summary>
         public event Action<JObject> TcpMessageReceived;
+        /// <summary>
+        /// Rulings the server made about a match, whichever channel carried them.
+        /// <para>
+        /// These arrive on the lobby stream, because the authoritative broadcasts
+        /// go out through the lobby session rather than the realtime one. The
+        /// match scripts used to subscribe to the realtime event only, so a
+        /// ruling the server had already made was delivered to nobody.
+        /// </para>
+        /// </summary>
+        public event Action<JObject> ServerMatchRulingReceived;
+        /// <summary>The last answer to a match status question this client asked.</summary>
+        public JObject LastMatchStatusResponse { get; private set; }
+        /// <summary>
+        /// The room the server last said this client was admitted to, with the
+        /// state it stood at. Null until the admission is confirmed.
+        /// </summary>
+        public JObject LastMatchRoomInfo { get; private set; }
+        public event Action<JObject> MatchStatusResponseReceived;
         /// <summary>試合UDPの接続状態。切断中UIや入力停止処理から購読する。</summary>
         public event Action<bool, string> MatchUdpConnectionChanged;
 
@@ -497,6 +515,48 @@ namespace OpenGS
                 case MessageType.GuildChatNotification:
                     InvokeSafely(GuildChatNotificationReceived, message, nameof(GuildChatNotificationReceived));
                     break;
+                // The pickup ruling arrives on the lobby stream, not on the
+                // realtime channel, because the authoritative broadcasts all go
+                // out through the lobby session. It used to fall through to the
+                // branch below, which only knows how to turn a message into a
+                // game event, so a client that had applied a pickup
+                // optimistically was never told whether it had been granted and
+                // the local timeout took the buff back either way.
+                case MessageType.FieldItemPickup:
+                    HandleFieldItemPickupResponse(message);
+                    break;
+                // The server settles a player's health and death over the lobby
+                // stream, because the authoritative broadcasts go out through
+                // the lobby session. These were handled on the realtime path
+                // only, so the ruling never reached the client and the local
+                // prediction stood.
+                case MessageType.PlayerDamage:
+                case MessageType.PlayerDamaged:
+                case MessageType.PlayerDeath:
+                case MessageType.PlayerKilled:
+                    ApplyAuthoritativePlayerRuling(messageType, message);
+                    break;
+                // A claim about a weapon on the ground is answered with a ruling
+                // under a different name, and the ruling is the only thing that
+                // makes the other clients honour a claim the server accepted.
+                case MessageType.WeaponReserved:
+                case MessageType.WeaponReleased:
+                case MessageType.WeaponDropped:
+                case MessageType.ItemUsed:
+                case MessageType.ItemUseRefused:
+                case MessageType.FieldItemSpawn:
+                case MessageType.FieldItemDespawn:
+                case MessageType.FieldItemStateSync:
+                    DispatchServerMatchRuling(message);
+                    break;
+                // The answer to a question this client asked. The server used to
+                // send it under a name no client dispatched on, and to everybody
+                // in the room rather than to the one that asked, so a client that
+                // asked was told nothing.
+                case MessageType.MatchStatus:
+                    LastMatchStatusResponse = message;
+                    InvokeSafely(MatchStatusResponseReceived, message, nameof(MatchStatusResponseReceived));
+                    break;
                 // 他のTCPメッセージタイプをここで処理
                 default:
                     var gameEvent = NetworkEventDeserializer.Deserialize(message);
@@ -548,6 +608,24 @@ namespace OpenGS
         public void SendTcpMessage(JObject message)
         {
             _ = TrySendTcpMessage(message);
+        }
+
+        /// <summary>
+        /// Asks the server what it thinks the state of the match is.
+        /// <para>
+        /// The answer is now sent to the player that asked and under a name this
+        /// client reads. Before, the question had no way to be asked from here and
+        /// the answer was sent to the whole room under a label nothing dispatched
+        /// on, so a client could neither ask nor be told.
+        /// </para>
+        /// </summary>
+        public void RequestMatchStatus()
+        {
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.MatchStatusRequest,
+                ["PlayerID"] = ClientPlayerId
+            });
         }
 
         public void RequestDailyList()
@@ -1129,8 +1207,16 @@ namespace OpenGS
                     }
                     break;
                 case RUDPMessageTypes.MatchJoined:
-                    CurrentMatchRoomId = message.GetStringOrNull("RoomID");
-                    Debug.Log($"[ClientNetwork] Joined Match Room [{FormatRoomTag(CurrentMatchRoomId)}]");
+                    // The server confirms the admission here, on the channel the
+                    // match is played on, and says which room and whether it is
+                    // running. It used to be confirmed on the lobby stream only,
+                    // so a client that had just connected did not know which room
+                    // it was in until something else happened to say.
+                    CurrentMatchRoomId = message.GetStringOrNull("RoomID") ?? CurrentMatchRoomId;
+                    LastMatchRoomInfo = message;
+                    Debug.Log(
+                        $"[ClientNetwork] Joined Match Room [{FormatRoomTag(CurrentMatchRoomId)}] " +
+                        $"playing={message["IsPlaying"]}, players={message["PlayerCount"]}");
                     break;
                 case RUDPMessageTypes.PlayerShot:
                     LogUdpEvent("PlayerShot", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("ObjectId"));
@@ -1148,9 +1234,6 @@ namespace OpenGS
                     LogUdpEvent("ObjectDestroyed", message.GetStringOrNull("RoomID"), message.GetStringOrNull("ObjectType"), message.GetStringOrNull("ObjectId"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
-                // The server sends FieldItemPickup, which is the same label as
-                // RUDPMessageTypes.ItemPickup, so the case above covers both.
-                    break;
                 case RUDPMessageTypes.PlayerPose:
                     LogUdpEvent("PlayerPose", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("PoseState"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
@@ -1163,13 +1246,9 @@ namespace OpenGS
                     break;
                 case RUDPMessageTypes.PlayerDeath:
                 case RUDPMessageTypes.PlayerKilled:
-                    HandleAuthoritativeDeath(message);
-                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
-                    break;
                 case RUDPMessageTypes.PlayerDamage:
                 case RUDPMessageTypes.PlayerDamaged:
-                    ApplyAuthoritativeHealth(message);
-                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    ApplyAuthoritativePlayerRuling(messageType, message);
                     break;
                 case RUDPMessageTypes.PlayerKill:
                 case RUDPMessageTypes.PlayerAssist:
@@ -1211,18 +1290,29 @@ namespace OpenGS
                     HandleFieldItemPickupResponse(message);
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
-                // The server sends FieldItemPickup, which is the same label as
-                // RUDPMessageTypes.ItemPickup, so the case above covers both.
                 // これらは AbstractMatchMainScript が生JSON経路で処理する。
                 // ゲームイベントデシリアライズを通すと未対応イベント警告になるため、ここでは二重配信しない。
                 case RUDPMessageTypes.ItemUse:
-                case RUDPMessageTypes.ItemSpawn:
                 case RUDPMessageTypes.GameStateSync:
+                    break;
+                // The server's answer to a claim, a drop, a spend, or an item
+                // appearing or going. The server sends these over the lobby session
+                // rather than the realtime one, so the match scripts were never
+                // told about them.
+                case RUDPMessageTypes.WeaponReserved:
+                case RUDPMessageTypes.WeaponReleased:
+                case RUDPMessageTypes.WeaponDropped:
+                case RUDPMessageTypes.ItemUsed:
+                case RUDPMessageTypes.ItemUseRefused:
+                case RUDPMessageTypes.ItemSpawn:
+                case RUDPMessageTypes.ItemDespawn:
+                case RUDPMessageTypes.ItemStateSync:
+                    DispatchServerMatchRuling(message);
                     break;
                 case RUDPMessageTypes.PingRequest:
                 {
                     var pong = new JObject();
-                    pong["MessageType"] = "PingResponse";
+                    pong["MessageType"] = MessageType.PingResponse;
                     pong["ClientTimestamp"] = message["ClientTimestamp"];
                     SendUdpInput(pong);
                     break;
@@ -1289,6 +1379,64 @@ namespace OpenGS
         /// already ruled on it and reporting again would be a claim.
         /// </para>
         /// </summary>
+        /// <summary>
+        /// Applies a ruling the server made about a player's health or death.
+        /// <para>
+        /// The ruling reaches the client on the lobby stream, because the
+        /// authoritative broadcasts all go out through the lobby session rather
+        /// than the realtime one. It used to be handled only on the realtime
+        /// path, so the handler was written and then never ran: health stayed
+        /// whatever the client predicted and a death was settled by the client's
+        /// own claim. Both channels now come through here so there is one place
+        /// that decides what the server said, whichever path it arrived on.
+        /// </para>
+        /// </summary>
+        /// <summary>
+        /// Hands a ruling about a match to whoever is listening for one.
+        /// <para>
+        /// The realtime path raises the realtime event and the lobby path raises
+        /// the lobby one, so a subscriber to either saw a ruling only when it
+        /// happened to arrive on the channel it was watching. The server sends
+        /// all of these over the lobby session, so the realtime subscribers saw
+        /// none of them. Both paths come through here so the ruling reaches the
+        /// match scripts whichever way it was delivered.
+        /// </para>
+        /// </summary>
+        private void DispatchServerMatchRuling(JObject message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+
+            InvokeSafely(ServerMatchRulingReceived, message, nameof(ServerMatchRulingReceived));
+        }
+
+        private void ApplyAuthoritativePlayerRuling(string messageType, JObject message)
+        {
+            if (message == null)
+            {
+                return;
+            }
+
+            switch (messageType)
+            {
+                case RUDPMessageTypes.PlayerDeath:
+                case RUDPMessageTypes.PlayerKilled:
+                    HandleAuthoritativeDeath(message);
+                    break;
+                case RUDPMessageTypes.PlayerDamage:
+                case RUDPMessageTypes.PlayerDamaged:
+                    ApplyAuthoritativeHealth(message);
+                    break;
+                default:
+                    Debug.LogWarning($"[ClientNetwork] '{messageType}' is not a player health or death ruling.");
+                    return;
+            }
+
+            PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+        }
+
         private void HandleAuthoritativeDeath(JObject message)
         {
             if (message == null)
