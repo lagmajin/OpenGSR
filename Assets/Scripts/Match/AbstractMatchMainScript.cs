@@ -990,14 +990,26 @@ namespace OpenGS
             {
                 serverMatchSeconds = seconds.Value;
 
-                // The timer drives when this client stops playing, so a client
-                // counting down a different length of match than the server is
-                // playing shows a clock that lies and ends a match that is still
-                // running.
+                // The room's clock is how long is left, not how long the match is,
+                // and it moves every second. It goes to the timer as the time left
+                // rather than as the match length: the length is set once, and the
+                // time left is synced. Setting the length on every message put the
+                // countdown back to the start about once a second, so the clock
+                // never moved and the match never ended on the client at all.
                 if (timer != null)
                 {
-                    timer.SetTime(serverMatchSeconds.Value);
+                    timer.SyncServerTime(Mathf.CeilToInt(seconds.Value), 0L);
                 }
+            }
+
+            // The length is a different number and it does not move, so it is set
+            // when it differs rather than on every message. A client that joined
+            // late was otherwise shown the time remaining as the whole match.
+            var length = json["MatchLengthSeconds"]?.ToObject<float>();
+            if (timer != null && length.HasValue && length.Value > 0f && float.IsFinite(length.Value) &&
+                !Mathf.Approximately(timer.matchDurationSeconds, length.Value))
+            {
+                timer.SetMatchDuration(length.Value);
             }
         }
 

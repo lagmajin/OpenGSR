@@ -14,6 +14,19 @@ namespace OpenGS
         [Header("Timer Settings")]
         [SerializeField] private float matchDuration = 600f; // デフォルト10分
 
+        /// <summary>
+        /// The length the server says this match is, for a caller deciding
+        /// whether the value it holds needs replacing.
+        /// <para>
+        /// The length and the time left are different numbers. The time left moves
+        /// every second and is synced, while the length is whatever the room was
+        /// configured to and only changes when the room says so, which is rarely.
+        /// Reading it is how a caller tells one from the other without guessing
+        /// from a rounded comparison.
+        /// </para>
+        /// </summary>
+        public float matchDurationSeconds => matchDuration;
+
         [Header("Sync Settings")]
         [SerializeField] private bool useServerTime = true; // サーバー時間を使用するか
         [SerializeField] private float syncInterval = 1f; // サーバーと同期する間隔（秒）

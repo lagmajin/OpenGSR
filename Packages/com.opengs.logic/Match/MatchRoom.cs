@@ -685,6 +685,12 @@ namespace OpenGSCore
             json["IsPlaying"] = Playing;
             json["IsFinished"] = Finished;
             json["MatchTimeSeconds"] = situation.RemainingTimeSec;
+
+            // The time left and the length of the match are different numbers and
+            // a client needs both: it counts down the first and shows the second.
+            // Only the first was published, so a client that joined late was told
+            // three minutes and read that as the whole match.
+            json["MatchLengthSeconds"] = rule?.MatchTimeMSec() / 1000f;
             AddRuleSettings(json);
 
             // GameSceneのスナップショットを追加
