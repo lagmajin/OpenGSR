@@ -487,7 +487,36 @@ namespace OpenGS
                 AttachPlayerLink(player, ResolveLocalPlayerId());
             }
 
+            ReportRespawnToServer();
+
             Debug.Log($"[CTF] My player respawned for {team} at {spawnPos}.");
+        }
+
+        /// <summary>
+        /// Tells the server this player is back.
+        /// <para>
+        /// A respawn used to be entirely local: the client rebuilt its player and
+        /// the server kept the health it had already been reduced to, which is
+        /// zero. The hit path refuses a target whose health is not above zero, so
+        /// from then on nobody could shoot this player at all and they were
+        /// untouchable for the rest of the match while walking around the map.
+        /// </para>
+        /// <para>
+        /// The position is not sent. A respawn position is the server's to decide,
+        /// and it is the one thing about a respawn the client must not be believed
+        /// on: a client that chose where it comes back could come back anywhere.
+        /// </para>
+        /// </summary>
+        private void ReportRespawnToServer()
+        {
+            if (!IsOnlineMatch() || networkManager == null || !networkManager.IsConnected())
+            {
+                return;
+            }
+
+            var message = RUDPMessageBuilder.CreatePlayerRespawn(ResolveLocalPlayerId(), Vector2.zero);
+            AttachRoomIdentifiers(message, ResolveCurrentMatchRoom());
+            networkManager.SendToServer(message);
         }
 
         private void CreateOtherPlayers()
