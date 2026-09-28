@@ -570,6 +570,19 @@ namespace OpenGS
 
             EnsureConnectionStatusOverlay();
 
+            // The realtime manager carries the UDP stream, and the lobby session
+            // carries the rulings the server settles there, so both are needed.
+            // The realtime manager was the branch that returned early, which
+            // left the ruling subscription below it unreachable: a match script
+            // then heard about nothing the server decided, because the server
+            // sends its rulings over the lobby stream and not the realtime one.
+            var lobby = FindFirstObjectByType<ClientNetworkManager>();
+            if (lobby != null)
+            {
+                clientNetworkManager = lobby;
+                clientNetworkManager.ServerMatchRulingReceived += OnNetworkDataRecved;
+            }
+
             if (matchNetworkManager != null)
             {
                 matchNetworkManager.DataReceivedStream
@@ -596,20 +609,12 @@ namespace OpenGS
                 return;
             }
 
-            clientNetworkManager = FindFirstObjectByType<ClientNetworkManager>();
             if (clientNetworkManager == null)
             {
                 return;
             }
 
             clientNetworkManager.UdpMessageReceived += OnNetworkDataRecved;
-
-            // The server settles claims, drops and spends over the lobby stream,
-            // so subscribing to the realtime event alone meant these rulings were
-            // delivered to nobody. Both events run the same handler, which
-            // dispatches on the message type, so a ruling is acted on whichever
-            // channel carried it.
-            clientNetworkManager.ServerMatchRulingReceived += OnNetworkDataRecved;
             clientNetworkManager.MatchUdpConnectionChanged += OnClientMatchUdpConnectionChanged;
             matchNetworkSubscribed = true;
         }

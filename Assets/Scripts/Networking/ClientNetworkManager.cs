@@ -538,7 +538,10 @@ namespace OpenGS
                     break;
                 // A claim about a weapon on the ground is answered with a ruling
                 // under a different name, and the ruling is the only thing that
-                // makes the other clients honour a claim the server accepted.
+                // makes the other clients honour a claim the server accepted. The
+                // flag rulings are here for the same reason: the server owns where
+                // every flag is, and a ruling about one is the only thing that can
+                // say so.
                 case MessageType.WeaponReserved:
                 case MessageType.WeaponReleased:
                 case MessageType.WeaponDropped:
@@ -547,6 +550,13 @@ namespace OpenGS
                 case MessageType.FieldItemSpawn:
                 case MessageType.FieldItemDespawn:
                 case MessageType.FieldItemStateSync:
+                case MessageType.FlagCaptured:
+                case MessageType.FlagLost:
+                case MessageType.FlagPickup:
+                case MessageType.FlagReturn:
+                case MessageType.FlagScoreUpdate:
+                case MessageType.FlagBurst:
+                case MessageType.FlagCaptureRefused:
                     DispatchServerMatchRuling(message);
                     break;
                 // The answer to a question this client asked. The server used to
@@ -1254,12 +1264,6 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerAssist:
                 case RUDPMessageTypes.KillScoreUpdate:
                 case RUDPMessageTypes.StreakUpdate:
-                case RUDPMessageTypes.FlagCaptured:
-                case RUDPMessageTypes.FlagLost:
-                case RUDPMessageTypes.FlagReturn:
-                case RUDPMessageTypes.FlagBurst:
-                case RUDPMessageTypes.FlagPickup:
-                case RUDPMessageTypes.FlagScoreUpdate:
                 case RUDPMessageTypes.MatchStart:
                 case RUDPMessageTypes.MatchEnd:
                 case RUDPMessageTypes.MatchPause:
@@ -1295,10 +1299,10 @@ namespace OpenGS
                 case RUDPMessageTypes.ItemUse:
                 case RUDPMessageTypes.GameStateSync:
                     break;
-                // The server's answer to a claim, a drop, a spend, or an item
-                // appearing or going. The server sends these over the lobby session
-                // rather than the realtime one, so the match scripts were never
-                // told about them.
+                // The server's answer to a claim, a drop, a spend, an item
+                // appearing or going, or anything it says about a flag. The
+                // server sends these over the lobby session rather than the
+                // realtime one, so the match scripts were never told about them.
                 case RUDPMessageTypes.WeaponReserved:
                 case RUDPMessageTypes.WeaponReleased:
                 case RUDPMessageTypes.WeaponDropped:
@@ -1307,6 +1311,13 @@ namespace OpenGS
                 case RUDPMessageTypes.ItemSpawn:
                 case RUDPMessageTypes.ItemDespawn:
                 case RUDPMessageTypes.ItemStateSync:
+                case RUDPMessageTypes.FlagCaptured:
+                case RUDPMessageTypes.FlagLost:
+                case RUDPMessageTypes.FlagPickup:
+                case RUDPMessageTypes.FlagReturn:
+                case RUDPMessageTypes.FlagScoreUpdate:
+                case RUDPMessageTypes.FlagBurst:
+                case RUDPMessageTypes.FlagCaptureRefused:
                     DispatchServerMatchRuling(message);
                     break;
                 case RUDPMessageTypes.PingRequest:
