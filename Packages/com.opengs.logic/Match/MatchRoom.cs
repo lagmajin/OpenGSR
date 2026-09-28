@@ -392,20 +392,20 @@ namespace OpenGSCore
             }
         }
 
+        /// <summary>
+        /// Clears the capture the flag state of a room that is playing that mode.
+        /// <para>
+        /// This used to reach for the team scores of any team mode, which meant a
+        /// method named for one mode could clear the kill totals a team death
+        /// match is won and ended on. A room is only reset for the mode it is
+        /// playing, so the other modes' numbers are left alone.
+        /// </para>
+        /// </summary>
         public void ResetCaptureTheFlagState()
         {
             if (situation is CaptureTheFlagMatchSituation ctfSituation)
             {
                 ctfSituation.Reset();
-                return;
-            }
-
-            if (situation is AbstractTeamMatchSituation teamSituation)
-            {
-                teamSituation.RedTeamFlagCaptures = 0;
-                teamSituation.BlueTeamFlagCaptures = 0;
-                teamSituation.RedTeamKill = 0;
-                teamSituation.BlueTeamKill = 0;
             }
         }
 
