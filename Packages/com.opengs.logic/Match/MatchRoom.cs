@@ -431,6 +431,12 @@ namespace OpenGSCore
 
             killer.Kills++;
             situation?.RecordKill(killer.Kills);
+
+            // A kill belongs to the team that scored it, and a team death match
+            // is won and ended on the team totals. Nobody was writing them, so
+            // that mode compared two zeroes and reported a draw whatever had
+            // happened in it.
+            (situation as AbstractTeamMatchSituation)?.AddKill(killer.Team);
         }
 
         /// <summary>
@@ -486,6 +492,20 @@ namespace OpenGSCore
         public int AliveCount()
         {
             return Players.Count(p => p.Health > 0);
+        }
+
+        /// <summary>
+        /// How many kills a team has scored, which is how a team death match is
+        /// won and how its kill limit is reached.
+        /// </summary>
+        public int TeamKillCount(ETeam team)
+        {
+            if (situation is not AbstractTeamMatchSituation teamSituation)
+            {
+                return 0;
+            }
+
+            return team == ETeam.Red ? teamSituation.RedTeamKill : teamSituation.BlueTeamKill;
         }
 
         /// <summary>
@@ -635,6 +655,9 @@ namespace OpenGSCore
                     break;
                 case SuvMatchRule suvRule:
                     json["WinConditionKill"] = suvRule.WinConditionKill;
+                    break;
+                case TDMMatchRule tdm:
+                    json["TeamKillLimit"] = tdm.TeamKillLimit;
                     break;
             }
         }

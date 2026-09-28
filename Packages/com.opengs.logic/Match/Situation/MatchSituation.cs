@@ -60,6 +60,30 @@ namespace OpenGSCore
         public int BlueTeamKill { get; set; } = 0;
         public int RedTeamFlagCaptures { get; set; } = 0;
         public int BlueTeamFlagCaptures { get; set; } = 0;
+
+        /// <summary>
+        /// Records a kill for the team it was scored on.
+        /// <para>
+        /// A team's kill count is how a team death match is won and how its
+        /// kill limit is reached, and the rule and the result both read it from
+        /// here. Nothing incremented it, so a team death match compared two
+        /// zeroes, found neither side ahead, and reported a draw whatever had
+        /// happened in it. It belongs on the base because a kill belongs to the
+        /// team that scored it in any team mode.
+        /// </para>
+        /// </summary>
+        public void AddKill(ETeam team)
+        {
+            switch (team)
+            {
+                case ETeam.Red:
+                    RedTeamKill++;
+                    break;
+                case ETeam.Blue:
+                    BlueTeamKill++;
+                    break;
+            }
+        }
     }
 
 }

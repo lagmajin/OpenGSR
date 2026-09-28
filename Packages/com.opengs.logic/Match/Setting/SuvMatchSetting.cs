@@ -26,7 +26,13 @@ namespace OpenGSCore
         {
             TimeLimit = false;
             AllowOvertime = false;
-            MatchTimeMSec = SurvivalTimeMinutes * 60 * 1000;
+
+            // Deliberately not setting MatchTimeMSec here. It is a snapshot, so
+            // writing the minutes after the constructor ran would leave the
+            // snapshot saying something else and the change would be silently
+            // ignored. The rule reads the minutes instead, so there is one number
+            // and it is the one that is written.
+            MatchTimeMSec = DefaultSurvivalTimeMinutes * 60 * 1000;
         }
 
         public override JObject ToJson()

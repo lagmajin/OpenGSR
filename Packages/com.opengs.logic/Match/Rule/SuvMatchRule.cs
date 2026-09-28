@@ -14,13 +14,12 @@ namespace OpenGSCore
         public SuvMatchRule(in SuvMatchSetting setting)
             : base(
                 EGameMode.Survival,
-                // A setting with no time on it is a match that has already ended,
-                // so the room is given the default rather than the zero it was
-                // handed. The clock is what ends a survival match when nobody
-                // reaches the kill condition, so it cannot be allowed to arrive
-                // as nothing.
-                setting?.MatchTimeMSec > 0
-                    ? setting.MatchTimeMSec
+                // The minutes are read rather than a snapshot of them. A setting
+                // wrote MatchTimeMSec once in its constructor, so a room
+                // configured for a different length kept the default and the
+                // change was silently ignored.
+                setting?.SurvivalTimeMinutes > 0
+                    ? setting.SurvivalTimeMinutes * 60 * 1000
                     : SuvMatchSetting.DefaultSurvivalTimeMinutes * 60 * 1000)
         {
             winConditionKill = setting?.WinConditionKill ?? 1;
