@@ -98,6 +98,17 @@ namespace OpenGSCore
                 }
 
                 GameMode = setting != null ? setting.Mode : mode;
+
+                // A room that is changing mode cannot keep the map it had: the
+                // old mode's map has whatever the old mode needs in it, and a
+                // capture the flag room pointed at a death match stage has no flag
+                // stands on it. The map is a property of the mode, so it is
+                // chosen from the mode here rather than left to whoever asks.
+                var playable = OpenGSCore.GameMode.DefaultMapFor(GameMode);
+                if (playable.HasValue)
+                {
+                    Map = playable.Value;
+                }
             }
         }
 

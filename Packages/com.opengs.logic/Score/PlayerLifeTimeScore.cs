@@ -16,6 +16,8 @@ namespace OpenGSCore
         public int TeamSurvivalLoseCount { get; set; } = 0;
         public int CtfFlagReturn { get; set; } = 0;
         public int CtfFlagInterrupt { get; set; } = 0;
+        public int CtfWinCount { get; set; } = 0;
+        public int CtfLoseCount { get; set; } = 0;
 
 
         public PlayerLifeTimeScore()
@@ -106,6 +108,30 @@ namespace OpenGSCore
         public void RecordCtfFlagInterrupt()
         {
             CtfFlagInterrupt++;
+        }
+
+        /// <summary>
+        /// Records a win or a loss in a capture the flag match.
+        /// <para>
+        /// A capture the flag result used to fall into the death match branch,
+        /// because there was no case for it. A player's lifetime record then
+        /// counted their capture the flag wins as death match wins, which is a
+        /// number they can see and a number that is simply wrong. The mode is
+        /// counted the same way the others are: the match happened, and they won
+        /// it or they did not.
+        /// </para>
+        /// </summary>
+        public void RecordCaptureTheFlagResult(bool won)
+        {
+            IncrementTotalMatchCount();
+            if (won)
+            {
+                CtfWinCount++;
+            }
+            else
+            {
+                CtfLoseCount++;
+            }
         }
 
 

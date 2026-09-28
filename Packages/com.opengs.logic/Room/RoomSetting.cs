@@ -78,6 +78,20 @@ namespace OpenGSCore
             {
                 room.Map = parsedMap;
             }
+            else if (HasGameMode && GameMode != EGameMode.Unknown)
+            {
+                // The request named no map, or named one that does not exist. The
+                // room has to be given a map it can be played on, and which maps
+                // those are is a question about the mode. Without this a room kept
+                // an unknown map and the client fell back to one of its own
+                // choosing, which for capture the flag meant a stage with no flag
+                // stands: a match that could not be won by anybody.
+                var playable = OpenGSCore.GameMode.DefaultMapFor(GameMode);
+                if (playable.HasValue)
+                {
+                    room.Map = playable.Value;
+                }
+            }
 
             if (HasPasswordValue)
             {
