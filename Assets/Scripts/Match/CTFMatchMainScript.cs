@@ -829,56 +829,30 @@ namespace OpenGS
             }
         }
 
+        /// <summary>
+        /// An event arriving from the game, to be applied locally and told to the
+        /// server.
+        /// <para>
+        /// The sending half of this used to build its own message from a flag
+        /// event, in parallel with the one the flag controller's own handlers use.
+        /// A flag event reaching here is one the client built from a ruling it
+        /// received, so sending it back would be a client asserting the server's
+        /// own answer as a claim, and the claim would name the team the ruling
+        /// was about rather than the team the player is on. It also dropped the
+        /// return reason, which is what tells a flag that came home by itself from
+        /// one a player carried back.
+        /// </para>
+        /// <para>
+        /// It is left applying the event locally and saying nothing, which is what
+        /// it did in practice, and the flag transitions are reported from the
+        /// flag controller's handlers where the fact actually is. Someone wiring
+        /// this to send would otherwise be wiring the echo.
+        /// </para>
+        /// </summary>
         public override void PostEvent(AbstractGameEvent e)
         {
-            // オフライン/オンライン両方のイベントを処理
             OfflineEventParser(e);
             OnlineEventParser(e as AbstractMatchEvent);
-
-            // オンラインの場合、サーバーに送信
-            if (GameManager != null && GameManager.IsOnlineGameMode)
-            {
-                SendFlagEventToServer(e);
-            }
-        }
-
-        /// <summary>
-        /// フラッグイベントをサーバーに送信
-        /// </summary>
-        private void SendFlagEventToServer(AbstractGameEvent e)
-        {
-            if (networkManager == null || !networkManager.IsConnected()) return;
-
-            if (e is FlagEvent flagEvent)
-            {
-                var room = ResolveCurrentMatchRoom();
-                var teamStr = flagEvent.Team().ToString();
-                var playerId = flagEvent.PlayerID();
-                var pos = flagEvent.Position();
-                var eventKey = CreateFlagEventKey(flagEvent.FlagEventType().ToString(), teamStr, playerId, pos.x, pos.y);
-
-                JObject json = flagEvent.FlagEventType() switch
-                {
-                    EFlagEventType.Captured => RUDPMessageBuilder.CreateFlagCaptured(playerId, teamStr, pos, eventKey),
-                    EFlagEventType.Lost => RUDPMessageBuilder.CreateFlagLost(playerId, teamStr, pos, eventKey),
-                    EFlagEventType.Returned => RUDPMessageBuilder.CreateFlagReturn(teamStr, playerId, eventKey),
-                    EFlagEventType.Pickup => RUDPMessageBuilder.CreateFlagPickup(playerId, teamStr, pos, eventKey),
-
-                    // A burst is not claimed. A flag going is the rule's outcome
-                    // and the server says whose flag it was, so a client that
-                    // could assert it could destroy a flag sitting safely on its
-                    // own stand. Sending it used to be dropped on arrival, and the
-                    // flag the server destroyed was a flag nobody heard about.
-                    _ => null
-                };
-
-                if (json != null)
-                {
-                    AttachRoomIdentifiers(json, room);
-                    networkManager.SendToServer(json);
-                    Debug.Log($"[CTF] Sent flag event to server: {flagEvent.FlagEventType()}");
-                }
-            }
         }
 
         /// <summary>
