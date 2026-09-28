@@ -409,6 +409,75 @@ namespace OpenGSCore
             }
         }
 
+        /// <summary>
+        /// Records a kill on both the player and the match.
+        /// <para>
+        /// The rules end a match on the best kill count, and the best kill count
+        /// is state on the match rather than a thing to be recomputed from a
+        /// player list at the moment somebody asks. Nothing used to write it, so
+        /// the kill condition in the death match and survival rules could not
+        /// fire and those matches could only ever end on the clock.
+        /// </para>
+        /// </summary>
+        public void RecordKill(string killerId)
+        {
+            var killer = Players.FirstOrDefault(player =>
+                string.Equals(player.Id, killerId, StringComparison.OrdinalIgnoreCase));
+
+            if (killer == null)
+            {
+                return;
+            }
+
+            killer.Kills++;
+            situation?.RecordKill(killer.Kills);
+        }
+
+        /// <summary>
+        /// Records a death on both the player and the match.
+        /// </summary>
+        public void RecordDeath(string playerId)
+        {
+            var player = Players.FirstOrDefault(candidate =>
+                string.Equals(candidate.Id, playerId, StringComparison.OrdinalIgnoreCase));
+
+            if (player == null)
+            {
+                return;
+            }
+
+            player.Deaths++;
+            situation?.RecordDeath();
+        }
+
+        /// <summary>
+        /// The best single kill count in the match, which is what a kill
+        /// condition is judged against.
+        /// </summary>
+        public int BestKillCount => situation?.MaxPlayerKillCount ?? 0;
+
+        /// <summary>
+        /// How long the match has left, which is what a client showing a clock
+        /// reads.
+        /// </summary>
+        public float RemainingTimeSeconds => situation?.RemainingTimeSec ?? 0f;
+
+        /// <summary>
+        /// How many players have died in the match.
+        /// </summary>
+        public int TotalDeathCount => situation?.TotalDeath ?? 0;
+
+        /// <summary>
+        /// Whether the rule considers the match over.
+        /// <para>
+        /// The room owns the rule and the situation it is playing, and the two
+        /// together are the only thing that can answer this. A caller that
+        /// wanted to know used to have to take the rule and a situation of its
+        /// own, which is a different situation from the one the room is playing.
+        /// </para>
+        /// </summary>
+        public bool IsMatchFinished() => rule?.IsMatchFinished(situation) ?? true;
+
         public int GetFlagScore(ETeam team)
         {
             if (situation is CaptureTheFlagMatchSituation ctfSituation)
@@ -506,6 +575,9 @@ namespace OpenGSCore
                     break;
                 case DeathMatchRule death:
                     json["KillLimit"] = death.KillLimit;
+                    break;
+                case SuvMatchRule suv:
+                    json["WinConditionKill"] = suv.WinConditionKill;
                     break;
             }
         }
