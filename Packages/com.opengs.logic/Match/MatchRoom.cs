@@ -24,6 +24,17 @@ namespace OpenGSCore
 
         AbstractMatchRule? rule;
 
+        /// <summary>
+        /// The rule this room is playing to, or null before one exists.
+        /// <para>
+        /// Read by anything that has to describe the match: the room state
+        /// publishes the rule's own limits, and a caller asking what the room is
+        /// actually playing is asking this rather than the setting the rule was
+        /// built from, because the two can disagree.
+        /// </para>
+        /// </summary>
+        public AbstractMatchRule? Rule => rule;
+
         public AbstractMatchSetting Setting { get; set; } = null!;
 
         private AbstractMatchSituation? Situation { get; set; } = null;
@@ -312,15 +323,28 @@ namespace OpenGSCore
             statusUpdateTimer?.Dispose();
         }
 
-        public void AddFlagCapture(ETeam team)
+        /// <summary>
+        /// Records a capture and gives the player who made it something for it.
+        /// <para>
+        /// The score is what a player earns, so a capture that only moved a team's
+        /// tally earned nothing: a match won entirely on captures persisted a score
+        /// of zero, and the experience that comes with it. The score is a room
+        /// state and the tally is the same event seen from the other side, so one
+        /// call now does both and a caller cannot do one without the other.
+        /// </para>
+        /// </summary>
+        /// <param name="team">The team that scored.</param>
+        /// <param name="capturingPlayerId">
+        /// Who carried the flag in, or null when it is not known. A team score is
+        /// not a player's score, so without this nothing is credited to anybody.
+        /// </param>
+        public void AddFlagCapture(ETeam team, string? capturingPlayerId = null)
         {
             if (situation is CaptureTheFlagMatchSituation ctfSituation)
             {
                 ctfSituation.AddFlagCapture(team);
-                return;
             }
-
-            if (situation is AbstractTeamMatchSituation teamSituation)
+            else if (situation is AbstractTeamMatchSituation teamSituation)
             {
                 switch (team)
                 {
@@ -332,7 +356,33 @@ namespace OpenGSCore
                         break;
                 }
             }
+            else
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(capturingPlayerId))
+            {
+                return;
+            }
+
+            var scorer = Players.FirstOrDefault(player =>
+                string.Equals(player.Id, capturingPlayerId, StringComparison.OrdinalIgnoreCase));
+
+            if (scorer == null)
+            {
+                return;
+            }
+
+            // A kill is worth a hundred, so a capture is worth the same: it is the
+            // same kind of thing, done for a different reason.
+            scorer.Score += CaptureScore;
         }
+
+        /// <summary>
+        /// What one capture is worth to the player who made it.
+        /// </summary>
+        public const int CaptureScore = 100;
 
         public void AddFlagReturn(ETeam team)
         {
@@ -436,6 +486,30 @@ namespace OpenGSCore
 
         #region ISyncable Implementation
 
+        /// <summary>
+        /// Puts the settings this room's rule is actually running from into the
+        /// room state.
+        /// <para>
+        /// A client used to carry its own idea of these, so a scoreboard could
+        /// say the match is first to five while the server ends it at three. The
+        /// rule ends the match, so the rule's numbers are the ones worth sending,
+        /// and a client showing a rule the server is not running is showing
+        /// something that is not the match it is in.
+        /// </para>
+        /// </summary>
+        private void AddRuleSettings(JObject json)
+        {
+            switch (rule)
+            {
+                case CaptureTheFlagMatchRule ctf:
+                    json["WinConditionPoint"] = ctf.FlagLimit;
+                    break;
+                case DeathMatchRule death:
+                    json["KillLimit"] = death.KillLimit;
+                    break;
+            }
+        }
+
         private JObject _lastSyncState = new();
 
         public JObject ToJSon()
@@ -446,7 +520,9 @@ namespace OpenGSCore
             json["PlayerCount"] = PlayerCount;
             json["IsPlaying"] = Playing;
             json["IsFinished"] = Finished;
-            
+            json["MatchTimeSeconds"] = situation.RemainingTimeSec;
+            AddRuleSettings(json);
+
             // GameSceneのスナップショットを追加
             json["Snapshot"] = GameScene.GetSnapshot();
             

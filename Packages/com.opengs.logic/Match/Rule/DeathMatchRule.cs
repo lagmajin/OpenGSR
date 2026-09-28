@@ -21,6 +21,12 @@ namespace OpenGSCore
             killLimit = setting?.WinConditionKill ?? 20;
         }
 
+        /// <summary>
+        /// The number of kills that ends the match, for a client showing the
+        /// scoreboard the server is playing to.
+        /// </summary>
+        public int KillLimit => killLimit;
+
         public override bool IsMatchFinished(AbstractMatchSituation situation)
         {
             // 時間切れ判定
