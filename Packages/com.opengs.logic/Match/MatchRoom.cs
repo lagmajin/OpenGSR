@@ -448,6 +448,44 @@ namespace OpenGSCore
 
             player.Deaths++;
             situation?.RecordDeath();
+            RefreshAliveCounts();
+        }
+
+        /// <summary>
+        /// Brings the per team alive counts up to date with who is in the room.
+        /// <para>
+        /// The team survival rule ends a match when one side is wiped, and it read
+        /// these counts from a situation that nothing ever wrote, so the wipe could
+        /// never happen and that mode could only ever end on the clock. The counts
+        /// are derived from the players rather than kept beside them, because a
+        /// second copy of who is alive is a thing that can disagree with who is.
+        /// </para>
+        /// </summary>
+        private void RefreshAliveCounts()
+        {
+            if (situation is not TeamSurvivalMatchSituation teamSuv)
+            {
+                return;
+            }
+
+            teamSuv.SetAliveCount(ETeam.Red, Players.Count(p => p.Team == ETeam.Red && p.Health > 0));
+            teamSuv.SetAliveCount(ETeam.Blue, Players.Count(p => p.Team == ETeam.Blue && p.Health > 0));
+        }
+
+        /// <summary>
+        /// How many players on a team are still in the match.
+        /// </summary>
+        public int AliveCountOn(ETeam team)
+        {
+            return Players.Count(p => p.Team == team && p.Health > 0);
+        }
+
+        /// <summary>
+        /// How many players are still in the match, on any team.
+        /// </summary>
+        public int AliveCount()
+        {
+            return Players.Count(p => p.Health > 0);
         }
 
         /// <summary>
@@ -521,6 +559,10 @@ namespace OpenGSCore
         {
             sw.Start();
 
+            // The alive counts are read from the moment the match starts, so they
+            // have to be right before it does.
+            RefreshAliveCounts();
+
             // ステータス更新を開始
             StartStatusUpdates();
 
@@ -568,6 +610,21 @@ namespace OpenGSCore
         /// </summary>
         private void AddRuleSettings(JObject json)
         {
+            // The multiplier is not a rule setting, but it is a thing the two
+            // sides have to agree on and it lives on the setting, so it is
+            // published with the rest of them. A client that derived it from
+            // the mode instead would be applying its own guess while the server
+            // applies the configured one, and the two players would disagree
+            // about how much health anybody has.
+            if (Setting is SuvMatchSetting suv)
+            {
+                json["HealthMultiplier"] = suv.HealthMultiplier;
+            }
+            else if (Setting is TeamSurvivalMatchSetting teamSuv)
+            {
+                json["HealthMultiplier"] = teamSuv.HealthMultiplier;
+            }
+
             switch (rule)
             {
                 case CaptureTheFlagMatchRule ctf:
@@ -576,8 +633,8 @@ namespace OpenGSCore
                 case DeathMatchRule death:
                     json["KillLimit"] = death.KillLimit;
                     break;
-                case SuvMatchRule suv:
-                    json["WinConditionKill"] = suv.WinConditionKill;
+                case SuvMatchRule suvRule:
+                    json["WinConditionKill"] = suvRule.WinConditionKill;
                     break;
             }
         }
