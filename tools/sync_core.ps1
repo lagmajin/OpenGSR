@@ -170,8 +170,31 @@ Get-ChildItem -Path $sourceRoot -Recurse -Directory | ForEach-Object {
     }
 }
 
+# Files the package owns and the source never had. Anything else in the package
+# with no counterpart in the source is a file the source has since deleted, and a
+# script that only copies additions leaves it here for ever: the client keeps
+# compiling a class that no longer exists anywhere else, and the two sides
+# disagree about the game without either of them noticing.
+$packageOwned = @(
+    'Match\Result\MatchResultFactory.cs'
+    'Match\Result\MatchResultService.cs'
+)
+
+$leftovers = New-Object System.Collections.Generic.List[string]
+Get-ChildItem -Path $destinationRoot -Recurse -File -Filter '*.cs' | ForEach-Object {
+    $relative = $_.FullName.Substring($destinationRoot.Length).TrimStart('\', '/')
+    $segments = $relative -split '[\\/]'
+    if ($segments -contains 'Tests') { return }
+    if ($packageOwned -contains $relative) { return }
+
+    $sourceFile = Join-Path $sourceRoot $relative
+    if (-not (Test-Path $sourceFile)) {
+        $leftovers.Add($relative)
+    }
+}
+
 Write-Host ''
-if ($outOfDate.Count -eq 0) {
+if ($outOfDate.Count -eq 0 -and $leftovers.Count -eq 0) {
     Write-Host 'Package is up to date with OpenGSCore.'
     exit 0
 }
@@ -184,10 +207,30 @@ if ($outOfDate.Count -gt 40) {
     Write-Host "  ... and $($outOfDate.Count - 40) more"
 }
 
+if ($leftovers.Count -gt 0) {
+    Write-Host ''
+    Write-Host "In the package but deleted from the source: $($leftovers.Count)"
+    foreach ($item in $leftovers) {
+        Write-Host "  $item"
+    }
+}
+
 if ($Check) {
     Write-Host ''
     Write-Host 'The shared package is behind OpenGSCore. Run this without -Check to sync.'
     exit 1
+}
+
+if ($leftovers.Count -gt 0) {
+    foreach ($item in $leftovers) {
+        $stale = Join-Path $destinationRoot $item
+        Remove-Item -LiteralPath $stale -Force
+        $staleMeta = "$stale.meta"
+        if (Test-Path $staleMeta) {
+            Remove-Item -LiteralPath $staleMeta -Force
+        }
+        Write-Host "Removed $item, which the source no longer has."
+    }
 }
 
 Write-Host "Copied: $copied, meta files created: $metasCreated"
