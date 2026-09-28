@@ -320,8 +320,8 @@ namespace OpenGS
             if (carriedEnemyFlag != null)
             {
                 var reason = fromCapture
-                    ? FlagController.EFlagReturnReason.CapturedAtBase
-                    : FlagController.EFlagReturnReason.FriendlyRecovered;
+                    ? EFlagReturnReason.CapturedAtBase
+                    : EFlagReturnReason.FriendlyRecovered;
                 carriedEnemyFlag.ReturnToBase(null, reason);
             }
             carriedEnemyFlag = null;
@@ -1395,3 +1395,4 @@ namespace OpenGS
         }
     }
 }
+

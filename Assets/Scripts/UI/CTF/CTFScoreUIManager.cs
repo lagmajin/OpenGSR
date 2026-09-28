@@ -1,4 +1,5 @@
 using System;
+using OpenGSCore;
 using UnityEngine;
 using TMPro;
 using DG.Tweening;
@@ -78,15 +79,13 @@ namespace OpenGS
         private CTFMatchMainScript subscribedMatch;
 
         // フラッグの状態
-        public enum FlagState
-        {
-            AtBase,
-            Carried,
-            Dropped
-        }
-
-        private FlagState redFlagState = FlagState.AtBase;
-        private FlagState blueFlagState = FlagState.AtBase;
+        // The shared contract's vocabulary. This used to be a third enum with
+        // AtBase, Carried and Dropped, next to the flag component's own copy and
+        // the server's. The indicators below are driven by what the server says
+        // where a flag is, so the state they compare against has to be the same
+        // state the server sends.
+        private EFlagState redFlagState = EFlagState.FlagOnStand;
+        private EFlagState blueFlagState = EFlagState.FlagOnStand;
 
         private void Awake()
         {
@@ -194,8 +193,8 @@ namespace OpenGS
             previousRedScore = 0;
             previousBlueScore = 0;
             remainingTime = matchDuration;
-            redFlagState = FlagState.AtBase;
-            blueFlagState = FlagState.AtBase;
+            redFlagState = EFlagState.FlagOnStand;
+            blueFlagState = EFlagState.FlagOnStand;
             if (victoryPanel != null)
             {
                 victoryPanel.SetActive(false);
@@ -308,11 +307,11 @@ namespace OpenGS
             // 敵のフラッグをロストした（プレイヤーが倒された）
             if (flagTeam == ETeam.Red)
             {
-                redFlagState = FlagState.Dropped;
+                redFlagState = EFlagState.FlagOnGround;
             }
             else if (flagTeam == ETeam.Blue)
             {
-                blueFlagState = FlagState.Dropped;
+                blueFlagState = EFlagState.FlagOnGround;
             }
             UpdateFlagStatusDisplay();
         }
@@ -322,11 +321,11 @@ namespace OpenGS
             // 敵のフラッグを拾った
             if (flagTeam == ETeam.Red)
             {
-                redFlagState = FlagState.Carried;
+                redFlagState = EFlagState.FlagCapturedPlayer;
             }
             else if (flagTeam == ETeam.Blue)
             {
-                blueFlagState = FlagState.Carried;
+                blueFlagState = EFlagState.FlagCapturedPlayer;
             }
             UpdateFlagStatusDisplay();
         }
@@ -372,7 +371,7 @@ namespace OpenGS
         /// <summary>
         /// フラッグの状態を更新（サーバー同期用）
         /// </summary>
-        public void UpdateFlagStateFromServer(ETeam flagTeam, FlagState state)
+        public void UpdateFlagStateFromServer(ETeam flagTeam, EFlagState state)
         {
             if (flagTeam == ETeam.Red)
             {
@@ -383,6 +382,32 @@ namespace OpenGS
                 blueFlagState = state;
             }
             UpdateFlagStatusDisplay();
+        }
+
+        /// <summary>
+        /// Says out loud that a delivery did not score, and why.
+        /// <para>
+        /// The flag indicators already show where each flag is, so a player can
+        /// see that their own flag is not home. What was missing was the
+        /// connection between the two: a player walked the flag to the enemy
+        /// stand, nothing happened, and nothing said why. The reason is the
+        /// useful part, so it is what this reports.
+        /// </para>
+        /// </summary>
+        public void ShowCaptureRefused(ETeam scoringTeam, EFlagRefusal refusal)
+        {
+            var message = refusal switch
+            {
+                EFlagRefusal.OwnFlagNotAtBase =>
+                    "Your own flag is not at base, so that capture does not count.",
+                EFlagRefusal.NoEnemyFlagCarried =>
+                    "You are not carrying the enemy flag, so there is nothing to deliver.",
+                EFlagRefusal.NotATeam =>
+                    "You are not on a team, so the delivery does not count.",
+                _ => "That capture did not count."
+            };
+
+            Debug.LogWarning($"[CTF] {message} (team {scoringTeam})");
         }
 
         #endregion
@@ -405,19 +430,19 @@ namespace OpenGS
         {
             // Red Flag Status
             if (redFlagAtBaseIndicator != null)
-                redFlagAtBaseIndicator.SetActive(redFlagState == FlagState.AtBase);
+                redFlagAtBaseIndicator.SetActive(redFlagState == EFlagState.FlagOnStand);
             if (redFlagCarriedIndicator != null)
-                redFlagCarriedIndicator.SetActive(redFlagState == FlagState.Carried);
+                redFlagCarriedIndicator.SetActive(redFlagState == EFlagState.FlagCapturedPlayer);
             if (redFlagDroppedIndicator != null)
-                redFlagDroppedIndicator.SetActive(redFlagState == FlagState.Dropped);
+                redFlagDroppedIndicator.SetActive(redFlagState == EFlagState.FlagOnGround);
 
             // Blue Flag Status
             if (blueFlagAtBaseIndicator != null)
-                blueFlagAtBaseIndicator.SetActive(blueFlagState == FlagState.AtBase);
+                blueFlagAtBaseIndicator.SetActive(blueFlagState == EFlagState.FlagOnStand);
             if (blueFlagCarriedIndicator != null)
-                blueFlagCarriedIndicator.SetActive(blueFlagState == FlagState.Carried);
+                blueFlagCarriedIndicator.SetActive(blueFlagState == EFlagState.FlagCapturedPlayer);
             if (blueFlagDroppedIndicator != null)
-                blueFlagDroppedIndicator.SetActive(blueFlagState == FlagState.Dropped);
+                blueFlagDroppedIndicator.SetActive(blueFlagState == EFlagState.FlagOnGround);
         }
 
         private void AnimateScorePop(TextMeshProUGUI text)
@@ -505,9 +530,9 @@ namespace OpenGS
         /// </summary>
         public void UpdateRedFlagState(bool atBase, bool carried, bool dropped)
         {
-            if (atBase) redFlagState = FlagState.AtBase;
-            else if (carried) redFlagState = FlagState.Carried;
-            else if (dropped) redFlagState = FlagState.Dropped;
+            if (atBase) redFlagState = EFlagState.FlagOnStand;
+            else if (carried) redFlagState = EFlagState.FlagCapturedPlayer;
+            else if (dropped) redFlagState = EFlagState.FlagOnGround;
             UpdateFlagStatusDisplay();
         }
 
@@ -516,9 +541,9 @@ namespace OpenGS
         /// </summary>
         public void UpdateBlueFlagState(bool atBase, bool carried, bool dropped)
         {
-            if (atBase) blueFlagState = FlagState.AtBase;
-            else if (carried) blueFlagState = FlagState.Carried;
-            else if (dropped) blueFlagState = FlagState.Dropped;
+            if (atBase) blueFlagState = EFlagState.FlagOnStand;
+            else if (carried) blueFlagState = EFlagState.FlagCapturedPlayer;
+            else if (dropped) blueFlagState = EFlagState.FlagOnGround;
             UpdateFlagStatusDisplay();
         }
 
@@ -552,3 +577,4 @@ namespace OpenGS
         }
     }
 }
+

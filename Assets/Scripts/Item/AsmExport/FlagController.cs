@@ -1,5 +1,6 @@
 using DG.Tweening;
 using System;
+using OpenGSCore;
 using UnityEngine;
 
 
@@ -15,13 +16,6 @@ namespace OpenGS
     [RequireComponent(typeof(MultipleTags))]
     public class FlagController : MonoBehaviour, IFlagInfo
     {
-        public enum EFlagState
-        {
-            AtBase,
-            Carried,
-            Dropped
-        }
-
         [Header("Settings")]
         [SerializeField] public ETeam team = ETeam.NoTeam;
         [SerializeField] public Sprite redFlag;
@@ -35,18 +29,25 @@ namespace OpenGS
         [SerializeField] private FlagStand myFlagStand;
         [SerializeField] private SpriteRenderer spriteRenderer;
 
-        public enum EFlagReturnReason
-        {
-            AutoReturn,
-            FriendlyRecovered,
-            CapturedAtBase
-        }
+        // Where a flag is, and why one came home, are both the shared contract's
+        // types now. This file used to carry its own enum for each, with AtBase,
+        // Carried and Dropped where the shared vocabulary says FlagOnStand,
+        // FlagCapturedPlayer and FlagOnGround. Three spellings of one state is
+        // how the two sides ended up unable to agree on where a flag was, which
+        // is the question the capture rule turns on.
 
         public event Action<FlagController, AbstractPlayer> EnemyPickedUp;
         public event Action<FlagController, AbstractPlayer, EFlagReturnReason> ReturnedToBase;
         public event Action<FlagController> Dropped;
 
-        private EFlagState currentState = EFlagState.AtBase;
+        // Where a flag is, in the shared contract's spelling. This used to be a
+        // second enum nested here, with AtBase, Carried and Dropped where the
+        // shared one says FlagOnStand, FlagCapturedPlayer and FlagOnGround. Two
+        // names for one state is how the two sides ended up unable to agree on
+        // where a flag was, which is the question the capture rule turns on.
+        public EFlagState CurrentState => currentState;
+
+        private EFlagState currentState = EFlagState.FlagOnStand;
         private float returnTimer = 0f;
         private Transform carrier;
         private GameObject activeDroppedEffect;
@@ -68,7 +69,7 @@ namespace OpenGS
 
         private void Update()
         {
-            if (currentState == EFlagState.Dropped)
+            if (currentState == EFlagState.FlagOnGround)
             {
                 var deltaTime = Time.deltaTime;
                 if (!float.IsFinite(deltaTime) || deltaTime < 0f)
@@ -83,7 +84,7 @@ namespace OpenGS
                     ReturnToBase();
                 }
             }
-            else if (currentState == EFlagState.Carried && carrier != null)
+            else if (currentState == EFlagState.FlagCapturedPlayer && carrier != null)
             {
                 // プレイヤーに追従（必要に応じて背負う位置などを調整）
                 transform.position = carrier.position + new Vector3(0, 1f, 0);
@@ -111,7 +112,7 @@ namespace OpenGS
             if (player.Team() == team)
             {
                 // ベース上の味方フラッグには反応しない。
-                if (currentState == EFlagState.AtBase)
+                if (currentState == EFlagState.FlagOnStand)
                 {
                     return;
                 }
@@ -122,7 +123,7 @@ namespace OpenGS
             else
             {
                 // 敵のフラッグを拾った（キャプチャ開始）
-                currentState = EFlagState.Carried;
+                currentState = EFlagState.FlagCapturedPlayer;
                 carrier = player.transform;
                 player.EnemyFlagCaptured();
                 player.BindEnemyFlag(this);
@@ -132,12 +133,12 @@ namespace OpenGS
 
         public void OnDropped()
         {
-            if (currentState != EFlagState.Carried)
+            if (currentState != EFlagState.FlagCapturedPlayer)
             {
                 return;
             }
 
-            currentState = EFlagState.Dropped;
+            currentState = EFlagState.FlagOnGround;
             carrier = null;
             returnTimer = autoReturnTime;
             PlayDroppedEffect();
@@ -146,7 +147,7 @@ namespace OpenGS
 
         public void ReturnToBase(AbstractPlayer player = null, EFlagReturnReason reason = EFlagReturnReason.AutoReturn)
         {
-            currentState = EFlagState.AtBase;
+            currentState = EFlagState.FlagOnStand;
             carrier = null;
             returnTimer = 0f;
 
@@ -291,7 +292,7 @@ namespace OpenGS
             var player = other != null ? other.GetComponentInParent<AbstractPlayer>() : null;
             if (player != null)
             {
-                if (currentState == EFlagState.Carried)
+                if (currentState == EFlagState.FlagCapturedPlayer)
                 {
                     return;
                 }
@@ -301,4 +302,5 @@ namespace OpenGS
         }
     }
 }
+
 
