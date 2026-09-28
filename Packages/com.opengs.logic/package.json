@@ -1,0 +1,16 @@
+{
+  "name": "com.opengs.logic",
+  "version": "0.0.1",
+  "displayName": "OpenGSCore",
+  "unity": "2020.3",
+  "dependencies": {
+    "com.cysharp.memorypack": "1.9.11",
+    "com.neuecc.messagepack": "2.5.140",
+    "com.unity.nuget.newtonsoft-json": "3.2.2"
+  },
+  "author": {
+    "name": "mattun",
+    "email": "hogehoge.fuga@mail.com",
+    "url": "https://hoge.com"
+  }
+}

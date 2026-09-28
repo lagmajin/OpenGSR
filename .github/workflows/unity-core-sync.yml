@@ -14,9 +14,6 @@ jobs:
       - name: Checkout client
         uses: actions/checkout@v4
         with:
-          # The shared package is a submodule; the check below needs the sources
-          # from OpenGSCore, not the pinned package commit, so the submodule
-          # itself is left alone and refreshed by the sync step.
           submodules: false
 
       - name: Checkout shared logic
@@ -24,6 +21,8 @@ jobs:
         with:
           repository: lagmajin/OpenGSCore
           path: OpenGSCore
+          # Advance this ref together with a committed package sync.
+          ref: e3d11ac4d61c5cc02a605a64ed5c5f37430b8efe
 
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
@@ -36,11 +35,11 @@ jobs:
       # does not, and the mismatch only surfaces later as a missing type.
       - name: Check the shared package is in sync
         shell: pwsh
-        run: ./tools/sync_core.ps1 -Check
+        run: ./tools/sync_core.ps1 -Source ./OpenGSCore -Check
 
       - name: Sync
         shell: pwsh
-        run: ./tools/sync_core.ps1
+        run: ./tools/sync_core.ps1 -Source ./OpenGSCore
 
       - name: Build shared logic
         run: dotnet build OpenGSCore/OpenGSCore.csproj --configuration Release

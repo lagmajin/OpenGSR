@@ -1,0 +1,76 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageTags>OpenGS</PackageTags>
+    <Nullable>annotations</Nullable>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <Version>1.0.2</Version>
+    <LangVersion>latest</LangVersion>
+    <PackAsTool>False</PackAsTool>
+  </PropertyGroup>
+
+
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors>;NU1605</WarningsAsErrors>
+    <NoWarn>1701;1702;0414;0169;NU1701</NoWarn>
+    <WarningLevel>0</WarningLevel>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningsAsErrors>;NU1605</WarningsAsErrors>
+    <NoWarn>1701;1702;0414;0169;NU1701</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="AI\**" />
+    <Compile Remove="Bullet\**" />
+    <Compile Remove="Command\**" />
+    <Compile Remove="Item\Weapon\**" />
+    <Compile Remove="Match\Score\**" />
+    <Compile Remove="Tests\**" />
+    <Compile Remove="新しいフォルダー\**" />
+    <EmbeddedResource Remove="AI\**" />
+    <EmbeddedResource Remove="Bullet\**" />
+    <EmbeddedResource Remove="Command\**" />
+    <EmbeddedResource Remove="Item\Weapon\**" />
+    <EmbeddedResource Remove="Match\Score\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <EmbeddedResource Remove="新しいフォルダー\**" />
+    <None Remove="AI\**" />
+    <None Remove="Bullet\**" />
+    <None Remove="Command\**" />
+    <None Remove="Item\Weapon\**" />
+    <None Remove="Match\Score\**" />
+    <None Remove="Tests\**" />
+    <None Remove="新しいフォルダー\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Player\PlayerIDList.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Autofac" Version="8.2.0" />
+    <PackageReference Include="LiteDB" Version="5.0.21" />
+    <PackageReference Include="MemoryPack" Version="1.21.4" />
+    <PackageReference Include="MessagePack" Version="3.1.8" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NodaTime" Version="3.1.0" />
+    <PackageReference Include="NUlid" Version="1.7.1" />
+    <PackageReference Include="System.Text.Json" Version="9.0.2" />
+    <PackageReference Include="UniRx" Version="5.4.1" />
+    <PackageReference Include="UniTask" Version="2.5.10" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Json\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Player\PlayerIDList.cs" />
+  </ItemGroup>
+
+</Project>

@@ -50,13 +50,16 @@ if (-not $Destination) {
 }
 
 $sourceRoot = (Resolve-Path $Source).Path
-$destinationRoot = (Resolve-Path $Destination).Path
+$destinationRoot = [System.IO.Path]::GetFullPath($Destination)
 
 Write-Host "Source:      $sourceRoot"
 Write-Host "Destination: $destinationRoot"
 
 if ($sourceRoot -eq $destinationRoot) {
     throw 'Source and destination resolve to the same directory; refusing to copy onto itself.'
+}
+if (-not (Test-Path -LiteralPath $destinationRoot -PathType Container)) {
+    throw "Package directory is missing: $destinationRoot. Restore the tracked package files before syncing."
 }
 
 # Directories that exist only to organise the shared repository and that the
@@ -135,6 +138,9 @@ Get-ChildItem -Path $sourceRoot -Recurse -File -Filter '*.cs' | ForEach-Object {
     }
 
     $meta = "$target.meta"
+    if (-not (Test-Path $meta) -and $Check) {
+        $outOfDate.Add("$relative.meta")
+    }
     if (-not (Test-Path $meta) -and -not $Check) {
         [System.IO.File]::WriteAllText($meta, (New-MetaContent $relative 'file'))
         $metasCreated++
@@ -155,6 +161,9 @@ Get-ChildItem -Path $sourceRoot -Recurse -Directory | ForEach-Object {
     }
 
     $meta = "$targetDir.meta"
+    if (-not (Test-Path $meta) -and $Check) {
+        $outOfDate.Add("$relative.meta")
+    }
     if ((Test-Path $targetDir) -and -not (Test-Path $meta) -and -not $Check) {
         [System.IO.File]::WriteAllText($meta, (New-MetaContent $relative 'folder'))
         $metasCreated++
