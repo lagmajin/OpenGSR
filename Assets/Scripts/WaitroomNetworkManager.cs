@@ -893,6 +893,7 @@ namespace OpenGS
             var roomId = roomInfo.RoomId;
             
             PrettyLogger.Bold("RoomList", $"満室ルーム: {roomId}");
+            ServerRefusalNotice.Show("そのルームは満室です。");
         }
 
         /// <summary>
@@ -912,10 +913,11 @@ namespace OpenGS
         /// </summary>
         private void HandleErrorNotification(JObject json)
         {
-            var reason = json["ErrorMessage"]?.ToString() ?? "the server declined";
+            var reason = json["ErrorMessage"]?.ToString() ?? "The server declined that request.";
             var roomId = json["RoomID"]?.ToString() ?? string.Empty;
 
             PrettyLogger.Bold("WaitRoom", $"サーバーエラー: {reason}{(string.IsNullOrEmpty(roomId) ? "" : $" (room {roomId})")}");
+            ServerRefusalNotice.Show(reason);
         }
 
         private void HandleRoomNotFound(JObject json)
@@ -924,6 +926,7 @@ namespace OpenGS
             var roomId = roomInfo.RoomId;
 
             PrettyLogger.Bold("RoomList", $"ルーム未検出: {roomId}");
+            ServerRefusalNotice.Show("そのルームは見つかりませんでした。");
             if (string.IsNullOrWhiteSpace(roomId) || string.Equals(roomId, currentRoomId, StringComparison.OrdinalIgnoreCase))
             {
                 ClearCurrentRoomState();
