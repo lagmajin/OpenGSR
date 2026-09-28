@@ -61,6 +61,15 @@ jobs:
           fail-on-error: true
           fail-on-empty: true
 
+      # A mode that takes a message the base match script also handles stops the
+      # base from seeing it for that mode, and everything else the base does with
+      # that message quietly stops happening there. Three modes were doing it and
+      # none of them said so. This is the same shape as the sync check above: a
+      # property that held by accident, now held on purpose.
+      - name: Check every mode leaves the shared messages alone
+        shell: pwsh
+        run: ./tools/check_match_dispatch.ps1
+
       # The compile is the point of the sync: it proves the client actually sees
       # the shared types, which is exactly what drifted when the copy was manual.
       - name: Compile the Unity project
