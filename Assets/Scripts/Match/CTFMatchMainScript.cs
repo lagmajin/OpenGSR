@@ -885,9 +885,6 @@ namespace OpenGS
                 case MessageType.Snapshot:
                     HandleRoomState(obj);
                     break;
-                case MessageType.MatchEndNotification:
-                    HandleMatchEnd(obj);
-                    break;
                 default:
                     base.OnNetworkDataRecved(obj);
                     break;
@@ -1298,7 +1295,7 @@ namespace OpenGS
                 : (redScore > blueScore ? ETeam.Red.ToString() : ETeam.Blue.ToString());
 
             var myTeam = ResolveLocalTeamName();
-            HandleMatchEnd(new JObject
+            EndMatchLocally(new JObject
             {
                 ["WinningTeam"] = winningTeam,
                 ["MyTeam"] = myTeam
@@ -1394,13 +1391,11 @@ namespace OpenGS
             return true;
         }
 
-        private void HandleMatchEnd(JObject json)
+        /// <summary>
+        /// What a mode does with a result the server has already decided.
+        /// </summary>
+        protected override void OnServerMatchEnd(JObject json)
         {
-            if (!TryBeginMatchEnd())
-            {
-                return;
-            }
-
             // The server owns the result, so it says who won and what the score
             // was. The notification used to carry neither, which left this reading
             // a winner out of a message that had none and defaulting to a draw: an

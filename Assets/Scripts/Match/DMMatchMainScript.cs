@@ -346,9 +346,6 @@ namespace OpenGS
                 case RUDPMessageTypes.ItemPickup:
                     base.OnNetworkDataRecved(obj);
                     break;
-                case MessageType.MatchEndNotification:
-                    HandleMatchEnd(obj);
-                    break;
                 default:
                     base.OnNetworkDataRecved(obj);
                     break;
@@ -404,13 +401,11 @@ namespace OpenGS
             Debug.Log($"[DMMatchMainScript] My player respawned at {spawnPos}");
         }
 
-        private void HandleMatchEnd(JObject json)
+        /// <summary>
+        /// What a mode does with a result the server has already decided.
+        /// </summary>
+        protected override void OnServerMatchEnd(JObject json)
         {
-            if (!TryBeginMatchEnd())
-            {
-                return;
-            }
-
             var (winningLabel, myLabel) = ResolveMatchOutcome(json);
 
             Debug.Log($"[DM] Match ended: winner={winningLabel}, myTeam={myLabel}");

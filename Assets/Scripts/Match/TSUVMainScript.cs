@@ -370,9 +370,6 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerKill:
                     HandlePlayerKill(obj);
                     break;
-                case OpenGSCore.MessageType.MatchEndNotification:
-                    HandleMatchEnd(obj);
-                    break;
                 default:
                     base.OnNetworkDataRecved(obj);
                     break;
@@ -424,13 +421,11 @@ namespace OpenGS
             Debug.Log($"[TSUV] Player kill: {killerId} killed {victimId} (headshot: {headshot})");
         }
 
-        private void HandleMatchEnd(JObject json)
+        /// <summary>
+        /// What a mode does with a result the server has already decided.
+        /// </summary>
+        protected override void OnServerMatchEnd(JObject json)
         {
-            if (!TryBeginMatchEnd())
-            {
-                return;
-            }
-
             var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
 

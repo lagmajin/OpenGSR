@@ -128,7 +128,7 @@ namespace OpenGS
             var winningTeam = redTeamKills == blueTeamKills
                 ? "Draw"
                 : (redTeamKills > blueTeamKills ? "Red" : "Blue");
-            HandleMatchEnd(new Newtonsoft.Json.Linq.JObject
+            EndMatchLocally(new Newtonsoft.Json.Linq.JObject
             {
                 ["WinningTeam"] = winningTeam,
                 ["MyTeam"] = ResolveLocalTeamName(),
@@ -292,7 +292,7 @@ namespace OpenGS
 
             if (Input.GetKeyDown(KeyCode.F1))
             {
-                HandleMatchEnd(new JObject
+                EndMatchLocally(new JObject
                 {
                     ["WinningTeam"] = "Red",
                     ["MyTeam"] = ResolveLocalTeamName(),
@@ -307,12 +307,12 @@ namespace OpenGS
                 var winningTeam = redTeamKills == blueTeamKills
                     ? "Draw"
                     : (redTeamKills > blueTeamKills ? "Red" : "Blue");
-                HandleMatchEnd(new JObject { ["WinningTeam"] = winningTeam, ["MyTeam"] = ResolveLocalTeamName(), ["RedTeamKills"] = redTeamKills, ["BlueTeamKills"] = blueTeamKills });
+                EndMatchLocally(new JObject { ["WinningTeam"] = winningTeam, ["MyTeam"] = ResolveLocalTeamName(), ["RedTeamKills"] = redTeamKills, ["BlueTeamKills"] = blueTeamKills });
                 return;
             }
             if (Input.GetKeyDown(KeyCode.F2))
             {
-                HandleMatchEnd(new JObject
+                EndMatchLocally(new JObject
                 {
                     ["WinningTeam"] = "Blue",
                     ["MyTeam"] = ResolveLocalTeamName(),
@@ -342,7 +342,7 @@ namespace OpenGS
 
             if (suddenDeathActive && redTeamKills != blueTeamKills)
             {
-                HandleMatchEnd(new JObject
+                EndMatchLocally(new JObject
                 {
                     ["WinningTeam"] = redTeamKills > blueTeamKills ? "Red" : "Blue",
                     ["MyTeam"] = ResolveLocalTeamName(),
@@ -524,9 +524,6 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerKill:
                     HandlePlayerKill(obj);
                     break;
-                case OpenGSCore.MessageType.MatchEndNotification:
-                    HandleMatchEnd(obj);
-                    break;
                 default:
                     base.OnNetworkDataRecved(obj);
                     break;
@@ -576,13 +573,11 @@ namespace OpenGS
             Debug.Log($"[TDM] Player kill: {killerId} killed {victimId} (headshot: {headshot})");
         }
 
-        private void HandleMatchEnd(JObject json)
+        /// <summary>
+        /// What a mode does with a result the server has already decided.
+        /// </summary>
+        protected override void OnServerMatchEnd(JObject json)
         {
-            if (!TryBeginMatchEnd())
-            {
-                return;
-            }
-
             var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
 

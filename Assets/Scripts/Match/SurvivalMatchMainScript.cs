@@ -142,12 +142,6 @@ namespace OpenGS
         {
             var messageType = MessageType.Normalize(obj["MessageType"]?.ToString());
 
-            if (messageType == MessageType.MatchEndNotification)
-            {
-                HandleMatchEnd(obj);
-                return;
-            }
-
             base.OnNetworkDataRecved(obj);
         }
 
@@ -162,13 +156,11 @@ namespace OpenGS
         /// early. The server is the one that knows who is still in.
         /// </para>
         /// </summary>
-        private void HandleMatchEnd(JObject json)
+        /// <summary>
+        /// What a mode does with a result the server has already decided.
+        /// </summary>
+        protected override void OnServerMatchEnd(JObject json)
         {
-            if (!TryBeginMatchEnd())
-            {
-                return;
-            }
-
             var winningTeam = json["WinningTeam"]?.ToString() ?? "None";
             var winningPlayerId = json["WinningPlayerId"]?.ToString() ?? string.Empty;
 

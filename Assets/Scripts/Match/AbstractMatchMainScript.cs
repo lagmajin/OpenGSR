@@ -899,12 +899,10 @@ namespace OpenGS
 
             switch (messageType)
             {
-                // The room publishes the settings it is playing under, and every
-                // mode needs them rather than only the one that reads them here.
-                // A survival client deriving the health multiplier from the mode
-                // instead of the room was applying its own guess while the server
-                // applied the configured one, so the two sides disagreed about
-                // how much health anybody had.
+                // The room's own state, and the settings the server is playing
+                // under. Every mode needs them rather than only the ones that
+                // happen to read them, so they are handled here and the modes are
+                // left with what is theirs.
                 case MessageType.Snapshot:
                     ApplyServerRoomSettings(obj);
                     break;
@@ -960,7 +958,76 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerDebuff:
                     HandlePlayerDebuff(obj);
                     break;
+
+                // The server saying the match is over.
+                // <para>
+                // This was in four of the five mode scripts, which means it was
+                // in whichever ones somebody remembered and not in whichever they
+                // did not, and a mode with no case ends its match on a guess
+                // about its own clock. It is one message and one question, so it
+                // is answered once here and a mode is left with how its result
+                // looks.
+                // </para>
+                case MessageType.MatchEndNotification:
+                    HandleServerMatchEnd(obj);
+                    break;
             }
+        }
+
+        /// <summary>
+        /// The server has ended the match, and it says who won.
+        /// <para>
+        /// The guard is here rather than in each mode, because it was in each mode
+        /// and one of them was missing it. A match that ends twice on this client
+        /// is a match that shows a result twice and leaves one behind.
+        /// </para>
+        /// </summary>
+        private void HandleServerMatchEnd(JObject json)
+        {
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
+
+            OnServerMatchEnd(json);
+            ScheduleResultSceneTransition(gotoResultSceneWaitTime);
+        }
+
+        /// <summary>
+        /// Ends the match on this client, for the decisions only this client
+        /// makes.
+        /// <para>
+        /// Offline there is no server to ask, so the local clock and the local
+        /// score decide. The guard is the base's, because it was in each mode's
+        /// own copy of this and one of them was missing it.
+        /// </para>
+        /// </summary>
+        protected void EndMatchLocally(JObject result, float transitionDelay = 0f)
+        {
+            if (!TryBeginMatchEnd())
+            {
+                return;
+            }
+
+            OnServerMatchEnd(result);
+            ScheduleResultSceneTransition(transitionDelay);
+        }
+
+        /// <summary>
+        /// What a mode does with a result the server has already decided.
+        /// <para>
+        /// The winner is the server's. A mode that worked it out from a score it
+        /// had been keeping would be working it out from a copy, and the two would
+        /// disagree about a result both are showing.
+        /// </para>
+        /// </summary>
+        protected virtual void OnServerMatchEnd(JObject json)
+        {
+            var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
+            var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
+
+            Debug.Log(
+                $"[{GetType().Name}] The server ended the match: winner={winningTeam}, myTeam={myTeam}");
         }
 
         /// <summary>
