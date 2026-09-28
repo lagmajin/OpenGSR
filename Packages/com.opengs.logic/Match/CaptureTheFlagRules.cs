@@ -96,12 +96,16 @@ namespace OpenGSCore
         /// <summary>
         /// How long a dropped flag waits before it goes home on its own.
         /// <para>
-        /// The client has a timer for this, and the client was the only side that
-        /// had one, which meant a dropped flag came back only if a client lived
-        /// to say so. The server holds the flag, so the server keeps the time.
+        /// The client used to carry its own number for this, and the server had
+        /// another, so the two sides could disagree about when a flag was due
+        /// back. That is not a cosmetic difference: a client that waits longer
+        /// than the server destroys the flag later than the server has already
+        /// put it home, and a client that waits less brings a flag back the server
+        /// still believes is lying on the ground. It is one rule, so it is one
+        /// number, and the client draws it from here rather than keeping a copy.
         /// </para>
         /// </summary>
-        public const float DefaultAutoReturnSeconds = 30f;
+        public const float DefaultAutoReturnSeconds = CaptureTheFlagRules.DefaultAutoReturnSeconds;
 
         private float autoReturnSeconds = DefaultAutoReturnSeconds;
 
@@ -117,7 +121,7 @@ namespace OpenGSCore
         public float AutoReturnSeconds
         {
             get => autoReturnSeconds;
-            set => autoReturnSeconds = float.IsFinite(value) ? MathF.Max(0.1f, value) : DefaultAutoReturnSeconds;
+            set => autoReturnSeconds = CaptureTheFlagRules.SanitizeAutoReturnSeconds(value);
         }
 
         /// <summary>
@@ -210,6 +214,34 @@ namespace OpenGSCore
     /// </summary>
     public static class CaptureTheFlagRules
     {
+        /// <summary>
+        /// How long a dropped flag waits before it goes home on its own.
+        /// <para>
+        /// The client used to carry its own number for this and the server had
+        /// another, so the two sides could disagree about when a flag was due
+        /// back. That is not a cosmetic difference: a client that waits longer
+        /// than the server destroys the flag after the server has already put it
+        /// home, and a client that waits less brings one back that the server
+        /// still believes is lying on the ground. It is one rule, so it is one
+        /// number.
+        /// </para>
+        /// </summary>
+        public const float DefaultAutoReturnSeconds = 30f;
+
+        /// <summary>
+        /// Clamps a wait into something a flag can actually wait.
+        /// <para>
+        /// A wait of zero is a flag that comes home the instant it is dropped,
+        /// and a wait that is not a number is a flag that never comes home. Both
+        /// are worse than the default, so both fall back to it rather than being
+        /// taken as given.
+        /// </para>
+        /// </summary>
+        public static float SanitizeAutoReturnSeconds(float seconds)
+        {
+            return float.IsFinite(seconds) ? MathF.Max(0.1f, seconds) : DefaultAutoReturnSeconds;
+        }
+
         /// <summary>
         /// Whether a delivery scores.
         /// </summary>

@@ -17,10 +17,11 @@ namespace OpenGS
     public class FlagController : MonoBehaviour, IFlagInfo
     {
         [Header("Settings")]
+        [Tooltip("How long a dropped flag waits before it goes home. The default is the shared contract's; changing it here changes only this client's view of it, because the server keeps the time.")]
+        [SerializeField] private float autoReturnTime = CaptureTheFlagRules.DefaultAutoReturnSeconds;
         [SerializeField] public ETeam team = ETeam.NoTeam;
         [SerializeField] public Sprite redFlag;
         [SerializeField] public Sprite blueFlag;
-        [SerializeField] private float autoReturnTime = 30f;
         [SerializeField] private GameObject droppedSmokeEffectPrefab;
         [SerializeField] private GameObject returnEffectPrefab;
 
@@ -54,7 +55,14 @@ namespace OpenGS
 
         private void Awake()
         {
-            autoReturnTime = Mathf.Max(0.1f, float.IsFinite(autoReturnTime) ? autoReturnTime : 30f);
+            // The wait is the shared contract's, not this file's. It used to be a
+            // thirty second literal here and another one on the server, so the two
+            // sides could disagree about when a flag was due back, and that is
+            // not a cosmetic difference: a client that waits longer than the
+            // server destroys the flag after the server has already put it home,
+            // and a client that waits less brings one back the server still
+            // believes is lying on the ground.
+            autoReturnTime = CaptureTheFlagRules.SanitizeAutoReturnSeconds(autoReturnTime);
         }
 
         private void Start()
