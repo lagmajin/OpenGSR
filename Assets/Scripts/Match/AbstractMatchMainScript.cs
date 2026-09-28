@@ -1104,6 +1104,18 @@ namespace OpenGS
             {
                 ApplyServerTeamKills(redKills ?? 0, blueKills ?? 0);
             }
+
+            // A mode that reads one of the published limits does it here rather
+            // than with its own case for this message, because a case here means
+            // the base never sees the message for that mode at all.
+            OnServerRoomSettings(json);
+        }
+
+        /// <summary>
+        /// The published limits that belong to this mode.
+        /// </summary>
+        protected virtual void OnServerRoomSettings(JObject json)
+        {
         }
 
         /// <summary>

@@ -878,9 +878,6 @@ namespace OpenGS
                 case RUDPMessageTypes.FlagScoreUpdate:
                     HandleFlagScoreUpdate(obj);
                     break;
-                case MessageType.Snapshot:
-                    HandleRoomState(obj);
-                    break;
                 default:
                     base.OnNetworkDataRecved(obj);
                     break;
@@ -1027,7 +1024,17 @@ namespace OpenGS
         /// that is sometimes right.
         /// </para>
         /// </summary>
-        private void HandleRoomState(JObject json)
+        /// <summary>
+        /// Takes the flag limit the room is playing to.
+        /// <para>
+        /// The room publishes the limits with the rest of its state, so this is one
+        /// of them and it is read where the rest of them are. This had its own
+        /// case for the room state, which meant the base never saw that message
+        /// for this mode and the clock, the health multiplier and the running
+        /// score were all missing from it.
+        /// </para>
+        /// </summary>
+        protected override void OnServerRoomSettings(JObject json)
         {
             var limit = json["WinConditionPoint"]?.ToObject<int>() ?? 0;
             if (limit <= 0)

@@ -140,8 +140,9 @@ namespace OpenGS
 
         protected override void OnNetworkDataRecved(JObject obj)
         {
-            var messageType = MessageType.Normalize(obj["MessageType"]?.ToString());
-
+            // Everything is the base's to read. This mode had its own copy of
+            // this that took one message and did nothing with it, which is a
+            // second place a message could stop being handled.
             base.OnNetworkDataRecved(obj);
         }
 

@@ -332,15 +332,8 @@ namespace OpenGS
 
             switch (messageType)
             {
-                case RUDPMessageTypes.PlayerDeath:
-                    Debug.Log($"[DM] PlayerDeath received: {obj["PlayerId"]?.ToString()}");
-                    HandleAuthoritativePlayerDeath(obj);
-                    break;
                 case RUDPMessageTypes.KillScoreUpdate:
                     Debug.Log($"[DM] KillScoreUpdate received: {obj["PlayerId"]?.ToString()}");
-                    break;
-                case RUDPMessageTypes.ItemPickup:
-                    base.OnNetworkDataRecved(obj);
                     break;
                 default:
                     base.OnNetworkDataRecved(obj);
