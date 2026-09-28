@@ -494,9 +494,61 @@ namespace OpenGS
         }
 
         /// <summary>
-        /// Called when timer reaches 0. Override in each mode to trigger game end.
+        /// The clock the server is running this match on, once the room has said.
+        /// <para>
+        /// Every mode used to resolve its own duration and every one of them
+        /// answered ten minutes, whatever the server was actually playing. A client
+        /// whose clock runs out early ends a match the server is still running, and
+        /// one that runs out late waits through a match that is over. The room
+        /// state is the server's own number, so it wins.
+        /// </para>
         /// </summary>
-        protected virtual void OnTimeUp()
+        private float? serverMatchSeconds;
+
+        /// <summary>
+        /// Whether the server is playing this match on a different length of time
+        /// than the client's own guess.
+        /// </summary>
+        private bool hasServerClock =>
+            serverMatchSeconds.HasValue && serverMatchSeconds.Value > 0f;
+
+        /// <summary>
+        /// Called when the local clock reaches zero.
+        /// <para>
+        /// The gate on online play is here rather than in each mode, because it was
+        /// in each mode and three of the four copies were missing it. The clock
+        /// the rule runs on is the server's, so it is the server's to end the
+        /// match: a client that ends it here as well leaves a match the server is
+        /// still playing, and the two disagree about whether the game is running.
+        /// </para>
+        /// </summary>
+        private void OnTimeUp()
+        {
+            if (endFlag)
+            {
+                return;
+            }
+
+            if (IsOnlineMatch() && hasServerClock)
+            {
+                Debug.Log(
+                    $"[{GetType().Name}] Local clock reached zero; waiting for the server to end the match.");
+                return;
+            }
+
+            OnLocalTimeUp();
+        }
+
+        /// <summary>
+        /// What a mode does when the match is over.
+        /// <para>
+        /// Reached only when this client is the one deciding, which offline it
+        /// always is and online it is not when the server has said what length of
+        /// match it is playing. A mode that ends the match here in an online match
+        /// is ending a match the server is still running.
+        /// </para>
+        /// </summary>
+        protected virtual void OnLocalTimeUp()
         {
             Debug.Log($"[{GetType().Name}] Time up!");
         }
@@ -931,6 +983,21 @@ namespace OpenGS
             if (multiplier.HasValue)
             {
                 MatchModeResolver.AdoptServerHealthMultiplier(multiplier.Value);
+            }
+
+            var seconds = json["MatchTimeSeconds"]?.ToObject<float>();
+            if (seconds.HasValue && seconds.Value > 0f && float.IsFinite(seconds.Value))
+            {
+                serverMatchSeconds = seconds.Value;
+
+                // The timer drives when this client stops playing, so a client
+                // counting down a different length of match than the server is
+                // playing shows a clock that lies and ends a match that is still
+                // running.
+                if (timer != null)
+                {
+                    timer.SetTime(serverMatchSeconds.Value);
+                }
             }
         }
 

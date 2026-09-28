@@ -165,9 +165,8 @@ namespace OpenGS
             return 600f;
         }
 
-        protected override void OnTimeUp()
+        protected override void OnLocalTimeUp()
         {
-            if (endFlag) return;
             Debug.Log("[DM] Time up!");
             GameEnd();
         }

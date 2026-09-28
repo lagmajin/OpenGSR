@@ -90,7 +90,7 @@ namespace OpenGS
             return 600f;
         }
 
-        protected override void OnTimeUp()
+        protected override void OnLocalTimeUp()
         {
             Debug.Log("[TDM] Time up!");
             if (redTeamKills == blueTeamKills && suddenDeathOnDraw)

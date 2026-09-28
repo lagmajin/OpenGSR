@@ -224,7 +224,7 @@ namespace OpenGS
             return 600f;
         }
 
-        protected override void OnTimeUp()
+        protected override void OnLocalTimeUp()
         {
             if (!TryBeginMatchEnd()) return;
             Debug.Log("[TSUV] Time up!");
@@ -246,6 +246,18 @@ namespace OpenGS
             // 両チームの生存者がいる場合は継続
             if (redAliveCount > 0 && blueAliveCount > 0)
             {
+                return;
+            }
+
+            if (IsOnlineMatch())
+            {
+                // The count is this client's guess, taken from the wait room roster
+                // and reduced as deaths reach it, so it is not what the server
+                // believes. The server ends the match when one side is actually
+                // wiped, and its end notification says who won; ending it here as
+                // well leaves the two disagreeing about whether the game is
+                // running and which team won it.
+                Debug.Log("[TSUV] A team looks wiped out; waiting for the server to end the match.");
                 return;
             }
 

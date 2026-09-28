@@ -704,23 +704,16 @@ namespace OpenGS
             return 600f;
         }
 
-        protected override void OnTimeUp()
+        protected override void OnLocalTimeUp()
         {
             Debug.Log("[CTF] Time up!");
 
-            if (IsOnlineMatch())
-            {
-                // The clock the rule runs on is the server's, and it decides when
-                // a match is over. A client that ended it on its own timer would
-                // leave a match the server was still running, and would work out
-                // the winner from a score it had been keeping rather than from
-                // the one the rule decided. The server's end notification carries
-                // the result, so waiting for it is also how this client learns
-                // who won.
-                Debug.Log("[CTF] Waiting for the server to end the match.");
-                return;
-            }
-
+            // The clock the rule runs on is the server's, and it decides when a
+            // match is over. A client that ended it on its own timer would leave
+            // a match the server was still running, and would work out the winner
+            // from a score it had been keeping rather than from the one the rule
+            // decided. The server's end notification carries the result, so
+            // waiting for it is also how this client learns who won.
             var room = ResolveCurrentMatchRoom();
             var redScore = room?.MatchData?.RedTeamFlagScore ?? 0;
             var blueScore = room?.MatchData?.BlueTeamFlagScore ?? 0;
