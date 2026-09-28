@@ -678,6 +678,20 @@ namespace OpenGS
         protected override void OnTimeUp()
         {
             Debug.Log("[CTF] Time up!");
+
+            if (IsOnlineMatch())
+            {
+                // The clock the rule runs on is the server's, and it decides when
+                // a match is over. A client that ended it on its own timer would
+                // leave a match the server was still running, and would work out
+                // the winner from a score it had been keeping rather than from
+                // the one the rule decided. The server's end notification carries
+                // the result, so waiting for it is also how this client learns
+                // who won.
+                Debug.Log("[CTF] Waiting for the server to end the match.");
+                return;
+            }
+
             var room = ResolveCurrentMatchRoom();
             var redScore = room?.MatchData?.RedTeamFlagScore ?? 0;
             var blueScore = room?.MatchData?.BlueTeamFlagScore ?? 0;
@@ -872,6 +886,9 @@ namespace OpenGS
                 case RUDPMessageTypes.FlagScoreUpdate:
                     HandleFlagScoreUpdate(obj);
                     break;
+                case MessageType.Snapshot:
+                    HandleRoomState(obj);
+                    break;
                 case MessageType.MatchEndNotification:
                     HandleMatchEnd(obj);
                     break;
@@ -987,6 +1004,37 @@ namespace OpenGS
         {
             var named = json["FlagTeam"]?.ToString() ?? json["Team"]?.ToString() ?? string.Empty;
             return Enum.TryParse(named, ignoreCase: true, out ETeam team) ? team : ETeam.NoTeam;
+        }
+
+        /// <summary>
+        /// Takes the match settings the server is running from, out of the room
+        /// state it publishes.
+        /// <para>
+        /// The client carried its own flag limit and the server carried another,
+        /// so the scoreboard could say "first to five" on a match that ended at
+        /// three. A limit is a rule, and the rule is the server's: it ends the
+        /// match. The client adopting the number is what makes the two agree about
+        /// what they are playing, rather than the scoreboard being decoration
+        /// that is sometimes right.
+        /// </para>
+        /// </summary>
+        private void HandleRoomState(JObject json)
+        {
+            var limit = json["WinConditionPoint"]?.ToObject<int>() ?? 0;
+            if (limit <= 0)
+            {
+                return;
+            }
+
+            var room = ResolveCurrentMatchRoom();
+            if (room?.Rule is not CTFMatchRule rule || rule.FlagCaptureCount == limit)
+            {
+                return;
+            }
+
+            rule.FlagCaptureCount = limit;
+            CTFScoreUIManager.Instance?.SetCaptureLimit(limit);
+            Debug.Log($"[CTF] Took the flag limit from the server: {limit}");
         }
 
         private void HandleFlagScoreUpdate(JObject json)
@@ -1190,6 +1238,43 @@ namespace OpenGS
             }
         }
 
+        /// <summary>
+        /// Adopts the final score the server's rule produced, when the message
+        /// carries one.
+        /// <para>
+        /// The score on this client is a copy the client has been keeping, and the
+        /// server's is the one the match was decided on. A capture the client
+        /// missed, or one it counted and the server did not, leaves the two
+        /// disagreeing, and the result screen is the last place that shows. The
+        /// deltas are applied rather than the totals set, because the live score
+        /// path is the same and the two must not behave differently.
+        /// </para>
+        /// </summary>
+        private void ApplyServerFinalScore(JObject json)
+        {
+            if (json["RedTeamScore"] == null && json["BlueTeamScore"] == null)
+            {
+                // An offline result carries no score fields, and there is nothing
+                // to adopt over the score this client already has.
+                return;
+            }
+
+            var redScore = ReadScore(json, "RedTeamScore", "RedTeamFlagScore");
+            var blueScore = ReadScore(json, "BlueTeamScore", "BlueTeamFlagScore");
+            var room = ResolveCurrentMatchRoom();
+            if (room?.MatchData == null)
+            {
+                return;
+            }
+
+            var redDelta = redScore - room.MatchData.RedTeamFlagScore;
+            var blueDelta = blueScore - room.MatchData.BlueTeamFlagScore;
+            if (redDelta != 0) room.MatchData.AddFlagScore(ETeam.Red, redDelta);
+            if (blueDelta != 0) room.MatchData.AddFlagScore(ETeam.Blue, blueDelta);
+
+            Debug.Log($"[CTF] Adopted the server's final score: Red={redScore}, Blue={blueScore}");
+        }
+
         private void HandleMatchEndFromScores(int redScore, int blueScore)
         {
             var winningTeam = redScore == blueScore
@@ -1300,15 +1385,23 @@ namespace OpenGS
                 return;
             }
 
+            // The server owns the result, so it says who won and what the score
+            // was. The notification used to carry neither, which left this reading
+            // a winner out of a message that had none and defaulting to a draw: an
+            // online match finished as a draw whatever happened in it. The score
+            // the server sends is applied before it is read back, so the numbers
+            // on the victory screen are the ones the rule decided rather than this
+            // client's copy of them.
+            ApplyServerFinalScore(json);
+
             var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
             var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
 
             Debug.Log($"[CTF] Match ended: winner={winningTeam}, myTeam={myTeam}");
             if (CTFScoreUIManager.Instance != null && Enum.TryParse(winningTeam, out ETeam winning))
             {
-                var room = ResolveCurrentMatchRoom();
-                var redScore = room?.MatchData?.RedTeamFlagScore ?? 0;
-                var blueScore = room?.MatchData?.BlueTeamFlagScore ?? 0;
+                var redScore = ReadScore(json, "RedTeamScore", "RedTeamFlagScore");
+                var blueScore = ReadScore(json, "BlueTeamScore", "BlueTeamFlagScore");
                 CTFScoreUIManager.Instance.ShowVictory(winning, redScore, blueScore);
             }
             if (IsOfflineMatch())
