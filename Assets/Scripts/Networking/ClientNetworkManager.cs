@@ -39,6 +39,11 @@ namespace OpenGS
         /// </summary>
         public JObject LastMatchRoomInfo { get; private set; }
         public event Action<JObject> MatchStatusResponseReceived;
+
+        /// <summary>
+        /// An answer from the server's shop, for whoever asked.
+        /// </summary>
+        public event Action<JObject> ShopResponseReceived;
         /// <summary>試合UDPの接続状態。切断中UIや入力停止処理から購読する。</summary>
         public event Action<bool, string> MatchUdpConnectionChanged;
 
@@ -567,6 +572,19 @@ namespace OpenGS
                     LastMatchStatusResponse = message;
                     InvokeSafely(MatchStatusResponseReceived, message, nameof(MatchStatusResponseReceived));
                     break;
+
+                // The shop. The server has kept the credits, what has been bought
+                // and what is equipped for a long time, and none of it reached
+                // here: the shop asked the client's own embedded server instead, so
+                // an online shop was running against a simulation of itself. The
+                // answers are raised rather than stored, because a shop asks
+                // whether a purchase went through and needs the answer to the
+                // question it asked, not the last one anybody asked.
+                case MessageType.ShopStateResponse:
+                case MessageType.ShopPurchaseResponse:
+                case MessageType.ShopEquipResponse:
+                    InvokeSafely(ShopResponseReceived, message, nameof(ShopResponseReceived));
+                    break;
                 // 他のTCPメッセージタイプをここで処理
                 default:
                     var gameEvent = NetworkEventDeserializer.Deserialize(message);
@@ -613,6 +631,54 @@ namespace OpenGS
                 var messageType = message.GetStringOrNull("MessageType") ?? "<missing>";
                 Debug.LogError($"[ClientNetwork] TCP listener failed for {messageType}: {ex}");
             }
+        }
+
+        /// <summary>
+        /// Asks the server's shop what it has for this player.
+        /// <para>
+        /// The credits, what has been bought and what is equipped are all the
+        /// server's, because the server is the side that keeps them. The shop used
+        /// to ask the client's own embedded server for these, so an online shop
+        /// ran against a simulation of itself and two copies of the truth existed
+        /// on one machine.
+        /// </para>
+        /// </summary>
+        public void RequestShopState()
+        {
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.ShopStateRequest,
+                ["PlayerID"] = ClientPlayerId
+            });
+        }
+
+        /// <summary>
+        /// Asks the server's shop to record a purchase.
+        /// </summary>
+        public void RequestShopPurchase(string itemId, int price)
+        {
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.ShopPurchaseRequest,
+                ["PlayerID"] = ClientPlayerId,
+                ["ItemId"] = itemId,
+                ["Price"] = price
+            });
+        }
+
+        /// <summary>
+        /// Asks the server's shop to record an equipped item.
+        /// </summary>
+        public void RequestShopEquip(string itemId, string category, int slot)
+        {
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.ShopEquipRequest,
+                ["PlayerID"] = ClientPlayerId,
+                ["ItemId"] = itemId,
+                ["Category"] = category,
+                ["Slot"] = slot
+            });
         }
 
         public void SendTcpMessage(JObject message)
