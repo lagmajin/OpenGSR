@@ -10,6 +10,13 @@ namespace OpenGS
     /// Central registry for all player instances in the game. Lightweight, single-source of truth for player lookups
     /// and basic operations (damage dispatch, registration). Designed for minimal side-effects: does not change player state
     /// except when explicitly asked (e.g., ApplyDamage).
+    /// <para>
+    /// It tracks IBattlePlayer rather than one component tree. It used to be
+    /// typed on AbstractPlayer, which is not on any player prefab in the project:
+    /// the prefabs carry PlayerAgent. So the registry registered nothing, and
+    /// everything that asked it for a player, or for the local player, or for the
+    /// players on a team, was asking an empty dictionary on a live match.
+    /// </para>
     /// </summary>
     public sealed class PlayerRegistry : MonoBehaviour
     {
@@ -29,18 +36,18 @@ namespace OpenGS
         }
 
         // players keyed by GUID
-        private readonly Dictionary<Guid, AbstractPlayer> players = new Dictionary<Guid, AbstractPlayer>();
+        private readonly Dictionary<Guid, IBattlePlayer> players = new Dictionary<Guid, IBattlePlayer>();
         private readonly object locker = new object();
 
-        public event Action<AbstractPlayer> OnPlayerRegistered;
-        public event Action<AbstractPlayer> OnPlayerUnregistered;
-        public event Action<AbstractPlayer, float> OnPlayerHealthChanged; // (player, newHp)
-        public event Action<AbstractPlayer, float> OnPlayerArmorChanged; // (player, newArmor)
-        public event Action<AbstractPlayer> OnPlayerDied;
-        public event Action<AbstractPlayer> OnPlayerSpawned;
-        public event Action<AbstractPlayer> OnPlayerRespawned;
-        public event Action<AbstractPlayer, PlayerStatus> OnPlayerStatusChanged;
-        public event Action<AbstractPlayer, float> OnPlayerBoosterChanged;
+        public event Action<IBattlePlayer> OnPlayerRegistered;
+        public event Action<IBattlePlayer> OnPlayerUnregistered;
+        public event Action<IBattlePlayer, float> OnPlayerHealthChanged; // (player, newHp)
+        public event Action<IBattlePlayer, float> OnPlayerArmorChanged; // (player, newArmor)
+        public event Action<IBattlePlayer> OnPlayerDied;
+        public event Action<IBattlePlayer> OnPlayerSpawned;
+        public event Action<IBattlePlayer> OnPlayerRespawned;
+        public event Action<IBattlePlayer, PlayerStatus> OnPlayerStatusChanged;
+        public event Action<IBattlePlayer, float> OnPlayerBoosterChanged;
 
         void Awake()
         {
@@ -54,10 +61,25 @@ namespace OpenGS
             Instance = this;
             DontDestroyOnLoad(gameObject);
 
-            foreach (var player in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
+            foreach (var player in FindAllBattlePlayers())
             {
                 RegisterPlayer(player);
             }
+        }
+
+        /// <summary>
+        /// Every live player in the scene, whichever component tree carries it.
+        /// <para>
+        /// The scan used to be for one type, so it found nothing. Asking for the
+        /// interface is what makes both trees visible without the registry having
+        /// to know a second type exists.
+        /// </para>
+        /// </summary>
+        private static IEnumerable<IBattlePlayer> FindAllBattlePlayers()
+        {
+            return FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None)
+                .OfType<IBattlePlayer>()
+                .Where(IsLive);
         }
 
         void OnDestroy()
@@ -73,15 +95,31 @@ namespace OpenGS
             }
         }
 
-        public bool RegisterPlayer(AbstractPlayer player)
+        /// <summary>
+        /// Whether this is a player that still exists.
+        /// <para>
+        /// A destroyed Unity component keeps comparing non-null as an interface,
+        /// because the overloaded equality on Object is not used for interfaces.
+        /// Without this a destroyed player stays in the dictionary and the scoreboard
+        /// shows somebody who left.
+        /// </para>
+        /// </summary>
+        private static bool IsLive(IBattlePlayer player)
         {
-            if (player == null) return false;
+            // Unity's overloaded equality is only on Object, so an interface has
+            // to go through the object to find out whether it has been destroyed.
+            return player != null && player is UnityEngine.Object live && live != null;
+        }
+
+        public bool RegisterPlayer(IBattlePlayer player)
+        {
+            if (!IsLive(player)) return false;
             var id = player.UniqueID();
             lock (locker)
             {
                 if (players.TryGetValue(id, out var existing))
                 {
-                    if (existing != null)
+                    if (IsLive(existing))
                     {
                         return false;
                     }
@@ -99,7 +137,7 @@ namespace OpenGS
             return true;
         }
 
-        public bool UnregisterPlayer(AbstractPlayer player)
+        public bool UnregisterPlayer(IBattlePlayer player)
         {
             if (player == null) return false;
             return UnregisterPlayer(player.UniqueID());
@@ -107,7 +145,7 @@ namespace OpenGS
 
         public bool UnregisterPlayer(Guid id)
         {
-            AbstractPlayer removed = null;
+            IBattlePlayer removed = null;
             lock (locker)
             {
                 if (!players.TryGetValue(id, out removed)) return false;
@@ -122,27 +160,37 @@ namespace OpenGS
             return true;
         }
 
-        public bool TryGetPlayer(Guid id, out AbstractPlayer player)
+        public bool TryGetPlayer(Guid id, out IBattlePlayer player)
         {
             lock (locker)
             {
-                return players.TryGetValue(id, out player);
+                if (players.TryGetValue(id, out var found) && IsLive(found))
+                {
+                    player = found;
+                    return true;
+                }
+            }
+
+            player = null;
+            return false;
+        }
+
+        public IReadOnlyCollection<IBattlePlayer> GetAllPlayers()
+        {
+            lock (locker)
+            {
+                return players.Values.Where(IsLive).ToList().AsReadOnly();
             }
         }
 
-        public IReadOnlyCollection<AbstractPlayer> GetAllPlayers()
+        public IReadOnlyCollection<IBattlePlayer> GetPlayersByTeam(ETeam team)
         {
             lock (locker)
             {
-                return players.Values.Where(player => player != null).ToList().AsReadOnly();
-            }
-        }
-
-        public IReadOnlyCollection<AbstractPlayer> GetPlayersByTeam(ETeam team)
-        {
-            lock (locker)
-            {
-                return players.Values.Where(p => p != null && p.Team() == team).ToList().AsReadOnly();
+                return players.Values
+                    .Where(p => IsLive(p) && p.Team() == team)
+                    .ToList()
+                    .AsReadOnly();
             }
         }
 
@@ -150,9 +198,9 @@ namespace OpenGS
         /// Publishes a health update for changes made outside ApplyDamage.
         /// ApplyDamage already raises this event and must not call this method.
         /// </summary>
-        public void NotifyPlayerHealthChanged(AbstractPlayer player, float newHp)
+        public void NotifyPlayerHealthChanged(IBattlePlayer player, float newHp)
         {
-            if (player == null || float.IsNaN(newHp) || float.IsInfinity(newHp))
+            if (!IsLive(player) || float.IsNaN(newHp) || float.IsInfinity(newHp))
             {
                 return;
             }
@@ -160,9 +208,9 @@ namespace OpenGS
             InvokeSafely(OnPlayerHealthChanged, player, newHp, nameof(OnPlayerHealthChanged));
         }
 
-        public void NotifyPlayerDied(AbstractPlayer player)
+        public void NotifyPlayerDied(IBattlePlayer player)
         {
-            if (player != null)
+            if (IsLive(player))
             {
                 InvokeSafely(OnPlayerDied, player, nameof(OnPlayerDied));
             }
@@ -183,8 +231,8 @@ namespace OpenGS
             if (!float.IsFinite(source.x) || !float.IsFinite(source.y)
                 || !float.IsFinite(damage) || damage <= 0f || p.IsDead()) return false;
 
-            float prevHp = GetPlayerHpSafe(p);
-            float prevArmor = GetPlayerArmorSafe(p);
+            float prevHp = p.GetHP();
+            float prevArmor = p.GetArmor();
             if (!float.IsFinite(prevHp) || !float.IsFinite(prevArmor))
             {
                 return false;
@@ -201,8 +249,8 @@ namespace OpenGS
                 return false;
             }
 
-            float newHp = GetPlayerHpSafe(p);
-            float newArmor = GetPlayerArmorSafe(p);
+            float newHp = p.GetHP();
+            float newArmor = p.GetArmor();
             if (!float.IsFinite(newHp) || !float.IsFinite(newArmor))
             {
                 Debug.LogWarning($"[PlayerRegistry] Ignoring non-finite damage result for player {id}.");
@@ -241,11 +289,17 @@ namespace OpenGS
                 InvokeSafely(OnPlayerDied, p, nameof(OnPlayerDied));
 
                 var deadReason = string.IsNullOrWhiteSpace(attackerId) ? EDeadReason.Unknown : EDeadReason.KilledBy;
-                var deadEvent = new PlayerDeadEvent(deadReason, p.gameObject.name, p.UniqueID().ToString(), p.Team());
+                var deadEvent = new PlayerDeadEvent(deadReason, p.DisplayName(), p.UniqueID().ToString(), p.Team());
                 if (!string.IsNullOrWhiteSpace(attackerId))
                 {
                     deadEvent.SetKillerID(attackerId);
                     GameEventBroker.Publish(new PlayerKillEvent(attackerId, p.UniqueID().ToString(), weaponType, headshot));
+
+                    // The killer's own tally. The death count above was credited but
+                    // the kill count never was: AddKill had no callers at all, so
+                    // every scoreboard and every result row in the game sorted and
+                    // displayed zero kills while the deaths beside them counted up.
+                    CreditKill(attackerId);
                 }
 
                 GameEventBroker.Publish(deadEvent);
@@ -259,7 +313,29 @@ namespace OpenGS
             return true;
         }
 
-        private void ApplyKnockback(AbstractPlayer player, Vector2 source, float damage)
+        /// <summary>
+        /// Credits a kill to whoever is named as the attacker.
+        /// <para>
+        /// The attacker arrives as a string while the registry is keyed by Guid. A
+        /// name that does not resolve is skipped rather than treated as an error:
+        /// the server settles a kill on its own, and a local hit on a player this
+        /// registry never saw is not a tally it can keep.
+        /// </para>
+        /// </summary>
+        private void CreditKill(string attackerId)
+        {
+            if (string.IsNullOrWhiteSpace(attackerId)) return;
+
+            if (!Guid.TryParse(attackerId, out var attackerGuid)) return;
+
+            TryGetPlayer(attackerGuid, out var attacker);
+            if (attacker?.Status != null)
+            {
+                attacker.Status.AddKill();
+            }
+        }
+
+        private void ApplyKnockback(IBattlePlayer player, Vector2 source, float damage)
         {
             if (player == null)
             {
@@ -279,45 +355,17 @@ namespace OpenGS
             player.AddDamageAndForce(0f, impactDirection, force);
         }
 
-        private float GetPlayerHpSafe(AbstractPlayer p)
-        {
-            try
-            {
-                if (p is IPlayer player)
-                {
-                    return player.GetHP();
-                }
-            }
-            catch { }
-
-            return -1f;
-        }
-
-        private float GetPlayerArmorSafe(AbstractPlayer p)
-        {
-            try
-            {
-                if (p is IPlayer player)
-                {
-                    return player.GetArmor();
-                }
-            }
-            catch { }
-
-            return -1f;
-        }
-
         /// <summary>
         /// Convenience: find player by Unity instance id
         /// </summary>
-        public bool TryGetPlayerByInstanceId(int instanceId, out AbstractPlayer player)
+        public bool TryGetPlayerByInstanceId(int instanceId, out IBattlePlayer player)
         {
             lock (locker)
             {
                 foreach (var p in players.Values)
                 {
-                    if (p == null) continue;
-                    if (UnityObjectIdCompat.GetObjectId(p.gameObject) == instanceId)
+                    if (!IsLive(p)) continue;
+                    if (UnityObjectIdCompat.GetObjectId(p.Root) == instanceId)
                     {
                         player = p;
                         return true;
@@ -334,10 +382,10 @@ namespace OpenGS
         /// </summary>
         public void ClearAll()
         {
-            List<AbstractPlayer> removedPlayers;
+            List<IBattlePlayer> removedPlayers;
             lock (locker)
             {
-                removedPlayers = players.Values.Where(player => player != null).ToList();
+                removedPlayers = players.Values.Where(IsLive).ToList();
                 players.Clear();
             }
 
@@ -347,15 +395,15 @@ namespace OpenGS
             }
         }
 
-        public void PublishPlayerStatus(AbstractPlayer player)
+        public void PublishPlayerStatus(IBattlePlayer player)
         {
-            if (player == null) return;
+            if (!IsLive(player)) return;
             InvokeSafely(OnPlayerStatusChanged, player, player.Status, nameof(OnPlayerStatusChanged));
         }
 
-        public void PublishPlayerBooster(AbstractPlayer player, float newBooster)
+        public void PublishPlayerBooster(IBattlePlayer player, float newBooster)
         {
-            if (player == null) return;
+            if (!IsLive(player)) return;
 
             if (player.Status != null)
             {
@@ -366,15 +414,15 @@ namespace OpenGS
             InvokeSafely(OnPlayerBoosterChanged, player, newBooster, nameof(OnPlayerBoosterChanged));
         }
 
-        public void PublishPlayerSpawned(AbstractPlayer player)
+        public void PublishPlayerSpawned(IBattlePlayer player)
         {
-            if (player == null) return;
+            if (!IsLive(player)) return;
             InvokeSafely(OnPlayerSpawned, player, nameof(OnPlayerSpawned));
         }
 
-        public void PublishPlayerRespawned(AbstractPlayer player)
+        public void PublishPlayerRespawned(IBattlePlayer player)
         {
-            if (player == null) return;
+            if (!IsLive(player)) return;
             InvokeSafely(OnPlayerRespawned, player, nameof(OnPlayerRespawned));
         }
 
@@ -398,14 +446,14 @@ namespace OpenGS
             }
         }
 
-        private static void InvokeSafely<T>(Action<AbstractPlayer, T> handlers, AbstractPlayer player, T value, string eventName)
+        private static void InvokeSafely<T>(Action<IBattlePlayer, T> handlers, IBattlePlayer player, T value, string eventName)
         {
             if (handlers == null)
             {
                 return;
             }
 
-            foreach (Action<AbstractPlayer, T> handler in handlers.GetInvocationList())
+            foreach (Action<IBattlePlayer, T> handler in handlers.GetInvocationList())
             {
                 try
                 {
@@ -418,14 +466,14 @@ namespace OpenGS
             }
         }
 
-        private static bool ShouldPlayLocalPlayerSound(AbstractPlayer player)
+        private static bool ShouldPlayLocalPlayerSound(IBattlePlayer player)
         {
-            return player != null && player.PlayerType() == EPlayerType.MyPlayer;
+            return IsLive(player) && player.PlayerType() == EPlayerType.MyPlayer;
         }
 
-        private static bool IsFemaleCharacter(AbstractPlayer player)
+        private static bool IsFemaleCharacter(IBattlePlayer player)
         {
-            if (player == null)
+            if (!IsLive(player))
             {
                 return false;
             }
@@ -441,14 +489,14 @@ namespace OpenGS
             };
         }
 
-        private static EPlayerSound GetDamageSound(AbstractPlayer player)
+        private static EPlayerSound GetDamageSound(IBattlePlayer player)
         {
             return IsFemaleCharacter(player)
                 ? EPlayerSound.DamageFemale1
                 : EPlayerSound.DamageMale1;
         }
 
-        private static EPlayerSound GetDeathSound(AbstractPlayer player)
+        private static EPlayerSound GetDeathSound(IBattlePlayer player)
         {
             var female = IsFemaleCharacter(player);
             var offset = UnityEngine.Random.Range(0, 4);

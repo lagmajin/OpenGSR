@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using UnityEngine;
 using OpenGSCore;
@@ -31,7 +32,7 @@ namespace OpenGS
             var messageType = MessageType.Normalize(json["MessageType"]?.ToString());
             if (string.IsNullOrEmpty(messageType))
             {
-                Debug.LogWarning($"[NetworkEventDeserializer] Missing MessageType in JSON: {json}");
+                Debug.LogWarning("[NetworkEventDeserializer] Deserialize called with a payload that has no MessageType.");
                 return null;
             }
 
@@ -75,7 +76,19 @@ namespace OpenGS
                 RUDPMessageTypes.AmmoUpdate     => DeserializeAmmoUpdate(json),
                 RUDPMessageTypes.GrenadeThrow   => DeserializeGrenadeThrow(json),
                 RUDPMessageTypes.PlayerReload   => DeserializePlayerReload(json),
+                // The server's answer to a reload, which carries the magazine it
+                // decided. It reads as an ammo update because that is what it
+                // changes, and a client that only knew the claim name had nothing
+                // to adopt when its reload finished.
+                RUDPMessageTypes.PlayerReloaded => DeserializeAmmoUpdate(json),
                 RUDPMessageTypes.PlayerMelee    => DeserializePlayerMelee(json),
+
+                // 敵（ミッション）
+                RUDPMessageTypes.EnemySpawn    => DeserializeEnemy(json, EnemyEvent.EEnemyEventType.Spawned),
+                RUDPMessageTypes.EnemyDamaged  => DeserializeEnemy(json, EnemyEvent.EEnemyEventType.Damaged),
+                RUDPMessageTypes.EnemyDespawn  => DeserializeEnemy(json, EnemyEvent.EEnemyEventType.Killed),
+                RUDPMessageTypes.EnemyKilled   => DeserializeEnemy(json, EnemyEvent.EEnemyEventType.Killed),
+                RUDPMessageTypes.EnemySnapshot => DeserializeEnemySnapshot(json),
 
                 // 投票
                 RUDPMessageTypes.VoteStart  => DeserializeVoteEvent(json),
@@ -108,10 +121,44 @@ namespace OpenGS
             };
         }
 
+        /// <summary>
+        /// A message that has no game event on this path.
+        /// <para>
+        /// Reaching here is mostly normal rather than a gap, so it is not a warning.
+        /// The requests are the client's own, sent to the server and never sent back,
+        /// and the lobby, wait room and room messages arrive over
+        /// GeneralServerNetworkManager for WaitroomNetworkManager to read rather than
+        /// over this path. About sixty of the message types end up here for those two
+        /// reasons, which is why the count is high and why adding handlers for them
+        /// here would publish second copies of events another manager already owns.
+        /// </para>
+        /// <para>
+        /// It used to log the whole payload at warning level, so a lobby session that
+        /// was working correctly filled the console with large warnings about messages
+        /// that were never supposed to become events. It logs the type and the field
+        /// names, which is what tells a real drift from a request.
+        /// </para>
+        /// </summary>
         private static AbstractGameEvent DeserializeUnsupported(JObject json, string messageType)
         {
-            Debug.LogWarning($"[NetworkEventDeserializer] Unsupported network event '{messageType}'. Payload: {json}");
+            Debug.Log($"[NetworkEventDeserializer] No game event for '{messageType}' (fields: {DescribeFields(json)}).");
             return null;
+        }
+
+        private static string DescribeFields(JObject json)
+        {
+            if (json == null)
+            {
+                return "none";
+            }
+
+            var names = new List<string>();
+            foreach (var property in json.Properties())
+            {
+                names.Add(property.Name);
+            }
+
+            return names.Count == 0 ? "none" : string.Join(", ", names);
         }
 
         // ─── 個別デシリアライズメソッド ──────────────────────────────
@@ -406,6 +453,65 @@ namespace OpenGS
         }
 
         // ─── JSON ヘルパー (null-safe) ──────────────────────────────
+
+                /// <summary>
+        /// Reads what the server said about one enemy.
+        /// <para>
+        /// A message with no enemy id is not a message about an enemy, and one with
+        /// a non-finite position is a position nobody can draw. Both are dropped
+        /// rather than turned into an enemy at the origin, which would put a thing
+        /// in the middle of the map that the server never said was there.
+        /// </para>
+        /// </summary>
+        private static EnemyEvent? DeserializeEnemy(JObject json, EnemyEvent.EEnemyEventType type)
+        {
+            var enemyId = S(json, "EnemyId");
+            if (string.IsNullOrWhiteSpace(enemyId))
+            {
+                return null;
+            }
+
+            var x = F(json, "PosX");
+            var y = F(json, "PosY");
+            if (float.IsNaN(x) || float.IsInfinity(x) || float.IsNaN(y) || float.IsInfinity(y))
+            {
+                return null;
+            }
+
+            return new EnemyEvent(
+                type,
+                enemyId,
+                S(json, "EnemyKind"),
+                I(json, "Health"),
+                I(json, "MaxHealth"),
+                new Vector2(x, y),
+                new Vector2(F(json, "FacingX", 1f), F(json, "FacingY")),
+                S(json, "AttackerId"),
+                I(json, "Damage"));
+        }
+
+        private static EnemySnapshotEvent? DeserializeEnemySnapshot(JObject json)
+        {
+            if (json?["Enemies"] is not JArray array)
+            {
+                return null;
+            }
+
+            var enemies = new List<EnemyEvent>(array.Count);
+            foreach (var token in array)
+            {
+                if (token is JObject entry)
+                {
+                    var enemy = DeserializeEnemy(entry, EnemyEvent.EEnemyEventType.Synced);
+                    if (enemy != null)
+                    {
+                        enemies.Add(enemy);
+                    }
+                }
+            }
+
+            return new EnemySnapshotEvent(enemies.ToArray());
+        }
 
         private static string S(JObject json, string key, string fallback = "")
         {

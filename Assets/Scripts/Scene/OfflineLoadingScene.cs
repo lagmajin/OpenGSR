@@ -17,7 +17,6 @@ namespace OpenGS
         private bool loadingStarted;
         private Coroutine loadingCoroutine;
 
-        public MapSceneMasterData mapMasterdata;
         public GeneralSceneMasterData senes;
         public LoadingSpriteMasterData sp;
 

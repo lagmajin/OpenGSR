@@ -122,17 +122,50 @@ namespace OpenGS
                 reconnectRoutine = null;
             }
             base.OnDestroy();
-            //networkManager.DisconnectFromServer();
+
+            // Leaving this scene with the socket still open left the lobby
+            // connection running for whatever came next, so a retry from another
+            // scene raced the connection this scene had already given up on.
+            DisconnectFromServer();
         }
 
-        void LoginSucceeded()
+        /// <summary>
+        /// The server accepted the login, so the lobby is the next scene.
+        /// <para>
+        /// This used to stop at a comment, which meant a login that succeeded left
+        /// the client sitting on the connect scene with a live connection and
+        /// nowhere to go.
+        /// </para>
+        /// </summary>
+        public void LoginSucceeded()
         {
-            // BacktoTitle();
+            connectSucceeded = true;
+            reCconectCount = 0;
+            isTimeout = false;
+
+            if (moveFlag)
+            {
+                return;
+            }
+
+            moveFlag = true;
+            GoToLobby();
         }
 
-        void LoginFail()
+        /// <summary>
+        /// The server refused the login, so the client goes back to the title
+        /// rather than waiting on a connection it is not going to be given.
+        /// </summary>
+        public void LoginFail()
         {
-            //BacktoTitle();
+            PlayBeep();
+
+            if (moveFlag)
+            {
+                return;
+            }
+
+            BackToTitle();
         }
 
         public void Timeout()
@@ -163,7 +196,10 @@ namespace OpenGS
 
         private void OnApplicationQuit()
         {
-            //networkManager.DisconnectFromServer();
+            // The process is going away, so the socket is closed here rather than
+            // left for the operating system to reap, which on a local test server
+            // is the same machine and kept the port busy for the next run.
+            DisconnectFromServer();
         }
 
         public void EnterServerAccepted()

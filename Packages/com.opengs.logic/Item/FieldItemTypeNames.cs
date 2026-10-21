@@ -97,5 +97,30 @@ namespace OpenGSCore
         {
             return type == EFieldItemType.WeaponItem;
         }
+
+        /// <summary>
+        /// The carried item a pickup puts in the player's hands, or None.
+        /// <para>
+        /// A pickup used to grant nothing beyond the broadcast that said it had
+        /// happened. The item left the map and the player got no inventory entry,
+        /// so the one thing the server checks before spending a kit, whether the
+        /// player is carrying it, was never true for anything picked up in the
+        /// match: a kit could only be spent if the wait room had already given it.
+        /// </para>
+        /// <para>
+        /// Only the items that are carried are mapped. The timed buffs and the two
+        /// special weapons apply on contact and are not inventory, so they map to
+        /// None rather than to a kit nobody asked for.
+        /// </para>
+        /// </summary>
+        public static EInstantItemType GrantsInstantItem(EFieldItemType type)
+        {
+            return type switch
+            {
+                EFieldItemType.HealItem => EInstantItemType.HealthKit,
+                EFieldItemType.GrenadePack => EInstantItemType.PowerGrenadePack,
+                _ => EInstantItemType.None
+            };
+        }
     }
 }

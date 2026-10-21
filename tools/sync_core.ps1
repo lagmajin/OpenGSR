@@ -175,10 +175,7 @@ Get-ChildItem -Path $sourceRoot -Recurse -Directory | ForEach-Object {
 # script that only copies additions leaves it here for ever: the client keeps
 # compiling a class that no longer exists anywhere else, and the two sides
 # disagree about the game without either of them noticing.
-$packageOwned = @(
-    'Match\Result\MatchResultFactory.cs'
-    'Match\Result\MatchResultService.cs'
-)
+$packageOwned = @()
 
 $leftovers = New-Object System.Collections.Generic.List[string]
 Get-ChildItem -Path $destinationRoot -Recurse -File -Filter '*.cs' | ForEach-Object {

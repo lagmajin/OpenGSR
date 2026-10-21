@@ -12,12 +12,24 @@ namespace OpenGSCore
         /// for a different match was played on numbers nobody had asked for.
         /// </para>
         /// </summary>
-        public int WinConditionKill { get; set; } = TDMMatchRule.DefaultTeamKillLimit;
+        private int winConditionKill = TDMMatchRule.DefaultTeamKillLimit;
+
+        /// <summary>
+        /// The kill limit, frozen with the rest of the settings once the room has
+        /// started the match on it.
+        /// </summary>
+        public int WinConditionKill { get => winConditionKill; set => Set(ref winConditionKill, value); }
 
         /// <summary>
         /// The match length in minutes.
         /// </summary>
-        public int MatchTimeMinutes { get; set; } = 10;
+        private int matchTimeMinutes = 10;
+
+        /// <summary>
+        /// The match length, frozen with the rest of the settings once the room has
+        /// started the match on it.
+        /// </summary>
+        public int MatchTimeMinutes { get => matchTimeMinutes; set => Set(ref matchTimeMinutes, value); }
 
         public TDMMatchSetting(int maxPlayerCapacity = 8, bool teamBalance = true)
             : base(EGameMode.TeamDeathMatch, true, teamBalance)

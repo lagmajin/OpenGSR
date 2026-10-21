@@ -6,7 +6,6 @@ namespace OpenGS
     {
         public static GamePlayerManager Instance { get; } = new GamePlayerManager();
 
-        public PlayerStatus Status { get; set; } = new PlayerStatus();
         public MatchData MatchData { get; private set; } = new MatchData();
 
         private EPlayerCharacter _selectedPlayerCharacter = EPlayerCharacter.Ami;

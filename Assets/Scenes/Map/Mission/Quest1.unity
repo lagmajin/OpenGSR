@@ -380,13 +380,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 647940335}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1e642fb360b526847aa32b071584ff42, type: 3}
+  m_Script: {fileID: 11500000, guid: 64dbaa79085990543a20a27f3c8862aa, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: 
-  system: {fileID: 0}
-  soundManager: {fileID: 0}
-  generalSceneMasterData: {fileID: 0}
-  script: {fileID: 0}
+  m_EditorClassIdentifier:
 --- !u!4 &647940337
 Transform:
   m_ObjectHideFlags: 0

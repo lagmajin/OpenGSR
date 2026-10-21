@@ -48,7 +48,7 @@ namespace OpenGS
             // but it is registered as pending: if the server refuses the claim
             // the revert runs and takes the buff back. The server also decides
             // the duration, and the grant re-applies with its value.
-            var player = collision.GetComponentInParent<AbstractPlayer>();
+            var player = collision.GetComponentInParent<IBattlePlayer>();
             var playerId = player != null ? player.UniqueID().ToString() : string.Empty;
             var itemId = ClaimItemId(playerId);
             var duration = GetSafeEffectDuration();
@@ -92,7 +92,7 @@ namespace OpenGS
             // Only a timed buff can be taken back. A refill or a heal has
             // already changed a number that cannot be un-applied, which is why
             // only the timed items register a revert.
-            if (powerupable is AbstractPlayer player)
+if (powerupable is IBattlePlayer player)
             {
                 player.CancelTimedBuffs();
             }
@@ -110,7 +110,7 @@ namespace OpenGS
         }
         private void SendPickupToNetwork(Collider2D collision, float duration)
         {
-            var player = collision != null ? collision.GetComponentInParent<AbstractPlayer>() : null;
+            var player = collision != null ? collision.GetComponentInParent<IBattlePlayer>() : null;
             if (player == null)
             {
                 return;

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Threading;
 using Newtonsoft.Json.Linq;
@@ -32,24 +33,41 @@ namespace OpenGS
             EvaluateMissionResult();
         }
 
+        /// <summary>
+        /// Puts the server's ruling on screen.
+        /// <para>
+        /// It used to build a result here, on this client, from the wait room's
+        /// player list and an evaluator chosen by mode. That is the client deciding
+        /// how a mission went, out of data the server owns, so a mission the
+        /// server had already failed could be shown as a success. The result is
+        /// the room's, and this only displays it.
+        /// </para>
+        /// </summary>
         private void EvaluateMissionResult()
         {
-            var matchRoomManager = MatchRoomManager();
-            if (matchRoomManager?.WaitRoom == null)
+            var manager = MatchRoomManager();
+            var rule = manager?.OnlineMatchRoom?.Rule as MissionMatchRule
+                ?? manager?.OfflineMatchRoom?.Rule as MissionMatchRule;
+            if (rule == null)
             {
+                Debug.LogWarning(
+                    "[MissionResultScene] The room is not being played by a mission rule.");
                 return;
             }
 
-            var players = matchRoomManager.WaitRoom.AllPlayers();
-            var setting = matchRoomManager.WaitRoom.GetOrCreateSetting();
+            var objectiveDone = rule.ObjectiveCount > 0 && rule.ObjectiveProgress >= rule.ObjectiveCount;
+            var outOfLives = rule.LifeCount > 0 && rule.LifeRemaining <= 0;
+            isSuccess = objectiveDone || !outOfLives;
 
-            var evaluator = OpenGSCore.MissionResultEvaluatorFactory.CreateEvaluator(setting?.Mode ?? EGameMode.Unknown);
-            if (evaluator != null)
+            missionResultPayload = new JObject
             {
-                var result = evaluator.Evaluate(null, players);
-                isSuccess = result["Success"]?.ToObject<bool>() ?? false;
-                missionResultPayload = result;
-            }
+                ["ResultType"] = "Mission",
+                ["Result"] = objectiveDone ? "Clear" : (outOfLives ? "Fail" : "TimeUp"),
+                ["Success"] = isSuccess,
+                ["LifeRemaining"] = rule.LifeRemaining,
+                ["ObjectiveProgress"] = rule.ObjectiveProgress,
+                ["ObjectiveCount"] = rule.ObjectiveCount
+            };
         }
 
         private void Start()

@@ -214,6 +214,14 @@ namespace OpenGS
                 EGameMode.Survival => new SurvivalMatchRule(),
                 EGameMode.TeamSurvival => new TeamSurvivalMatchRule(),
                 EGameMode.ArmsRace => new ArmsMatchRaceRule(),
+
+                // A mission had no case here, so it fell through to a base rule
+                // with no length, no objective and no lives. This client would
+                // then judge a mission on nothing while the server judged it on
+                // all three, and the two could disagree about whether the mission
+                // was over.
+                EGameMode.Mission => new MissionMatchRule(),
+
                 _ => new AbstractMatchRule(gameMode)
             };
         }

@@ -54,12 +54,12 @@ namespace OpenGS
                 return;
             }
 
-            var abstractPlayer = target.GetComponentInParent<AbstractPlayer>();
-            if (abstractPlayer != null && PlayerRegistry.Instance != null)
+var hitPlayer = target.GetComponentInParent<IBattlePlayer>();
+            if (hitPlayer != null && PlayerRegistry.Instance != null)
             {
-                var source = (Vector2)(abstractPlayer.transform.position - transform.position);
+                var source = (Vector2)(hitPlayer.Transform.position - transform.position);
                 PlayerRegistry.Instance.ApplyDamage(
-                    abstractPlayer.UniqueID(),
+                    hitPlayer.UniqueID(),
                     source,
                     damage,
                     eDamageType.Explosion,

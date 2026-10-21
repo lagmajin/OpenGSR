@@ -38,18 +38,21 @@ namespace OpenGS
 
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var abstractPlayer = collision.GetComponentInParent<AbstractPlayer>();
-            if (abstractPlayer != null && PlayerRegistry.Instance != null)
+// Whichever tree carries it. Asking for one type found nothing on a real
+            // player, so falling into lava did nothing through this path.
+            var hitPlayer = collision.GetComponentInParent<IBattlePlayer>();
+            if (hitPlayer != null && PlayerRegistry.Instance != null)
             {
                 PlayerRegistry.Instance.ApplyDamage(
-                    abstractPlayer.UniqueID(),
-                    (Vector2)(abstractPlayer.transform.position - transform.position),
+                    hitPlayer.UniqueID(),
+                    (Vector2)(hitPlayer.Transform.position - transform.position),
                     damage,
                     eDamageType.Lava,
                     string.Empty,
                     nameof(Lava),
                     false);
-                abstractPlayer.TakeLavaDamage();
+                (hitPlayer.Root != null ? hitPlayer.Root.GetComponent<IDamageable>() : null)
+                    ?.TakeLavaDamage();
                 return;
             }
 

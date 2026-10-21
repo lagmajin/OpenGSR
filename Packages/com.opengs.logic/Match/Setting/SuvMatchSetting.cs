@@ -17,9 +17,15 @@ namespace OpenGSCore
         /// </summary>
         public const int DefaultSurvivalTimeMinutes = 10;
 
-        public int SurvivalTimeMinutes { get; set; } = DefaultSurvivalTimeMinutes;
-        public int WinConditionKill { get; set; } = 1;
-        public float HealthMultiplier { get; set; } = 2.0f;
+        private int survivalTimeMinutes = DefaultSurvivalTimeMinutes;
+
+        public int SurvivalTimeMinutes { get => survivalTimeMinutes; set => Set(ref survivalTimeMinutes, value); }
+        private int winConditionKill = 1;
+
+        public int WinConditionKill { get => winConditionKill; set => Set(ref winConditionKill, value); }
+        private float healthMultiplier = 2.0f;
+
+        public float HealthMultiplier { get => healthMultiplier; set => Set(ref healthMultiplier, value); }
 
         public SuvMatchSetting(int maxPlayer, bool teamBalance)
             : base(EGameMode.Survival, maxPlayer, teamBalance)
@@ -47,3 +53,4 @@ namespace OpenGSCore
         }
     }
 }
+

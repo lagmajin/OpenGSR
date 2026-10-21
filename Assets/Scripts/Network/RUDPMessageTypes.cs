@@ -134,7 +134,24 @@ namespace OpenGS
 
         public const string AmmoUpdate = "AmmoUpdate";            // アモ更新
         public const string GrenadeThrow = "GrenadeThrow";        // グレネード投擲
-        public const string PlayerReload = "PlayerReload";       // リロード
+
+        // The enemies in a mission. The server owns them: their health, their
+        // position and whether they are still standing are all its numbers, so
+        // these are what the client is told rather than what it works out.
+        public const string EnemySpawn = "EnemySpawn";            // 敵出現
+        public const string EnemyDespawn = "EnemyDespawn";        // 敵消滅
+        public const string EnemyDamaged = "EnemyDamaged";        // 敵被弾
+        public const string EnemyKilled = "EnemyKilled";          // 敵撃破
+        public const string EnemySnapshot = "EnemySnapshot";      // 敵の現在地
+
+        public const string PlayerReload = "PlayerReload";       // リロード(主張)
+
+        // What the server decided about a reload. The claim and the ruling are
+        // named apart the way damage and death are: the server sends this one, so
+        // a client reading the ruling cannot mistake it for its own request, and a
+        // client that only ever heard the claim name had nothing to wait for.
+        public const string PlayerReloaded = "PlayerReloaded";
+
         public const string PlayerMelee = "PlayerMelee";          // 近接攻撃
 
         // 投票システム - 双方向
@@ -642,7 +659,7 @@ public const string PingResponse = MessageType.PingResponse;        // ピング
         /// <summary>
         /// プレイヤーリスポーンメッセージを作成
         /// </summary>
-        public static JObject CreatePlayerRespawn(string playerId, Vector2 position)
+        public static JObject CreatePlayerRespawn(string playerId, Vector2 position, string roomId = null)
         {
             position = SafeVector(position, Vector2.zero);
             var json = new JObject();
@@ -650,6 +667,16 @@ public const string PingResponse = MessageType.PingResponse;        // ピング
             json["PlayerId"] = playerId;
             json["PosX"] = position.x;
             json["PosY"] = position.y;
+
+            // The server resolves the room from its own membership and refuses a
+            // message whose room does not match, so a respawn without one is
+            // refused for looking like it came from nowhere.
+            if (!string.IsNullOrWhiteSpace(roomId))
+            {
+                json["RoomID"] = roomId;
+                json["RoomId"] = roomId;
+            }
+
             return json;
         }
 

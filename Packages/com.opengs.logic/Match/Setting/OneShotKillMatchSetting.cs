@@ -7,11 +7,15 @@ namespace OpenGSCore
 {
     public class OneShotKillMatchSetting : AbstractMatchSetting
     {
+        private int winConditionKill = 1;
+
         /// <summary>
         /// The number of kills that ends the match. First to one is the mode, but
         /// a room has to be able to ask for a different one.
         /// </summary>
-        public int WinConditionKill { get; set; } = 1;
+        public int WinConditionKill { get => winConditionKill; set => Set(ref winConditionKill, value); }
+
+        private int matchTimeMinutes = 5;
 
         /// <summary>
         /// The match length in minutes.
@@ -21,7 +25,7 @@ namespace OpenGSCore
         /// unrelated rule. A mode nobody gave a length ran on another mode's.
         /// </para>
         /// </summary>
-        public int MatchTimeMinutes { get; set; } = 5;
+        public int MatchTimeMinutes { get => matchTimeMinutes; set => Set(ref matchTimeMinutes, value); }
 
         public OneShotKillMatchSetting(int maxPlayerCapacity = 8, bool teamBalance = true)
             : base(EGameMode.OneShotKill, maxPlayerCapacity, teamBalance)
@@ -42,3 +46,4 @@ namespace OpenGSCore
         }
     }
 }
+

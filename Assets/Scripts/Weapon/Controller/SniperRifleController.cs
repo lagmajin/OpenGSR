@@ -43,12 +43,6 @@ namespace OpenGS
                 return;
             }
 
-            float spreadAngle = Random.Range(0,0);
-
-            // 弾を生成
-            var bullet = Instantiate(bulletPrefab);
-            bullet.transform.position = muzzle.transform.position;
-
             // 他の武器と同じ入力サービスの照準座標を使う。
             Vector3 mouseWorldPos = inputService != null
                 ? inputService.GetAimWorldPosition()
@@ -61,24 +55,29 @@ namespace OpenGS
             }
             Vector2 dir = ((Vector2)direction).normalized;
 
-            // スプレッド角を回転に加える
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-            angle += spreadAngle;
+            var bullet = Instantiate(bulletPrefab, muzzle.position, Quaternion.Euler(0, 0, angle));
 
-            Quaternion spreadRotation = Quaternion.Euler(0, 0, angle);
-            bullet.transform.rotation = spreadRotation;
-
-            // 回転に基づく方向を再計算（LaunchにはVector2渡す）
-            Vector2 finalDir = spreadRotation * Vector2.right;
-
-            var script = bullet.GetComponent<AbstractBulletAgent>();
+            // The prefab carries BulletController, which is the component that
+            // moves the round and reports the hit. Asking for AbstractBulletAgent
+            // here came back null, so a sniper rifle spawned a bullet it never
+            // launched: no velocity, no damage, a round that sat at the muzzle
+            // until its lifetime ran out. It also ignored the authored bullet
+            // speed entirely and launched at a hard coded 200.
             var owner = GetOwnerPlayer();
-            if (script != null)
+            var controller = bullet.GetComponent<BulletController>();
+            if (controller != null)
             {
-                script.SetOwnerInfo(GetPlayerID(owner), Name, owner != null ? owner.Team() : ETeam.NoTeam);
+                controller.Init(
+                    dir,
+                    bulletSpeed,
+                    GetEffectiveDamage(owner),
+                    GetPlayerID(owner),
+                    Name,
+                    owner != null ? owner.Team() : ETeam.NoTeam,
+                    ResolveBulletDamageType());
             }
-            script?.Launch(finalDir,200);
-            if (script == null)
+            else
             {
                 Destroy(bullet);
             }
@@ -86,12 +85,6 @@ namespace OpenGS
             CreateMuzzulleFlash();
 
             PlayShotSound();
-
-            remains--;
-
-
-
-
         }
 
 

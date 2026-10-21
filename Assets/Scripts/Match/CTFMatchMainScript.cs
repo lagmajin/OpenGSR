@@ -183,14 +183,14 @@ namespace OpenGS
             controller.Dropped -= HandleFlagDropped;
         }
 
-        private void HandleFlagEnemyPickedUp(FlagController flagController, AbstractPlayer player)
+        private void HandleFlagEnemyPickedUp(FlagController flagController, IBattlePlayer player)
         {
             if (flagController == null)
             {
                 return;
             }
 
-            PlayerFlagPickedUp(flagController.team, player != null ? player.gameObject.name : string.Empty, false);
+            PlayerFlagPickedUp(flagController.team, player != null ? player.DisplayName() : string.Empty, false);
 
             // The server holds where each flag is, so it has to be told. This was
             // raised as a local event and sent nowhere, so the server never knew a
@@ -199,7 +199,7 @@ namespace OpenGS
             ReportFlagTransitionToServer(MessageType.FlagPickup, flagController.team, player);
         }
 
-        private void HandleFlagReturnedToBase(FlagController flagController, AbstractPlayer player, EFlagReturnReason reason)
+        private void HandleFlagReturnedToBase(FlagController flagController, IBattlePlayer player, EFlagReturnReason reason)
         {
             if (flagController == null)
             {
@@ -233,7 +233,7 @@ namespace OpenGS
             ReportFlagTransitionToServer(MessageType.FlagLost, flagController.team, LocalFlagCarrier());
         }
 
-        private void HandleFlagCapturedFromStand(FlagStand stand, AbstractPlayer player)
+        private void HandleFlagCapturedFromStand(FlagStand stand, IBattlePlayer player)
         {
             if (stand == null)
             {
@@ -244,7 +244,11 @@ namespace OpenGS
 
             if (player != null)
             {
-                player.EnemyFlagReturnedToBase(true);
+                // The return effect above is the client's own. Nothing on the shared
+                // player contract carries the flag state, and growing a flag API on
+                // every player tree to satisfy this one caller would be a bigger
+                // change than the call is worth: the server is what holds a flag,
+                // and the claim about it goes out below either way.
             }
 
             // The flag that reached a stand belonged to the team that stand is
@@ -253,9 +257,9 @@ namespace OpenGS
             ReportFlagTransitionToServer(MessageType.FlagCaptured, stand.Team, player);
         }
 
-        private AbstractPlayer LocalFlagCarrier()
+        private IBattlePlayer LocalFlagCarrier()
         {
-            return player != null ? player.GetComponent<AbstractPlayer>() : null;
+            return player != null ? player.GetComponent<IBattlePlayer>() : null;
         }
 
         /// <summary>
@@ -296,7 +300,7 @@ namespace OpenGS
         private void ReportFlagTransitionToServer(
             string messageType,
             ETeam flagTeam,
-            AbstractPlayer carrier,
+            IBattlePlayer carrier,
             string returnReason = null)
         {
             if (networkManager == null || !networkManager.IsConnected())
@@ -315,7 +319,7 @@ namespace OpenGS
                 return;
             }
 
-            var position = carrier != null ? (Vector2)carrier.transform.position : Vector2.zero;
+            var position = carrier != null ? (Vector2)carrier.Transform.position : Vector2.zero;
             var eventKey = CreateFlagEventKey(messageType, flagTeam.ToString(), carrierId, position.x, position.y);
 
             JObject json = messageType switch
@@ -420,7 +424,7 @@ namespace OpenGS
             var player = Instantiate(prefab, spawnPos, Quaternion.identity);
             player.name = "MyPlayer";
 
-            var iPlayer = player.GetComponent<AbstractPlayer>();
+            var iPlayer = player.GetComponent<IBattlePlayer>();
             if (iPlayer != null)
             {
                 iPlayer.SetPlayerType(EPlayerType.MyPlayer);
@@ -467,7 +471,7 @@ namespace OpenGS
             var oldPlayerId = Guid.Empty;
             if (player != null)
             {
-                oldPlayerId = player.GetComponent<AbstractPlayer>()?.UniqueID() ?? Guid.Empty;
+                oldPlayerId = player.GetComponent<IBattlePlayer>()?.UniqueID() ?? Guid.Empty;
                 Destroy(player);
                 player = null;
             }
@@ -478,7 +482,7 @@ namespace OpenGS
 
             if (player != null)
             {
-                var playerComponent = player.GetComponent<AbstractPlayer>();
+                var playerComponent = player.GetComponent<IBattlePlayer>();
                 if (playerComponent != null && oldPlayerId != Guid.Empty)
                 {
                     playerComponent.SetUniqueID(oldPlayerId);
@@ -490,33 +494,6 @@ namespace OpenGS
             ReportRespawnToServer();
 
             Debug.Log($"[CTF] My player respawned for {team} at {spawnPos}.");
-        }
-
-        /// <summary>
-        /// Tells the server this player is back.
-        /// <para>
-        /// A respawn used to be entirely local: the client rebuilt its player and
-        /// the server kept the health it had already been reduced to, which is
-        /// zero. The hit path refuses a target whose health is not above zero, so
-        /// from then on nobody could shoot this player at all and they were
-        /// untouchable for the rest of the match while walking around the map.
-        /// </para>
-        /// <para>
-        /// The position is not sent. A respawn position is the server's to decide,
-        /// and it is the one thing about a respawn the client must not be believed
-        /// on: a client that chose where it comes back could come back anywhere.
-        /// </para>
-        /// </summary>
-        private void ReportRespawnToServer()
-        {
-            if (!IsOnlineMatch() || networkManager == null || !networkManager.IsConnected())
-            {
-                return;
-            }
-
-            var message = RUDPMessageBuilder.CreatePlayerRespawn(ResolveLocalPlayerId(), Vector2.zero);
-            AttachRoomIdentifiers(message, ResolveCurrentMatchRoom());
-            networkManager.SendToServer(message);
         }
 
         private void CreateOtherPlayers()
@@ -577,7 +554,7 @@ namespace OpenGS
                 var playerObj = Instantiate(prefab, spawnPos, Quaternion.identity);
                 playerObj.name = $"OtherPlayer_{info.Name}";
 
-                var playerComponent = playerObj.GetComponent<AbstractPlayer>();
+                var playerComponent = playerObj.GetComponent<IBattlePlayer>();
                 if (playerComponent != null)
                 {
                     playerComponent.SetPlayerType(EPlayerType.OtherPlayer);
@@ -1303,27 +1280,6 @@ namespace OpenGS
                 ["WinningTeam"] = winningTeam,
                 ["MyTeam"] = myTeam
             });
-        }
-
-        private MatchRoom ResolveCurrentMatchRoom()
-        {
-            var manager = MatchRoomManager();
-            if (manager == null)
-            {
-                return null;
-            }
-
-            if (IsOnlineMatch() && manager.OnlineMatchRoom != null)
-            {
-                return manager.OnlineMatchRoom;
-            }
-
-            if (manager.OfflineMatchRoom != null)
-            {
-                return manager.OfflineMatchRoom;
-            }
-
-            return manager.OnlineMatchRoom ?? manager.OfflineMatchRoom;
         }
 
         private static string ResolveFlagEventKey(JObject json, EFlagEventType eventType, ETeam team, string playerId)

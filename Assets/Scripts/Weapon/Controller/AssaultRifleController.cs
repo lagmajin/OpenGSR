@@ -27,12 +27,24 @@ namespace OpenGS
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             bullet.transform.rotation = Quaternion.Euler(0, 0, angle);
 
-            var bulletAgent = bullet.GetComponent<AbstractBulletAgent>();
-            if (bulletAgent != null)
+            // The bullet prefab every gun points at carries BulletController, which
+            // is the component that actually moves and hits. Asking for
+            // AbstractBulletAgent here always came back null, so every rifle this
+            // controller was on spawned a bullet and destroyed it in the same
+            // frame: five weapons that fired nothing at all when the server was not
+            // there to own the damage.
+            var owner = GetOwnerPlayer();
+            var controller = bullet.GetComponent<BulletController>();
+            if (controller != null)
             {
-                var owner = GetOwnerPlayer();
-                bulletAgent.SetOwnerInfo(GetPlayerID(owner), Name, owner != null ? owner.Team() : ETeam.NoTeam);
-                bulletAgent.Launch(dir, bulletSpeed);
+                controller.Init(
+                    dir,
+                    bulletSpeed,
+                    GetEffectiveDamage(owner),
+                    GetPlayerID(owner),
+                    Name,
+                    owner != null ? owner.Team() : ETeam.NoTeam,
+                    ResolveBulletDamageType());
             }
             else
             {

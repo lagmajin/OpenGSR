@@ -85,7 +85,7 @@ namespace OpenGS
             UpdateDisplay();
         }
 
-        private void HandlePlayerDied(AbstractPlayer player)
+        private void HandlePlayerDied(IBattlePlayer player)
         {
             if (player == null || player.PlayerType() != EPlayerType.MyPlayer) return;
 
@@ -98,7 +98,7 @@ namespace OpenGS
             StartCountdown();
         }
 
-        private void HandlePlayerRespawned(AbstractPlayer player)
+        private void HandlePlayerRespawned(IBattlePlayer player)
         {
             if (player == null || player.PlayerType() != EPlayerType.MyPlayer) return;
             HideCanvas();

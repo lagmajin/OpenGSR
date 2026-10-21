@@ -68,9 +68,19 @@ namespace OpenGS
             ParseNetworkMatchMessageFromServer(json);
         }
 
+        /// <summary>
+        /// A result that arrived from the match server rather than the lobby.
+        /// <para>
+        /// Both servers use the same notification envelope for a finished match, so
+        /// the parsing is the same work; keeping one path means a result that came
+        /// from the match server is not silently dropped while the same message
+        /// from the lobby renders. It used to be an empty method with a note saying
+        /// it was unused, which left that whole path doing nothing.
+        /// </para>
+        /// </summary>
         public void ParseMessageFromMatchServer(JObject json)
         {
-            // 使わない
+            ParseNetworkMatchMessageFromServer(json);
         }
 
         private void OnDataReceived(JObject json)
@@ -216,6 +226,39 @@ namespace OpenGS
             }
 
             resultUIManager.UpdateResultList(parsedData);
+
+            ApplyReportedProgress(json);
+        }
+
+        /// <summary>
+        /// Takes the experience a finished match earned.
+        /// <para>
+        /// The server sends this per player on the result, and nothing on this side
+        /// read it: a player could win a match, go up a level, and the profile
+        /// still said the level they started on. The total is adopted rather than
+        /// the gain added, so a result delivered twice is not credited twice.
+        /// </para>
+        /// </summary>
+        private void ApplyReportedProgress(JObject json)
+        {
+            if (json == null || json["XpGained"] == null && json["NewLevel"] == null)
+            {
+                return;
+            }
+
+            var newLevel = json["NewLevel"]?.ToObject<int>() ?? 0;
+            if (newLevel <= 0)
+            {
+                // A result that carries no level is not a progress report, and
+                // reading the level off the login would reset a profile that has
+                // since been told a different one.
+                return;
+            }
+
+            AccountManager.Instance?.ApplyMatchProgress(
+                newLevel,
+                json["TotalExp"]?.ToObject<long>() ?? 0L,
+                json["XpGained"]?.ToObject<long>() ?? 0L);
         }
 
         protected override void GoToNextScene()

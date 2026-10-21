@@ -42,7 +42,7 @@ namespace OpenGS
                 return;
             }
 
-            var owner = GetComponentInParent<AbstractPlayer>();
+            var owner = GetComponentInParent<IBattlePlayer>();
             var resolvedOwnerId = !string.IsNullOrWhiteSpace(ownerPlayerId)
                 ? ownerPlayerId
                 : owner != null ? owner.UniqueID().ToString() : string.Empty;

@@ -245,6 +245,11 @@ namespace OpenGS
 
         protected override void OnQuitUnityEditor()
         {
+            // Leaving play mode does not unload the scene, so the handlers bound
+            // in Start are still registered against the same objects the next
+            // play mode will bind again. They fire twice per lifetime otherwise.
+            SceneManager.sceneLoaded -= GameSceneLoaded;
+            CancelInvoke();
         }
 
         private void Reset()
@@ -260,8 +265,32 @@ namespace OpenGS
             }
         }
 
-        void OnBackRoomFromBattle()
+        /// <summary>
+        /// Returns to the wait room after a battle.
+        /// <para>
+        /// This used to be an empty method, so a battle that ended and asked to
+        /// come back left the client on the result screen with nowhere to go. The
+        /// match room is dropped first, because it belonged to the match that just
+        /// finished and the next room must not be read out of it.
+        /// </para>
+        /// </summary>
+        public void OnBackRoomFromBattle()
         {
+            try
+            {
+                DependencyInjectionConfig.Resolve<MatchRoomManager>()?.RemoveOnlineMatchRoom();
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[OnlineWaitRoomScene] Match room was not cleared: {ex.Message}");
+            }
+
+            var waitRoomScene = generalSceneMasterData != null
+                ? generalSceneMasterData.OnlineWaitRoomScene()
+                : GeneralSceneMasterData.Instance()?.OnlineWaitRoomScene();
+
+            GameFlagsManager.GetInstance().BeforeSceneName = SceneManager.GetActiveScene().name;
+            RequestSceneTransition(waitRoomScene, "BattleToWaitRoom");
         }
 
         public void ChangeGameMode()

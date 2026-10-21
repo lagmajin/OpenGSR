@@ -48,7 +48,23 @@ namespace OpenGS
         public override void Start()
         {
             // Bind が終わったので、Scene上のオブジェクトに Inject
-           // Container.Inject(onlineLoadingSceneManagerGO);
+            if (onlineLoadingSceneManagerGO == null)
+            {
+                return;
+            }
+
+            // Inject only fills in what the object actually asks for, so an object
+            // with no [Inject] members is left exactly as it was. It used to be
+            // commented out, which left the loading scene's manager running with
+            // every injected dependency null.
+            try
+            {
+                Container.Inject(onlineLoadingSceneManagerGO);
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogWarning($"[GameInstaller] Could not inject {onlineLoadingSceneManagerGO.name}: {ex.Message}");
+            }
         }
 
         private void TryBindResolvedInstance<T>()

@@ -21,6 +21,7 @@ namespace OpenGS
         private Button b;
         private Button c;
         private GeneralServerNetworkManager networkManager;
+        private ClientNetworkManager authoritativeClient;
         private IDisposable authSubscription;
         private bool authRequestPending;
         private bool transitionRequested;
@@ -41,7 +42,6 @@ namespace OpenGS
             try
             {
                 BindSceneUi();
-                networkManager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
                 BindAuthStream();
             }
             catch (Exception ex)
@@ -54,6 +54,23 @@ namespace OpenGS
         {
             loginButton?.onClick.RemoveListener(TryLogin);
             createAccountButton?.onClick.RemoveListener(TrySignUpFromScene);
+
+            if (idInput != null)
+            {
+                idInput.onValueChanged.RemoveListener(OnFieldChanged);
+            }
+
+            if (passwordInput != null)
+            {
+                passwordInput.onValueChanged.RemoveListener(OnFieldChanged);
+            }
+
+            if (authoritativeClient != null)
+            {
+                authoritativeClient.TcpMessageReceived -= HandleAuthResponse;
+                authoritativeClient = null;
+            }
+
             authSubscription?.Dispose();
             authSubscription = null;
             base.OnDestroy();
@@ -64,8 +81,30 @@ namespace OpenGS
             var hasBeforeLoginData = GameManager().HasBeforeLoginData();
         }
 
+        /// <summary>
+        /// The input fields, checked for something the server will accept.
+        /// <para>
+        /// Both buttons can be pressed with the fields empty, and the request
+        /// went out anyway to be rejected by the server. This is only a check on
+        /// the client; TryLogin still validates before it sends.
+        /// </para>
+        /// </summary>
         private void StringCheck()
         {
+            var accountName = idInput != null ? idInput.text : id != null ? id.text : string.Empty;
+            var password = passwordInput != null ? passwordInput.text : pass != null ? pass.text : string.Empty;
+
+            var canSubmit = !string.IsNullOrWhiteSpace(accountName) && !string.IsNullOrWhiteSpace(password);
+
+            if (loginButton != null)
+            {
+                loginButton.interactable = canSubmit;
+            }
+
+            if (createAccountButton != null)
+            {
+                createAccountButton.interactable = canSubmit;
+            }
         }
 
         public void TryLogin()
@@ -83,22 +122,17 @@ namespace OpenGS
                 return;
             }
 
-            if (!TryResolveNetworkManager(out var manager))
-            {
-                return;
-            }
-
-            authRequestPending = true;
-            pendingAccountName = accountName;
-            Invoke(nameof(ClearAuthRequest), 10f);
-            manager.SendMessage(new JObject
+            if (!TrySendAuthRequest(new JObject
             {
                 ["MessageType"] = MessageType.LoginRequest,
                 ["AccountName"] = accountName,
                 ["AccountID"] = accountName,
                 ["Password"] = password,
                 ["GlobalUserId"] = Guid.NewGuid().ToString("N")
-            });
+            }, accountName))
+            {
+                Debug.LogWarning("[LoginAndSignUpScene] The login request could not be sent.");
+            }
         }
 
         public void TrySignUp(in string id, in string password)
@@ -114,15 +148,7 @@ namespace OpenGS
                 return;
             }
 
-            if (!TryResolveNetworkManager(out var manager))
-            {
-                return;
-            }
-
-            authRequestPending = true;
-            pendingAccountName = id.Trim();
-            Invoke(nameof(ClearAuthRequest), 10f);
-            manager.SendMessage(new JObject
+            TrySendAuthRequest(new JObject
             {
                 ["MessageType"] = MessageType.CreateAccountRequest,
                 ["AccountName"] = id.Trim(),
@@ -130,7 +156,54 @@ namespace OpenGS
                 ["DisplayName"] = id.Trim(),
                 ["Password"] = password,
                 ["GlobalUserId"] = Guid.NewGuid().ToString("N")
-            });
+            }, id.Trim());
+        }
+
+        /// <summary>
+        /// Sends an authentication request to whichever server this client is
+        /// meant to be talking to.
+        /// <para>
+        /// It used to always go to the local simulation manager. That manager
+        /// discards the address it is given and keeps its accounts in a file next
+        /// to the game, so in the authoritative configuration the credentials were
+        /// checked against a stub and the real server never heard of the account.
+        /// The gate already existed to say which of the two this client uses; the
+        /// login screen was simply not asking it.
+        /// </para>
+        /// </summary>
+        private bool TrySendAuthRequest(JObject request, string accountName = "")
+        {
+            if (NetworkAuthorityGate.IsLocalSimulation())
+            {
+                if (!TryResolveNetworkManager(out var manager))
+                {
+                    return false;
+                }
+
+                authRequestPending = true;
+                pendingAccountName = accountName;
+                Invoke(nameof(ClearAuthRequest), 10f);
+                manager.SendMessage(request);
+                return true;
+            }
+
+            var client = FindFirstObjectByType<ClientNetworkManager>();
+            if (client == null)
+            {
+                Debug.LogWarning(
+                    "[LoginAndSignUpScene] ClientNetworkManager is not present; the authoritative server cannot be asked.");
+                return false;
+            }
+
+            authRequestPending = true;
+            pendingAccountName = accountName;
+            Invoke(nameof(ClearAuthRequest), 10f);
+
+            // The client network manager keeps the resume token and settles the
+            // player id when the answer comes back, so the request is only the
+            // credentials going out.
+            client.SendTcpMessage(request);
+            return true;
         }
 
         private void TrySignUpFromScene()
@@ -151,6 +224,25 @@ namespace OpenGS
             loginButton?.onClick.AddListener(TryLogin);
             createAccountButton?.onClick.RemoveListener(TrySignUpFromScene);
             createAccountButton?.onClick.AddListener(TrySignUpFromScene);
+
+            // The buttons follow the fields, so an empty form cannot be submitted
+            // at all rather than being sent and refused.
+            if (idInput != null)
+            {
+                idInput.onValueChanged.AddListener(OnFieldChanged);
+            }
+
+            if (passwordInput != null)
+            {
+                passwordInput.onValueChanged.AddListener(OnFieldChanged);
+            }
+
+            StringCheck();
+        }
+
+        private void OnFieldChanged(string _)
+        {
+            StringCheck();
         }
 
         private bool TryResolveNetworkManager(out GeneralServerNetworkManager manager)
@@ -176,16 +268,46 @@ namespace OpenGS
             }
         }
 
+        /// <summary>
+        /// Listens for the answer on whichever transport the request goes out on.
+        /// <para>
+        /// It used to subscribe to the local simulation manager only. The
+        /// authoritative path sends its request over the real client, so the
+        /// answer came back on a stream this screen was not listening to: the
+        /// login succeeded, the resume token was stored, and the screen sat there
+        /// having done nothing about it.
+        /// </para>
+        /// </summary>
         private void BindAuthStream()
         {
-            if (authSubscription != null || networkManager == null)
+            if (NetworkAuthorityGate.IsLocalSimulation())
+            {
+                if (authSubscription != null || networkManager == null)
+                {
+                    return;
+                }
+
+                authSubscription = networkManager.DataReceivedStream
+                    .ObserveOnMainThread()
+                    .Subscribe(HandleAuthResponse);
+                return;
+            }
+
+            if (authoritativeClient != null)
             {
                 return;
             }
 
-            authSubscription = networkManager.DataReceivedStream
-                .ObserveOnMainThread()
-                .Subscribe(HandleAuthResponse);
+            authoritativeClient = FindFirstObjectByType<ClientNetworkManager>();
+            if (authoritativeClient == null)
+            {
+                Debug.LogWarning(
+                    "[LoginAndSignUpScene] ClientNetworkManager is not present; the answer to an authoritative " +
+                    "login will not be seen by this screen.");
+                return;
+            }
+
+            authoritativeClient.TcpMessageReceived += HandleAuthResponse;
         }
 
         private void HandleAuthResponse(JObject json)

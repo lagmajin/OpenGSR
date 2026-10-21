@@ -447,6 +447,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1511226923}
+  - component: {fileID: 1967656231}
   m_Layer: 0
   m_Name: RespawnPoints
   m_TagString: Untagged
@@ -454,6 +455,19 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1967656231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511226922}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2527f44acf2f5b4ca7cf3f6183ae9e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoint: {fileID: 0}
 --- !u!4 &1511226923
 Transform:
   m_ObjectHideFlags: 0
@@ -497,6 +511,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 428cbc2880ebfce46956fcb320aa0785, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  respawnPoints: {fileID: 1967656231}
   bgm: {fileID: 0}
   time: 0
 --- !u!4 &1967656230

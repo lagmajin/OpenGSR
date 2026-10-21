@@ -20,7 +20,21 @@ namespace OpenGSCore
     {
         public MultipleKey Key { get; set; } = null!;
 
-        
+        /// <summary>
+        /// Whether a search that finds several players should report them all
+        /// rather than the first one.
+        /// </summary>
+        public bool FindAll { get; set; }
+
+        public SearchInfo()
+        {
+        }
+
+        public SearchInfo(in MultipleKey key, bool findAll = false)
+        {
+            Key = key;
+            FindAll = findAll;
+        }
     }
 
     public class PlayerData
@@ -52,11 +66,45 @@ namespace OpenGSCore
 
         }
 
-        public void Player(SearchInfo info)
+        /// <summary>
+        /// Searches for players by their search key.
+        /// <para>
+        /// The key is looked up by id, ignoring casing, because that is the part
+        /// of it a player is actually identified by; the address half of a key is
+        /// not stored per player here. A key with no id cannot identify anybody and
+        /// matches nothing, rather than matching every player with a missing id.
+        /// </para>
+        /// </summary>
+        /// <returns>
+        /// The players that matched: one entry for a plain search, every match for
+        /// a search that asked for all of them. Empty when nothing matched.
+        /// </returns>
+        public List<PlayerData> Player(SearchInfo info)
         {
+            var matches = new List<PlayerData>();
+            var id = info?.Key?.Id();
 
+            if (string.IsNullOrWhiteSpace(id))
+            {
+                return matches;
+            }
 
+            foreach (var entry in data)
+            {
+                if (!string.Equals(entry?.info?.Id, id, StringComparison.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
 
+                matches.Add(entry);
+
+                if (!info!.FindAll)
+                {
+                    return matches;
+                }
+            }
+
+            return matches;
         }
 
         public PlayerData? Player(string id)

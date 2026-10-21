@@ -83,8 +83,8 @@ namespace OpenGS
                 return null;
             }
 
-            var player = hit.GetComponentInParent<AbstractPlayer>();
-            return player != null ? player.transform : hit.transform;
+var player = hit.GetComponentInParent<IBattlePlayer>();
+            return player != null ? player.Transform : (Transform)hit.transform;
         }
 
         protected bool IsTargetVisible()

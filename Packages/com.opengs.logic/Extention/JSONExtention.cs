@@ -81,8 +81,43 @@ namespace OpenGSCore
             return null;
         }
 
-        public static bool? GetBoolAny(this JObject obj, params string[] keys)
+        /// <summary>
+        /// Reads the first key that holds a number. A field a client sends as a
+        /// float is often sent as an int by a client built against an older
+        /// contract, and the reverse, so both spellings resolve to one float.
+        /// </summary>
+        public static float? GetFloatAny(this JObject obj, params string[] keys)
         {
+            if (obj == null || keys == null)
+            {
+                return null;
+            }
+
+            foreach (var key in keys)
+            {
+                if (string.IsNullOrWhiteSpace(key))
+                {
+                    continue;
+                }
+
+                if (!obj.TryGetValue(key, out JToken? token) || token == null)
+                {
+                    continue;
+                }
+
+                try
+                {
+                    return token.ToObject<float>();
+                }
+                catch
+                {
+                }
+            }
+
+            return null;
+        }
+
+        public static bool? GetBoolAny(this JObject obj, params string[] keys)        {
             if (obj == null || keys == null)
             {
                 return null;

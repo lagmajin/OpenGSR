@@ -475,7 +475,7 @@ namespace OpenGS.EditorTools
                 {
                     var player = players[i];
                     EditorGUILayout.LabelField(
-                        player.gameObject.name,
+                        player.Root.name,
                         $"{ShortGuid(player.UniqueID())} | {player.PlayerType()} | {player.Team()} | HP {FormatGauge(player.GetHP(), player.GetMaxHP())} | Armor {FormatGauge(player.GetArmor(), player.GetMaxArmor())} | Booster {FormatGauge(player.GetBooster(), player.GetMaxBooster())}"
                     );
                 }
@@ -512,17 +512,17 @@ namespace OpenGS.EditorTools
                     {
                         using (new EditorGUILayout.HorizontalScope())
                         {
-                            EditorGUILayout.LabelField(player.gameObject.name, EditorStyles.boldLabel);
+                            EditorGUILayout.LabelField(player.Root.name, EditorStyles.boldLabel);
                             GUILayout.FlexibleSpace();
 
                             if (GUILayout.Button("Ping", GUILayout.Width(48f)))
                             {
-                                EditorGUIUtility.PingObject(player.gameObject);
+                                EditorGUIUtility.PingObject(player.Root);
                             }
 
                             if (GUILayout.Button("Select", GUILayout.Width(56f)))
                             {
-                                Selection.activeObject = player.gameObject;
+                                Selection.activeObject = player.Root;
                             }
                         }
 
@@ -531,7 +531,7 @@ namespace OpenGS.EditorTools
                         EditorGUILayout.LabelField("Type", player.PlayerType().ToString());
                         EditorGUILayout.LabelField("Team", player.Team().ToString());
                         EditorGUILayout.LabelField("Dead", player.IsDead() ? "Yes" : "No");
-                        EditorGUILayout.LabelField("Position", FormatVector3(player.transform.position));
+                        EditorGUILayout.LabelField("Position", FormatVector3(player.Transform.position));
                         EditorGUILayout.LabelField("HP", FormatGauge(player.GetHP(), player.GetMaxHP()));
                         EditorGUILayout.LabelField("Armor", FormatGauge(player.GetArmor(), player.GetMaxArmor()));
                         EditorGUILayout.LabelField("Booster", FormatGauge(player.GetBooster(), player.GetMaxBooster()));
@@ -1119,54 +1119,54 @@ namespace OpenGS.EditorTools
             trackedRegistry = null;
         }
 
-        private void HandlePlayerRegistryEvent(AbstractPlayer player)
+        private void HandlePlayerRegistryEvent(IBattlePlayer player)
         {
             if (player == null || !captureEvents)
             {
                 return;
             }
 
-            EnqueueEvent("PlayerRegistry", player.GetType().Name, $"{player.gameObject.name} ({ShortGuid(player.UniqueID())})");
+            EnqueueEvent("PlayerRegistry", player.GetType().Name, $"{player.Root.name} ({ShortGuid(player.UniqueID())})");
         }
 
-        private void HandlePlayerHealthChanged(AbstractPlayer player, float newHp)
+        private void HandlePlayerHealthChanged(IBattlePlayer player, float newHp)
         {
             if (player == null || !captureEvents)
             {
                 return;
             }
 
-            EnqueueEvent("PlayerRegistry", nameof(PlayerRegistry.OnPlayerHealthChanged), $"{player.gameObject.name} hp={newHp:F1}/{player.GetMaxHP():F1}");
+            EnqueueEvent("PlayerRegistry", nameof(PlayerRegistry.OnPlayerHealthChanged), $"{player.Root.name} hp={newHp:F1}/{player.GetMaxHP():F1}");
         }
 
-        private void HandlePlayerArmorChanged(AbstractPlayer player, float newArmor)
+        private void HandlePlayerArmorChanged(IBattlePlayer player, float newArmor)
         {
             if (player == null || !captureEvents)
             {
                 return;
             }
 
-            EnqueueEvent("PlayerRegistry", nameof(PlayerRegistry.OnPlayerArmorChanged), $"{player.gameObject.name} armor={newArmor:F1}/{player.GetMaxArmor():F1}");
+            EnqueueEvent("PlayerRegistry", nameof(PlayerRegistry.OnPlayerArmorChanged), $"{player.Root.name} armor={newArmor:F1}/{player.GetMaxArmor():F1}");
         }
 
-        private void HandlePlayerBoosterChanged(AbstractPlayer player, float newBooster)
+        private void HandlePlayerBoosterChanged(IBattlePlayer player, float newBooster)
         {
             if (player == null || !captureEvents)
             {
                 return;
             }
 
-            EnqueueEvent("PlayerRegistry", nameof(PlayerRegistry.OnPlayerBoosterChanged), $"{player.gameObject.name} booster={newBooster:F1}/{player.GetMaxBooster():F1}");
+            EnqueueEvent("PlayerRegistry", nameof(PlayerRegistry.OnPlayerBoosterChanged), $"{player.Root.name} booster={newBooster:F1}/{player.GetMaxBooster():F1}");
         }
 
-        private void HandlePlayerStatusChanged(AbstractPlayer player, OpenGS.PlayerStatus status)
+        private void HandlePlayerStatusChanged(IBattlePlayer player, OpenGS.PlayerStatus status)
         {
             if (player == null || !captureEvents)
             {
                 return;
             }
 
-            EnqueueEvent("PlayerRegistry", nameof(PlayerRegistry.OnPlayerStatusChanged), $"{player.gameObject.name} status={(status != null ? "updated" : "null")}");
+            EnqueueEvent("PlayerRegistry", nameof(PlayerRegistry.OnPlayerStatusChanged), $"{player.Root.name} status={(status != null ? "updated" : "null")}");
         }
 
         private void EnqueueEvent(string channel, string name, string summary)

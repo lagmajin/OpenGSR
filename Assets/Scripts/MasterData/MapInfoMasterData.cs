@@ -49,9 +49,9 @@ namespace OpenGS
             return mapDisplayName;
         }
 
-        public void CanPlayDeathMatch()
+        public bool CanPlayDeathMatch()
         {
-
+            return canPlayDM;
         }
 
         public SceneObject MapScene()
@@ -93,12 +93,26 @@ namespace OpenGS
         }
 
         #if UNITY_EDITOR
+        /// <summary>
+        /// Fills the display name from the map when it has not been written.
+        /// <para>
+        /// The name and the map are two fields describing the same thing, and the
+        /// map is the one that cannot go missing. Deriving the name keeps a new
+        /// asset from shipping with an empty label, and leaves a name that was
+        /// deliberately set alone.
+        /// </para>
+        /// </summary>
+        [ContextMenu("表示名をマップから設定")]
         public void MapChanged()
         {
+            if (!string.IsNullOrWhiteSpace(mapDisplayName))
+            {
+                return;
+            }
 
+            mapDisplayName = map.ToString();
+            Debug.Log($"[MapInfoMasterData] {name}: display name set to {mapDisplayName}.", this);
         }
-
-
         #endif
 
 

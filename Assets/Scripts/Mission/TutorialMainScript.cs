@@ -457,7 +457,7 @@ namespace OpenGS
 
             if (e is PlayerDeadEvent deadEvent)
             {
-                var myPlayerId = player != null ? player.GetComponent<AbstractPlayer>()?.UniqueID().ToString() : null;
+                var myPlayerId = player != null ? player.GetComponent<IBattlePlayer>()?.UniqueID().ToString() : null;
                 if (!string.IsNullOrWhiteSpace(myPlayerId) && deadEvent.PlayerID() == myPlayerId)
                 {
                     RespawnPlayer();

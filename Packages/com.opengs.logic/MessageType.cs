@@ -126,6 +126,16 @@ namespace OpenGSCore
         public const string ItemUseRefused = "ItemUseRefused";
 
         public const string PlayerPose = "PlayerPose";
+
+        // Reloading and ammunition. The client asked for a reload and the server
+        // had no route for the message at all, so the request fell into the
+        // unknown-event branch and a reload never touched the server's count. The
+        // claim is what the client asks for and the ruling is what the server
+        // decided, so they are named apart the way damage and death are.
+        public const string PlayerReload = "PlayerReload";
+        public const string PlayerReloaded = "PlayerReloaded";
+        public const string AmmoUpdate = "AmmoUpdate";
+
         public const string GameStateSync = "GameStateSync";
         public const string MatchEndNotification = "MatchEndNotification";
         public const string MatchResult = MatchEndNotification;
@@ -313,6 +323,8 @@ namespace OpenGSCore
                 // under the shorter name, so the ruling it reads back has to
                 // resolve to the same fact rather than to an unknown message.
                 "ItemPickup" => FieldItemPickup,
+                "AmmoUpdateNotification" => AmmoUpdate,
+                "ReloadRequest" => PlayerReload,
                 "LoadingStartedNotification" => LoadingStartedNotification,
                 "LoadingProgressNotification" => LoadingProgressNotification,
                 "LoadingCompletedNotification" => LoadingCompletedNotification,

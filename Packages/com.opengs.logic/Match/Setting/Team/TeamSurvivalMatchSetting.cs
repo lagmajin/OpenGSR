@@ -7,9 +7,15 @@ namespace OpenGSCore
 {
     public class TeamSurvivalMatchSetting : AbstractTeamMatchSetting
     {
-        public int SurvivalTimeMinutes { get; set; } = 10;
-        public bool LastTeamStanding { get; set; } = true;
-        public float HealthMultiplier { get; set; } = 2.0f;
+        private int survivalTimeMinutes = 10;
+
+        public int SurvivalTimeMinutes { get => survivalTimeMinutes; set => Set(ref survivalTimeMinutes, value); }
+        private bool lastTeamStanding = true;
+
+        public bool LastTeamStanding { get => lastTeamStanding; set => Set(ref lastTeamStanding, value); }
+        private float healthMultiplier = 2.0f;
+
+        public float HealthMultiplier { get => healthMultiplier; set => Set(ref healthMultiplier, value); }
 
         public TeamSurvivalMatchSetting(int maxPlayerCapacity = 8, bool teamBalance = true)
             : base(EGameMode.TeamSurvival, true, teamBalance)
@@ -32,3 +38,4 @@ namespace OpenGSCore
         }
     }
 }
+

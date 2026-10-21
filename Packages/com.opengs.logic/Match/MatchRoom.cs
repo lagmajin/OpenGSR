@@ -35,6 +35,18 @@ namespace OpenGSCore
         /// </summary>
         public AbstractMatchRule? Rule => rule;
 
+        /// <summary>
+        /// The match state the rule is judged by.
+        /// <para>
+        /// It was private with no reader outside this file, so the result of a
+        /// match could only be had by whoever asked the rule. The rule is what ends
+        /// a match and this is what it ends it on, and the two being separately
+        /// reachable is how a result can be read from one and the match run on the
+        /// other.
+        /// </para>
+        /// </summary>
+        public AbstractMatchSituation? CurrentSituation => situation;
+
         public AbstractMatchSetting Setting { get; set; } = null!;
 
         private AbstractMatchSituation? Situation { get; set; } = null;
@@ -130,12 +142,23 @@ namespace OpenGSCore
                 EGameMode.TeamDeathMatch => new AbstractTeamMatchSituation(),
                 EGameMode.CaptureTheFlag => new CaptureTheFlagMatchSituation(),
                 EGameMode.TeamSurvival => new TeamSurvivalMatchSituation(),
+
+                // A mission has its own numbers: an objective and a life count.
+                // It was falling through to the survival situation, which has a
+                // kill count and an alive count, neither of which is what ends a
+                // mission, so the result could not say how far it had got.
+                EGameMode.Mission => new MissionMatchSituation(),
+
                 EGameMode.DeathMatch => new AbstractMatchSituation(),
                 _ => new AbstractMatchSituation()
             };
-            
+
             situation.mode = setting.Mode;
             situation.RemainingTimeSec = (rule != null) ? rule.MatchTimeMSec() / 1000f : 300f;
+
+            // A mission's result is read off its situation, so the situation starts
+            // holding the same numbers the rule is judging by.
+            (situation as MissionMatchSituation)?.AdoptFrom(rule as MissionMatchRule);
         }
 
         public bool ChangeOwnerRandom()
@@ -466,7 +489,44 @@ namespace OpenGSCore
 
             player.Deaths++;
             situation?.RecordDeath();
+            SpendLife(player);
             RefreshAliveCounts();
+        }
+
+        /// <summary>
+        /// Spends one of a player's goes, on a mode that has them.
+        /// <para>
+        /// The life count was declared on the player as a number of three and
+        /// nothing ever wrote to it, so a mission asked how many goes the party had
+        /// left and was always told three, whatever had happened. A mission ends on
+        /// running out, so the count has to come down here or it never will.
+        /// </para>
+        /// <para>
+        /// It is this player's own count that goes down, by one. Setting it back
+        /// to the mission's count less one would refill them on their second death,
+        /// so a player with three lives would be back to two for ever.
+        /// </para>
+        /// </summary>
+        private void SpendLife(PlayerInfo player)
+        {
+            if (player == null || !(rule is MissionMatchRule missionRule))
+            {
+                return;
+            }
+
+            player.LifeCount = Math.Max(0, player.LifeCount - 1);
+
+            var lifeRemaining = Players
+                .Where(candidate => candidate != null)
+                .Sum(candidate => Math.Max(0, candidate.LifeCount));
+
+            missionRule.RecordLifeLost(lifeRemaining);
+
+            if (situation is MissionMatchSituation missionSituation)
+            {
+                missionSituation.LifeRemaining = lifeRemaining;
+                missionSituation.AdoptFrom(missionRule);
+            }
         }
 
         /// <summary>
@@ -488,6 +548,67 @@ namespace OpenGSCore
 
             teamSuv.SetAliveCount(ETeam.Red, Players.Count(p => p.Team == ETeam.Red && p.Health > 0));
             teamSuv.SetAliveCount(ETeam.Blue, Players.Count(p => p.Team == ETeam.Blue && p.Health > 0));
+        }
+
+        /// <summary>
+        /// Puts a player into the match alive and at full health.
+        /// <para>
+        /// Restoring here rather than in each caller's own preparation is what
+        /// makes "a match starts with everybody alive" a property of starting a
+        /// match instead of something each of the several places that prepare a
+        /// player has to remember.
+        /// </para>
+        /// </summary>
+        private static void RestorePlayerForMatchStart(PlayerInfo player)
+        {
+            if (player == null)
+            {
+                return;
+            }
+
+            player.MaxHealth = player.MaxHealth > 0 ? player.MaxHealth : 100;
+            player.Health = player.MaxHealth;
+        }
+
+        /// <summary>
+        /// Gives a player the mission's lives, on a mode that has them.
+        /// <para>
+        /// A mission's result is read off the life count, and the count was never
+        /// written for a match, so it kept whatever the player last had. Restoring
+        /// it here is what makes a mission start on the number of goes it was
+        /// configured with rather than on the number from the last attempt.
+        /// </para>
+        /// </summary>
+        private void GivePlayerItsLives(PlayerInfo player)
+        {
+            if (player == null || !(rule is MissionMatchRule missionRule))
+            {
+                return;
+            }
+
+            player.LifeCount = Math.Max(0, missionRule.LifeCount);
+        }
+
+        /// <summary>
+        /// Records one step of a mission's objective.
+        /// <para>
+        /// The objective has to be writable from the thing that achieves it, and
+        /// it has to reach the rule and the situation that the result is read out
+        /// of. Doing it in one place is what stops the rule and the result
+        /// disagreeing about how far the mission got.
+        /// </para>
+        /// </summary>
+        /// <returns>True when this step completed the objective.</returns>
+        public bool RecordObjectiveProgress(int steps = 1)
+        {
+            if (!(rule is MissionMatchRule missionRule))
+            {
+                return false;
+            }
+
+            var completed = missionRule.RecordObjectiveProgress(steps);
+            (situation as MissionMatchSituation)?.AdoptFrom(missionRule);
+            return completed;
         }
 
         /// <summary>
@@ -591,9 +712,27 @@ namespace OpenGSCore
         {
             sw.Start();
 
+            // Everybody starts the match alive. A player who died in the previous
+            // match kept the health they died with, so they came into this one at
+            // zero: the survival rules read "still alive" straight off the health,
+            // so they could count a player who had not taken part at all, and every
+            // rule that ends on the clock had already decided the round was over
+            // before it began.
+            foreach (var player in Players)
+            {
+                RestorePlayerForMatchStart(player);
+                GivePlayerItsLives(player);
+            }
+
             // The alive counts are read from the moment the match starts, so they
             // have to be right before it does.
             RefreshAliveCounts();
+
+            // The rule was built from these settings when the room was made, and
+            // it reads them again to decide the match is over. From here the match
+            // is running on the numbers it was given, so anything that writes to
+            // them afterwards is changing the terms of a match already in play.
+            Setting?.LockSettings();
 
             // ステータス更新を開始
             StartStatusUpdates();
@@ -612,9 +751,14 @@ namespace OpenGSCore
             var resultJson = evaluator.Evaluate(situation, Players);
             resultJson["RoomId"] = Id.ToString();
 
-            // マッチ終了イベントを発行
-            eventBus.PublishGameEnd();
+            // The result goes out first. The end notification carries the winner
+            // and the score, and it gets them from the room state the result
+            // handler writes, so publishing the end first meant the notification
+            // left with the result of the match before this one. It was sent with
+            // no winner at all, and a client reading it decided the match was a
+            // draw.
             eventBus.PublishGameEndWithResult(resultJson);
+            eventBus.PublishGameEnd();
 
             Playing = false;
             Finished = true;
@@ -671,6 +815,12 @@ namespace OpenGSCore
                 case TDMMatchRule tdm:
                     json["TeamKillLimit"] = tdm.TeamKillLimit;
                     break;
+                case MissionMatchRule mission:
+                    // The same numbers the rule ends the match on, so a client
+                    // showing an objective is showing this match's objective.
+                    json["ObjectiveCount"] = mission.ObjectiveCount;
+                    json["LifeCount"] = mission.LifeCount;
+                    break;
             }
         }
 
@@ -700,6 +850,20 @@ namespace OpenGSCore
             {
                 json["RedTeamKills"] = teamSituation.RedTeamKill;
                 json["BlueTeamKills"] = teamSituation.BlueTeamKill;
+            }
+
+            // A mission publishes its own numbers, so a client is not left
+            // inventing an objective out of a kill count and a life bar out of
+            // whatever it last had. The rule ends the match, so these are the
+            // rule's numbers.
+            if (rule is MissionMatchRule missionRule)
+            {
+                json["MissionType"] = (Setting as MissionMatchSetting)?.MissionType ?? string.Empty;
+                json["ObjectiveCount"] = missionRule.ObjectiveCount;
+                json["ObjectiveProgress"] = missionRule.ObjectiveProgress;
+                json["LifeCount"] = missionRule.LifeCount;
+                json["LifeRemaining"] = missionRule.LifeRemaining;
+                json["AllowRespawn"] = missionRule.CanReSpawn();
             }
 
             AddRuleSettings(json);

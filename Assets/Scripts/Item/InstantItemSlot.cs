@@ -53,13 +53,22 @@ namespace OpenGS
         }
     }
 
-    public class InstantBandAid : AbstractInstantItem
+public class InstantBandAid : AbstractInstantItem
     {
         public InstantBandAid()
         {
             type = EInstantItemType.HealthKit;
         }
     }
+
+    public class InstantMineGrenadePack : AbstractInstantItem
+    {
+        public InstantMineGrenadePack()
+        {
+            type = EInstantItemType.MineGrenadePack;
+        }
+    }
+
 
     public class InstantItemSlots
     {
@@ -210,8 +219,12 @@ namespace OpenGS
             return item;
         }
 
-        private static AbstractInstantItem CreateItem(EInstantItemType type)
+private static AbstractInstantItem CreateItem(EInstantItemType type)
         {
+            // Every type the shared contract can name. MineGrenadePack was missing
+            // here while the effect handler knew what to do with it, so a player
+            // equipped with a mine pack got a slot that could never be used and no
+            // warning: the factory returned null and the slot looked merely empty.
             return type switch
             {
                 EInstantItemType.FireBullet => new InstantFireBullet(),
@@ -219,8 +232,8 @@ namespace OpenGS
                 EInstantItemType.ClusterGrenadePack => new InstantClusterGrenadePack(),
                 EInstantItemType.PowerGrenadePack => new InstantPowerGrenadePack(),
                 EInstantItemType.MagnetGrenadePack => new InstantMagneticGrenadePack(),
+                EInstantItemType.MineGrenadePack => new InstantMineGrenadePack(),
                 EInstantItemType.HealthKit => new InstantBandAid(),
-                EInstantItemType.None => null,
                 _ => null
             };
         }

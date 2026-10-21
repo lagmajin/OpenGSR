@@ -10,7 +10,7 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public class PlayerHealthMonitor : MonoBehaviour
     {
-        private AbstractPlayer cachedPlayer;
+private IBattlePlayer cachedPlayer;
         private float lastHealthValue;
         [SerializeField] private float healthCheckInterval = 0.1f; // Check health every 0.1 seconds
         private float healthCheckTimer = 0f;
@@ -23,10 +23,14 @@ namespace OpenGS
 
         private void Start()
         {
-            cachedPlayer = GetComponent<AbstractPlayer>();
+            // Whichever tree carries the player. This asked for one specific
+            // component, and a prefab that did not have it disabled itself with an
+            // error: on every player prefab in the project, which meant this
+            // monitor reported nothing anywhere.
+            cachedPlayer = GetComponent<IBattlePlayer>();
             if (cachedPlayer == null)
             {
-                Debug.LogError("PlayerHealthMonitor: AbstractPlayer component not found on this GameObject");
+                Debug.LogError("PlayerHealthMonitor: no player component found on this GameObject");
                 enabled = false;
                 return;
             }
@@ -36,7 +40,9 @@ namespace OpenGS
 
         private void Update()
         {
-            if (cachedPlayer == null) return;
+            // A destroyed Unity component keeps comparing non-null as an interface, so
+            // the monitor has to ask the object rather than the reference.
+            if (cachedPlayer == null || cachedPlayer is not Object live || live == null) return;
 
             var deltaTime = Time.deltaTime;
             if (!float.IsFinite(deltaTime) || deltaTime < 0f) return;

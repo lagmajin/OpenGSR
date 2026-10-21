@@ -39,9 +39,27 @@ namespace OpenGSCore
                 EGameMode.TeamSurvival => setting is TeamSurvivalMatchSetting teamSetting
                     ? new TSuvMatchRule(teamSetting)
                     : new TSuvMatchRule(),
+                // The length was dropped here as well as the limit, so the rule took its own
+                // ten minute default and the setting's length was thrown away. A
+                // room configured for a different capture the flag was played on
+                // numbers nobody had asked for.
                 EGameMode.CaptureTheFlag => setting is CaptureTheFlagMatchSetting ctfSetting
-                    ? new CaptureTheFlagMatchRule(ctfSetting.WinConditionPoint)
+                    ? new CaptureTheFlagMatchRule(
+                        ctfSetting.WinConditionPoint,
+                        ctfSetting.MatchTimeMinutes * 60 * 1000)
                     : new CaptureTheFlagMatchRule(),
+                // This mode had no case here, so a room built from MissionMatchSetting
+                // either threw or, because the setting used to declare itself a
+                // survival, was quietly played as one. Its own numbers, the life
+                // count and the objective, reach the rule from the setting rather
+                // than from whatever another mode's defaults happened to be.
+                EGameMode.Mission => setting is MissionMatchSetting missionSetting
+                    ? new MissionMatchRule(
+                        missionSetting.ObjectiveCount,
+                        missionSetting.LifeCount,
+                        missionSetting.AllowRespawn,
+                        missionSetting.MatchTimeMinutes * 60 * 1000)
+                    : new MissionMatchRule(),
                 _ => throw new NotSupportedException($"Unsupported game mode: {setting.Mode}")
             };
         }

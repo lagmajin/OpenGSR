@@ -24,7 +24,7 @@ namespace OpenGS
     /// </summary>
     [DisallowMultipleComponent]
     [RequireComponent(typeof(MultipleTags))]
-    public abstract class AbstractPlayer : MonoBehaviour, IPowerupable, IDamageable, IPlayer, IMovable, IEventActor, OpenGS.Network.INetworkTransform
+    public abstract class AbstractPlayer : MonoBehaviour, IBattlePlayer, IPowerupable, IDamageable, IPlayer, IMovable, IEventActor, OpenGS.Network.INetworkTransform
     {
         // ─── Inspector フィールド ────────────────────────────────────
 
@@ -254,6 +254,19 @@ namespace OpenGS
             return dashAndRolling != null && dashAndRolling.IsRollPressed;
         }
 
+        /// <summary>
+        /// What a nameplate, a kill feed row and a scoreboard show.
+        /// <para>
+        /// The object name, so it is the same name everywhere rather than a name
+        /// in one place and an object name in another.
+        /// </para>
+        /// </summary>
+        public string DisplayName() => gameObject.name;
+
+        public Transform Transform => transform;
+
+        public GameObject Root => gameObject;
+
         public Guid UniqueID() => uniqueId;
 
         public void SetUniqueID(Guid id)
@@ -337,10 +350,6 @@ namespace OpenGS
         public bool HasAnyWeapon() => weaponSlots != null && weaponSlots.HasAnyRegularWeapon();
 
         public bool CanWarp() => canWarp;
-
-        public void EquipWeapon()
-        {
-        }
 
         public void EquipWeapon(GameObject weaponPrefab)
         {

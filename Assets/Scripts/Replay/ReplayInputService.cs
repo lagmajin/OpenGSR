@@ -14,11 +14,18 @@ namespace OpenGS
             this.session = session;
         }
 
+        /// <summary>
+        /// Records and plays back one fixed step.
+        /// <para>
+        /// This was empty while the work sat in LateTick, which runs once per
+        /// rendered frame. A recording declares the fixed step it was taken at,
+        /// so capturing per rendered frame produced a replay whose length depended
+        /// on the frame rate and could not be played back step for step. Both sides
+        /// belong to the fixed step: one call here is one recorded frame and one
+        /// playback frame.
+        /// </para>
+        /// </summary>
         public void Tick()
-        {
-        }
-
-        public void LateTick()
         {
             if (session.IsRecording)
             {
@@ -29,6 +36,18 @@ namespace OpenGS
             {
                 session.StopPlayback();
             }
+        }
+
+        /// <summary>
+        /// Nothing to do after the frame.
+        /// <para>
+        /// The recording used to be taken here, once per rendered frame, while the
+        /// recording claims a fixed step. One call is one recorded frame, and the
+        /// frame is captured at the fixed step where it is played back at.
+        /// </para>
+        /// </summary>
+        public void LateTick()
+        {
         }
 
         public Vector2 GetAimWorldPosition()

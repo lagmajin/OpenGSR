@@ -27,6 +27,8 @@ namespace OpenGS
         private int redTeamKills = 0;
         private int blueTeamKills = 0;
         private ETeam localTeam = ETeam.Blue; private const int OfflineKillLimit = 50;
+        private IDisposable offlineKillSubscription;
+        private IDisposable offlineDeathSubscription;
         [SerializeField] private bool suddenDeathOnDraw = true;
         [SerializeField] private float suddenDeathDuration = 120f;
         private bool suddenDeathActive;
@@ -59,14 +61,74 @@ namespace OpenGS
 
         protected override void OnDestroy()
         {
+            offlineKillSubscription?.Dispose();
+            offlineKillSubscription = null;
+            offlineDeathSubscription?.Dispose();
+            offlineDeathSubscription = null;
             if (Instance == this) Instance = null;
             base.OnDestroy();
+        }
+
+        /// <summary>
+        /// Listens to the deaths and kills this match actually produces.
+        /// <para>
+        /// Nothing delivered them here. The damage pipeline publishes kill and
+        /// death events onto the game event broker, and this script only ever
+        /// read events handed to PostEvent, which nothing calls: the network
+        /// manager publishes deserialized messages back onto the same broker
+        /// instead of calling PostEvent, and no manager forwards the broker into
+        /// the match scripts. So offline kills never reached the tally and a
+        /// dead local player never reached OnMyPlayerDead.
+        /// </para>
+        /// <para>
+        /// Both handlers refuse online matches. Online the server owns the tally
+        /// and the respawn, and it already delivers both; counting or respawning
+        /// here as well would do each of them twice.
+        /// </para>
+        /// </summary>
+        private void SubscribeOfflineMatchEvents()
+        {
+            offlineKillSubscription ??= GameEventBroker.Subscribe<PlayerKillEvent>(HandleOfflineKill);
+            offlineDeathSubscription ??= GameEventBroker.Subscribe<PlayerDeadEvent>(HandleOfflineDeath);
+        }
+
+        private void HandleOfflineKill(PlayerKillEvent e)
+        {
+            if (e == null || !IsOfflineMatch())
+            {
+                return;
+            }
+
+            ProcessKillEvent(e);
+        }
+
+        private void HandleOfflineDeath(PlayerDeadEvent e)
+        {
+            if (e == null || !IsOfflineMatch())
+            {
+                return;
+            }
+
+            if (player == null)
+            {
+                return;
+            }
+
+            var myId = player.GetComponent<IBattlePlayer>()?.UniqueID().ToString();
+            if (string.IsNullOrWhiteSpace(myId) ||
+                !string.Equals(myId, e.PlayerID(), StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            OnMyPlayerDead();
         }
 
         private void GameSetup()
         {
             PlayGameStartVoice();
             localTeam = ResolveLocalTeam(matchRoomManager != null ? matchRoomManager.WaitRoom : null);
+            SubscribeOfflineMatchEvents();
             CreateMyPlayerLocally();
             CreateOtherPlayers();
 
@@ -200,7 +262,11 @@ namespace OpenGS
                 var playerObj = Instantiate(prefab, spawnPos, Quaternion.identity);
                 playerObj.name = $"OtherPlayer_{info.Name}";
 
-                var player = playerObj.GetComponent<AbstractPlayer>();
+                // Whichever tree carries it. The player prefabs use the agent, and this asked
+                // for the other one first, so a remote player was never told its
+                // team, was never given the room's identity, and was never told it
+                // had spawned.
+                var player = playerObj.GetComponent<IBattlePlayer>();
                 if (player != null)
                 {
                     player.SetPlayerType(string.Equals(info.Id, localPlayerId, StringComparison.OrdinalIgnoreCase)
@@ -209,14 +275,6 @@ namespace OpenGS
                     player.SetTeam(team);
                     AttachPlayerId(playerObj, info.Id);
                     player.OnSpawn();
-                }
-                else if (playerObj.TryGetComponent<PlayerAgent>(out var playableAgent))
-                {
-                    // Playable character prefabs use PlayerAgent rather than
-                    // the legacy AbstractPlayer hierarchy. Keep remote spawn
-                    // identity and lifecycle wiring for that path as well.
-                    playableAgent.SetPlayerType(EPlayerType.OtherPlayer);
-                    AttachPlayerId(playerObj, info.Id);
                 }
 
                 spawnCount++;
@@ -382,7 +440,7 @@ namespace OpenGS
             Guid oldPlayerId = Guid.Empty;
             if (player != null)
             {
-                var oldPlayerComponent = player.GetComponent<AbstractPlayer>();
+                var oldPlayerComponent = player.GetComponent<IBattlePlayer>();
                 if (oldPlayerComponent != null)
                 {
                     oldPlayerId = oldPlayerComponent.UniqueID();
@@ -400,13 +458,18 @@ namespace OpenGS
             var myPlayer = CreateMyPlayer(spawnPos, localTeam);
             if (myPlayer != null)
             {
-                var playerComponent = myPlayer.GetComponent<AbstractPlayer>();
+                var playerComponent = myPlayer.GetComponent<IBattlePlayer>();
                 if (oldPlayerId != Guid.Empty)
                 {
                     playerComponent?.SetUniqueID(oldPlayerId);
                 }
                 AttachPlayerId(myPlayer, ResolveLocalPlayerId());
             }
+
+            // The server's copy of this player's health is still zero. Without
+            // saying so here, the player walks out of the respawn untouchable.
+            ReportRespawnToServer();
+
             Debug.Log($"[TDM] My player respawned at {spawnPos}");
         }
 
@@ -474,7 +537,65 @@ namespace OpenGS
 
         private void ProcessKillEvent(PlayerKillEvent e)
         {
+            if (e == null)
+            {
+                return;
+            }
+
             Debug.Log($"[TDM] Kill event processed: {e.KillerID()} killed {e.VictimID()}");
+
+            // Online the server owns the tally: it broadcasts TeamKill and the
+            // authoritative totals, so counting here as well would count every
+            // kill twice. Offline nobody else counts, and without this the
+            // offline kill limit in Update() could never be reached because the
+            // counters it reads stayed at zero.
+            if (!IsOfflineMatch())
+            {
+                return;
+            }
+
+            var killerTeam = ResolveTeamOf(e.KillerID());
+            var victimTeam = ResolveTeamOf(e.VictimID());
+            if (killerTeam == ETeam.NoTeam || victimTeam == ETeam.NoTeam)
+            {
+                Debug.LogWarning(
+                    $"[TDM] Ignoring kill by '{e.KillerID()}' on '{e.VictimID()}': " +
+                    "one of them is not on a team in this room.");
+                return;
+            }
+
+            OnPlayerDead(victimTeam, killerTeam);
+        }
+
+        private ETeam ResolveTeamOf(string playerId)
+        {
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return ETeam.NoTeam;
+            }
+
+            var players = matchRoomManager?.WaitRoom?.AllPlayers();
+            if (players == null)
+            {
+                return ETeam.NoTeam;
+            }
+
+            foreach (var player in players)
+            {
+                if (player == null || string.IsNullOrWhiteSpace(player.Id))
+                {
+                    continue;
+                }
+
+                if (string.Equals(player.Id, playerId, StringComparison.OrdinalIgnoreCase) &&
+                    Enum.TryParse<ETeam>(player.Team.ToString(), out var parsedTeam) &&
+                    parsedTeam != ETeam.NoTeam)
+                {
+                    return parsedTeam;
+                }
+            }
+
+            return ETeam.NoTeam;
         }
 
         private void SendEventToServer(AbstractGameEvent e)
@@ -550,14 +671,14 @@ namespace OpenGS
         }
 
         /// <summary>
-        /// The room's tally replaces what this client counted.
+        /// The room's tally reaches the scoreboard.
         /// <para>
         /// The client counts its own kills and sends its own claims, so a score it
         /// worked out for itself is a score of its own making for the whole match,
         /// and the two sides disagree about a number on the scoreboard.
         /// </para>
         /// </summary>
-        protected override void ApplyServerTeamKills(int red, int blue)
+        protected override void OnServerTeamKillsApplied(int red, int blue)
         {
             redTeamKills = Math.Max(0, red);
             blueTeamKills = Math.Max(0, blue);

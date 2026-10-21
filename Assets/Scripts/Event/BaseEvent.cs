@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace OpenGS
@@ -746,6 +748,83 @@ namespace OpenGS
         public Vector2 Position() => position_;
         public float EffectValue() => effectValue_;
         public float DurationSeconds() => durationSeconds_;
+    }
+
+    /// <summary>
+    /// What the server said happened to an enemy.
+    /// <para>
+    /// The enemy belongs to the server. Its health, where it is and whether it is
+    /// still standing are all numbers it holds, so a client is told rather than
+    /// working them out, exactly as a player is.
+    /// </para>
+    /// </summary>
+    public class EnemyEvent : AbstractGameEvent
+    {
+        /// <summary>Spawned, Damaged, Killed or Synced.</summary>
+        public enum EEnemyEventType
+        {
+            Spawned,
+            Damaged,
+            Killed,
+            Synced
+        }
+
+        private readonly EEnemyEventType type_;
+        private readonly string enemyId_;
+        private readonly string enemyKind_;
+        private readonly int health_;
+        private readonly int maxHealth_;
+        private readonly Vector2 position_;
+        private readonly Vector2 facing_;
+        private readonly string attackerId_;
+        private readonly int damage_;
+
+        public EnemyEvent(
+            EEnemyEventType type,
+            string enemyId,
+            string enemyKind,
+            int health,
+            int maxHealth,
+            Vector2 position,
+            Vector2 facing,
+            string attackerId = "",
+            int damage = 0)
+        {
+            type_ = type;
+            enemyId_ = enemyId ?? string.Empty;
+            enemyKind_ = enemyKind ?? string.Empty;
+            health_ = health;
+            maxHealth_ = maxHealth;
+            position_ = position;
+            facing_ = facing;
+            attackerId_ = attackerId ?? string.Empty;
+            damage_ = damage;
+        }
+
+        public EEnemyEventType Type() => type_;
+        public string EnemyId() => enemyId_;
+        public string EnemyKind() => enemyKind_;
+        public int Health() => health_;
+        public int MaxHealth() => maxHealth_;
+        public Vector2 Position() => position_;
+        public Vector2 Facing() => facing_;
+        public string AttackerId() => attackerId_;
+        public int Damage() => damage_;
+    }
+
+    /// <summary>
+    /// The whole set of enemies, for a client that has just arrived.
+    /// </summary>
+    public class EnemySnapshotEvent : AbstractGameEvent
+    {
+        private readonly EnemyEvent[] enemies_;
+
+        public EnemySnapshotEvent(EnemyEvent[] enemies)
+        {
+            enemies_ = enemies ?? Array.Empty<EnemyEvent>();
+        }
+
+        public IReadOnlyList<EnemyEvent> Enemies() => enemies_;
     }
 
     /// <summary>

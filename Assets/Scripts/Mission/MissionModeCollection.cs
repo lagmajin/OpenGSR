@@ -11,9 +11,6 @@ namespace OpenGS
         [AutoCreateIfMissing("MissionMainScript", typeof(MissionMainScript))]
         public GameObject missionMainScript;
 
-        [AutoCreateIfMissing("SkyFighterMainScript", typeof(SkyFighterMainScript))]
-        public GameObject skyFighterMainScript;
-
 
         private void Start()
         {

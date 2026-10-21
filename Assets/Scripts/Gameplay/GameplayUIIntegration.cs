@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using OpenGSCore;
 using System;
 
@@ -13,7 +13,7 @@ namespace OpenGS
         [SerializeField] private Canvas gameplayCanvas;
         [SerializeField] private float damageAmountPerShot = 10f;
         [SerializeField] private float boosterRegenPerSecond = 5f;
-        private AbstractPlayer myPlayer;
+        private IBattlePlayer myPlayer;
 
         private void OnValidate()
         {
@@ -134,7 +134,7 @@ namespace OpenGS
         /// <summary>
         /// Called when player dies - hide gameplay UI
         /// </summary>
-        private void OnPlayerDied(AbstractPlayer player)
+        private void OnPlayerDied(IBattlePlayer player)
         {
             if (player == null || player.PlayerType() != EPlayerType.MyPlayer)
                 return;
@@ -147,7 +147,7 @@ namespace OpenGS
         /// <summary>
         /// Called when player respawns - show gameplay UI
         /// </summary>
-        private void OnPlayerRespawned(AbstractPlayer player)
+        private void OnPlayerRespawned(IBattlePlayer player)
         {
             if (player == null || player.PlayerType() != EPlayerType.MyPlayer)
                 return;
@@ -157,7 +157,7 @@ namespace OpenGS
             // gameplayCanvas.gameObject.SetActive(true);
         }
 
-        private void OnPlayerRegistered(AbstractPlayer player)
+        private void OnPlayerRegistered(IBattlePlayer player)
         {
             if (player != null && player.PlayerType() == EPlayerType.MyPlayer)
             {
@@ -165,7 +165,7 @@ namespace OpenGS
             }
         }
 
-        private void OnPlayerUnregistered(AbstractPlayer player)
+        private void OnPlayerUnregistered(IBattlePlayer player)
         {
             if (player == myPlayer)
             {
@@ -217,7 +217,7 @@ namespace OpenGS
         /// <summary>
         /// Example: Update player status (kills, deaths, etc.)
         /// </summary>
-        public void UpdatePlayerStats(AbstractPlayer player, int kills, int deaths)
+        public void UpdatePlayerStats(IBattlePlayer player, int kills, int deaths)
         {
             var registry = PlayerRegistry.Instance;
             if (player == null || registry == null || kills < 0 || deaths < 0) return;
@@ -232,7 +232,7 @@ namespace OpenGS
         /// <summary>
         /// Example: Handle special booster consumption
         /// </summary>
-        public void ConsumeBooster(AbstractPlayer player, float amount)
+        public void ConsumeBooster(IBattlePlayer player, float amount)
         {
             var registry = PlayerRegistry.Instance;
             if (player == null || registry == null || !float.IsFinite(amount) || amount <= 0f) return;

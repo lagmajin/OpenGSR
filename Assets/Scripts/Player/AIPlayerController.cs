@@ -84,6 +84,7 @@ namespace OpenGS
                 if (gun != null)
                 {
                     gun.SetGunDirection(target.transform.position.x >= transform.position.x);
+                    gun.SetGunAngle(target.transform.position);
                 }
 
                 transform.localScale = new Vector3(
@@ -103,11 +104,11 @@ namespace OpenGS
 
             nextTargetRefreshTime = now + targetRefreshInterval;
             targetList.Clear();
-            foreach (var player in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
+            foreach (var player in FindObjectsByType<PlayerAgent>(FindObjectsSortMode.None))
             {
-                if (player != null && player.gameObject != gameObject)
+                if (player != null && player.Root != gameObject)
                 {
-                    targetList.Add(player.gameObject);
+                    targetList.Add(player.Root);
                 }
             }
         }
@@ -202,32 +203,7 @@ namespace OpenGS
             targetList.Remove(player);
         }
 
-        public override void AddDamage(Vector2 source, float damage, eDamageType type)
-        {
-            base.AddDamage(source, damage, type);
-        }
-
-        public override void IncreaseAttack(float sec)
-        {
-            base.IncreaseAttack(sec);
-        }
-
-        public override void IncreaseDefense(float sec)
-        {
-            base.IncreaseDefense(sec);
-        }
-
-        public override void Invisible(float sec)
-        {
-            base.Invisible(sec);
-        }
-
-        public override void SpeedUp(float sec)
-        {
-            base.SpeedUp(sec);
-        }
-
-        public eAIBattleMode AIBattleMode()
+public eAIBattleMode AIBattleMode()
         {
             return mode;
         }
@@ -244,10 +220,10 @@ namespace OpenGS
                 return;
             }
 
-            var player = other.GetComponentInParent<AbstractPlayer>();
-            if (player != null && player.gameObject != gameObject)
+            var player = other.GetComponentInParent<IBattlePlayer>();
+            if (player != null && player.Root != gameObject)
             {
-                AddToTargetList(player.gameObject);
+                AddToTargetList(player.Root);
                 mode = eAIBattleMode.Attack;
             }
         }
@@ -259,10 +235,10 @@ namespace OpenGS
                 return;
             }
 
-            var player = other.GetComponentInParent<AbstractPlayer>();
+            var player = other.GetComponentInParent<IBattlePlayer>();
             if (player != null)
             {
-                RemoveToTargetList(player.gameObject);
+                RemoveToTargetList(player.Root);
             }
         }
 

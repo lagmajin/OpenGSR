@@ -212,10 +212,19 @@ namespace OpenGS
             return true;
         }
 
+        /// <summary>
+        /// Every player in the scene, whichever component tree carries it.
+        /// <para>
+        /// This asked for one type, which no player prefab carries, so it always
+        /// came back empty and a caller that spawns the other players from it
+        /// spawned nobody.
+        /// </para>
+        /// </summary>
         public List<GameObject> AllPlayers()
         {
-            return GameObject.FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None)
-                .Select(player => player != null ? player.gameObject : null)
+            return GameObject.FindObjectsByType<PlayerAgent>(FindObjectsSortMode.None)
+                .Where(agent => agent != null)
+                .Select(agent => agent.gameObject)
                 .Where(gameObject => gameObject != null)
                 .ToList();
         }
@@ -263,18 +272,17 @@ namespace OpenGS
             var playerObj = Instantiate(prefab, position, Quaternion.identity);
             playerObj.name = "MyPlayer";
 
-            var pAgent = playerObj.GetComponent<AbstractPlayer>();
+            // Whichever tree carries it. The player prefabs use the agent, and this used to
+            // only look for the other one, so a spawned player was never told its
+            // team and never told it had spawned at all.
+            var pAgent = playerObj.GetComponent<IBattlePlayer>();
             if (pAgent != null)
             {
                 pAgent.SetPlayerType(EPlayerType.MyPlayer);
                 pAgent.SetTeam(team);
-                
+
                 // 装備の反映（ブースターの色など）
                 pAgent.OnSpawn();
-            }
-            else if (playerObj.TryGetComponent<PlayerAgent>(out var playableAgent))
-            {
-                playableAgent.SetPlayerType(EPlayerType.MyPlayer);
             }
 
             // カメラのセットアップ
@@ -384,19 +392,19 @@ namespace OpenGS
 
             foreach (var player in PlayerRegistry.Instance.GetAllPlayers())
             {
-                if (player == null || player.transform == null)
+                if (player == null || player.Transform == null)
                 {
                     continue;
                 }
 
-                if (excluded != null && player.transform == excluded)
+                if (excluded != null && player.Transform == excluded)
                 {
                     continue;
                 }
 
                 if (!player.IsDead())
                 {
-                    return player.transform;
+                    return player.Transform;
                 }
             }
 
@@ -441,6 +449,9 @@ namespace OpenGS
         {
             EnsureMasterDataReferences();
             EnsurePlayerStatusUI();
+            EnsureRespawnCanvas();
+            EnsureMatchOverlay();
+            EnsureEnemyViews();
             OnStart();
             gameMode = MatchModeResolver.ResolveCurrentGameMode();
             PlayStageBGM();
@@ -483,6 +494,91 @@ namespace OpenGS
             }
 
             Instantiate(uiCanvasMasterData.PlayerStatusUI);
+        }
+
+        /// <summary>
+        /// Brings up the respawn countdown, once per match.
+        /// <para>
+        /// It used to be created by ShowReSpawnUI, which a mode only reached after
+        /// a death, and which had nothing to instantiate: the prefab the master
+        /// data named did not exist, so the call logged a warning and returned. The
+        /// countdown is a thing you need to see while you are dead rather than
+        /// after it, so it is brought up with the rest of the HUD instead.
+        /// </para>
+        /// </summary>
+        private void EnsureRespawnCanvas()
+        {
+            if (FindFirstObjectByType<RespawnCanvas>() != null)
+            {
+                return;
+            }
+
+            if (uiCanvasMasterData == null || uiCanvasMasterData.ReSpawnUICanvas == null)
+            {
+                Debug.LogWarning(
+                    $"[{GetType().Name}] ReSpawnUICanvas prefab is not configured. " +
+                    "The respawn countdown will not be shown.",
+                    this);
+                return;
+            }
+
+            Instantiate(uiCanvasMasterData.ReSpawnUICanvas);
+        }
+
+        /// <summary>
+        /// Brings up the kill feed and the scoreboard, once per match.
+        /// <para>
+        /// Both were fully written and wired to the event broker, and neither was
+        /// on anything: no scene and no prefab carried them, so a match had a kill
+        /// feed that could not appear and a scoreboard that could not be opened,
+        /// and the result screen showed zero kills because nothing had ever told
+        /// any of it that a kill happened.
+        /// </para>
+        /// </summary>
+        private void EnsureMatchOverlay()
+        {
+            if (FindFirstObjectByType<ScoreboardUIManager>() != null)
+            {
+                return;
+            }
+
+            if (uiCanvasMasterData == null || uiCanvasMasterData.MatchOverlay == null)
+            {
+                Debug.LogWarning(
+                    $"[{GetType().Name}] MatchOverlay prefab is not configured. " +
+                    "The kill feed and scoreboard will not be shown.",
+                    this);
+                return;
+            }
+
+            Instantiate(uiCanvasMasterData.MatchOverlay);
+        }
+
+        /// <summary>
+        /// Brings up the thing that draws a mission's enemies.
+        /// <para>
+        /// The enemies are the server's, so without something drawing what it
+        /// says a mission is played on an empty map: the server places them, steps
+        /// them and settles every shot against them, and the client shows a room
+        /// with nothing in it. It is only brought up for a mode that has enemies,
+        /// because a death match would otherwise be carrying a manager with
+        /// nothing to draw.
+        /// </para>
+        /// </summary>
+        private void EnsureEnemyViews()
+        {
+            if (MatchModeResolver.ResolveCurrentGameMode() != EGameMode.Mission)
+            {
+                return;
+            }
+
+            if (FindFirstObjectByType<MissionEnemyViewManager>() != null)
+            {
+                return;
+            }
+
+            var host = new GameObject(nameof(MissionEnemyViewManager));
+            host.AddComponent<MissionEnemyViewManager>();
         }
 
         /// <summary>
@@ -585,6 +681,12 @@ namespace OpenGS
             isMatchTerminating = true;
             endFlag = true;
             CancelInvoke();
+
+            // The match manager is a process wide singleton, so what this match
+            // subscribed has to go when the match ends. Otherwise the next match
+            // inherits this one's players and this one's main script, which has
+            // already been unloaded by then.
+            MatchManager.Instance.Clear();
             return true;
         }
 
@@ -989,7 +1091,45 @@ namespace OpenGS
                 case MessageType.MatchEndNotification:
                     HandleServerMatchEnd(obj);
                     break;
+
+                // The server's per second statement of the match state.
+                // <para>
+                // The network layer deliberately does nothing with this one, on the
+                // understanding that the match scripts read it from the raw
+                // message, and they had no case for it. So the message was dropped:
+                // the clock was only ever set once from the room settings and then
+                // counted down locally, which is a clock the client owns rather
+                // than one the room is reporting.
+                // </para>
+                case RUDPMessageTypes.GameStateSync:
+                    HandleGameStateSync(obj);
+                    break;
             }
+        }
+
+        /// <summary>
+        /// Takes the match clock the server is reporting.
+        /// <para>
+        /// The room settings carry the length and the time left once, when the
+        /// client arrives. This is the message that keeps saying what is left, so
+        /// a client whose countdown drifted gets put back on the room's number
+        /// rather than ending the match on a clock of its own.
+        /// </para>
+        /// </summary>
+        private void HandleGameStateSync(JObject json)
+        {
+            if (timer == null)
+            {
+                return;
+            }
+
+            var remaining = ReadInt(json, "RemainingTime", -1);
+            if (remaining < 0)
+            {
+                return;
+            }
+
+            timer.SyncServerTime(remaining, 0L);
         }
 
         /// <summary>
@@ -1041,11 +1181,20 @@ namespace OpenGS
         /// </summary>
         protected virtual void OnServerMatchEnd(JObject json)
         {
-            var winningTeam = json["WinningTeam"]?.ToString() ?? "Draw";
-            var myTeam = json["MyTeam"]?.ToString() ?? "Spectator";
+            // A solo mode has no winning team: the server reports "None" there and
+            // names the winning player instead. Reading only the team is what made
+            // this log say the winner was None for a match a player had won.
+            var winningTeam = json?["WinningTeam"]?.ToString() ?? string.Empty;
+            var winningPlayer = json?["WinningPlayerId"]?.ToString()
+                ?? json?["Winner"]?.ToString()
+                ?? string.Empty;
+            var myTeam = json?["MyTeam"]?.ToString() ?? "Spectator";
 
-            Debug.Log(
-                $"[{GetType().Name}] The server ended the match: winner={winningTeam}, myTeam={myTeam}");
+            var winner = !string.IsNullOrEmpty(winningPlayer)
+                ? winningPlayer
+                : string.IsNullOrEmpty(winningTeam) || winningTeam == "None" ? "Draw" : winningTeam;
+
+            Debug.Log($"[{GetType().Name}] The server ended the match: winner={winner}, myTeam={myTeam}");
         }
 
         /// <summary>
@@ -1105,17 +1254,157 @@ namespace OpenGS
                 ApplyServerTeamKills(redKills ?? 0, blueKills ?? 0);
             }
 
+            // A mission's own numbers: how far the objective has got and how many
+            // goes the party has left. The room is what holds them, and a client
+            // showing an objective of its own making would not be showing this
+            // match.
+            var allowRespawn = json["AllowRespawn"]?.ToObject<bool>();
+            if (allowRespawn.HasValue)
+            {
+                MatchModeResolver.AdoptMissionRespawn(allowRespawn.Value);
+            }
+
+            var objectiveProgress = json["ObjectiveProgress"]?.ToObject<int>();
+            var objectiveCount = json["ObjectiveCount"]?.ToObject<int>();
+            var lifeRemaining = json["LifeRemaining"]?.ToObject<int>();
+            var lifeCount = json["LifeCount"]?.ToObject<int>();
+            if (objectiveProgress.HasValue || objectiveCount.HasValue ||
+                lifeRemaining.HasValue || lifeCount.HasValue)
+            {
+                ApplyServerMissionProgress(
+                    objectiveProgress ?? 0,
+                    objectiveCount ?? 0,
+                    lifeRemaining ?? 0,
+                    lifeCount ?? 0);
+            }
+
             // A mode that reads one of the published limits does it here rather
             // than with its own case for this message, because a case here means
             // the base never sees the message for that mode at all.
             OnServerRoomSettings(json);
         }
 
+/// <summary>
+        /// The objective and the lives the room is publishing.
+        /// <para>
+        /// The numbers come from the room rather than from this client, so a
+        /// mission readout is the mission that is being played and not one this
+        /// client made up. They are also adopted onto the rule, because the rule is
+        /// what this client judges the end of the match by and a rule that kept its
+        /// own default objective would end a mission on a limit the room was never
+        /// started under.
+        /// </para>
+        /// </summary>
+        protected virtual void ApplyServerMissionProgress(
+            int objectiveProgress,
+            int objectiveCount,
+            int lifeRemaining,
+            int lifeCount)
+        {
+            missionObjectiveProgress = Mathf.Max(0, objectiveProgress);
+            missionObjectiveCount = Mathf.Max(0, objectiveCount);
+            missionLifeRemaining = Mathf.Max(0, lifeRemaining);
+            missionLifeCount = Mathf.Max(0, lifeCount);
+
+            AdoptMissionRule();
+        }
+
+        /// <summary>
+        /// Puts the room's numbers onto this client's mission rule.
+        /// <para>
+        /// They are held on the base rather than on the mission mode, because a
+        /// mission is also settled by the rule the result screen reads, and a copy
+        /// kept on the mode script would be a second set of numbers that can
+        /// disagree with the rule the match is judged by.
+        /// </para>
+        /// </summary>
+        private void AdoptMissionRule()
+        {
+            var room = ResolveCurrentMatchRoom();
+            if (room?.Rule is not MissionMatchRule rule)
+            {
+                return;
+            }
+
+            rule.ObjectiveCount = missionObjectiveCount;
+            rule.ObjectiveProgress = missionObjectiveProgress;
+            rule.LifeCount = missionLifeCount;
+            rule.LifeRemaining = missionLifeRemaining;
+        }
+
+        /// <summary>How much of a mission's objective the room has published done.</summary>
+        protected int missionObjectiveProgress;
+
+        /// <summary>How much of a mission's objective the room was started with.</summary>
+        protected int missionObjectiveCount;
+
+        /// <summary>How many goes the room says the party has left.</summary>
+        protected int missionLifeRemaining;
+
+        /// <summary>How many goes the room was started with.</summary>
+        protected int missionLifeCount;
+
         /// <summary>
         /// The published limits that belong to this mode.
+        /// <para>
+        /// The room publishes the kill limit its rule is running on, under a
+        /// different key per mode, and only the capture flag mode was reading it.
+        /// A client rule carries a hardcoded limit of its own, so every other mode
+        /// judged the end of the match on a number the room was never started
+        /// under: a room configured for first to three ended the match at twenty.
+        /// </para>
         /// </summary>
         protected virtual void OnServerRoomSettings(JObject json)
         {
+            var room = ResolveCurrentMatchRoom();
+            var rule = room?.Rule;
+            if (rule == null)
+            {
+                return;
+            }
+
+            // The keys are alternatives rather than a preference order: a room
+            // publishes the one its mode uses, and an older server may publish
+            // none of them, in which case the local limit stands.
+            var limit = ReadInt(json, "KillLimit", 0);
+            if (limit <= 0)
+            {
+                limit = ReadInt(json, "TeamKillLimit", 0);
+            }
+
+            if (limit <= 0)
+            {
+                limit = ReadInt(json, "WinConditionKill", 0);
+            }
+
+            if (limit <= 0)
+            {
+                return;
+            }
+
+            switch (rule)
+            {
+                case DeathMatchRule deathMatch:
+                    ApplyKillLimit(deathMatch.KillCount, limit, () => deathMatch.KillCount = limit, "DeathMatch");
+                    break;
+                case TeamDeathMatchRule teamDeathMatch:
+                    ApplyKillLimit(teamDeathMatch.KillCount, limit, () => teamDeathMatch.KillCount = limit, "TeamDeathMatch");
+                    break;
+                case ArmsMatchRaceRule armsRace:
+                    ApplyKillLimit(armsRace.KillCount, limit, () => armsRace.KillCount = limit, "ArmsRace");
+                    break;
+            }
+        }
+
+        private static void ApplyKillLimit(int current, int adopted, Action apply, string modeName)
+        {
+            if (current == adopted)
+            {
+                return;
+            }
+
+            apply();
+            Debug.Log($"[{modeName}] Took the kill limit from the server: {adopted}");
         }
 
         /// <summary>
@@ -1124,10 +1413,100 @@ namespace OpenGS
         /// A client counts its own kills and hopes, and sends its own claims, so a
         /// score it worked out for itself is a score of its own making for the
         /// whole match. The room keeps the real one.
+        /// <para>
+        /// The tally is written into the room's MatchData here rather than in each
+        /// mode, because MatchData is what the rules read to decide a match is
+        /// over. A mode that did its own counting left every mode but team death
+        /// match judging the end of its match on a number it made up.
         /// </para>
         /// </summary>
         protected virtual void ApplyServerTeamKills(int red, int blue)
         {
+            var room = ResolveCurrentMatchRoom();
+            room?.MatchData?.AdoptServerTeamKills(red, blue);
+
+            OnServerTeamKillsApplied(red, blue);
+        }
+
+        /// <summary>
+        /// What a mode does with the room's tally once it is in MatchData.
+        /// <para>
+        /// The data is shared by every mode, so the mode that shows it a score is
+        /// the one that has to be told. The base does nothing because a solo mode
+        /// has no team score to show.
+        /// </para>
+        /// </summary>
+        protected virtual void OnServerTeamKillsApplied(int red, int blue)
+        {
+        }
+
+        /// <summary>
+        /// Tells the server this player is back.
+        /// <para>
+        /// A respawn was entirely local. The client rebuilt its player and the
+        /// server kept the health it had already been reduced to, which is zero, so
+        /// from then on the player could not be hit at all: the hit path refuses a
+        /// target whose health is not above zero. Only capture the flag ever said
+        /// so, which left death match, team death match and team survival with a
+        /// player who was untouchable for the rest of the match.
+        /// </para>
+        /// <para>
+        /// No position is sent. Where a player comes back is the server's call, and
+        /// it is the one thing about a respawn a client must not be believed on: a
+        /// client that chose would be able to choose anywhere.
+        /// </para>
+        /// </summary>
+        protected void ReportRespawnToServer()
+        {
+            var local = ResolveLocalPlayer();
+            if (local != null)
+            {
+                // Tell the room as well as the server. Every consumer that reacts
+                // to a respawn, the health bar and the countdown canvas among them,
+                // listens on the registry rather than on the network, so a respawn
+                // that only went to the server left the player looking dead on
+                // their own screen while they were standing there alive.
+                PlayerRegistry.Instance?.PublishPlayerRespawned(local);
+            }
+
+            var manager = matchNetworkManager;
+            if (!IsOnlineMatch() || manager == null || !manager.IsConnected())
+            {
+                return;
+            }
+
+            var playerId = AccountManager.Instance?.CurrentProfile?.GlobalUserId;
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                return;
+            }
+
+            var room = ResolveCurrentMatchRoom();
+            manager.SendToServer(RUDPMessageBuilder.CreatePlayerRespawn(
+                playerId, Vector2.zero, room?.Id));
+        }
+
+        /// <summary>
+        /// The match room this script is running, online or offline.
+        /// </summary>
+        protected MatchRoom ResolveCurrentMatchRoom()        {
+            var manager = MatchRoomManager();
+            if (manager == null)
+            {
+                return null;
+            }
+
+            if (IsOnlineMatch() && manager.OnlineMatchRoom != null)
+            {
+                return manager.OnlineMatchRoom;
+            }
+
+            if (manager.OfflineMatchRoom != null)
+            {
+                return manager.OfflineMatchRoom;
+            }
+
+            return manager.OnlineMatchRoom ?? manager.OfflineMatchRoom;
         }
 
         protected virtual void HandleItemUse(JObject json)
@@ -1380,8 +1759,17 @@ namespace OpenGS
                 return;
             }
 
-            var agent = target.GetComponent<PlayerAgent>();
-            agent?.ApplyServerDeath();
+            // The server says whether the player did this to themselves, and the
+            // reason is what the death is shown as. It was read as Unknown every
+            // time, so a player who killed themselves was presented as a casualty
+            // and a self kill looked the same as being shot, which is the one case
+            // where a player needs to be able to tell.
+            var reason = ReadBool(json, "IsSelfInflicted")
+                ? EDeadReason.Suicide
+                : EDeadReason.Unknown;
+
+            var agent = target as PlayerAgent;
+            agent?.ApplyServerDeath(reason);
         }
 
         protected virtual void HandleWeaponPickup(JObject json)
@@ -1422,6 +1810,16 @@ namespace OpenGS
                     return;
                 }
 
+                // The timed buffs live on the powerup contract, which both player
+                // trees already carry. Casting to one tree here meant a buff the
+                // server sent for a real player was dropped on the floor.
+                var powerup = player as IPowerupable;
+                if (powerup == null)
+                {
+                    Debug.Log($"[{GetType().Name}] PlayerBuff had no receiver for {targetPlayerId}");
+                    return;
+                }
+
                 switch (buffType)
                 {
                     case "HpRecovery":
@@ -1431,38 +1829,38 @@ namespace OpenGS
                     case "PowerUp":
                     case "PowerUpItem":
                     case "AttackUp":
-                        player.IncreaseAttack(duration);
+                        powerup.IncreaseAttack(duration);
                         break;
                     case "DefenceUp":
                     case "DefenceUpItem":
                     case "DefenseUpItem":
                     case "DefenseUp":
-                        player.IncreaseDefense(duration);
+                        powerup.IncreaseDefense(duration);
                         break;
                     case "SpeedUp":
                     case "SpeedUpItem":
-                        player.SpeedUp(duration);
+                        powerup.SpeedUp(duration);
                         break;
                     case "Stealth":
                     case "StealthItem":
                     case "Invisible":
-                        player.Invisible(duration);
+                        powerup.Invisible(duration);
                         break;
                     case "GrenadePack":
                     case "NormalGrenadePack":
-                        player.RefillGrenade(EGrenadeType.Normal);
+                        powerup.RefillGrenade(EGrenadeType.Normal);
                         break;
                     case "PowerGrenadePack":
-                        player.RefillGrenade(EGrenadeType.Power);
+                        powerup.RefillGrenade(EGrenadeType.Power);
                         break;
                     case "ClusterGrenadePack":
-                        player.RefillGrenade(EGrenadeType.Cluster);
+                        powerup.RefillGrenade(EGrenadeType.Cluster);
                         break;
                     case "MagnetGrenadePack":
-                        player.RefillGrenade(EGrenadeType.Magnetic);
+                        powerup.RefillGrenade(EGrenadeType.Magnetic);
                         break;
                     case "MineGrenadePack":
-                        player.RefillGrenade(EGrenadeType.Mine);
+                        powerup.RefillGrenade(EGrenadeType.Mine);
                         break;
                 }
             }
@@ -1488,7 +1886,12 @@ namespace OpenGS
                 switch (debuffType)
                 {
                     case "PoisonBullet":
-                        player.PoisonBullet(duration);
+                        // Only the player tree carries the poisoned bullet. It is
+                        // reached through the root object rather than a cast to
+                        // that type, so a player built from the other tree is
+                        // skipped rather than being the thing that throws.
+                        (player?.Root != null ? player.Root.GetComponent<AbstractPlayer>() : null)
+                            ?.PoisonBullet(duration);
                         break;
                 }
             }
@@ -1496,14 +1899,29 @@ namespace OpenGS
             Debug.Log($"[{GetType().Name}] PlayerDebuff received: {json}");
         }
 
-        protected virtual AbstractPlayer ResolveLocalPlayer()
+        /// <summary>
+        /// The local player, whichever component tree carries it.
+        /// <para>
+        /// It used to ask for one specific type, which no player prefab carries,
+        /// so this returned null on a live match: the local player was never the
+        /// local player, and everything keyed off it, the kill feed's "you killed"
+        /// colouring and the respawn countdown among them, had nothing to work on.
+        /// </para>
+        /// </summary>
+        protected virtual IBattlePlayer ResolveLocalPlayer()
         {
             if (player == null)
             {
                 return null;
             }
 
-            return player.GetComponent<AbstractPlayer>();
+            return player.GetComponent<IBattlePlayer>();
+        }
+
+        protected virtual bool IsLocalPlayer(IBattlePlayer target)
+        {
+            var local = ResolveLocalPlayer();
+            return local != null && target != null && ReferenceEquals(local, target);
         }
 
         protected virtual void OnDestroy()
@@ -1564,14 +1982,14 @@ namespace OpenGS
             }
         }
 
-        protected virtual AbstractPlayer ResolvePlayerById(string playerId)
+        protected virtual IBattlePlayer ResolvePlayerById(string playerId)
         {
             if (string.IsNullOrWhiteSpace(playerId))
             {
                 return ResolveLocalPlayer();
             }
 
-            if (ResolveLocalPlayer() is AbstractPlayer localPlayer &&
+            if (ResolveLocalPlayer() is IBattlePlayer localPlayer &&
                 string.Equals(localPlayer.UniqueID().ToString(), playerId, StringComparison.OrdinalIgnoreCase))
             {
                 return localPlayer;
@@ -1584,21 +2002,7 @@ namespace OpenGS
                 return registryPlayer;
             }
 
-            foreach (var candidate in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
-            {
-                if (candidate != null && string.Equals(candidate.UniqueID().ToString(), playerId, StringComparison.OrdinalIgnoreCase))
-                {
-                    return candidate;
-                }
-            }
-
             return null;
-        }
-
-        protected virtual bool IsLocalPlayer(AbstractPlayer target)
-        {
-            var local = ResolveLocalPlayer();
-            return local != null && target != null && ReferenceEquals(local, target);
         }
 
         private void EnsureMasterDataReferences()
@@ -1717,13 +2121,13 @@ namespace OpenGS
                 return "Draw";
             }
 
-            var abstractPlayer = player.GetComponent<AbstractPlayer>();
-            if (abstractPlayer == null)
+            var battlePlayer = player.GetComponent<IBattlePlayer>();
+            if (battlePlayer == null)
             {
                 return "Draw";
             }
 
-            var team = abstractPlayer.Team();
+            var team = battlePlayer.Team();
             return team == ETeam.NoTeam ? "Draw" : team.ToString();
         }
 
@@ -1783,16 +2187,7 @@ namespace OpenGS
         [Button("リスポーンUI表示")]
         public void ShowReSpawnUI(float time = 5.0f)
         {
-            EnsureMasterDataReferences();
-            if (uiCanvasMasterData == null || uiCanvasMasterData.ReSpawnUICanvas == null)
-            {
-                Debug.LogWarning($"[{GetType().Name}] uiCanvasMasterData is not assigned. Cannot show respawn UI.");
-                return;
-            }
-
-            Instantiate(uiCanvasMasterData.ReSpawnUICanvas);
-
-
+            EnsureRespawnCanvas();
         }
 
         public virtual void OnMyPlayerDead()

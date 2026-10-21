@@ -71,7 +71,7 @@ namespace OpenGS
         [SerializeField] private WeaponUIElements weaponUI;
         [SerializeField] private GameObject deathPanel;
 
-        private AbstractPlayer myPlayer;
+        private IBattlePlayer myPlayer;
         private CharaController myCharaPlayer;
         private PlayerAgent myPlayerAgent;
         private PlayerStatus myStatus;
@@ -317,7 +317,7 @@ namespace OpenGS
             }
         }
 
-        private void SetMyPlayer(AbstractPlayer player)
+private void SetMyPlayer(IBattlePlayer player)
         {
             if (player == null)
             {
@@ -329,8 +329,15 @@ namespace OpenGS
 
             myPlayer = player;
             myPlayerId = player.UniqueID().ToString();
-            
-            grenadeComponent = player.GetComponent<PlayerGrenadeComponent>();
+
+            // The grenade and item counts live on the agent, which is the tree the
+            // player prefabs use. The old code asked for one specific component for
+            // the status and a cast for the rest, so on a live match the health bar
+            // had no player and the item slots had a different one.
+            myPlayerAgent = player as PlayerAgent;
+            grenadeComponent = player.Root != null
+                ? player.Root.GetComponent<PlayerGrenadeComponent>()
+                : null;
             myCharaPlayer = player as CharaController;
             myStatus = player.Status;
             CacheGrenadeSlotImages();
@@ -343,7 +350,7 @@ namespace OpenGS
             {
                 killSub = player.Status.KillCountStream.Subscribe(UpdateKillCountDisplay);
             }
-            
+
             InitializeUI();
         }
 
@@ -376,7 +383,7 @@ namespace OpenGS
 
             // WeaponSlots から現在の武器を取得して表示
             // IGunInfo を取得する
-            var currentWeaponObj = myPlayer.gameObject.GetComponentInChildren<AbstractGunController>();
+            var currentWeaponObj = myPlayer.Root.GetComponentInChildren<AbstractGunController>();
             if (currentWeaponObj != null)
             {
                 var weaponName = currentWeaponObj.data != null
@@ -393,7 +400,7 @@ namespace OpenGS
 
         #region Event Handlers
 
-        private void HandlePlayerRegistered(AbstractPlayer player)
+        private void HandlePlayerRegistered(IBattlePlayer player)
         {
             if (player != null && player.PlayerType() == EPlayerType.MyPlayer)
             {
@@ -401,25 +408,25 @@ namespace OpenGS
             }
         }
 
-        private void HandleHealthChanged(AbstractPlayer player, float newHp)
+        private void HandleHealthChanged(IBattlePlayer player, float newHp)
         {
             if (!IsMyPlayer(player)) return;
             UpdateHPDisplay(newHp, player.GetMaxHP());
         }
 
-        private void HandleArmorChanged(AbstractPlayer player, float newArmor)
+        private void HandleArmorChanged(IBattlePlayer player, float newArmor)
         {
             if (!IsMyPlayer(player)) return;
             UpdateArmorDisplay(newArmor, player.GetMaxArmor());
         }
 
-        private void HandleBoosterChanged(AbstractPlayer player, float newBooster)
+        private void HandleBoosterChanged(IBattlePlayer player, float newBooster)
         {
             if (!IsMyPlayer(player)) return;
             UpdateBoosterDisplay(newBooster, player.GetMaxBooster());
         }
 
-        private void HandlePlayerDied(AbstractPlayer player)
+        private void HandlePlayerDied(IBattlePlayer player)
         {
             if (!IsMyPlayer(player)) return;
             
@@ -427,7 +434,7 @@ namespace OpenGS
             UpdateHPDisplay(0f, player.GetMaxHP());
         }
 
-        private void HandlePlayerRespawned(AbstractPlayer player)
+        private void HandlePlayerRespawned(IBattlePlayer player)
         {
             if (!IsMyPlayer(player)) return;
 
@@ -713,7 +720,7 @@ namespace OpenGS
 
         #endregion
 
-        private bool IsMyPlayer(AbstractPlayer player)
+        private bool IsMyPlayer(IBattlePlayer player)
         {
             return player != null && myPlayer != null && player.UniqueID() == myPlayer.UniqueID();
         }

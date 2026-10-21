@@ -24,11 +24,11 @@ namespace OpenGS
 
         public void UseGrenade()
         {
-            var player = mainScript != null ? mainScript.player?.GetComponent<AbstractPlayer>() : null;
+            var player = mainScript != null ? mainScript.player?.GetComponent<IBattlePlayer>() : null;
             UseGrenade(player, EGrenadeType.Normal, 1f);
         }
 
-        public void UseGrenade(AbstractPlayer player, EGrenadeType grenadeType, float powerMultiplier = 1f)
+        public void UseGrenade(IBattlePlayer player, EGrenadeType grenadeType, float powerMultiplier = 1f)
         {
             var resolvedPlayerId = ResolvePlayerId(player);
             if (string.IsNullOrWhiteSpace(resolvedPlayerId))
@@ -43,7 +43,7 @@ namespace OpenGS
             }
 
             powerMultiplier = Mathf.Clamp(powerMultiplier, 0f, 10f);
-            var position = player != null ? (Vector2)player.transform.position : Vector2.zero;
+            var position = player != null ? (Vector2)player.Transform.position : Vector2.zero;
             if (float.IsNaN(position.x) || float.IsInfinity(position.x) ||
                 float.IsNaN(position.y) || float.IsInfinity(position.y))
             {
@@ -51,7 +51,7 @@ namespace OpenGS
                 return;
             }
 
-            var direction = player != null && player.transform.localScale.x < 0f
+            var direction = player != null && player.Transform.localScale.x < 0f
                 ? Vector2.left
                 : Vector2.right;
             var message = RUDPMessageBuilder.CreateGrenadeThrow(resolvedPlayerId, position, direction, grenadeType.ToString(), powerMultiplier);
@@ -60,10 +60,10 @@ namespace OpenGS
 
         public void UseInstantItem(EInstantItemType type)
         {
-            UseInstantItem(mainScript != null ? mainScript.player?.GetComponent<AbstractPlayer>() : null, type);
+            UseInstantItem(mainScript != null ? mainScript.player?.GetComponent<IBattlePlayer>() : null, type);
         }
 
-        public void UseInstantItem(AbstractPlayer player, EInstantItemType type)
+        public void UseInstantItem(IBattlePlayer player, EInstantItemType type)
         {
             var resolvedPlayerId = ResolvePlayerId(player);
             var effect = InstantItemVisualResolver.GetEffectName(type);
@@ -107,7 +107,7 @@ namespace OpenGS
             networkManager.SendToServer(json);
         }
 
-        private static string ResolvePlayerId(AbstractPlayer player)
+        private static string ResolvePlayerId(IBattlePlayer player)
         {
             if (player != null)
             {

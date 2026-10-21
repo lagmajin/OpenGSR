@@ -18,6 +18,12 @@ namespace OpenGSCore
         CaptureTheFlag,
         ArmsRace,
         Unknown,
+
+        // Added last, after Unknown, because this enum travels on the wire as a
+        // byte and every value above it is already in saved rooms, saved
+        // accounts and both sides' copies of this file. Inserting it anywhere
+        // else would renumber a mode that is in use.
+        Mission,
     }
 
     public class GameMode

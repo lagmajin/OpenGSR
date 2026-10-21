@@ -196,6 +196,23 @@ namespace OpenGS
             return value == int.MaxValue ? value : value + 1;
         }
 
+        /// <summary>
+        /// The room's own tally replaces what this client counted.
+        /// <para>
+        /// The client counts its own kills and sends its own claims, so a tally it
+        /// worked out for itself is a tally of its own making for the whole match,
+        /// and the rule that ends a team match reads these numbers. The room keeps
+        /// the real ones, so they are adopted rather than added to: a message that
+        /// arrives twice must not double the score, and a message that corrects a
+        /// count downwards has to be able to.
+        /// </para>
+        /// </summary>
+        public void AdoptServerTeamKills(int red, int blue)
+        {
+            RedTeamKill = Mathf.Max(0, red);
+            BlueTeamKill = Mathf.Max(0, blue);
+        }
+
         public void AddFlagScore(ETeam team, int delta = 1)
         {
             if (delta == 0)

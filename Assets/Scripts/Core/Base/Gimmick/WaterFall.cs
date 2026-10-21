@@ -133,12 +133,14 @@ namespace OpenGS
             }
 
             // apply damage
-            var abstractPlayer = player.GetComponentInParent<AbstractPlayer>();
-            if (abstractPlayer != null && PlayerRegistry.Instance != null)
+// Whichever tree carries it. Asking for one type found nothing on a real
+            // player, so falling into water did no damage at all.
+            var hitPlayer = player.GetComponentInParent<IBattlePlayer>();
+            if (hitPlayer != null && PlayerRegistry.Instance != null)
             {
-                var source = (Vector2)(abstractPlayer.transform.position - transform.position);
+                var source = (Vector2)(hitPlayer.Transform.position - transform.position);
                 PlayerRegistry.Instance.ApplyDamage(
-                    abstractPlayer.UniqueID(),
+                    hitPlayer.UniqueID(),
                     source,
                     damageAmount,
                     eDamageType.WaterFall,
@@ -163,18 +165,13 @@ namespace OpenGS
             if (tags == null) return;
             if (!tags.HasPlayerTag()) return;
 
-            var abstractPlayer = go.GetComponentInParent<AbstractPlayer>();
-            if (abstractPlayer != null)
+// One lookup for the whole player, whichever tree carries it. This used to ask
+            // for one tree and then, on failure, for the other, so the same fact
+            // about a player had two answers depending on which existed.
+            var battlePlayer = go.GetComponentInParent<IBattlePlayer>();
+            if (battlePlayer != null)
             {
-                go = abstractPlayer.gameObject;
-            }
-            else
-            {
-                var playerAgent = go.GetComponentInParent<PlayerAgent>();
-                if (playerAgent != null)
-                {
-                    go = playerAgent.gameObject;
-                }
+                go = battlePlayer.Root;
             }
 
             var id = UnityObjectIdCompat.GetObjectId(go);
@@ -194,18 +191,10 @@ namespace OpenGS
         private void UnregisterPlayer(GameObject go)
         {
             if (go == null) return;
-            var abstractPlayer = go.GetComponentInParent<AbstractPlayer>();
-            if (abstractPlayer != null)
+            var battlePlayer = go.GetComponentInParent<IBattlePlayer>();
+            if (battlePlayer != null)
             {
-                go = abstractPlayer.gameObject;
-            }
-            else
-            {
-                var playerAgent = go.GetComponentInParent<PlayerAgent>();
-                if (playerAgent != null)
-                {
-                    go = playerAgent.gameObject;
-                }
+                go = battlePlayer.Root;
             }
 
             var id = UnityObjectIdCompat.GetObjectId(go);

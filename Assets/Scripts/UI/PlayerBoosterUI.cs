@@ -20,7 +20,7 @@ namespace OpenGS
         [Header("ブースターゲージ")]
         [SerializeField] private Gauge boosterGauge;
 
-        private AbstractPlayer myPlayer;
+        private IBattlePlayer myPlayer;
         private Coroutine bindRoutine;
         private bool subscribed;
 
@@ -78,7 +78,7 @@ namespace OpenGS
             myPlayer = null;
         }
 
-        private void HandlePlayerRegistered(AbstractPlayer player)
+        private void HandlePlayerRegistered(IBattlePlayer player)
         {
             if (player != null && player.PlayerType() == EPlayerType.MyPlayer)
             {
@@ -87,7 +87,7 @@ namespace OpenGS
             }
         }
 
-        private void HandleBoosterChanged(AbstractPlayer player, float newBooster)
+        private void HandleBoosterChanged(IBattlePlayer player, float newBooster)
         {
             if (!IsMyPlayer(player)) return;
             if (boosterGauge == null) return;
@@ -95,7 +95,7 @@ namespace OpenGS
             boosterGauge.UpdateGauge(newBooster, player.GetMaxBooster());
         }
 
-        private void HandlePlayerRespawned(AbstractPlayer player)
+        private void HandlePlayerRespawned(IBattlePlayer player)
         {
             if (!IsMyPlayer(player)) return;
             InitGauge();
@@ -123,7 +123,7 @@ namespace OpenGS
             boosterGauge.Init(myPlayer.GetBooster(), myPlayer.GetMaxBooster());
         }
 
-        private bool IsMyPlayer(AbstractPlayer player)
+        private bool IsMyPlayer(IBattlePlayer player)
         {
             return player != null && myPlayer != null && player.UniqueID() == myPlayer.UniqueID();
         }

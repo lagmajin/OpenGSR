@@ -7,6 +7,9 @@ namespace OpenGSCore
 {
     public class DeathMatchSetting : AbstractMatchSetting
     {
+        private int winConditionKill = 20;
+        private int matchTimeMinutes = 5;
+
         /// <summary>
         /// The number of kills that ends the match.
         /// <para>
@@ -16,7 +19,7 @@ namespace OpenGSCore
         /// could not be created.
         /// </para>
         /// </summary>
-        public int WinConditionKill { get; set; } = 20;
+        public int WinConditionKill { get => winConditionKill; set => Set(ref winConditionKill, value); }
 
         /// <summary>
         /// The match length in minutes.
@@ -31,7 +34,7 @@ namespace OpenGSCore
         /// writes do not change, and the rule reads the minutes anyway.
         /// </para>
         /// </summary>
-        public int MatchTimeMinutes { get; set; } = 5;
+        public int MatchTimeMinutes { get => matchTimeMinutes; set => Set(ref matchTimeMinutes, value); }
 
         public DeathMatchSetting(int winConditionKill = 20, bool teamBalance = true)
             : base(EGameMode.DeathMatch, 0, teamBalance)

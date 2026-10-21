@@ -35,7 +35,6 @@ namespace OpenGS
         bool CanEquip();
         bool CanWarp();
 
-        void EquipWeapon();
         void EquipWeapon(GameObject weaponPrefab);
         void EquipSpecialWeapon(GameObject weaponPrefab, int ammo);
 

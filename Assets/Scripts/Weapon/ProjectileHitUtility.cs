@@ -35,13 +35,21 @@ namespace OpenGS
                 || (root != null && root.gameObject.layer == LayerMask.NameToLayer("Platforms"));
         }
 
-        public static bool TryGetTargetPlayer(Collider2D collision, out AbstractPlayer player)
+        /// <summary>
+        /// The player a hit landed on, whichever component tree carries it.
+        /// <para>
+        /// This asked for one specific type, which no player prefab in the project
+        /// carries, so it returned null for every bullet in a real match and the
+        /// hit test quietly did nothing.
+        /// </para>
+        /// </summary>
+        public static bool TryGetTargetPlayer(Collider2D collision, out IBattlePlayer player)
         {
-            player = collision != null ? collision.GetComponentInParent<AbstractPlayer>() : null;
+            player = collision != null ? collision.GetComponentInParent<IBattlePlayer>() : null;
             return player != null;
         }
 
-        public static bool ShouldIgnorePlayerHit(AbstractPlayer target, string ownerPlayerId, ETeam team)
+        public static bool ShouldIgnorePlayerHit(IBattlePlayer target, string ownerPlayerId, ETeam team)
         {
             if (target == null)
             {
@@ -63,7 +71,7 @@ namespace OpenGS
         }
 
         public static bool ApplyPlayerDamage(
-            AbstractPlayer target,
+            IBattlePlayer target,
             Vector2 impactOrigin,
             float damage,
             eDamageType damageType,
@@ -88,7 +96,7 @@ namespace OpenGS
                 return false;
             }
 
-            var source = (Vector2)(target.transform.position - (Vector3)impactOrigin);
+            var source = (Vector2)(target.Transform.position - (Vector3)impactOrigin);
             return registry.ApplyDamage(
                 target.UniqueID(),
                 source,

@@ -27,7 +27,7 @@ namespace OpenGS
         [SerializeField] private Vector2 randomOffset = new Vector2(20f, 10f); // ランダムずれ幅(px)
         [SerializeField] private int maxActiveDamageTexts = 32;
 
-        private readonly Dictionary<string, AbstractPlayer> playerCache = new();
+        private readonly Dictionary<string, IBattlePlayer> playerCache = new();
         private readonly List<GameObject> activeDamageTexts = new();
         private IDisposable damageSub;
 
@@ -79,7 +79,7 @@ namespace OpenGS
             activeDamageTexts.Clear();
         }
 
-        private void HandlePlayerUnregistered(AbstractPlayer player)
+        private void HandlePlayerUnregistered(IBattlePlayer player)
         {
             if (player == null)
             {
@@ -154,7 +154,7 @@ namespace OpenGS
             SpawnDamageText(player, feedback.Damage, feedback.IsCritical);
         }
 
-        private AbstractPlayer ResolvePlayer(string playerId)
+        private IBattlePlayer ResolvePlayer(string playerId)
         {
             if (string.IsNullOrWhiteSpace(playerId))
             {
@@ -189,7 +189,7 @@ namespace OpenGS
             return null;
         }
 
-        private void SpawnDamageText(AbstractPlayer player, int damage, bool isCritical)
+        private void SpawnDamageText(IBattlePlayer player, int damage, bool isCritical)
         {
             if (player == null)
             {
@@ -204,7 +204,7 @@ namespace OpenGS
             }
 
             // プレイヤーのワールド座標をスクリーン座標に変換
-            Vector3 worldPos = player.transform.position + new Vector3(0, 0.3f, 0); // 少し頭上
+            Vector3 worldPos = player.Transform.position + new Vector3(0, 0.3f, 0); // 少し頭上
             Vector3 screenPos = targetCamera.WorldToScreenPoint(worldPos);
 
             if (screenPos.z < 0f) return; // カメラの背後なら表示しない

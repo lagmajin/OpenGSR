@@ -1,8 +1,0 @@
-﻿
-
-namespace OpenGS
-{
-    class SkyFighterManager
-    {
-    }
-}

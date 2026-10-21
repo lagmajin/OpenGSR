@@ -401,12 +401,20 @@ namespace OpenGSCore
                 NowPlaying = false;
                 MatchRoomLink = null;
 
-                // Reset player states for the next match
+                // Reset player states for the next match.
+                //
+                // Health belongs here as well as kills and deaths. It used to be
+                // left alone, so a player who died in the last match queued for the
+                // next one still dead, and the room that puts everybody back on
+                // their feet at match start had to be trusted to do it.
                 foreach (var p in Players.Values)
                 {
                     p.IsReady = false;
                     p.Kills = 0;
                     p.Deaths = 0;
+                    p.Score = 0;
+                    p.MaxHealth = p.MaxHealth > 0 ? p.MaxHealth : 100;
+                    p.Health = p.MaxHealth;
                 }
             }
         }

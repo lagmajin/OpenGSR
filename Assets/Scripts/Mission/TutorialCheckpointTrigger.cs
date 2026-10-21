@@ -33,7 +33,7 @@ namespace OpenGS
                 return;
             }
 
-            var player = other.GetComponentInParent<AbstractPlayer>();
+            var player = other.GetComponentInParent<IBattlePlayer>();
             if (player == null || player.PlayerType() != EPlayerType.MyPlayer)
             {
                 return;

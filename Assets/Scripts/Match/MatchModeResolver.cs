@@ -60,7 +60,30 @@ namespace OpenGS
 
         public static bool CanRespawnCurrentMatch()
         {
-            return !IsSurvivalLike(ResolveCurrentGameMode());
+            var mode = ResolveCurrentGameMode();
+            if (mode == EGameMode.Mission)
+            {
+                // A mission is played on a life count, and whether a player comes
+                // back is the room's answer rather than the mode's. It was decided
+                // from the mode alone, so a mission configured without respawn was
+                // read as one that respawns, and a player out of lives was rebuilt
+                // into the same mission for ever.
+                return ResolveMissionRespawn();
+            }
+
+            return !IsSurvivalLike(mode);
+        }
+
+        private static bool serverMissionRespawn = false;
+
+        public static void AdoptMissionRespawn(bool allowRespawn)
+        {
+            serverMissionRespawn = allowRespawn;
+        }
+
+        private static bool ResolveMissionRespawn()
+        {
+            return serverMissionRespawn;
         }
 
         public static bool IsSurvivalLike(EGameMode mode)

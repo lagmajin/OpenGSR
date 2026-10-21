@@ -11,18 +11,10 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 050cd6cdf8aa87d4a98d7fb3a5042b49, type: 3}
   m_Name: CanvasMasterData
-  m_EditorClassIdentifier: 
-  NavigatorCanvas: {fileID: 1654229739734850332, guid: fcdd6c4b23dcc9040a7bcad492902f2e,
+  m_EditorClassIdentifier:
+  ReSpawnUICanvas: {fileID: 811000000000000001, guid: 3dc8458d09ee0fc45986d6e7cf06ba08,
     type: 3}
-  PlayerStatusUI: {fileID: 3317239519674642096, guid: 5d385ce8a0c9dd749bb8097e6c966bb3,
+  PlayerStatusUI: {fileID: 4733026678518796933, guid: 774375cb1e311874c98963bae27e0e65,
     type: 3}
-  DMHud: {fileID: 3826837243123342287, guid: 98133658905a5104e8c97db277eb102f, type: 3}
-  TDMHud: {fileID: 3250118645260983284, guid: 69fea7455209dcc49a198a7aecdcfdc5, type: 3}
-  SuvHud: {fileID: 0}
-  TSuvHud: {fileID: 0}
-  CTFHud: {fileID: 8720642266037443894, guid: c2fd2af77243bee45907a06cfdf819d1, type: 3}
-  MatchInformationCanvas: {fileID: 0}
-  ReSpawnUICanvas: {fileID: 5991388335848991857, guid: 3dc8458d09ee0fc45986d6e7cf06ba08,
+  MatchOverlay: {fileID: 844000000000000100, guid: c3d4e5f6a7b8192a3b4c5d6e7f8a9012,
     type: 3}
-  PlayerNameCanvas: {fileID: 0}
-  MatchChat: {fileID: 0}

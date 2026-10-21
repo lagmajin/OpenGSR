@@ -115,7 +115,9 @@ namespace OpenGS
             var direction = directionOffset.sqrMagnitude > 0.000001f
                 ? directionOffset.normalized
                 : Vector3.zero;
-            if (damageable is AbstractPlayer player && PlayerRegistry.Instance != null)
+            // Whichever tree carries it. Asking for one type found nothing on a real
+            // player, so this grenade's own blast skipped the registry path.
+            if (damageable is IBattlePlayer player && PlayerRegistry.Instance != null)
             {
                 PlayerRegistry.Instance.ApplyDamage(
                     player.UniqueID(),

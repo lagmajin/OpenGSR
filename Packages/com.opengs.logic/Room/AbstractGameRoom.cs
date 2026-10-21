@@ -9,7 +9,14 @@ namespace OpenGSCore
     {
 
     }
-    public class AbstractGameRoom
+    /// <summary>
+    /// A room the server loop ticks.
+    /// <para>
+    /// It is abstract because a room with nothing to tick and a room whose tick is
+    /// missing look the same from outside, and the loop ticks whatever it holds.
+    /// </para>
+    /// </summary>
+    public abstract class AbstractGameRoom
     {
         private int roomNumber_ = 0;
 
@@ -41,13 +48,16 @@ namespace OpenGSCore
             id = Guid.NewGuid().ToString("N");
 
         }
-        public virtual void GameUpdate()
-        {
-
-
-
-
-        }
+        /// <summary>
+        /// One tick of the room's simulation.
+        /// <para>
+        /// This was a virtual method with an empty body, so the server loop could
+        /// tick a room that had not overridden it and nothing said so: the room
+        /// reported itself as running while simulating nothing. A room that the
+        /// loop ticks has to say what one tick of it is.
+        /// </para>
+        /// </summary>
+        public abstract void GameUpdate();
 
         public virtual AbstractMatchResult? GameResult()
         {

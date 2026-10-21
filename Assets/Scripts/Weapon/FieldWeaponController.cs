@@ -284,57 +284,86 @@ namespace OpenGS
             Destroy(gameObject);
         }
 
-        private void EquipPlayer(IPlayer p)
+/// <summary>
+        /// Puts the weapon into the player's hands by whichever equip API they
+        /// carry.
+        /// <para>
+        /// There are two equip APIs in this project: the slot system the player
+        /// prefabs actually use, and the older one on the other player tree. The
+        /// pickup asked the older one and so found no player at all on a real
+        /// match, while the tree that is used had a separate overload that skipped
+        /// the reservation, the pickup report and the sound. One path now resolves
+        /// whichever API the player has, so a weapon lying on the ground is
+        /// picked up under the same rules by everybody.
+        /// </para>
+        /// </summary>
+        /// <returns>False when the player had no room for it.</returns>
+        private static bool TryEquip(
+            IBattlePlayer player,
+            GameObject prefab,
+            bool special,
+            int specialAmmoCount,
+            int magazine)
         {
-            if (p == null)
+            if (player is PlayerAgent agent)
             {
-                Debug.LogWarning($"[{nameof(FieldWeaponController)}] Pickup ignored: player is null.");
-                return;
-            }
-
-            if (!weaponPrefab)
-            {
-                Debug.LogWarning($"[{nameof(FieldWeaponController)}] Pickup ignored: weapon prefab is not assigned on {name}.");
-
-                return;
-            }
-
-            if (isSpecialWeapon)
-            {
-                p.EquipSpecialWeapon(weaponPrefab, specialAmmo > 0 ? specialAmmo : storedMagazine);
-            }
-            else if (p.CanEquip())
-            {
-                p.EquipWeapon(weaponPrefab);
-
-                if (storedMagazine >= 0 && p is AbstractPlayer matchedPlayer)
+                if (special)
                 {
-                    matchedPlayer.SetCurrentWeaponMagazine(storedMagazine);
+                    agent.EquipSpecialWeapon(prefab, specialAmmoCount);
+                    return true;
                 }
-            }
-            else
-            {
-                return;
+
+                if (!agent.CanEquipWeapon())
+                {
+                    return false;
+                }
+
+                agent.EquipWeapon(prefab);
+                if (magazine >= 0)
+                {
+                    agent.SetCurrentWeaponMagazine(magazine);
+                }
+
+                return true;
             }
 
-            if (p is AbstractPlayer pickupPlayer)
+            if (player is not IPlayer legacy)
             {
-                pickupPlayer.TryPlayGeneralSound(EPlayerGeneralSound.TakeItem, 1f, 1f);
+                return false;
             }
 
-            if (p is AbstractPlayer pickupActor)
+            if (special)
             {
-                SendWeaponPickupSync(pickupActor.UniqueID().ToString());
+                legacy.EquipSpecialWeapon(prefab, specialAmmoCount);
+                return true;
             }
-            Destroy(gameObject);
+
+            if (!legacy.CanEquip())
+            {
+                return false;
+            }
+
+            legacy.EquipWeapon(prefab);
+            if (magazine >= 0 && legacy is AbstractPlayer abstractPlayer)
+            {
+                abstractPlayer.SetCurrentWeaponMagazine(magazine);
+            }
+
+            return true;
         }
 
-        private void EquipPlayer(PlayerAgent agent)
+        private static void TryPlayTakeItemSound(IBattlePlayer player)
         {
-            if (agent == null || weaponPrefab == null || !agent.CanEquipWeapon()) return;
-            agent.EquipWeapon(weaponPrefab);
-            if (storedMagazine >= 0) agent.SetCurrentWeaponMagazine(storedMagazine);
-            Destroy(gameObject);
+            if (player is PlayerAgent agent)
+            {
+                agent.TryPlayGeneralSound(EPlayerGeneralSound.TakeItem, 1f, 1f);
+                return;
+            }
+
+            if (player is AbstractPlayer abstractPlayer)
+            {
+                abstractPlayer.TryPlayGeneralSound(EPlayerGeneralSound.TakeItem, 1f, 1f);
+            }
         }
 
         public void SetStoredMagazine(int magazine)
@@ -347,10 +376,17 @@ namespace OpenGS
             specialAmmo = ammo;
         }
 
-        private void TryAutoPickup(AbstractPlayer player)
+        private void TryAutoPickup(IBattlePlayer player)
         {
             if (player == null)
             {
+                return;
+            }
+
+            if (!weaponPrefab)
+            {
+                Debug.LogWarning(
+                    $"[{nameof(FieldWeaponController)}] Pickup ignored: weapon prefab is not assigned on {name}.");
                 return;
             }
 
@@ -364,9 +400,15 @@ namespace OpenGS
                 return;
             }
 
-            if (isSpecialWeapon || player.CanEquip())
+            // A special weapon replaces what is held rather than joining it, so
+            // the only question is whether the player is standing on a weapon at
+            // all; a regular one needs the player to have a free slot.
+            if (TryEquip(player, weaponPrefab, isSpecialWeapon,
+                    specialAmmo > 0 ? specialAmmo : storedMagazine, storedMagazine))
             {
-                EquipPlayer(player);
+                TryPlayTakeItemSound(player);
+                SendWeaponPickupSync(player.UniqueID().ToString());
+                Destroy(gameObject);
                 return;
             }
 
@@ -407,7 +449,7 @@ namespace OpenGS
             suppressReservationSync = false;
         }
 
-        private bool TryResolvePlayer(Collider2D collision, out AbstractPlayer player)
+private bool TryResolvePlayer(Collider2D collision, out IBattlePlayer player)
         {
             player = null;
 
@@ -427,7 +469,10 @@ namespace OpenGS
                 return false;
             }
 
-            player = collision.GetComponentInParent<AbstractPlayer>();
+            // Whichever tree carries the player. This asked for one type, which no
+            // player prefab has, so nothing on the ground was ever picked up by
+            // this path.
+            player = collision.GetComponentInParent<IBattlePlayer>();
             return player != null;
         }
 
@@ -446,15 +491,12 @@ namespace OpenGS
             TryAutoPickup(player);
         }
 
-
         private void OnTriggerEnter2D(Collider2D collision)
         {
-            var agent = collision != null ? collision.GetComponentInParent<PlayerAgent>() : null;
-            if (agent != null && pickupable)
-            {
-                EquipPlayer(agent);
-                return;
-            }
+            // One path for every player. This used to have a second, earlier
+            // branch that bypassed the reservation, the pickup report and the
+            // sound, so a weapon somebody else had laid claim to could simply be
+            // walked into.
             HandlePickupCollision(collision);
         }
     }

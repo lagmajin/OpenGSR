@@ -64,8 +64,10 @@ namespace OpenGS
         {
             if (other == null) return;
 
-            var abstractPlayer = other.GetComponentInParent<AbstractPlayer>();
-            var targetObject = abstractPlayer != null ? abstractPlayer.gameObject : other;
+// Whichever tree carries it. Asking for one type found nothing on a real
+            // player, so a contact hazard could not damage anybody.
+            var hitPlayer = other.GetComponentInParent<IBattlePlayer>();
+            var targetObject = hitPlayer != null ? hitPlayer.Root : other;
             if (!IsValidTarget(targetObject)) return;
 
             var id = UnityObjectIdCompat.GetObjectId(targetObject);
@@ -93,11 +95,11 @@ namespace OpenGS
             lastHitTime[id] = now;
 
             // apply damage using IDamageable if present
-            if (abstractPlayer != null && PlayerRegistry.Instance != null)
+if (hitPlayer != null && PlayerRegistry.Instance != null)
             {
-                var source = (Vector2)(abstractPlayer.transform.position - transform.position);
+                var source = (Vector2)(hitPlayer.Transform.position - transform.position);
                 PlayerRegistry.Instance.ApplyDamage(
-                    abstractPlayer.UniqueID(),
+                    hitPlayer.UniqueID(),
                     source,
                     damage,
                     damageType,

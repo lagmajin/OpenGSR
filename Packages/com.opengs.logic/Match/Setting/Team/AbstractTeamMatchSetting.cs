@@ -1,4 +1,4 @@
-﻿
+
 
 using Newtonsoft.Json.Linq;
 
@@ -6,9 +6,13 @@ namespace OpenGSCore
 {
     public class AbstractTeamMatchSetting : AbstractMatchSetting
     {
-        public bool RandomTeam { get; set; } = true;
+        private bool randomTeam = true;
 
-        public bool TeamBalance { get; set; } = false;
+        public bool RandomTeam { get => randomTeam; set => Set(ref randomTeam, value); }
+
+        private bool teamBalance = false;
+
+        public bool TeamBalance { get => teamBalance; set => Set(ref teamBalance, value); }
 
         public AbstractTeamMatchSetting(EGameMode mode, bool randomTeam = false, bool teamBalance = true) : base(mode, 8, teamBalance, false)
         {
@@ -31,3 +35,4 @@ namespace OpenGSCore
 
     }
 }
+

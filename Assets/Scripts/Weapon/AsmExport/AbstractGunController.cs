@@ -116,9 +116,75 @@ namespace OpenGS
             heatMax = float.IsFinite(heatMax) ? Mathf.Max(0f, heatMax) : 5f;
             heatPerShot = float.IsFinite(heatPerShot) ? Mathf.Max(0f, heatPerShot) : 0.5f;
             heatDecayPerSecond = float.IsFinite(heatDecayPerSecond) ? Mathf.Max(0f, heatDecayPerSecond) : 1f;
-            shotTimer = 0f;
+shotTimer = 0f;
             heat = 0f;
             originalHeadPos = gameObject.transform.localPosition;
+
+            // The server holds the magazine, so its count is the one that decides
+            // whether this gun may fire. Without adopting it the client kept a
+            // private count that could disagree with the server's by a whole
+            // magazine, and the disagreement showed up as a shot the client
+            // believed it was entitled to being refused for no visible reason.
+            ammoSubscription_ = GameEventBroker.Subscribe<AmmoUpdateEvent>(OnServerAmmoUpdate);
+        }
+
+        protected virtual void OnDestroy()
+        {
+            // The broker outlives the gun. A weapon that went away without
+            // unsubscribing stayed in its list for the rest of the session, and a
+            // gun is created and destroyed every time a weapon is dropped and
+            // picked up, so the list grew for as long as the match ran.
+            ammoSubscription_?.Dispose();
+            ammoSubscription_ = null;
+        }
+
+        private IDisposable ammoSubscription_;
+
+        /// <summary>
+        /// Adopts the magazine the server says this weapon holds.
+        /// <para>
+        /// Only the owning player's own gun is touched. The server publishes an
+        /// ammo update for whoever it is about, and a client that applied every
+        /// one of them would refill every weapon in the room whenever anybody
+        /// reloaded.
+        /// </para>
+        /// </summary>
+        private void OnServerAmmoUpdate(AmmoUpdateEvent evt)
+        {
+            if (evt == null) return;
+
+            var owner = GetOwnerPlayer();
+            var pid = GetPlayerID(owner);
+            if (string.IsNullOrEmpty(pid) ||
+                !string.Equals(pid, evt.PlayerID(), StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            if (!string.IsNullOrEmpty(evt.WeaponType()) &&
+                !string.Equals(evt.WeaponType(), WeaponTypeName(), StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var limit = evt.MaxAmmo() > 0 ? evt.MaxAmmo() : MagazineMaxCount();
+            remains = Mathf.Clamp(evt.CurrentAmmo(), 0, limit);
+
+            // A magazine the server has already emptied does not leave the client
+            // sitting on its own reload animation waiting out a timer the server
+            // has already answered.
+            if (remains <= 0 && !reloadingNow)
+            {
+                shotTimer = 0f;
+            }
+
+            PublishAmmoUpdate();
+        }
+
+        /// <summary>The weapon name the server is told about this gun.</summary>
+        protected virtual string WeaponTypeName()
+        {
+            return data != null ? data.weaponType.ToString() : Name;
         }
 
         protected virtual void OnUpdate()
@@ -250,16 +316,62 @@ namespace OpenGS
             }
         }
 
-        public virtual void ReloadStart()
+public virtual void ReloadStart()
         {
             var magazineLimit = MagazineMaxCount();
             if (reloadingNow || remains >= magazineLimit) return;
 
             reloadCancelFlag = false;
             reloadingNow = true;
+            TrySendServerReload();
             if (data != null && soundService != null)
             {
                 soundService.PlayWeaponReload(data.weaponType);
+            }
+        }
+
+        /// <summary>
+        /// Tells the server this weapon is being reloaded.
+        /// <para>
+        /// The server holds the magazine, and the client's own count is only a
+        /// prediction of it. A reload that was never reported left the two apart:
+        /// the client refilled to a full magazine on its own timer while the
+        /// server's count stayed where it was, so a shot the client believed it
+        /// had rounds for was refused and the client had no idea why.
+        /// </para>
+        /// <para>
+        /// Failure is not worth reporting. This is the same claim the shot makes,
+        /// and a shot that could not be sent falls back to playing out locally.
+        /// </para>
+        /// </summary>
+        protected virtual bool TrySendServerReload()
+        {
+            try
+            {
+                var networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+                if (networkManager == null || !networkManager.IsConnected())
+                {
+                    return false;
+                }
+
+                var owner = GetOwnerPlayer();
+                var weaponType = data != null ? data.weaponType.ToString() : Name;
+                var pid = GetPlayerID(owner);
+                if (string.IsNullOrEmpty(pid))
+                {
+                    return false;
+                }
+
+                NetworkEventSerializer.SerializeAndSend(new PlayerReloadEvent(
+                    pid,
+                    weaponType,
+                    remains <= 0));
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[AbstractGunController] Failed to send server reload: {ex.Message}");
+                return false;
             }
         }
 
@@ -421,7 +533,42 @@ namespace OpenGS
             transform.localScale = scale;
         }
 
-        public virtual void SetGunAngle() { }
+        /// <summary>
+        /// Aims the gun at a point in the world.
+        /// <para>
+        /// UpdateRotation turns the weapon toward the input's aim every frame,
+        /// which covers a player holding a controller. An AI has no aim input, so
+        /// without this its weapon kept whatever angle it was left at while the
+        /// body turned, and it fired across the room at nothing.
+        /// </para>
+        /// <para>
+        /// The flip is the same one UpdateRotation applies, so a target on the left
+        /// does not leave the weapon pointing the other way.
+        /// </para>
+        /// </summary>
+        public virtual void SetGunAngle(Vector3 targetWorldPosition)
+        {
+            var origin = muzzle != null ? (Vector3)muzzle.position : transform.position;
+
+            if (!IsFinite(origin) || !IsFinite(targetWorldPosition))
+            {
+                return;
+            }
+
+            var dir = targetWorldPosition - origin;
+            if (dir.sqrMagnitude <= Mathf.Epsilon)
+            {
+                return;
+            }
+
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, angle);
+        }
+
+        private static bool IsFinite(Vector3 value)
+        {
+            return float.IsFinite(value.x) && float.IsFinite(value.y) && float.IsFinite(value.z);
+        }
 
         public Sprite GunBigIcon() => gunBigIcon;
         public Sprite GunSilhouette() => gunSilhouette;

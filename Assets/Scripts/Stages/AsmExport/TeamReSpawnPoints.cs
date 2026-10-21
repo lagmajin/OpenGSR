@@ -151,8 +151,8 @@ namespace OpenGS
 
         private float ScoreSpawnPoint(
             Vector2 spawnPoint,
-            IReadOnlyCollection<AbstractPlayer> teamPlayers,
-            IReadOnlyCollection<AbstractPlayer> enemyPlayers,
+            IReadOnlyCollection<IBattlePlayer> teamPlayers,
+            IReadOnlyCollection<IBattlePlayer> enemyPlayers,
             ETeam team)
         {
             var score = Random.value;
@@ -200,7 +200,7 @@ namespace OpenGS
             return Mathf.Max(0f, recentSpawnPenalty - minDistance);
         }
 
-        private static float? EvaluateDistance(Vector2 spawnPoint, IReadOnlyCollection<AbstractPlayer> players)
+        private static float? EvaluateDistance(Vector2 spawnPoint, IReadOnlyCollection<IBattlePlayer> players)
         {
             if (players == null || players.Count == 0)
             {
@@ -218,7 +218,7 @@ namespace OpenGS
                 }
 
                 hasLivingPlayer = true;
-                var distance = Vector2.Distance(spawnPoint, player.transform.position);
+                var distance = Vector2.Distance(spawnPoint, player.Transform.position);
                 if (distance < minDistance)
                 {
                     minDistance = distance;

@@ -21,7 +21,14 @@ namespace OpenGSCore
                 EGameMode.TeamDeathMatch => new TeamDeathMatchResultEvaluator(),
                 EGameMode.Survival => new SurvivalResultEvaluator(),
                 EGameMode.TeamSurvival => new TeamSurvivalResultEvaluator(),
-                EGameMode.CaptureTheFlag => new CaptureTheFlagResultEvaluator(),
+EGameMode.CaptureTheFlag => new CaptureTheFlagResultEvaluator(),
+
+                // Had no case here, so a mission either threw at the end of the
+                // match or, because the setting used to declare itself a survival,
+                // was settled as one. A mission has an outcome rather than a
+                // winning team, so it gets the evaluator that says which.
+                EGameMode.Mission => new MissionResultEvaluator(),
+
                 _ => throw new NotSupportedException($"Unsupported match result mode: {mode}")
             };
         }

@@ -7,11 +7,15 @@ namespace OpenGSCore
 {
     public class ArmsRaceMatchSetting : AbstractMatchSetting
     {
+        private int winConditionKill = 30;
+
         /// <summary>
         /// The number of kills that ends the match. Settable, because a room has
         /// to be able to ask for a different one than the default.
         /// </summary>
-        public int WinConditionKill { get; set; } = 30;
+        public int WinConditionKill { get => winConditionKill; set => Set(ref winConditionKill, value); }
+
+        private int matchTimeMinutes = 5;
 
         /// <summary>
         /// The match length in minutes.
@@ -21,7 +25,7 @@ namespace OpenGSCore
         /// unrelated rule.
         /// </para>
         /// </summary>
-        public int MatchTimeMinutes { get; set; } = 5;
+        public int MatchTimeMinutes { get => matchTimeMinutes; set => Set(ref matchTimeMinutes, value); }
 
         public ArmsRaceMatchSetting(int maxPlayerCapacity = 8, bool teamBalance = true)
             : base(EGameMode.ArmsRace, maxPlayerCapacity, teamBalance)
@@ -42,3 +46,4 @@ namespace OpenGSCore
         }
     }
 }
+

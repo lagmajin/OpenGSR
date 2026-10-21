@@ -20,7 +20,7 @@ namespace OpenGS
         [Header("HP ゲージ")]
         [SerializeField] private Gauge hpGauge;
 
-        private AbstractPlayer myPlayer;
+        private IBattlePlayer myPlayer;
         private Coroutine bindRoutine;
         private bool subscribed;
 
@@ -81,7 +81,7 @@ namespace OpenGS
             myPlayer = null;
         }
 
-        private void HandlePlayerRegistered(AbstractPlayer player)
+        private void HandlePlayerRegistered(IBattlePlayer player)
         {
             // 自プレイヤーが後から登録された場合にキャッチする
             if (player != null && player.PlayerType() == EPlayerType.MyPlayer)
@@ -91,7 +91,7 @@ namespace OpenGS
             }
         }
 
-        private void HandleHealthChanged(AbstractPlayer player, float newHp)
+        private void HandleHealthChanged(IBattlePlayer player, float newHp)
         {
             if (!IsMyPlayer(player)) return;
             if (hpGauge == null) return;
@@ -99,7 +99,7 @@ namespace OpenGS
             hpGauge.UpdateGauge(newHp, player.GetMaxHP());
         }
 
-        private void HandlePlayerDied(AbstractPlayer player)
+        private void HandlePlayerDied(IBattlePlayer player)
         {
             if (!IsMyPlayer(player)) return;
             if (hpGauge == null) return;
@@ -108,7 +108,7 @@ namespace OpenGS
             hpGauge.Init(0f, player.GetMaxHP());
         }
 
-        private void HandlePlayerRespawned(AbstractPlayer player)
+        private void HandlePlayerRespawned(IBattlePlayer player)
         {
             if (!IsMyPlayer(player)) return;
 
@@ -138,7 +138,7 @@ namespace OpenGS
             hpGauge.Init(myPlayer.GetHP(), myPlayer.GetMaxHP());
         }
 
-        private bool IsMyPlayer(AbstractPlayer player)
+        private bool IsMyPlayer(IBattlePlayer player)
         {
             return player != null && myPlayer != null && player.UniqueID() == myPlayer.UniqueID();
         }

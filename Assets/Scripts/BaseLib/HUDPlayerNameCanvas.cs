@@ -63,7 +63,7 @@ namespace OpenGS
         public void RefreshTargets()
         {
             targets.Clear();
-            foreach (var player in FindObjectsByType<AbstractPlayer>(FindObjectsSortMode.None))
+            foreach (var player in FindObjectsByType<PlayerAgent>(FindObjectsSortMode.None))
             {
                 if (player != null)
                 {

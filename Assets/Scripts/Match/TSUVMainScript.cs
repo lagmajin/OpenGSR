@@ -149,7 +149,7 @@ namespace OpenGS
                 var playerObj = Instantiate(prefab, spawnPos, Quaternion.identity);
                 playerObj.name = $"OtherPlayer_{info.Name}";
 
-                var player = playerObj.GetComponent<AbstractPlayer>();
+                var player = playerObj.GetComponent<IBattlePlayer>();
                 if (player != null)
                 {
                     player.SetPlayerType(EPlayerType.OtherPlayer);
@@ -404,8 +404,8 @@ namespace OpenGS
         {
             var red = ReadInt(json, "RedTeamKills");
             var blue = ReadInt(json, "BlueTeamKills");
-            redKills = Math.Max(redKills, red);
-            blueKills = Math.Max(blueKills, blue);
+            redKills = Math.Max(0, red);
+            blueKills = Math.Max(0, blue);
             Debug.Log($"[TSUV] Score update: Red={red}, Blue={blue}");
         }
 
@@ -415,6 +415,20 @@ namespace OpenGS
             var victimId = json["VictimId"]?.ToString();
             var headshot = ReadBool(json, "Headshot");
             Debug.Log($"[TSUV] Player kill: {killerId} killed {victimId} (headshot: {headshot})");
+        }
+
+        /// <summary>
+        /// The room's tally replaces what this client counted.
+        /// <para>
+        /// These two numbers used to keep whichever was larger, so a correction
+        /// downwards could never arrive and a repeated message was harmless only
+        /// by accident. The room keeps the real tally, so it is adopted.
+        /// </para>
+        /// </summary>
+        protected override void OnServerTeamKillsApplied(int red, int blue)
+        {
+            redKills = Math.Max(0, red);
+            blueKills = Math.Max(0, blue);
         }
 
         /// <summary>

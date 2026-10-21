@@ -26,13 +26,13 @@ namespace OpenGS
         public Color defaultColor = new Color(0.2f, 0.2f, 0.2f, 0.5f);
 
         /// <summary>
-        /// AbstractPlayer から UI にセットする
+        /// IBattlePlayer から UI にセットする
         /// </summary>
-        public void SetData(AbstractPlayer player)
+        public void SetData(IBattlePlayer player)
         {
             if (player == null) return;
 
-            if (nameText != null) nameText.text = player.gameObject.name;
+            if (nameText != null) nameText.text = player.DisplayName();
             int kills = player.Status?.KillCount ?? 0;
             int deaths = player.Status?.DeathCount ?? 0;
             if (scoreText != null) scoreText.text = kills.ToString();

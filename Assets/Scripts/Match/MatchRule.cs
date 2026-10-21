@@ -213,10 +213,70 @@ namespace OpenGS
         }
     }
 
+    /// <summary>
+    /// A mission, as this client reads one.
+    /// <para>
+    /// The server decides how a mission ends, and this exists so the client's own
+    /// idea of when the match is over is at least the same shape as the server's.
+    /// It had no rule at all, so a mission fell through to a base rule that ends
+    /// on nobody being alive, which for a mode played on lives and an objective is
+    /// not what ends a mission.
+    /// </para>
+    /// <para>
+    /// The numbers are adopted from the room, not chosen here, so a client does
+    /// not judge a mission on a limit the room was never started under.
+    /// </para>
+    /// </summary>
+    [JsonObject]
+    public class MissionMatchRule : AbstractMatchRule
+    {
+        private int objectiveCount = 1;
+        private int objectiveProgress;
+        private int lifeCount = 3;
+        private int lifeRemaining = 3;
+
+        public int ObjectiveCount { get => objectiveCount; set => objectiveCount = Mathf.Max(0, value); }
+        public int ObjectiveProgress { get => objectiveProgress; set => objectiveProgress = Mathf.Max(0, value); }
+        public int LifeCount { get => lifeCount; set => lifeCount = Mathf.Max(0, value); }
+        public int LifeRemaining { get => lifeRemaining; set => lifeRemaining = Mathf.Max(0, value); }
+
+        public MissionMatchRule()
+        {
+            Mode = EGameMode.Mission;
+
+            // A mission is usually played on a life count, so a player out of lives
+            // is out. The room can say otherwise and this is where it says so.
+            CanRespwn = false;
+        }
+
+        public override bool D(in MatchData d)
+        {
+            // The objective. A mission with no objective is not ended on one, which
+            // is what keeps a mission that is really a survival on the other two.
+            if (objectiveCount > 0 && objectiveProgress >= objectiveCount)
+            {
+                return true;
+            }
+
+            // Out of lives. Only meaningful when there are lives to run out of.
+            return lifeCount > 0 && lifeRemaining <= 0;
+        }
+    }
+
     [JsonObject]
     public class ArmsMatchRaceRule : AbstractMatchRule
     {
         private int killCount = 10;
+
+        /// <summary>
+        /// The kill limit this match is played on.
+        /// <para>
+        /// Settable, because the room publishes the limit it is actually running and
+        /// a client judging the end of the match by a hardcoded one ends it on a
+        /// number the room was never started under.
+        /// </para>
+        /// </summary>
+        public int KillCount { get => killCount; set => killCount = value; }
 
         public ArmsMatchRaceRule()
         {

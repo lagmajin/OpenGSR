@@ -1,4 +1,4 @@
-﻿#pragma warning disable 8632
+#pragma warning disable 8632
 #pragma warning disable 0414
 #pragma warning disable 0218
 using Newtonsoft.Json;
@@ -145,121 +145,112 @@ namespace OpenGS
                 var mode = MatchModeResolver.ResolveCurrentGameMode();
                 Debug.Log($"[GameModeCollection] Boot mode={mode}");
 
+                bool started;
                 switch (mode)
                 {
                     case OpenGSCore.EGameMode.TeamDeathMatch:
-                        SetupTDMMatch();
+                        started = SetupTDMMatch();
                         break;
                     case OpenGSCore.EGameMode.Survival:
-                        SetupSUV();
+                        started = SetupSUV();
                         break;
                     case OpenGSCore.EGameMode.TeamSurvival:
-                        SetupTSUV();
+                        started = SetupTSUV();
                         break;
                     case OpenGSCore.EGameMode.CaptureTheFlag:
-                        SetupCTFMatch();
+                        started = SetupCTFMatch();
                         break;
                     case OpenGSCore.EGameMode.ArmsRace:
-                        SetupArmsRace();
+                        started = SetupArmsRace();
                         break;
                     case OpenGSCore.EGameMode.DeathMatch:
                     default:
-                        SetupDeathMatch();
+                        started = SetupDeathMatch();
                         break;
+                }
+
+                if (!started)
+                {
+                    // Booting into a mode whose script is not assigned used to log
+                    // an error and then mark itself booted anyway, so the scene
+                    // carried on with nothing running and reported a match that
+                    // never started.
+                    BootError(mode);
+                    return;
                 }
 
                 booted = true;
             }
         }
 
-        bool IsAnyOn()
+        private bool SetupDeathMatch()
         {
-            /*
-
-            if(dmMatchMainScript.isActiveAndEnabled)
+            if (!ActivateMatchScript(dmMatchMainScript, "DeathMatch")) return false;
+            if (autoDeleteOthers)
             {
-                //isActiveAndEnabled
-
-                return false;
+                DeleteNotUseScripts();
             }
-
-            if(tdmMatchMainScript.isActiveAndEnabled)
-            {
-                return false;
-            }
-
-            if(suvMatchMainScript.isActiveAndEnabled)
-            {
-                return false;
-            }
-
-            if(tsuvMatchMainScript.isActiveAndEnabled)
-            {
-                return false;
-            }
-
-            */
 
             return true;
         }
 
-        private void SetupDeathMatch()
+        private bool SetupTDMMatch()
         {
-            ActivateMatchScript(dmMatchMainScript, "DeathMatch");
+            if (!ActivateMatchScript(tdmMatchMainScript, "TeamDeathMatch")) return false;
             if (autoDeleteOthers)
             {
                 DeleteNotUseScripts();
             }
+
+            return true;
         }
 
-        private void SetupTDMMatch()
+        private bool SetupSUV()
         {
-            ActivateMatchScript(tdmMatchMainScript, "TeamDeathMatch");
+            if (!ActivateMatchScript(suvMatchMainScript, "Survival")) return false;
+
             if (autoDeleteOthers)
             {
                 DeleteNotUseScripts();
             }
+
+            return true;
         }
 
-        private void SetupSUV()
+        private bool SetupTSUV()
         {
-            ActivateMatchScript(suvMatchMainScript, "Survival");
+            if (!ActivateMatchScript(tsuvMatchMainScript, "TeamSurvival")) return false;
 
             if (autoDeleteOthers)
             {
                 DeleteNotUseScripts();
             }
+
+            return true;
         }
 
-        private void SetupTSUV()
+        private bool SetupCTFMatch()
         {
-            ActivateMatchScript(tsuvMatchMainScript, "TeamSurvival");
+            if (!ActivateMatchScript(ctfMatchMainScript, "CaptureTheFlag")) return false;
 
             if (autoDeleteOthers)
             {
                 DeleteNotUseScripts();
             }
 
+            return true;
         }
 
-        private void SetupCTFMatch()
+        private bool SetupArmsRace()
         {
-            ActivateMatchScript(ctfMatchMainScript, "CaptureTheFlag");
+            if (!ActivateMatchScript(armMatchMainScript, "ArmsRace")) return false;
 
             if (autoDeleteOthers)
             {
                 DeleteNotUseScripts();
             }
-        }
 
-        private void SetupArmsRace()
-        {
-            ActivateMatchScript(armMatchMainScript, "ArmsRace");
-
-            if (autoDeleteOthers)
-            {
-                DeleteNotUseScripts();
-            }
+            return true;
         }
 
         private static bool ActivateMatchScript(GameObject matchScript, string modeName)
@@ -314,9 +305,31 @@ namespace OpenGS
 
         }
 
-        private void BootError()
+        /// <summary>
+        /// The mode could not be started, so the client is put back where a mode
+        /// can be chosen again.
+        /// <para>
+        /// It used to be an empty method, so a boot failure was silent past the
+        /// log line: the scene stayed loaded with nothing running and no way back.
+        /// The title is used rather than a wait room, because a wait room would
+        /// send the client straight back into the scene that just failed.
+        /// </para>
+        /// </summary>
+        private void BootError(OpenGSCore.EGameMode mode)
         {
+            Debug.LogError($"[GameModeCollection] {mode} could not be started; returning to the title.");
 
+            // Deliberately not marked booted, so a retry from this scene has a
+            // chance rather than being short circuited by the flag.
+            booted = false;
+
+            if (generalScene == null)
+            {
+                Debug.LogError("[GameModeCollection] GeneralSceneMasterData is not assigned; staying in the match scene.");
+                return;
+            }
+
+            LoadConfiguredScene(generalScene.TitleScene(), "Title");
         }
         [Button("タイトル移動テスト")]
         private void BackToWaitRoom()

@@ -30,6 +30,7 @@ namespace OpenGS
 
     */
 
+    [System.Serializable]
     [JsonObject]
     public class PlayerWaitRoomInfo
     {

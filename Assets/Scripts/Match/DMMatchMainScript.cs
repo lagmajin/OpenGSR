@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 //using KanKikuchi.AudioManager;
 //using Cinemachine;
 using Newtonsoft.Json.Linq;
@@ -333,23 +333,40 @@ namespace OpenGS
             switch (messageType)
             {
                 case RUDPMessageTypes.KillScoreUpdate:
-                    Debug.Log($"[DM] KillScoreUpdate received: {obj["PlayerId"]?.ToString()}");
+                    HandleKillScoreUpdate(obj);
                     break;
                 default:
                     base.OnNetworkDataRecved(obj);
                     break;
             }
         }
-        protected override void OnOneSec()
-        {
-            //Debug.Log("ov1Sec");
-        }
 
-        protected override void OnOneMin()
+        /// <summary>
+        /// The room's tally of one player's kills goes into the match data.
+        /// <para>
+        /// This used to log the player id and nothing else, so the number the rule
+        /// that ends a death match reads was never written by anything on this
+        /// side. The server owns the count, so the reported value replaces the
+        /// local one rather than being added to a guess the client made.
+        /// </para>
+        /// </summary>
+        private void HandleKillScoreUpdate(JObject json)
         {
-            //Debug.Log("ov1Min");
-        }
+            var playerId = json["PlayerId"]?.ToString();
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                Debug.LogWarning("[DM] Kill score update carried no player id.");
+                return;
+            }
 
+            var kills = ReadInt(json, "Kills");
+            var deaths = ReadInt(json, "Deaths");
+            var score = ReadInt(json, "Score");
+
+            // A death match has no teams, so the message carries none and the
+            // default is the one that leaves the team totals alone.
+            ResolveCurrentMatchRoom()?.MatchData?.UpdateKillScore(playerId, kills, deaths, score);
+        }
         private void HandleMyPlayerRespawn()
         {
             if (endFlag)
@@ -361,7 +378,7 @@ namespace OpenGS
             Guid oldPlayerId = Guid.Empty;
             if (player != null)
             {
-                var playerComponent = player.GetComponent<AbstractPlayer>();
+                var playerComponent = player.GetComponent<IBattlePlayer>();
                 if (playerComponent != null)
                 {
                     oldPlayerId = playerComponent.UniqueID();
@@ -383,18 +400,33 @@ namespace OpenGS
 
             if (oldPlayerId != Guid.Empty)
             {
-                var playerComponent = myPlayer.GetComponent<AbstractPlayer>();
+                var playerComponent = myPlayer.GetComponent<IBattlePlayer>();
                 playerComponent?.SetUniqueID(oldPlayerId);
             }
+
+            // The server's copy of this player's health is still zero. Without
+            // saying so here, the player walks out of the respawn untouchable.
+            ReportRespawnToServer();
 
             Debug.Log($"[DMMatchMainScript] My player respawned at {spawnPos}");
         }
 
         /// <summary>
         /// What a mode does with a result the server has already decided.
+        /// <para>
+        /// This path went straight to the result scene without recording anything,
+        /// while the local-clock path did record. Every other mode records in both,
+        /// so an offline DM that ended here reached the result screen with nothing
+        /// kept about it.
+        /// </para>
         /// </summary>
         protected override void OnServerMatchEnd(JObject json)
         {
+            if (IsOfflineMatch())
+            {
+                StoreOfflineMatchResult();
+            }
+
             var (winningLabel, myLabel) = ResolveMatchOutcome(json);
 
             Debug.Log($"[DM] Match ended: winner={winningLabel}, myTeam={myLabel}");

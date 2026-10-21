@@ -40,10 +40,6 @@ namespace OpenGS
             base.Update();
         }
 
-        private void FilterRoom()
-        {
-        }
-
         private void SendChat(in string chat)
         {
             Debug.Log($"[MissionLobbyScene] Chat: {chat}");

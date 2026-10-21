@@ -106,7 +106,7 @@ namespace OpenGS
                 var playerObj = Instantiate(prefab, spawnPos, Quaternion.identity);
                 playerObj.name = $"OtherPlayer_{info.Name}";
 
-                var player = playerObj.GetComponent<AbstractPlayer>();
+                var player = playerObj.GetComponent<IBattlePlayer>();
                 if (player != null)
                 {
                     player.SetPlayerType(EPlayerType.OtherPlayer);

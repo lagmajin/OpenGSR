@@ -1,4 +1,4 @@
-﻿
+
 using UnityEngine;
 using OpenGSCore;
 
@@ -27,18 +27,18 @@ namespace OpenGS
 
         public void OnTriggerEnter2D(Collider2D collision)
         {
-            TryConsume(collision != null ? collision.GetComponentInParent<AbstractPlayer>() : null,
+            TryConsume(collision != null ? collision.GetComponentInParent<IBattlePlayer>() : null,
                 collision != null ? collision.GetComponentInParent<IMultipleTags>() : null);
         }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
             var collider = collision != null ? collision.collider : null;
-            TryConsume(collider != null ? collider.GetComponentInParent<AbstractPlayer>() : null,
+            TryConsume(collider != null ? collider.GetComponentInParent<IBattlePlayer>() : null,
                 collider != null ? collider.GetComponentInParent<IMultipleTags>() : null);
         }
 
-        private void TryConsume(AbstractPlayer player, IMultipleTags tags)
+        private void TryConsume(IBattlePlayer player, IMultipleTags tags)
         {
             if (consumed || player == null || !float.IsFinite(healAmount) || healAmount <= 0f)
             {
@@ -61,7 +61,7 @@ namespace OpenGS
             Destroy(gameObject);
         }
 
-        private void SendPickupToNetwork(AbstractPlayer player)
+        private void SendPickupToNetwork(IBattlePlayer player)
         {
             var spawnPoint = point as ItemSpawnPoint ?? GetComponentInParent<ItemSpawnPoint>();
             var spawnPointId = spawnPoint != null ? spawnPoint.SpawnPointId : -1;

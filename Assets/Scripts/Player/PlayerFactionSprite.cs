@@ -7,7 +7,7 @@ namespace OpenGS
     [DisallowMultipleComponent]
     public sealed class PlayerFactionSprite : MonoBehaviour
     {
-        [SerializeField] private AbstractPlayer targetPlayer;
+        [SerializeField] private IBattlePlayer targetPlayer;
         [SerializeField] private SpriteRenderer iconRenderer;
         [SerializeField] private Sprite soloSprite;
         [SerializeField] private Sprite redSprite;
@@ -39,7 +39,7 @@ namespace OpenGS
                 return;
             }
 
-            transform.position = targetPlayer.transform.position + worldOffset;
+            transform.position = targetPlayer.Transform.position + worldOffset;
 
             if (cachedCamera == null)
             {
@@ -55,7 +55,7 @@ namespace OpenGS
             ApplyCurrentState();
         }
 
-        public void SetTarget(AbstractPlayer player)
+        public void SetTarget(IBattlePlayer player)
         {
             targetPlayer = player;
             ApplyCurrentState();
@@ -79,7 +79,7 @@ namespace OpenGS
         {
             if (targetPlayer == null)
             {
-                targetPlayer = GetComponentInParent<AbstractPlayer>();
+                targetPlayer = GetComponentInParent<IBattlePlayer>();
             }
 
             if (iconRenderer == null)

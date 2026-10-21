@@ -89,7 +89,7 @@ namespace OpenGS
 
             if (PlayerRegistry.Instance != null && Guid.TryParse(playerId, out var guid) && PlayerRegistry.Instance.TryGetPlayer(guid, out var player) && player != null)
             {
-                var name = string.IsNullOrWhiteSpace(player.gameObject.name) ? "Unknown" : player.gameObject.name;
+                var name = string.IsNullOrWhiteSpace(player.DisplayName()) ? "Unknown" : player.DisplayName();
                 nameCache[playerId] = name;
                 return name;
             }

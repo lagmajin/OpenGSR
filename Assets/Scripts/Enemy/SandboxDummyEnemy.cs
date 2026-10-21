@@ -92,14 +92,32 @@ namespace OpenGS
         }
 
         /// <summary>
-        /// A training dummy has no server authority, so the server value is
-        /// accepted only when it matches what the dummy already shows. This keeps
-        /// the interface satisfied without letting a health message rewrite a
-        /// sandbox object that is deliberately not authoritative.
+        /// A training dummy has no server authority, so a health message is only
+        /// taken when it is about this dummy.
+        /// <para>
+        /// The server reports the ceiling it is running, and a dummy is configured
+        /// locally. When the two agree the message is about this object, and the
+        /// remaining value is adopted so the overlay and the server do not drift.
+        /// When they disagree the message is about something else entirely, so
+        /// adopting it would overwrite a sandbox target that is deliberately not
+        /// authoritative with another object's numbers.
+        /// </para>
         /// </summary>
         public bool ApplyServerHealth(int remainingHealth, int maxHealth)
         {
-            return false;
+            if (maxHealth <= 0 || Mathf.RoundToInt(this.maxHealth) != maxHealth)
+            {
+                return false;
+            }
+
+            var clamped = Mathf.Clamp(remainingHealth, 0, maxHealth);
+            if (Mathf.Approximately(currentHealth, clamped))
+            {
+                return false;
+            }
+
+            currentHealth = clamped;
+            return true;
         }
 
         public void Heal(float heal = 0)

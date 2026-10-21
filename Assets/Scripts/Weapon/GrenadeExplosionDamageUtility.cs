@@ -42,13 +42,15 @@ namespace OpenGS
                     continue;
                 }
 
-                var player = hit.GetComponentInParent<AbstractPlayer>();
+                // Whichever tree carries it. Asking for one type found nothing, so a grenade
+                // went off in a real match and hurt nobody.
+                var player = hit.GetComponentInParent<IBattlePlayer>();
                 if (player == null)
                 {
                     continue;
                 }
 
-                var playerPosition = player.transform.position;
+                var playerPosition = player.Transform.position;
                 if (!float.IsFinite(playerPosition.x) || !float.IsFinite(playerPosition.y) || !float.IsFinite(playerPosition.z))
                 {
                     continue;

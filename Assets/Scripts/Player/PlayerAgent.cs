@@ -13,7 +13,7 @@ using Zenject;
 namespace OpenGS
 {
     [DisallowMultipleComponent]
-    public class PlayerAgent : AbstractPlayerAgent, IDamagableObject, IPowerupable, IDamageable
+    public class PlayerAgent : AbstractPlayerAgent, IBattlePlayer, IDamagableObject, IPowerupable, IDamageable
     {
         [SerializeField] private BoxCollider2D standingCollider;
         [FormerlySerializedAs("sitingCollider")]
@@ -116,8 +116,24 @@ namespace OpenGS
         private int clusterGrenadeCount;
         private int magneticGrenadeCount;
         private int mineGrenadeCount;
+        // The authored maximum. Health itself lives on Status, which is the copy the
+        // HUD, the scoreboard and the kill feed read. This component used to keep
+        // a second pair of fields of its own that nothing else could see, so a hit
+        // spent one number while everything on screen showed the untouched one.
         [SerializeField] private float maxHealth = 100f;
-        [SerializeField] private float currentHealth = 100f;
+        private ETeam myTeam = ETeam.NoTeam;
+        private EPlayerCharacter playerCharacter = EPlayerCharacter.Misty;
+
+        /// <summary>
+        /// This player's identity for as long as it is alive.
+        /// <para>
+        /// The agent's own string id is a network handle, not this: it can be
+        /// rebound by the server, and the registry has to keep the same player
+        /// under one key for the whole of their life. A respawn hands the new
+        /// body the old key so the scoreboard does not become two players.
+        /// </para>
+        /// </summary>
+        private Guid battlePlayerId = Guid.NewGuid();
         private readonly InstantItemSlots instantItemSlots = new InstantItemSlots();
         private readonly List<EGrenadeType> grenadeSlotTypes = new List<EGrenadeType>(3);
         private bool instantItemsLoaded;
@@ -132,8 +148,87 @@ namespace OpenGS
         [SerializeField] private Vector3 standBobDirection = new Vector3(0f, 1f, 0f);
 
         public int NormalGrenadeCount => normalGrenadeCount;
-        public float CurrentHealth => currentHealth;
-        public float MaxHealth => maxHealth;
+
+        /// <summary>
+        /// The one health store for this player.
+        /// <para>
+        /// AbstractPlayer carries one of these, and everything that displays a
+        /// player reads it. This hierarchy is a separate component tree from
+        /// AbstractPlayer, so it has to carry its own to be readable at all: the
+        /// player prefabs use this component, which meant the status the HUD shows
+        /// was never the one a hit had reduced.
+        /// </para>
+        /// </summary>
+        public PlayerStatus Status { get; } = new PlayerStatus();
+
+        public float CurrentHealth => Status.Hp;
+        public float MaxHealth => Status.MaxHp;
+        public float GetHP() => Status.Hp;
+        public float GetMaxHP() => Status.MaxHp;
+        public float GetArmor() => Status.Armor;
+        public float GetMaxArmor() => Status.MaxArmor;
+        public float GetBooster() => Status.Booster;
+        public float GetMaxBooster() => Status.MaxBooster;
+        public bool IsDead() => deathTriggered || Status.Hp <= 0f;
+
+        // ---- The shared player contract -------------------------------------
+        //
+        // Everything that looks a player up, follows one, or shows one asks for
+        // IBattlePlayer rather than for one particular component tree. This is
+        // the tree the player prefabs actually use, so without these the lookup
+        // found nothing on a real match: the registry was empty, a bullet's hit
+        // test returned null, and the scoreboard and the health bar had no
+        // player to read.
+
+        public Transform Transform => playerTransform != null ? playerTransform : transform;
+
+        public GameObject Root => gameObject;
+
+        public string DisplayName() => gameObject.name;
+
+        public ETeam Team() => myTeam;
+
+        public void SetTeam(ETeam team)
+        {
+            myTeam = team;
+        }
+
+        public bool HasTeam() => myTeam != ETeam.NoTeam;
+
+        public EPlayerCharacter Character() => playerCharacter;
+
+        public Guid UniqueID() => battlePlayerId;
+
+        /// <summary>
+        /// Moves this player onto an identity another body already held.
+        /// <para>
+        /// A respawn destroys the body and builds a new one. Without this the new
+        /// body arrives with a fresh id, so the scoreboard, the kill feed and the
+        /// registry all show the player twice: once dead and once alive.
+        /// </para>
+        /// </summary>
+        public void SetUniqueID(Guid id)
+        {
+            if (id == Guid.Empty || id == battlePlayerId)
+            {
+                return;
+            }
+
+            // The registry is keyed by this id, and this component registers
+            // itself the moment it is enabled, which is before the caller can hand
+            // it the old one. Moving the entry rather than only changing the field
+            // is what keeps the dead body and its replacement from both being on the
+            // scoreboard: without it the temp entry stays and the real one is never
+            // added, so the player's kills vanish off the board on every respawn.
+            var registry = PlayerRegistry.Instance;
+            registry?.UnregisterPlayer(this);
+            battlePlayerId = id;
+            if (isActiveAndEnabled)
+            {
+                registry?.RegisterPlayer(this);
+            }
+        }
+
         public eDamageType CurrentBulletDamageType => elementalBulletTime > 0f ? elementalBulletType : eDamageType.Bullet;
 
         public int GetGrenadeCount(EGrenadeType type)
@@ -226,7 +321,7 @@ namespace OpenGS
 
             baseMovementSpeed = movementSpeed;
             baseDashSpeed = dashSpeed;
-            currentHealth = Mathf.Max(1f, maxHealth);
+            SeedHealthFromAuthoredMaximum();
             ResetPowerupState();
             StartInvincibility(2.0f);
 
@@ -256,8 +351,24 @@ namespace OpenGS
             weaponArm ??= transform.Find("Arm");
         }
 
+        private void OnEnable()
+        {
+            base.OnEnable();
+
+            // Being findable is what makes this player countable. The registry used
+            // to register one component tree only, and this is not that one, so on
+            // a live match nothing that asked the registry for a player, for the
+            // local player, or for the players on a team got an answer at all.
+            PlayerRegistry.Instance?.RegisterPlayer(this);
+        }
+
         private void OnDisable()
         {
+            // A respawn destroys the body and builds a new one. Leaving the entry
+            // behind would leave the scoreboard showing a player who is already
+            // dead while their replacement is standing there under a new row.
+            PlayerRegistry.Instance?.UnregisterPlayer(this);
+
             CancelInvoke();
             StopAllCoroutines();
             if (fadeTween != null && fadeTween.IsActive())
@@ -352,6 +463,50 @@ namespace OpenGS
             weaponSlots?.GetCurrentGun()?.SetMagazineCount(magazine);
         }
 
+        /// <summary>
+        /// Carries a special weapon for as long as its ammunition lasts.
+        /// <para>
+        /// The slot system has always had this and the agent never exposed it, so a
+        /// flame thrower or a launcher lying on the ground had no path into this
+        /// player's hands: the pickup went to the other player tree, which no
+        /// prefab uses.
+        /// </para>
+        /// </summary>
+        public void EquipSpecialWeapon(GameObject prefab, int ammo)
+        {
+            weaponSlots?.EquipSpecialWeapon(prefab, ammo);
+        }
+
+        /// <summary>
+        /// Plays one of the player's general sounds.
+        /// <para>
+        /// The same master data lookup the other tree uses, so a pickup reads the
+        /// same whichever tree it happened to land on.
+        /// </para>
+        /// </summary>
+        public bool TryPlayGeneralSound(EPlayerGeneralSound sound, float volume = 1f, float pitch = 1f)
+        {
+            var masterData = ResolveGeneralSoundMasterData();
+            if (masterData == null)
+            {
+                return false;
+            }
+
+            if (!masterData.TryGetSound(sound, out var clip) || clip == null)
+            {
+                return false;
+            }
+
+            SoundManager.Instance?.PlayOneShotSafe(clip, volume, pitch, $"{nameof(PlayerAgent)}:{sound}");
+            return true;
+        }
+
+        private static PlayerGeneralSoundMasterData ResolveGeneralSoundMasterData()
+        {
+            return Resources.Load<PlayerGeneralSoundMasterData>(
+                "MasterData/Sound/Players/PlayerGeneralSound");
+        }
+
         private GameObject EnsureWeaponSlot(string slotName)
         {
             var existing = transform.Find(slotName);
@@ -436,7 +591,7 @@ namespace OpenGS
             }
 
             matchEventProvider ??= GetComponent<MatchEventProvider>();
-            matchEventProvider?.UseInstantItem(GetComponent<AbstractPlayer>(), type);
+            matchEventProvider?.UseInstantItem(this, type);
             Debug.Log($"[PlayerAgent] Instant item used: {type}, slot={slotNumber}");
             return true;
         }
@@ -788,7 +943,7 @@ namespace OpenGS
             coyoteTime = SafeMin(coyoteTime, 0f, 0.12f);
             jumpBufferTime = SafeMin(jumpBufferTime, 0f, 0.12f);
             maxHealth = SafeMin(maxHealth, 1f, 100f);
-            currentHealth = Mathf.Clamp(SafeMin(currentHealth, 0f, maxHealth), 0f, maxHealth);
+            SeedHealthFromAuthoredMaximum();
             standBobAmplitude = SafeMin(standBobAmplitude, 0f, 0.02f);
             standBobFrequency = SafeMin(standBobFrequency, 0f, 7.5f);
             if (!float.IsFinite(dashAngle.x) || !float.IsFinite(dashAngle.y) || dashAngle.sqrMagnitude <= Mathf.Epsilon)
@@ -1180,7 +1335,15 @@ namespace OpenGS
             Gizmos.DrawWireCube(center, new Vector3(bounds.size.x, 0.04f, 0f));
         }
 
-        private void OnSpawn()
+        /// <summary>
+        /// Called once the player exists in the world and is set up.
+        /// <para>
+        /// It was private, so the mode scripts that set a player's type could not
+        /// call it: the one place that clears the powerup state and the invincibility
+        /// left over from a prefab was unreachable from outside this file.
+        /// </para>
+        /// </summary>
+        public void OnSpawn()
         {
             ResetPowerupState();
             isDashing = false;
@@ -1337,6 +1500,8 @@ namespace OpenGS
             return attackMultiplier > 1f;
         }
 
+        public float AttackMultiplier() => attackMultiplier;
+
         public bool IsIncreaseDefenseNow()
         {
             return defenseMultiplier > 1f;
@@ -1405,11 +1570,40 @@ namespace OpenGS
                 return;
             }
 
-            currentHealth = Mathf.Max(0f, currentHealth - damage);
-            if (currentHealth <= 0f)
+            // One health store, so the death check and everything that displays
+            // this player read the number this line changes. It used to subtract
+            // from a field of its own that nothing else could see, so the HUD kept
+            // showing full health for as long as the player was alive.
+            Status.ReduceHp(damage);
+            if (Status.Hp <= 0f)
             {
                 Die();
             }
+        }
+
+        /// <summary>
+        /// Puts the authored maximum onto the shared status and fills it.
+        /// <para>
+        /// The prefab carries the maximum a designer typed, and the status starts
+        /// at its own default. Whichever is larger wins for the maximum and the
+        /// player starts full, so a prefab that raises the maximum is not silently
+        /// ignored and a prefab that leaves it alone is not quietly capped.
+        /// </para>
+        /// </summary>
+        private void SeedHealthFromAuthoredMaximum()
+        {
+            if (Status == null)
+            {
+                return;
+            }
+
+            var authored = float.IsFinite(maxHealth) ? Mathf.Max(1f, maxHealth) : Status.MaxHp;
+            if (authored > Status.MaxHp)
+            {
+                Status.MaxHp = authored;
+            }
+
+            Status.Hp = Status.MaxHp;
         }
 
         /// <summary>
@@ -1431,21 +1625,21 @@ namespace OpenGS
             // The rule lives in the shared package so it can be tested without
             // a scene, and so the server and the client agree on what a message
             // means. What is left here is applying the result to this player.
-            var ceiling = AuthoritativeHealth.AdoptCeiling(Mathf.RoundToInt(this.maxHealth), maxHealth);
+            var ceiling = AuthoritativeHealth.AdoptCeiling(Mathf.RoundToInt(Status.MaxHp), maxHealth);
             if (ceiling.Changed)
             {
-                this.maxHealth = ceiling.Ceiling;
+                Status.MaxHp = ceiling.Ceiling;
             }
 
-            var clamped = AuthoritativeHealth.ClampRemaining(remainingHealth, Mathf.RoundToInt(this.maxHealth));
-            if (!AuthoritativeHealth.IsMeaningfulChange(currentHealth, clamped))
+            var clamped = AuthoritativeHealth.ClampRemaining(remainingHealth, Mathf.RoundToInt(Status.MaxHp));
+            if (!AuthoritativeHealth.IsMeaningfulChange(Status.Hp, clamped))
             {
                 return false;
             }
 
-            currentHealth = clamped;
+            Status.Hp = clamped;
 
-            if (currentHealth <= 0f)
+            if (Status.Hp <= 0f)
             {
                 // The server already ruled the player out, so this must not be
                 // reported back as a fresh death.
@@ -1487,8 +1681,9 @@ namespace OpenGS
         public void Heal(float heal = 0)
         {
             if (!float.IsFinite(heal) || heal <= 0f || deathTriggered) return;
-            currentHealth = Mathf.Min(Mathf.Max(1f, maxHealth), currentHealth + heal);
-            Debug.Log($"[PlayerAgent] Healed: +{heal}, HP={currentHealth}/{maxHealth}");
+            var before = Status.Hp;
+            Status.AddHp(heal);
+            Debug.Log($"[PlayerAgent] Healed: +{heal}, HP={Status.Hp}/{Status.MaxHp} (was {before})");
         }
 
         public void TakeLavaDamage()
@@ -1520,6 +1715,20 @@ namespace OpenGS
             movementSpeed = baseMovementSpeed;
             dashSpeed = baseDashSpeed;
             SetSpriteAlpha(1f);
+        }
+
+        /// <summary>
+        /// Takes back every timed effect on this player.
+        /// <para>
+        /// The buffs used to be cleared through a private helper that nothing
+        /// outside this file could call, so the timed items that hand a buff back
+        /// had no way to take it away again: a player who picked up a timed
+        /// speed boost and then dropped the item kept the boost.
+        /// </para>
+        /// </summary>
+        public void CancelTimedBuffs()
+        {
+            ResetPowerupState();
         }
 
         private IEnumerator IncreaseAttackCounter(float time)

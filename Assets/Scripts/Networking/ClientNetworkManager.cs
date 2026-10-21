@@ -79,6 +79,26 @@ namespace OpenGS
         private int _tcpSessionVersion;
         private Coroutine _tcpReconnectRoutine;
 
+        // Reconnect backoff. Retries used to fire every second with no limit, so a
+        // server that stayed down was hammered once a second for as long as the
+        // client ran. The delay doubles per consecutive failure and is capped, and
+        // both counters are cleared by a successful connection and by DisconnectAll.
+        private const float ReconnectInitialDelaySeconds = 1f;
+        private const float ReconnectMaxDelaySeconds = 30f;
+        private const float ReconnectJitterSeconds = 1f;
+        private int _tcpReconnectAttempts;
+        private int _matchReconnectAttempts;
+
+        private static float NextReconnectDelaySeconds(int attempt)
+        {
+            // 2^(6-1) already exceeds the cap, so larger attempts need no bigger
+            // exponent: the delay stays at the cap plus jitter.
+            var clampedAttempt = Mathf.Clamp(attempt, 1, 6);
+            var exponential = ReconnectInitialDelaySeconds * Mathf.Pow(2f, clampedAttempt - 1);
+            return Mathf.Min(exponential, ReconnectMaxDelaySeconds)
+                + UnityEngine.Random.Range(0f, ReconnectJitterSeconds);
+        }
+
         public event Action<JObject> FriendRequestResponseReceived;
         public event Action<JObject> FriendApproveResponseReceived;
         public event Action<JObject> FriendListResponseReceived;
@@ -222,17 +242,34 @@ namespace OpenGS
 
                 _tcpStream = connectingClient.GetStream();
                 Debug.Log("[ClientNetwork] Connected to Lobby TCP server.");
+                _tcpReconnectAttempts = 0;
 
                 // サーバーからの非同期受信を開始
                 _ = ReceiveTcpDataAsync(_tcpClient, _tcpStream, sessionVersion);
 
-                // ログイン要求などを送信する（簡略化のためここでは省略）
-                SendTcpMessage(new JObject
+                // Reconnect on the token the last successful login was given. The
+                // password is not held here on purpose, and the player id on its
+                // own is a claim rather than a credential, so there is nothing to
+                // send when no token is held: the server would refuse it, and the
+                // login screen is where the credentials are actually asked for.
+                var resumeToken = LobbyResumeTokenStore.TokenFor(AccountManager.Instance?.CurrentProfile?.AccountName);
+                if (string.IsNullOrWhiteSpace(resumeToken))
                 {
-                    ["MessageType"] = MessageType.LoginRequest, // MessageTypeを使用
+                    Debug.Log(
+                        "[ClientNetwork] No resume token is held; waiting for the login screen to authenticate.");
+                    return;
+                }
+
+                var loginRequest = new JObject
+                {
+                    ["MessageType"] = MessageType.LoginRequest,
                     ["PlayerID"] = ClientPlayerId,
-                    ["PlayerName"] = CreateClientPlayerName()
-                });
+                    ["PlayerName"] = CreateClientPlayerName(),
+                    ["ResumeToken"] = resumeToken
+                };
+
+                Debug.Log("[ClientNetwork] Reconnecting to Lobby TCP server on a resume token.");
+                SendTcpMessage(loginRequest);
             }
             catch (Exception ex)
             {
@@ -363,12 +400,15 @@ namespace OpenGS
                 return;
             }
 
-            _tcpReconnectRoutine = StartCoroutine(ReconnectLobbyTcpAfterDisconnect());
+            _tcpReconnectAttempts++;
+            _tcpReconnectRoutine = StartCoroutine(ReconnectLobbyTcpAfterDisconnect(_tcpReconnectAttempts));
         }
 
-        private IEnumerator ReconnectLobbyTcpAfterDisconnect()
+        private IEnumerator ReconnectLobbyTcpAfterDisconnect(int attempt)
         {
-            yield return new WaitForSecondsRealtime(1f);
+            var delaySeconds = NextReconnectDelaySeconds(attempt);
+            Debug.Log($"[ClientNetwork] Reconnecting to Lobby TCP in {delaySeconds:0.0}s (attempt {attempt}).");
+            yield return new WaitForSecondsRealtime(delaySeconds);
             _tcpReconnectRoutine = null;
 
             if (!_isShuttingDown)
@@ -440,13 +480,42 @@ namespace OpenGS
                         {
                             ClientPlayerId = resolvedPlayerId;
                         }
+
+                        // The token is what the next connection will authenticate
+                        // with, so it is kept only if there is one: a token that is
+                        // not written down cannot reconnect, and a login that came
+                        // back without one will be refused next time.
+                        var newToken = message.GetStringOrNull("ResumeToken");
+                        if (!string.IsNullOrWhiteSpace(newToken))
+                        {
+                            LobbyResumeTokenStore.Save(ClientPlayerId, newToken);
+                        }
+                        else
+                        {
+                            LobbyResumeTokenStore.Clear();
+                            Debug.LogWarning(
+                                "[ClientNetwork] Login succeeded without a resume token; the next connection " +
+                                "will have to log in with a password.");
+                        }
+
                         Debug.Log($"[ClientNetwork] Login successful. PlayerID: {ClientPlayerId}");
+
+                        // The server reports the level and experience alongside the
+                        // login, and they were being dropped, so the profile showed
+                        // its starting numbers for the whole session.
+                        AccountManager.Instance?.ApplyServerProgress(
+                            message["Level"]?.ToObject<int>() ?? 0,
+                            message["Exp"]?.ToObject<long>() ?? 0L);
+
                         RequestDailyList();
                         RequestGuildList();
                         RequestFriendList();
                     }
                     else
                     {
+                        // A refused token is no use to anyone, and keeping it means
+                        // every later connection is refused the same way.
+                        LobbyResumeTokenStore.Clear();
                         Debug.LogError($"[ClientNetwork] Login failed: {message.GetStringOrNull("Error")}");
                     }
                     break;
@@ -594,7 +663,10 @@ namespace OpenGS
                     }
                     else
                     {
-                        Debug.Log($"[ClientNetwork] Received unknown TCP message: {message}");
+                        // The deserializer logs the type and its field names. Printing
+                        // the payload here as well repeated it twice for every message
+                        // that legitimately has no game event.
+                        Debug.Log($"[ClientNetwork] Received TCP message with no game event: {messageType}");
                     }
                     break;
             }
@@ -684,6 +756,32 @@ namespace OpenGS
         public void SendTcpMessage(JObject message)
         {
             _ = TrySendTcpMessage(message);
+        }
+
+        /// <summary>
+        /// Reports that this client reached a mission's clear gate.
+        /// <para>
+        /// It reports the gate rather than ending the mission, because the mission
+        /// rule on the server is what ends one: it holds the objective count and the
+        /// lives, and it already checks itself every tick. A client that decided the
+        /// match here would settle a match the server is still running, and the
+        /// result screen would show an outcome nothing else agreed to.
+        /// </para>
+        /// </summary>
+        public void ReportMissionClear(int steps = 1)
+        {
+            if (steps <= 0)
+            {
+                return;
+            }
+
+            SendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.MissionCompleteNotification,
+                ["PlayerID"] = ClientPlayerId,
+                ["RoomID"] = CurrentMatchRoomId,
+                ["Steps"] = steps
+            });
         }
 
         /// <summary>
@@ -1172,7 +1270,10 @@ namespace OpenGS
 
         private IEnumerator RetryMatchUdpAfterStartFailure()
         {
-            yield return new WaitForSecondsRealtime(1f);
+            _matchReconnectAttempts++;
+            var delaySeconds = NextReconnectDelaySeconds(_matchReconnectAttempts);
+            Debug.Log($"[ClientNetwork] Retrying Match UDP client start in {delaySeconds:0.0}s (attempt {_matchReconnectAttempts}).");
+            yield return new WaitForSecondsRealtime(delaySeconds);
 
             if (!_isShuttingDown && !_matchUdpConnectAttempted)
             {
@@ -1183,6 +1284,7 @@ namespace OpenGS
         private void OnPeerConnected(NetPeer peer)
         {
             _serverPeer = peer;
+            _matchReconnectAttempts = 0;
             Debug.Log("[ClientNetwork] Connected to Match UDP server.");
             InvokeSafely(MatchUdpConnectionChanged, true, string.Empty, nameof(MatchUdpConnectionChanged));
 
@@ -1212,13 +1314,16 @@ namespace OpenGS
 
             if (!_isShuttingDown && _matchConnectRoutine == null)
             {
-                _matchConnectRoutine = StartCoroutine(ReconnectMatchUdpAfterDisconnect());
+                _matchReconnectAttempts++;
+                _matchConnectRoutine = StartCoroutine(ReconnectMatchUdpAfterDisconnect(_matchReconnectAttempts));
             }
         }
 
-        private IEnumerator ReconnectMatchUdpAfterDisconnect()
+        private IEnumerator ReconnectMatchUdpAfterDisconnect(int attempt)
         {
-            yield return new WaitForSecondsRealtime(1f);
+            var delaySeconds = NextReconnectDelaySeconds(attempt);
+            Debug.Log($"[ClientNetwork] Reconnecting to Match UDP in {delaySeconds:0.0}s (attempt {attempt}).");
+            yield return new WaitForSecondsRealtime(delaySeconds);
 
             if (!_isShuttingDown && !_matchUdpConnectAttempted)
             {
@@ -1310,6 +1415,24 @@ namespace OpenGS
                     LogUdpEvent("ObjectDestroyed", message.GetStringOrNull("RoomID"), message.GetStringOrNull("ObjectType"), message.GetStringOrNull("ObjectId"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
                     break;
+                case RUDPMessageTypes.EnemySpawn:
+                case RUDPMessageTypes.EnemyDespawn:
+                case RUDPMessageTypes.EnemyDamaged:
+                case RUDPMessageTypes.EnemyKilled:
+                    // The enemies in a mission are the server's, so each of these is
+                    // something it is reporting rather than something a client
+                    // worked out. They arrive on the same channel as the match they
+                    // are in, and without a case here they fell into the
+                    // everything-else branch and were dropped, so a mission showed
+                    // an empty map however many enemies the server had placed.
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
+                case RUDPMessageTypes.EnemySnapshot:
+                    // A client that joined late missed every spawn, so the whole
+                    // set is sent once and it draws the map it is being played on
+                    // rather than an empty one.
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
                 case RUDPMessageTypes.PlayerPose:
                     LogUdpEvent("PlayerPose", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("PoseState"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
@@ -1399,7 +1522,7 @@ namespace OpenGS
                     break;
                 // 他のUDPメッセージタイプをここで処理
                 default:
-                    Debug.Log($"[ClientNetwork] Received unknown UDP message: {message}");
+                    Debug.Log($"[ClientNetwork] Received UDP message with no handler: {messageType}");
                     break;
             }
         }
@@ -2071,6 +2194,8 @@ namespace OpenGS
                 _matchConnectRoutine = null;
             }
             _matchUdpConnectAttempted = false;
+            _tcpReconnectAttempts = 0;
+            _matchReconnectAttempts = 0;
             _tcpSessionVersion++;
             _requestClient?.FailPendingRequests("Lobby TCP session was disconnected.");
             CurrentMatchRoomId = string.Empty;
