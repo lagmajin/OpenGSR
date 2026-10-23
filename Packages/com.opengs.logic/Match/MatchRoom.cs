@@ -121,6 +121,7 @@ namespace OpenGSCore
 
                 Players.Remove(player);
                 playerPoseStates.Remove(player.Id);
+                _readyPlayers.Remove(player.Id);
             }
 
             RefreshAliveCounts();
@@ -710,6 +711,19 @@ namespace OpenGSCore
 
         public void GameStart()
         {
+            List<PlayerInfo> players;
+            lock (playerSyncLock)
+            {
+                if (Playing || Finished || _starting)
+                {
+                    return;
+                }
+
+                _starting = true;
+                _loading = false;
+                players = Players.ToList();
+            }
+
             sw.Start();
 
             // Everybody starts the match alive. A player who died in the previous
@@ -718,7 +732,7 @@ namespace OpenGSCore
             // so they could count a player who had not taken part at all, and every
             // rule that ends on the clock had already decided the round was over
             // before it began.
-            foreach (var player in Players)
+            foreach (var player in players)
             {
                 RestorePlayerForMatchStart(player);
                 GivePlayerItsLives(player);
@@ -737,7 +751,12 @@ namespace OpenGSCore
             // ステータス更新を開始
             StartStatusUpdates();
 
-            Playing = true;
+            lock (playerSyncLock)
+            {
+                Playing = true;
+                _starting = false;
+            }
+
             eventBus.PublishGameStart();
         }
 
