@@ -709,14 +709,14 @@ namespace OpenGSCore
             }
         }
 
-        public void GameStart()
+        public bool GameStart()
         {
             List<PlayerInfo> players;
             lock (playerSyncLock)
             {
                 if (Playing || Finished || _starting)
                 {
-                    return;
+                    return false;
                 }
 
                 _starting = true;
@@ -758,6 +758,7 @@ namespace OpenGSCore
             }
 
             eventBus.PublishGameStart();
+            return true;
         }
 
         public void Finish()
