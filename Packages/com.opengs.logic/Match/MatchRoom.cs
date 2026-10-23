@@ -79,6 +79,16 @@ namespace OpenGSCore
 
         public bool Playing { get; private set; } = false;
         public bool Finished { get; private set; } = false;
+        public bool IsStarting
+        {
+            get
+            {
+                lock (playerSyncLock)
+                {
+                    return _starting;
+                }
+            }
+        }
 
         private Stopwatch sw = new();
 
