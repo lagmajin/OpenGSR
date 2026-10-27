@@ -6,7 +6,7 @@
     },
     "unity-http": {
         "command": "python",
-        "args": ["-u", "mcp_http_bridge.py", "--base-url", "http://127.0.0.1:27186"],
+        "args": ["-u", "mcp_http_bridge.py", "--project-name", "OpenGS"],
         "env": {}
     },
     "opengsr-debug": {

@@ -3,7 +3,8 @@
 ## Current Focus
 
 - Unity project: `OpenGS`
-- UnityMCP HTTP server: `http://127.0.0.1:27184`
+- UnityMCP HTTP server: auto-discover `127.0.0.1:27182`–`27199` by project name
+  (`OpenGS`); current editor is listening on `27182`
 - Main goal: keep the server usable for local editor automation
 
 ## Confirmed Working

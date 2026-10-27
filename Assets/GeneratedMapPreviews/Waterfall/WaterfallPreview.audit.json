@@ -1,0 +1,2140 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "Waterfall",
+  "sourceFile": "Waterfall.json",
+  "sourceJsonSha256": "ed3690a1743fd3756ffd70b5f79c576074d3f235a56ee8edcbdf15949bc129df",
+  "previewScene": "Assets/GeneratedMapPreviews/Waterfall/WaterfallPreview.unity",
+  "spritePlacementCount": 106,
+  "uniqueSpriteFileCount": 49,
+  "copiedSpriteFileCount": 23,
+  "obstacleBoxColliderCount": 2532,
+  "polygonColliderCount": 0,
+  "bounds": {
+    "left": -11.5,
+    "bottom": -5.25,
+    "right": 11.5,
+    "top": 5.25
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "015-waterfall-01-01",
+      "sourcePath": "Waterfall_assets/015-waterfall-01-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-01-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c258a020b26bc64a99296d63d4d0c2bf7baf013128a2238d505f947fccd174fa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -9.000002,
+        2.0
+      ],
+      "size": [
+        5.0,
+        6.5
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "015-waterfall-01-02",
+      "sourcePath": "Waterfall_assets/015-waterfall-01-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-01-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "24c08ed736566f027e5b1a9fd39c28b08e3873aea818945bac78e0f57c62e0c1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -3.945005,
+        2.0
+      ],
+      "size": [
+        5.13,
+        6.5
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "015-waterfall-04-12",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d385180419e147466c0a6d2cb41feba873979f7d98819e123df40ccbb69f6f51",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        4.38,
+        4.59
+      ],
+      "size": [
+        3.48,
+        1.36
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "015-waterfall-04-12",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d385180419e147466c0a6d2cb41feba873979f7d98819e123df40ccbb69f6f51",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        -3.64,
+        4.59
+      ],
+      "size": [
+        3.48,
+        1.36
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "015-waterfall-02-03",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "2291eb1f243ff9f13dc85b75f148ce6930906ada72d7c3caea16afb18aa43888",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        -10.92,
+        -0.22
+      ],
+      "size": [
+        1.22,
+        0.9
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 5,
+      "name": "015-waterfall-02a-01",
+      "sourcePath": "Waterfall_assets/015-waterfall-02a-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02a-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "e21b436d2632f1d6ceb851829d72f34db9124f1a4fc4d324f704d02019ac10d5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        0.27,
+        3.55
+      ],
+      "size": [
+        4.22,
+        3.4
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 6,
+      "name": "015-waterfall-02a-02",
+      "sourcePath": "Waterfall_assets/015-waterfall-02a-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02a-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "edfd6a2e194fcd158b617cd383a6b413e5928342f57176828ee57bf547b65fd3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        0.53,
+        0.05
+      ],
+      "size": [
+        4.26,
+        3.62
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 7,
+      "name": "015-waterfall-02a-03",
+      "sourcePath": "Waterfall_assets/015-waterfall-02a-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02a-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7b837fc11aa6402adac67379a5a9794c4a6942a75a5cb0eff24aeaa0df474d43",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        0.36,
+        -3.5
+      ],
+      "size": [
+        4.82,
+        3.52
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 45,
+      "name": "015-waterfall-02-03",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "2291eb1f243ff9f13dc85b75f148ce6930906ada72d7c3caea16afb18aa43888",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9955,
+      "position": [
+        10.89,
+        -0.27
+      ],
+      "size": [
+        1.22,
+        0.9
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 49,
+      "name": "015-waterfall-03-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-04.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-04.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "5c9ef21c56ee7305910c77c1b3a56750c72c085b95bad3410bca09660707aa99",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9951,
+      "position": [
+        -3.9,
+        0.52
+      ],
+      "size": [
+        0.64,
+        0.36
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 56,
+      "name": "015-waterfall-02-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7f911610c330d705fad1f5d97142bcfe92dc7ea6c2b8cf361f26035e4b009d7e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9944,
+      "position": [
+        -3.19,
+        3.87
+      ],
+      "size": [
+        0.28,
+        0.62
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 57,
+      "name": "015-waterfall-02-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7f911610c330d705fad1f5d97142bcfe92dc7ea6c2b8cf361f26035e4b009d7e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9943,
+      "position": [
+        -3.35,
+        -2.99
+      ],
+      "size": [
+        0.28,
+        0.62
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 58,
+      "name": "015-waterfall-03-03",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-03.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-03.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "952ea87cb6543810cc8c7e2fc73c967164ce220ff55de6dc06ab4d8fbda6c2d8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9942,
+      "position": [
+        4.24,
+        0.58
+      ],
+      "size": [
+        0.48,
+        0.46
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 59,
+      "name": "015-waterfall-03-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-05.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-05.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "49a5cb7dc8d299a344d8399e605fe638442368cadf7dceb3eeba6df6a5f91ebc",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9941,
+      "position": [
+        4.92,
+        0.59
+      ],
+      "size": [
+        0.56,
+        0.52
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 67,
+      "name": "015-waterfall-03-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-04.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-04.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "5c9ef21c56ee7305910c77c1b3a56750c72c085b95bad3410bca09660707aa99",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9933,
+      "position": [
+        -2.97,
+        0.55
+      ],
+      "size": [
+        0.64,
+        0.36
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 76,
+      "name": "015-waterfall-02-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7f911610c330d705fad1f5d97142bcfe92dc7ea6c2b8cf361f26035e4b009d7e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9924,
+      "position": [
+        3.8,
+        -3.15
+      ],
+      "size": [
+        0.28,
+        0.62
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 77,
+      "name": "015-waterfall-02-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-02-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7f911610c330d705fad1f5d97142bcfe92dc7ea6c2b8cf361f26035e4b009d7e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9923,
+      "position": [
+        3.4,
+        4.0
+      ],
+      "size": [
+        0.28,
+        0.62
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 100,
+      "name": "015-waterfall-04-12",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d385180419e147466c0a6d2cb41feba873979f7d98819e123df40ccbb69f6f51",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9900,
+      "position": [
+        -10.25,
+        4.85
+      ],
+      "size": [
+        3.48,
+        1.36
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 101,
+      "name": "015-waterfall-04-12",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d385180419e147466c0a6d2cb41feba873979f7d98819e123df40ccbb69f6f51",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9899,
+      "position": [
+        10.31,
+        4.9
+      ],
+      "size": [
+        3.48,
+        1.36
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 102,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9898,
+      "position": [
+        9.28,
+        4.91
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 103,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9897,
+      "position": [
+        -9.3,
+        4.89
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 8,
+      "name": "015-waterfall-05-01",
+      "sourcePath": "Waterfall_assets/015-waterfall-05-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-05-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "64e6b0d349d918b692f1dce668f97b6064e7dd45503d218f0c5f8ef7adfa19fe",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10008,
+      "position": [
+        0.42,
+        4.48
+      ],
+      "size": [
+        0.56,
+        1.56
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 9,
+      "name": "015-waterfall-04-01",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-04-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8cec5af912e570fca94895a6ca7c7b7dc4fbca83d7fed486b182c6236373a5c3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10009,
+      "position": [
+        0.13,
+        3.74
+      ],
+      "size": [
+        3.7,
+        1.0
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 10,
+      "name": "015-waterfall-05-02",
+      "sourcePath": "Waterfall_assets/015-waterfall-05-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-05-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "2399e3f730ff54bd4badd147c0fd9cd640ee3b183b5b7578d8a52542c983463a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        -0.42,
+        3.21
+      ],
+      "size": [
+        0.62,
+        1.36
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 11,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        -0.5,
+        3.755
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 12,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -0.34,
+        3.755
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 13,
+      "name": "waterfallAni1",
+      "sourcePath": "Waterfall_assets/waterfallAni1.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni1.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f25c76ae0b9c5d2e0bd34d046bc72d1f105ce126a61e2dacca21e3e594535287",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -0.48,
+        3.035
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 14,
+      "name": "waterfallAni1",
+      "sourcePath": "Waterfall_assets/waterfallAni1.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni1.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f25c76ae0b9c5d2e0bd34d046bc72d1f105ce126a61e2dacca21e3e594535287",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -0.32,
+        3.035
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 15,
+      "name": "015-waterfall-04-02",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b20167d4edc37bf1638927a602d4af0c40b12a8e2382c8bb9e9aa225d46d9432",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        0.48,
+        2.24
+      ],
+      "size": [
+        3.78,
+        0.92
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 16,
+      "name": "015-waterfall-05-03",
+      "sourcePath": "Waterfall_assets/015-waterfall-05-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-05-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "2de855ada9610e3f1177d66304511a0fd40a903411b3f6da77ff8335b5b0cf0a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        1.81,
+        1.88
+      ],
+      "size": [
+        0.4,
+        1.1
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 17,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        1.81,
+        2.305
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 18,
+      "name": "waterfallAni1",
+      "sourcePath": "Waterfall_assets/waterfallAni1.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni1.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f25c76ae0b9c5d2e0bd34d046bc72d1f105ce126a61e2dacca21e3e594535287",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        1.83,
+        1.715
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 19,
+      "name": "015-waterfall-04-03",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9cd0002659e037b7e74471fbecbf58f3bf043bda9c0be195099ea5e4310d20b3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        0.98,
+        1.05
+      ],
+      "size": [
+        3.3,
+        1.16
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 20,
+      "name": "015-waterfall-05-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-05-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-05-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c5dc1248eb2ce007b2e1362f45709657941ab359248af1f6d9a0f8933ba0e09a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        0.27,
+        0.41
+      ],
+      "size": [
+        0.58,
+        1.56
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 21,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        0.26,
+        1.045
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 22,
+      "name": "waterfallAni1",
+      "sourcePath": "Waterfall_assets/waterfallAni1.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni1.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f25c76ae0b9c5d2e0bd34d046bc72d1f105ce126a61e2dacca21e3e594535287",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        0.24,
+        0.165
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 23,
+      "name": "015-waterfall-04-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b8131d2b33adeaeafbd03466048b01d6795eded4abac347e5d98a257d8d0f118",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10023,
+      "position": [
+        0.65,
+        -0.56
+      ],
+      "size": [
+        1.98,
+        0.68
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 24,
+      "name": "015-waterfall-05-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-05-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-05-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "546593c05b12284d29327d5258f4945423e1c55110a71550826ee591d17a2a01",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        1.03,
+        -0.98
+      ],
+      "size": [
+        0.44,
+        1.26
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 25,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        1.01,
+        -0.495
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 26,
+      "name": "015-waterfall-04-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5084e198bc00d9fbe1c42455696e26d063155b554654ca7a756ee02ad20ae7d1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        0.43,
+        -1.84
+      ],
+      "size": [
+        3.54,
+        0.76
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 27,
+      "name": "015-waterfall-05-06",
+      "sourcePath": "Waterfall_assets/015-waterfall-05-06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-05-06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ca836c25d565d0d35bf5d134d785df191e18dbfc2fb668656b553df97c52c756",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        1.67,
+        -2.39
+      ],
+      "size": [
+        0.36,
+        1.68
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 28,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        1.66,
+        -1.705
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 29,
+      "name": "waterfallAni1",
+      "sourcePath": "Waterfall_assets/waterfallAni1.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni1.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f25c76ae0b9c5d2e0bd34d046bc72d1f105ce126a61e2dacca21e3e594535287",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        1.67,
+        -2.665
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 30,
+      "name": "015-waterfall-04-13",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-13.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-13.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5d0f9934569f0245a8b5cca8d11fcebb1bac1ea12b0ecd9c26ba048dcf7015e7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        0.41,
+        -3.46
+      ],
+      "size": [
+        3.3,
+        1.18
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 31,
+      "name": "015-waterfall-05-07",
+      "sourcePath": "Waterfall_assets/015-waterfall-05-07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-05-07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "273d68c8b9e1fe4f74dab9b7fb7af1eacfb19d57f78d5a66bfd729e2604341ac",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10031,
+      "position": [
+        -0.32,
+        -3.89
+      ],
+      "size": [
+        0.58,
+        1.18
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 32,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10032,
+      "position": [
+        -0.37,
+        -3.445
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 33,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10033,
+      "position": [
+        -0.25,
+        -3.445
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 34,
+      "name": "waterfallAni1",
+      "sourcePath": "Waterfall_assets/waterfallAni1.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni1.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f25c76ae0b9c5d2e0bd34d046bc72d1f105ce126a61e2dacca21e3e594535287",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        -0.39,
+        -4.195
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 35,
+      "name": "waterfallAni1",
+      "sourcePath": "Waterfall_assets/waterfallAni1.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni1.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f25c76ae0b9c5d2e0bd34d046bc72d1f105ce126a61e2dacca21e3e594535287",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        -0.25,
+        -4.185
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 36,
+      "name": "015-waterfall-04-14",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ee728053c7b64c0769f46e2eb49c738bd1877000786cdceac886f4440109e8ac",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        0.21,
+        -4.59
+      ],
+      "size": [
+        5.02,
+        1.14
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 37,
+      "name": "015-waterfall-05-08",
+      "sourcePath": "Waterfall_assets/015-waterfall-05-08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-05-08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f22066e7354872b57601f78414d57debb868b0a77c8e5311fc796379c579dd74",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        2.18,
+        -4.86
+      ],
+      "size": [
+        0.38,
+        0.78
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 38,
+      "name": "waterfallAni2",
+      "sourcePath": "Waterfall_assets/waterfallAni2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/waterfallAni2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb03acd0d5d6feda8caa5cf1ec0d05cc96a989487130309880dfb48c4be82e3f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        2.17,
+        -4.615
+      ],
+      "size": [
+        0.36,
+        0.17
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 39,
+      "name": "015-waterfall-03-18",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-18.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-18.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9776fe55a21beee2fce7dfa9abe05652795d40e76aa8df9d90beea585754e744",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        -7.37,
+        -1.26
+      ],
+      "size": [
+        1.4,
+        0.32
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 40,
+      "name": "015-waterfall-04-06",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f6c15997f2cee65ed669d09a48ac41000e833e1456fdaec626d17b1db158a2a5",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        -9.16,
+        -4.4
+      ],
+      "size": [
+        4.68,
+        1.72
+      ]
+    },
+    {
+      "index": 54,
+      "sourcePlacement": 41,
+      "name": "015-waterfall-04-06",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f6c15997f2cee65ed669d09a48ac41000e833e1456fdaec626d17b1db158a2a5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        9.18,
+        -4.4
+      ],
+      "size": [
+        4.68,
+        1.72
+      ]
+    },
+    {
+      "index": 55,
+      "sourcePlacement": 42,
+      "name": "015-waterfall-04-08",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "874fa686f9b5cce499f7b9b7baf69e7cbb1a3b3a605d1ca6bc60b08ae23fdc00",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10042,
+      "position": [
+        5.42,
+        -4.8
+      ],
+      "size": [
+        1.92,
+        0.76
+      ]
+    },
+    {
+      "index": 56,
+      "sourcePlacement": 43,
+      "name": "015-waterfall-04-08",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "874fa686f9b5cce499f7b9b7baf69e7cbb1a3b3a605d1ca6bc60b08ae23fdc00",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        -5.26,
+        -4.49
+      ],
+      "size": [
+        1.92,
+        0.76
+      ]
+    },
+    {
+      "index": 57,
+      "sourcePlacement": 44,
+      "name": "007-snow-flag",
+      "sourcePath": "Waterfall_assets/007-snow-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/007-snow-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a31c8efb20efb2979932b2b2da63dfa0150b9e6ee3a84d4a50c09124954e6c58",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10044,
+      "position": [
+        -10.885,
+        0.595
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 58,
+      "sourcePlacement": 46,
+      "name": "015-waterfall-03-12",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-12.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-12.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bd0c25abb4cb99d51710c6183f56bacc9c8076f993bd4f12a67c46bb23e3e03f",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10046,
+      "position": [
+        -8.26,
+        -1.29
+      ],
+      "size": [
+        0.38,
+        0.3
+      ]
+    },
+    {
+      "index": 59,
+      "sourcePlacement": 47,
+      "name": "015-waterfall-03-09",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-09.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-09.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "92109db59bd8841d3cf195cdfcab51bbaf1af7676dab2e0b16917940c5250404",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10047,
+      "position": [
+        -6.5,
+        -1.24
+      ],
+      "size": [
+        0.38,
+        0.3
+      ]
+    },
+    {
+      "index": 60,
+      "sourcePlacement": 48,
+      "name": "015-waterfall-03-13",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-13.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-13.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b52f3c811124fd68ca02f6c7aae845ba57c7d4b9115a9449d9fc3e74dbee3580",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        -8.52,
+        -1.33
+      ],
+      "size": [
+        0.22,
+        0.34
+      ]
+    },
+    {
+      "index": 61,
+      "sourcePlacement": 50,
+      "name": "015-waterfall-03-16",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-16.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-16.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2c440b6d1c06978b7e5a924f27cb5ba679296c1f77c977d721078f06e4faab2e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10050,
+      "position": [
+        -6.17,
+        2.62
+      ],
+      "size": [
+        0.32,
+        0.34
+      ]
+    },
+    {
+      "index": 62,
+      "sourcePlacement": 51,
+      "name": "015-waterfall-03-16",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-16.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-16.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2c440b6d1c06978b7e5a924f27cb5ba679296c1f77c977d721078f06e4faab2e",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10051,
+      "position": [
+        -7.29,
+        2.63
+      ],
+      "size": [
+        0.32,
+        0.34
+      ]
+    },
+    {
+      "index": 63,
+      "sourcePlacement": 52,
+      "name": "015-waterfall-03-15",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-15.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-15.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d77e155e090773d760700482858f82ef98a391ceecbcd1a6e24081fc745c84b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        -6.46,
+        2.65
+      ],
+      "size": [
+        0.32,
+        0.28
+      ]
+    },
+    {
+      "index": 64,
+      "sourcePlacement": 53,
+      "name": "015-waterfall-03-15",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-15.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-15.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d77e155e090773d760700482858f82ef98a391ceecbcd1a6e24081fc745c84b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10053,
+      "position": [
+        -6.74,
+        2.65
+      ],
+      "size": [
+        0.32,
+        0.28
+      ]
+    },
+    {
+      "index": 65,
+      "sourcePlacement": 54,
+      "name": "015-waterfall-03-15",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-15.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-15.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d77e155e090773d760700482858f82ef98a391ceecbcd1a6e24081fc745c84b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10054,
+      "position": [
+        -7.01,
+        2.65
+      ],
+      "size": [
+        0.32,
+        0.28
+      ]
+    },
+    {
+      "index": 66,
+      "sourcePlacement": 55,
+      "name": "015-waterfall-03-17",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-17.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-17.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "3fdd984faa0456d8ad4bca820bd328d46d83fbadc1af9ca649f48d4a65bea75d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10055,
+      "position": [
+        -7.56,
+        2.57
+      ],
+      "size": [
+        0.32,
+        0.34
+      ]
+    },
+    {
+      "index": 67,
+      "sourcePlacement": 60,
+      "name": "015-waterfall-03-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-04.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-04.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "5c9ef21c56ee7305910c77c1b3a56750c72c085b95bad3410bca09660707aa99",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10060,
+      "position": [
+        4.57,
+        0.55
+      ],
+      "size": [
+        0.64,
+        0.36
+      ]
+    },
+    {
+      "index": 68,
+      "sourcePlacement": 61,
+      "name": "007-snow-flag",
+      "sourcePath": "Waterfall_assets/007-snow-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/007-snow-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a31c8efb20efb2979932b2b2da63dfa0150b9e6ee3a84d4a50c09124954e6c58",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10061,
+      "position": [
+        10.925,
+        0.595
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 69,
+      "sourcePlacement": 62,
+      "name": "015-waterfall-04-09",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-04-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "04abdb0742e802bdfa3f7be2e04ba25ab4daf2126626253b7b608ab12b1ff7a4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10062,
+      "position": [
+        10.77,
+        0.42
+      ],
+      "size": [
+        1.48,
+        1.28
+      ]
+    },
+    {
+      "index": 70,
+      "sourcePlacement": 63,
+      "name": "015-waterfall-04-07",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c03996ac5ab6c2d2fe009f7c102c7da484820ba96731dc39d2eddf6e29df9dc9",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10063,
+      "position": [
+        -10.01,
+        3.87
+      ],
+      "size": [
+        1.42,
+        0.8
+      ]
+    },
+    {
+      "index": 71,
+      "sourcePlacement": 64,
+      "name": "015-waterfall-04-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5084e198bc00d9fbe1c42455696e26d063155b554654ca7a756ee02ad20ae7d1",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10064,
+      "position": [
+        -7.07,
+        -1.62
+      ],
+      "size": [
+        3.54,
+        0.76
+      ]
+    },
+    {
+      "index": 72,
+      "sourcePlacement": 65,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10065,
+      "position": [
+        -8.05,
+        -1.56
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 73,
+      "sourcePlacement": 66,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10066,
+      "position": [
+        -6.62,
+        -1.47
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 74,
+      "sourcePlacement": 68,
+      "name": "015-waterfall-03-06",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-06.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-06.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "30a5485114ae7dd3502228de8f5e7ecc2da6563abdd18977f69cf9c2cfea4c1d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10068,
+      "position": [
+        -3.31,
+        0.55
+      ],
+      "size": [
+        0.46,
+        0.32
+      ]
+    },
+    {
+      "index": 75,
+      "sourcePlacement": 69,
+      "name": "015-waterfall-03-07",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-07.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-07.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bcfe9c646edbc7da515ca7067aae0e1a92792dd618f48a1c1a715d25920d015c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10069,
+      "position": [
+        -3.56,
+        0.57
+      ],
+      "size": [
+        0.44,
+        0.4
+      ]
+    },
+    {
+      "index": 76,
+      "sourcePlacement": 70,
+      "name": "015-waterfall-03-02",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-02.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-02.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "611dae9fc49825e1a1b30e2c316b696c10774c0b11be4863b42d65fe8763b690",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10070,
+      "position": [
+        -4.3,
+        0.5
+      ],
+      "size": [
+        0.34,
+        0.36
+      ]
+    },
+    {
+      "index": 77,
+      "sourcePlacement": 71,
+      "name": "015-waterfall-04-08",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "874fa686f9b5cce499f7b9b7baf69e7cbb1a3b3a605d1ca6bc60b08ae23fdc00",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10071,
+      "position": [
+        -3.56,
+        0.06
+      ],
+      "size": [
+        1.92,
+        0.76
+      ]
+    },
+    {
+      "index": 78,
+      "sourcePlacement": 72,
+      "name": "015-waterfall-04-13",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-13.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-13.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5d0f9934569f0245a8b5cca8d11fcebb1bac1ea12b0ecd9c26ba048dcf7015e7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10072,
+      "position": [
+        -7.42,
+        2.21
+      ],
+      "size": [
+        3.3,
+        1.18
+      ]
+    },
+    {
+      "index": 79,
+      "sourcePlacement": 73,
+      "name": "015-waterfall-04-07",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c03996ac5ab6c2d2fe009f7c102c7da484820ba96731dc39d2eddf6e29df9dc9",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10073,
+      "position": [
+        -8.36,
+        2.08
+      ],
+      "size": [
+        1.42,
+        0.8
+      ]
+    },
+    {
+      "index": 80,
+      "sourcePlacement": 74,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10074,
+      "position": [
+        -7.79,
+        2.22
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 81,
+      "sourcePlacement": 75,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10075,
+      "position": [
+        -6.87,
+        2.16
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 82,
+      "sourcePlacement": 78,
+      "name": "015-waterfall-04-10",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-10.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-10.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5cc662849d9e33894518b123977f7650e70ba2fae27ed215d603ba86a2adb94a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10078,
+      "position": [
+        -3.36,
+        -3.18
+      ],
+      "size": [
+        1.42,
+        1.66
+      ]
+    },
+    {
+      "index": 83,
+      "sourcePlacement": 79,
+      "name": "015-waterfall-03-01",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-01.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-01.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e0a4eab68ef81903b071de348ebc6465eb8c91a2a579e35b06b790f2b5ec02a4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10079,
+      "position": [
+        3.91,
+        0.61
+      ],
+      "size": [
+        0.64,
+        0.54
+      ]
+    },
+    {
+      "index": 84,
+      "sourcePlacement": 80,
+      "name": "015-waterfall-04-10",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-10.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-10.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5cc662849d9e33894518b123977f7650e70ba2fae27ed215d603ba86a2adb94a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10080,
+      "position": [
+        -3.18,
+        3.69
+      ],
+      "size": [
+        1.42,
+        1.66
+      ]
+    },
+    {
+      "index": 85,
+      "sourcePlacement": 81,
+      "name": "015-waterfall-04-10",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-10.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-10.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5cc662849d9e33894518b123977f7650e70ba2fae27ed215d603ba86a2adb94a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10081,
+      "position": [
+        3.39,
+        3.8
+      ],
+      "size": [
+        1.42,
+        1.66
+      ]
+    },
+    {
+      "index": 86,
+      "sourcePlacement": 82,
+      "name": "015-waterfall-04-10",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-10.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-10.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5cc662849d9e33894518b123977f7650e70ba2fae27ed215d603ba86a2adb94a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10082,
+      "position": [
+        3.8,
+        -3.34
+      ],
+      "size": [
+        1.42,
+        1.66
+      ]
+    },
+    {
+      "index": 87,
+      "sourcePlacement": 83,
+      "name": "015-waterfall-03-03",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-03.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-03.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "952ea87cb6543810cc8c7e2fc73c967164ce220ff55de6dc06ab4d8fbda6c2d8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10083,
+      "position": [
+        4.36,
+        0.6
+      ],
+      "size": [
+        0.48,
+        0.46
+      ]
+    },
+    {
+      "index": 88,
+      "sourcePlacement": 84,
+      "name": "015-waterfall-04-08",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "874fa686f9b5cce499f7b9b7baf69e7cbb1a3b3a605d1ca6bc60b08ae23fdc00",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10084,
+      "position": [
+        4.45,
+        0.06
+      ],
+      "size": [
+        1.92,
+        0.76
+      ]
+    },
+    {
+      "index": 89,
+      "sourcePlacement": 85,
+      "name": "015-waterfall-03-18",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-18.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-18.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9776fe55a21beee2fce7dfa9abe05652795d40e76aa8df9d90beea585754e744",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10085,
+      "position": [
+        6.99,
+        -1.2
+      ],
+      "size": [
+        1.4,
+        0.32
+      ]
+    },
+    {
+      "index": 90,
+      "sourcePlacement": 86,
+      "name": "015-waterfall-03-14",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-14.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-14.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "76157fe77b1368f65755134116716c3b597cca1041caeef7dfe586cce7be9def",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10086,
+      "position": [
+        7.89,
+        -1.18
+      ],
+      "size": [
+        0.44,
+        0.32
+      ]
+    },
+    {
+      "index": 91,
+      "sourcePlacement": 87,
+      "name": "015-waterfall-04-05",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5084e198bc00d9fbe1c42455696e26d063155b554654ca7a756ee02ad20ae7d1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10087,
+      "position": [
+        7.78,
+        -1.62
+      ],
+      "size": [
+        3.54,
+        0.76
+      ]
+    },
+    {
+      "index": 92,
+      "sourcePlacement": 88,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10088,
+      "position": [
+        6.9,
+        -1.47
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 93,
+      "sourcePlacement": 89,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10089,
+      "position": [
+        8.56,
+        -1.39
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 94,
+      "sourcePlacement": 90,
+      "name": "015-waterfall-04-07",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c03996ac5ab6c2d2fe009f7c102c7da484820ba96731dc39d2eddf6e29df9dc9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10090,
+      "position": [
+        9.71,
+        3.87
+      ],
+      "size": [
+        1.42,
+        0.8
+      ]
+    },
+    {
+      "index": 95,
+      "sourcePlacement": 91,
+      "name": "015-waterfall-03-08",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-08.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-08.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9203d8e2afae027ed68f622cbe2dfdaefd91cbc96542998d5e7a2300b5e9fea2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10091,
+      "position": [
+        6.28,
+        2.72
+      ],
+      "size": [
+        0.54,
+        0.34
+      ]
+    },
+    {
+      "index": 96,
+      "sourcePlacement": 92,
+      "name": "015-waterfall-03-10",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-10.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-10.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "59f5df73626c9ab05a97d71e58212844531587d21987497df6e054565e455784",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10092,
+      "position": [
+        6.64,
+        2.71
+      ],
+      "size": [
+        0.4,
+        0.32
+      ]
+    },
+    {
+      "index": 97,
+      "sourcePlacement": 93,
+      "name": "015-waterfall-03-13",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-13.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-13.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b52f3c811124fd68ca02f6c7aae845ba57c7d4b9115a9449d9fc3e74dbee3580",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10093,
+      "position": [
+        6.91,
+        2.67
+      ],
+      "size": [
+        0.22,
+        0.34
+      ]
+    },
+    {
+      "index": 98,
+      "sourcePlacement": 94,
+      "name": "015-waterfall-03-13",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-13.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-13.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b52f3c811124fd68ca02f6c7aae845ba57c7d4b9115a9449d9fc3e74dbee3580",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10094,
+      "position": [
+        6.99,
+        2.67
+      ],
+      "size": [
+        0.22,
+        0.34
+      ]
+    },
+    {
+      "index": 99,
+      "sourcePlacement": 95,
+      "name": "015-waterfall-03-08",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-08.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-08.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9203d8e2afae027ed68f622cbe2dfdaefd91cbc96542998d5e7a2300b5e9fea2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10095,
+      "position": [
+        7.34,
+        2.66
+      ],
+      "size": [
+        0.54,
+        0.34
+      ]
+    },
+    {
+      "index": 100,
+      "sourcePlacement": 96,
+      "name": "015-waterfall-03-14",
+      "sourcePath": "Waterfall_assets/015-waterfall-03-14.PNG",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-03-14.PNG",
+      "copiedIntoPreview": true,
+      "sourceSha256": "76157fe77b1368f65755134116716c3b597cca1041caeef7dfe586cce7be9def",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10096,
+      "position": [
+        7.71,
+        2.57
+      ],
+      "size": [
+        0.44,
+        0.32
+      ]
+    },
+    {
+      "index": 101,
+      "sourcePlacement": 97,
+      "name": "015-waterfall-04-03",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9cd0002659e037b7e74471fbecbf58f3bf043bda9c0be195099ea5e4310d20b3",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10097,
+      "position": [
+        7.29,
+        2.22
+      ],
+      "size": [
+        3.3,
+        1.16
+      ]
+    },
+    {
+      "index": 102,
+      "sourcePlacement": 98,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10098,
+      "position": [
+        6.64,
+        2.3
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    },
+    {
+      "index": 103,
+      "sourcePlacement": 99,
+      "name": "015-waterfall-04-09",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-04-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "04abdb0742e802bdfa3f7be2e04ba25ab4daf2126626253b7b608ab12b1ff7a4",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10099,
+      "position": [
+        -10.76,
+        0.42
+      ],
+      "size": [
+        1.48,
+        1.28
+      ]
+    },
+    {
+      "index": 104,
+      "sourcePlacement": 104,
+      "name": "015-waterfall-04-07",
+      "sourcePath": "Waterfall_assets/015-waterfall-04-07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/WaterFall/015-waterfall-04-07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c03996ac5ab6c2d2fe009f7c102c7da484820ba96731dc39d2eddf6e29df9dc9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10104,
+      "position": [
+        8.22,
+        2.11
+      ],
+      "size": [
+        1.42,
+        0.8
+      ]
+    },
+    {
+      "index": 105,
+      "sourcePlacement": 105,
+      "name": "015-waterfall-02-04",
+      "sourcePath": "Waterfall_assets/015-waterfall-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/Waterfall/Textures/015-waterfall-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e473fb947beaaa5eb37861f9d9831499ebf3bf6b05c81d9eb0763139f81a2246",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10105,
+      "position": [
+        7.84,
+        2.27
+      ],
+      "size": [
+        1.72,
+        0.9
+      ]
+    }
+  ]
+}

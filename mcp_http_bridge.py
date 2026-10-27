@@ -4,13 +4,20 @@ Relays MCP stdio protocol to the Unity Editor HTTP API exposed by
 jp.shiranui-isuzu.unity-mcp.
 
 Usage:
-    python mcp_http_bridge.py [--base-url http://127.0.0.1:27186]
+    python mcp_http_bridge.py [--project-name OpenGS]
+    python mcp_http_bridge.py --base-url http://127.0.0.1:27182
+
+By default, the bridge discovers the requested Unity project by checking the
+package's local HTTP port range (27182-27199). Use --base-url only to pin one
+specific editor instance.
 """
 
+import argparse
 import json
 import sys
 import urllib.parse
 import urllib.request
+import urllib.error
 
 
 SUPPORTED_PROTOCOL_VERSION = "2025-03-26"
@@ -140,14 +147,23 @@ TOOLS = [
 
 
 def main():
-    base_url = "http://127.0.0.1:27186"
-    args = sys.argv[1:]
-    for i, arg in enumerate(args):
-        if arg == "--base-url" and i + 1 < len(args):
-            base_url = args[i + 1].rstrip("/")
-        elif arg == "--help":
-            print(__doc__)
-            return
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--base-url",
+        help="Use a fixed Unity HTTP endpoint instead of discovering one.",
+    )
+    parser.add_argument("--project-name", default="OpenGS")
+    parser.add_argument("--port-start", type=int, default=27182)
+    parser.add_argument("--port-end", type=int, default=27199)
+    options = parser.parse_args()
+    base_url = options.base_url.rstrip("/") if options.base_url else None
+    if options.port_start < 1 or options.port_end > 65535 or options.port_start > options.port_end:
+        parser.error("port range must be valid and port-start must not exceed port-end")
+    target = (
+        f"{base_url} (fixed endpoint)"
+        if base_url
+        else f"Unity project {options.project_name!r} on 127.0.0.1:{options.port_start}-{options.port_end} (auto-discovered)"
+    )
 
     for line in sys.stdin:
         line = line.strip()
@@ -168,7 +184,7 @@ def main():
                 "protocolVersion": params.get("protocolVersion", SUPPORTED_PROTOCOL_VERSION),
                 "capabilities": {"tools": {}},
                 "serverInfo": {"name": "OpenGSR Unity HTTP MCP Bridge", "version": "1.0.0"},
-                "instructions": f"Targets Unity MCP HTTP server at {base_url}.",
+                "instructions": f"Targets {target}.",
             })
         elif method == "notifications/initialized":
             pass
@@ -178,7 +194,12 @@ def main():
             name = params.get("name", "")
             arguments = params.get("arguments", {})
             try:
-                result = handle_tool_call(base_url, name, arguments)
+                target_base_url = base_url or discover_base_url(
+                    options.project_name,
+                    options.port_start,
+                    options.port_end,
+                )
+                result = handle_tool_call(target_base_url, name, arguments)
                 respond(rid, {"content": [{"type": "text", "text": format_result(result)}], "isError": False})
             except HttpError as exc:
                 respond(rid, {"content": [{"type": "text", "text": format_result(exc.payload)}], "isError": True})
@@ -195,6 +216,35 @@ class HttpError(Exception):
     def __init__(self, payload):
         self.payload = payload
         super().__init__(payload.get("error", {}).get("message", "Unity HTTP request failed"))
+
+
+def discover_base_url(project_name, port_start, port_end):
+    """Find exactly one running Unity MCP server for the requested project."""
+    matches = []
+    for port in range(port_start, port_end + 1):
+        base_url = f"http://127.0.0.1:{port}"
+        try:
+            request = urllib.request.Request(f"{base_url}/health", method="GET")
+            with urllib.request.urlopen(request, timeout=0.35) as response:
+                health = json.loads(response.read().decode("utf-8"))
+            result = health.get("result", {})
+            if health.get("status") == "success" and result.get("project", "").casefold() == project_name.casefold():
+                matches.append((port, result.get("clientId", f"{project_name}-{port}")))
+        except (OSError, ValueError, urllib.error.URLError):
+            continue
+
+    if not matches:
+        raise RuntimeError(
+            f"Could not find Unity MCP for project {project_name!r} on "
+            f"127.0.0.1:{port_start}-{port_end}. Start it from Edit > Preferences > Unity MCP."
+        )
+    if len(matches) > 1:
+        targets = ", ".join(f"{client_id} (port {port})" for port, client_id in matches)
+        raise RuntimeError(
+            f"Found multiple Unity MCP servers for project {project_name!r}: {targets}. "
+            "Set --base-url to select one explicitly."
+        )
+    return f"http://127.0.0.1:{matches[0][0]}"
 
 
 def handle_tool_call(base_url, name, arguments):
