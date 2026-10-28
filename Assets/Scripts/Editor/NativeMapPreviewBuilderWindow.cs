@@ -18,6 +18,7 @@ namespace OpenGS
     {
         private const string DefaultOutputRoot = "Assets/GeneratedMapPreviews";
         private const string DefaultSpriteSearchRoot = "Assets/Sprites/Stages";
+        private const float NativeOverviewAspect = (16f / 10f) * (1.68f / 1.30f);
 
         private string mapJsonPath = @"J:\dev\OpenGSNativeClient\assets\maps\Waterfall.json";
         private string outputRoot = DefaultOutputRoot;
@@ -167,7 +168,9 @@ namespace OpenGS
             var bottom = ReadFloat(bounds["bottom"], float.NaN);
             var right = ReadFloat(bounds["right"], float.NaN);
             var top = ReadFloat(bounds["top"], float.NaN);
+            var cameraWorldWidth = ReadFloat(map["cameraWorldWidth"], 8f);
             if (!IsFinite(left) || !IsFinite(bottom) || !IsFinite(right) || !IsFinite(top) ||
+                !IsFinite(cameraWorldWidth) || cameraWorldWidth <= 0f ||
                 right <= left || top <= bottom)
             {
                 throw new InvalidDataException("Native map bounds are invalid.");
@@ -277,7 +280,10 @@ namespace OpenGS
                 foreach (var plan in plans)
                 {
                     var spriteJson = plan.Json;
-                    var transform = ReadAffineTransform(spriteJson["worldTransform"] as JArray, plan.Name);
+                    var sourceTransform = ReadAffineTransform(spriteJson["worldTransform"] as JArray, plan.Name);
+                    var transform = sourceTransform;
+                    ApplyNativeOverviewParallax(ref transform, spriteJson["parallax"] as JObject,
+                        map, left, bottom, right, top, cameraWorldWidth);
                     var rendererObject = new GameObject($"{plan.Index:D4}_{SafeName(plan.Name)}");
                     rendererObject.transform.SetParent(spriteRoot.transform, false);
                     rendererObject.transform.localPosition = new Vector3(transform.X, transform.Y, 0f);
@@ -317,8 +323,10 @@ namespace OpenGS
                         ["flipX"] = renderer.flipX,
                         ["flipY"] = renderer.flipY,
                         ["sortingOrder"] = renderer.sortingOrder,
-                        ["position"] = new JArray(transform.X, transform.Y),
-                        ["size"] = new JArray(nativeSize.x, nativeSize.y)
+                        ["position"] = new JArray(sourceTransform.X, sourceTransform.Y),
+                        ["size"] = new JArray(nativeSize.x, nativeSize.y),
+                        ["previewPosition"] = new JArray(transform.X, transform.Y),
+                        ["previewScale"] = new JArray(transform.ScaleX, transform.ScaleY)
                     });
                 }
 
@@ -404,6 +412,7 @@ namespace OpenGS
                     ["polygonColliderCount"] = polygonColliderCount,
                     ["groundColliderCount"] = groundColliderCount,
                     ["collisionLayer"] = LayerMask.LayerToName(platformLayer),
+                    ["previewAspect"] = NativeOverviewAspect,
                     ["offlineSpawn"] = offlineSpawn == null ? null : new JObject
                     {
                         ["x"] = ReadFloat(offlineSpawn["x"], 0f),
@@ -645,9 +654,10 @@ namespace OpenGS
 
         private static void CreatePreviewCamera(Transform parent, float left, float bottom, float right, float top)
         {
-            const float previewAspect = 16f / 9f;
+            const float previewAspect = NativeOverviewAspect;
             var center = new Vector2((left + right) * 0.5f, (bottom + top) * 0.5f);
-            var size = Mathf.Max((top - bottom) * 0.5f, (right - left) / (2f * previewAspect)) * 1.02f;
+            var overviewWidth = Mathf.Max(right - left, (top - bottom) * previewAspect);
+            var size = overviewWidth / (2f * previewAspect) * 1.02f;
             var cameraObject = new GameObject("Preview Camera");
             cameraObject.transform.SetParent(parent, false);
             cameraObject.transform.localPosition = new Vector3(center.x, center.y, -10f);
@@ -658,6 +668,65 @@ namespace OpenGS
             camera.aspect = previewAspect;
             camera.clearFlags = CameraClearFlags.SolidColor;
             camera.backgroundColor = new Color(0.11f, 0.14f, 0.17f, 1f);
+        }
+
+        private static void ApplyNativeOverviewParallax(
+            ref AffineTransform transform, JObject parallax, JObject map,
+            float left, float bottom, float right, float top, float cameraWorldWidth)
+        {
+            if (parallax == null)
+            {
+                return;
+            }
+
+            var factorX = ReadFloat(parallax["x"], 1f);
+            var factorY = ReadFloat(parallax["y"], 1f);
+            if (Mathf.Approximately(factorX, 1f) && Mathf.Approximately(factorY, 1f))
+            {
+                return;
+            }
+
+            var reference = parallax["reference"]?.ToString();
+            var mapWidth = right - left;
+            var mapHeight = top - bottom;
+            if (string.Equals(reference, "map-top-left", StringComparison.Ordinal))
+            {
+                var centerX = (left + right) * 0.5f;
+                var centerY = (bottom + top) * 0.5f;
+                var viewWidth = Mathf.Max(mapWidth, mapHeight * NativeOverviewAspect);
+                var viewHeight = viewWidth / NativeOverviewAspect;
+                var backgroundWidth = Mathf.Min(cameraWorldWidth, mapWidth);
+                var backgroundHeight = backgroundWidth / NativeOverviewAspect;
+                if (backgroundHeight > mapHeight)
+                {
+                    backgroundHeight = mapHeight;
+                    backgroundWidth = Mathf.Min(mapWidth, backgroundHeight * NativeOverviewAspect);
+                }
+
+                var viewLeft = centerX - viewWidth * 0.5f;
+                var viewTop = centerY + viewHeight * 0.5f;
+                var backgroundLeft = centerX - backgroundWidth * 0.5f;
+                var backgroundTop = centerY + backgroundHeight * 0.5f;
+                var overviewScale = viewWidth / backgroundWidth;
+                transform.X = viewLeft + (transform.X - backgroundLeft) * overviewScale +
+                    (viewLeft - left) * (1f - factorX) * overviewScale;
+                transform.Y = viewTop + (transform.Y - backgroundTop) * overviewScale +
+                    (viewTop - top) * (1f - factorY) * overviewScale;
+                transform.ScaleX *= overviewScale;
+                transform.ScaleY *= overviewScale;
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(reference) && reference != "spawn")
+            {
+                throw new InvalidDataException($"Unsupported parallax reference '{reference}'.");
+            }
+
+            var spawn = map["spawn"] as JObject;
+            var cameraX = (left + right) * 0.5f;
+            var cameraY = (bottom + top) * 0.5f;
+            transform.X += (ReadFloat(spawn?["x"], cameraX) - cameraX) * (1f - factorX);
+            transform.Y += (ReadFloat(spawn?["y"], cameraY) - cameraY) * (1f - factorY);
         }
 
         private static AffineTransform ReadAffineTransform(JArray token, string name)

@@ -39,6 +39,14 @@
       "size": [
         8.5,
         6.19
+      ],
+      "previewPosition": [
+        -15.7021305,
+        4.9236923
+      ],
+      "previewScale": [
+        2.5846154,
+        2.5846154
       ]
     },
     {
@@ -59,6 +67,14 @@
       "size": [
         1.06,
         0.46
+      ],
+      "previewPosition": [
+        -7.64,
+        -3.79
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -79,6 +95,14 @@
       "size": [
         1.06,
         0.46
+      ],
+      "previewPosition": [
+        -6.12,
+        -3.81
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -99,6 +123,14 @@
       "size": [
         1.06,
         0.46
+      ],
+      "previewPosition": [
+        5.68,
+        -3.81
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -119,6 +151,14 @@
       "size": [
         1.06,
         0.46
+      ],
+      "previewPosition": [
+        6.83,
+        -3.8
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -139,6 +179,14 @@
       "size": [
         0.9,
         1.88
+      ],
+      "previewPosition": [
+        -1.65,
+        -3.07
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -159,6 +207,14 @@
       "size": [
         0.9,
         1.88
+      ],
+      "previewPosition": [
+        -0.16,
+        -3.08
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -179,6 +235,14 @@
       "size": [
         0.9,
         1.88
+      ],
+      "previewPosition": [
+        -2.4,
+        -3.07
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -199,6 +263,14 @@
       "size": [
         0.92,
         0.46
+      ],
+      "previewPosition": [
+        2.45,
+        -3.86
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -219,6 +291,14 @@
       "size": [
         1.06,
         0.46
+      ],
+      "previewPosition": [
+        -7.63,
+        -1.27
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -239,6 +319,14 @@
       "size": [
         1.06,
         0.46
+      ],
+      "previewPosition": [
+        -6.12,
+        -1.26
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -259,6 +347,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        -7.63,
+        -2.53
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -279,6 +375,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        -7.63,
+        -1.84
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -299,6 +403,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        -7.63,
+        -3.22
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -319,6 +431,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        -6.11,
+        -1.84
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -339,6 +459,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        -6.11,
+        -3.24
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -359,6 +487,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        -6.11,
+        -2.54
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -379,6 +515,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        5.68,
+        -3.23
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -399,6 +543,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        5.68,
+        -2.53
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -419,6 +571,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        5.68,
+        -1.83
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -439,6 +599,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        6.84,
+        -3.24
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -459,6 +627,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        6.84,
+        -2.54
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -479,6 +655,14 @@
       "size": [
         0.58,
         0.74
+      ],
+      "previewPosition": [
+        6.84,
+        -1.84
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -499,6 +683,14 @@
       "size": [
         1.06,
         0.46
+      ],
+      "previewPosition": [
+        5.68,
+        -1.26
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -519,6 +711,14 @@
       "size": [
         1.06,
         0.46
+      ],
+      "previewPosition": [
+        6.85,
+        -1.26
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -539,6 +739,14 @@
       "size": [
         0.86,
         0.56
+      ],
+      "previewPosition": [
+        -7.42,
+        1.65
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -559,6 +767,14 @@
       "size": [
         0.86,
         0.56
+      ],
+      "previewPosition": [
+        -6.36,
+        1.66
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -579,6 +795,14 @@
       "size": [
         0.9,
         1.88
+      ],
+      "previewPosition": [
+        -0.9,
+        -3.08
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -599,6 +823,14 @@
       "size": [
         0.9,
         1.88
+      ],
+      "previewPosition": [
+        0.59,
+        -3.08
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -619,6 +851,14 @@
       "size": [
         0.9,
         1.88
+      ],
+      "previewPosition": [
+        1.34,
+        -3.08
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -639,6 +879,14 @@
       "size": [
         0.9,
         1.88
+      ],
+      "previewPosition": [
+        2.08,
+        -3.08
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -659,6 +907,14 @@
       "size": [
         2.98,
         1.04
+      ],
+      "previewPosition": [
+        -8.55,
+        -4.5
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -679,6 +935,14 @@
       "size": [
         0.42,
         1.28
+      ],
+      "previewPosition": [
+        -6.88,
+        -4.38
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -699,6 +963,14 @@
       "size": [
         0.42,
         1.28
+      ],
+      "previewPosition": [
+        -3.54,
+        -4.39
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -719,6 +991,14 @@
       "size": [
         4.08,
         2.22
+      ],
+      "previewPosition": [
+        6.26,
+        0.04
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -739,6 +1019,14 @@
       "size": [
         2.98,
         1.04
+      ],
+      "previewPosition": [
+        4.81,
+        -4.51
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -759,6 +1047,14 @@
       "size": [
         0.42,
         1.28
+      ],
+      "previewPosition": [
+        6.48,
+        -4.39
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -779,6 +1075,14 @@
       "size": [
         0.66,
         0.3
+      ],
+      "previewPosition": [
+        7.94,
+        -3.89
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -799,6 +1103,14 @@
       "size": [
         0.42,
         1.28
+      ],
+      "previewPosition": [
+        9.82,
+        -4.38
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -819,6 +1131,14 @@
       "size": [
         1.04,
         1.66
+      ],
+      "previewPosition": [
+        4.76,
+        1.89
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -839,6 +1159,14 @@
       "size": [
         1.02,
         1.48
+      ],
+      "previewPosition": [
+        7.77,
+        1.81
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -859,6 +1187,14 @@
       "size": [
         2.14,
         0.38
+      ],
+      "previewPosition": [
+        -6.87,
+        2.11
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -879,6 +1215,14 @@
       "size": [
         3.98,
         2.46
+      ],
+      "previewPosition": [
+        -6.85,
+        0.18
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -899,6 +1243,14 @@
       "size": [
         0.42,
         1.28
+      ],
+      "previewPosition": [
+        -0.2,
+        -4.39
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -919,6 +1271,14 @@
       "size": [
         2.98,
         1.04
+      ],
+      "previewPosition": [
+        -1.87,
+        -4.49
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -939,6 +1299,14 @@
       "size": [
         0.04,
         1.2
+      ],
+      "previewPosition": [
+        -0.91,
+        2.02
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -959,6 +1327,14 @@
       "size": [
         0.04,
         1.2
+      ],
+      "previewPosition": [
+        0.74,
+        2.02
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -979,6 +1355,14 @@
       "size": [
         1.06,
         0.44
+      ],
+      "previewPosition": [
+        1.76,
+        -1.53
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -999,6 +1383,14 @@
       "size": [
         0.04,
         1.2
+      ],
+      "previewPosition": [
+        -0.88,
+        4.37
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1019,6 +1411,14 @@
       "size": [
         0.04,
         1.2
+      ],
+      "previewPosition": [
+        0.74,
+        4.38
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1039,6 +1439,14 @@
       "size": [
         2.22,
         1.28
+      ],
+      "previewPosition": [
+        -0.08,
+        3.17
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1059,6 +1467,14 @@
       "size": [
         0.66,
         0.3
+      ],
+      "previewPosition": [
+        -2.11,
+        -1.58
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1079,6 +1495,14 @@
       "size": [
         0.92,
         0.46
+      ],
+      "previewPosition": [
+        -4.46,
+        -3.78
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1099,6 +1523,14 @@
       "size": [
         2.98,
         0.46
+      ],
+      "previewPosition": [
+        -1.6,
+        -1.93
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1119,6 +1551,14 @@
       "size": [
         0.7,
         0.34
+      ],
+      "previewPosition": [
+        2.17,
+        -3.86
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1139,6 +1579,14 @@
       "size": [
         0.28,
         0.2
+      ],
+      "previewPosition": [
+        7.56,
+        -3.93
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1159,6 +1607,14 @@
       "size": [
         2.98,
         1.04
+      ],
+      "previewPosition": [
+        1.47,
+        -4.5
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1179,6 +1635,14 @@
       "size": [
         2.98,
         1.04
+      ],
+      "previewPosition": [
+        -5.21,
+        -4.49
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1199,6 +1663,14 @@
       "size": [
         2.98,
         1.04
+      ],
+      "previewPosition": [
+        8.15,
+        -4.5
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1219,6 +1691,14 @@
       "size": [
         0.42,
         1.28
+      ],
+      "previewPosition": [
+        3.14,
+        -4.39
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1239,6 +1719,14 @@
       "size": [
         2.14,
         0.38
+      ],
+      "previewPosition": [
+        -0.07,
+        1.32
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     },
     {
@@ -1259,8 +1747,17 @@
       "size": [
         2.98,
         0.46
+      ],
+      "previewPosition": [
+        1.36,
+        -1.93
+      ],
+      "previewScale": [
+        1.0,
+        1.0
       ]
     }
   ],
-  "collisionLayer": "Platforms"
+  "collisionLayer": "Platforms",
+  "previewAspect": 2.0676923076923077
 }
