@@ -18,7 +18,7 @@ namespace OpenGS
     {
         private const string DefaultOutputRoot = "Assets/GeneratedMapPreviews";
         private const string DefaultSpriteSearchRoot = "Assets/Sprites/Stages";
-        private const float NativeOverviewAspect = (16f / 10f) * (1.68f / 1.30f);
+        private const float NativeOverviewAspect = 16f / 10f;
 
         private string mapJsonPath = @"J:\dev\OpenGSNativeClient\assets\maps\Waterfall.json";
         private string outputRoot = DefaultOutputRoot;
@@ -730,10 +730,12 @@ namespace OpenGS
                 var backgroundLeft = centerX - backgroundWidth * 0.5f;
                 var backgroundTop = centerY + backgroundHeight * 0.5f;
                 var overviewScale = viewWidth / backgroundWidth;
-                transform.X = viewLeft + (transform.X - backgroundLeft) * overviewScale +
-                    (viewLeft - left) * (1f - factorX) * overviewScale;
-                transform.Y = viewTop + (transform.Y - backgroundTop) * overviewScale +
-                    (viewTop - top) * (1f - factorY) * overviewScale;
+                var backgroundOffsetX = (backgroundLeft - left) * (1f - factorX);
+                var backgroundOffsetY = (backgroundTop - top) * (1f - factorY);
+                transform.X = viewLeft +
+                    (transform.X + backgroundOffsetX - backgroundLeft) * overviewScale;
+                transform.Y = viewTop +
+                    (transform.Y + backgroundOffsetY - backgroundTop) * overviewScale;
                 transform.ScaleX *= overviewScale;
                 transform.ScaleY *= overviewScale;
                 return;
