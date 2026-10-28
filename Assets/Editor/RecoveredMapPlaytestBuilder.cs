@@ -10,7 +10,7 @@ namespace OpenGS.EditorTools
 {
     public static class RecoveredMapPlaytestBuilder
     {
-        private const string SourceMap = @"J:\dev\OpenGSNativeClient\assets\maps\local-original-015-waterfall.json";
+        private const string SourceMapRelativePath = "assets/maps/local-original-015-waterfall.json";
         private const string OutputRoot = "Assets/GeneratedMapPlaytests";
         private const string SpriteSearchRoot = "Assets/Sprites/Stages";
         private const string PlayerPrefabPath = "Assets/Prefabs/Player/MistyPlayable.prefab";
@@ -19,14 +19,15 @@ namespace OpenGS.EditorTools
         public static void BuildWaterfall()
         {
             var scenePath = NativeMapPreviewBuilderWindow.BuildPreview(
-                SourceMap, OutputRoot, SpriteSearchRoot, nativeOverview: false);
+                ResolveSourceMap(), OutputRoot, SpriteSearchRoot, nativeOverview: false);
             ConfigureAndOpen(scenePath);
         }
 
         [MenuItem("Tools/OpenGS/Rebuild Waterfall Playtest Scene")]
         public static void RebuildWaterfall()
         {
-            var map = JObject.Parse(File.ReadAllText(SourceMap));
+            var sourceMap = ResolveSourceMap();
+            var map = JObject.Parse(File.ReadAllText(sourceMap));
             var folder = $"{OutputRoot}/{SafeFolderName(map["id"]?.ToString())}";
             if (AssetDatabase.IsValidFolder(folder) && !AssetDatabase.DeleteAsset(folder))
             {
@@ -40,7 +41,7 @@ namespace OpenGS.EditorTools
         private static void ConfigureAndOpen(string scenePath)
         {
             var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Single);
-            var map = JObject.Parse(File.ReadAllText(SourceMap));
+            var map = JObject.Parse(File.ReadAllText(ResolveSourceMap()));
             var spawn = map["offlineSpawn"] as JObject;
             if (spawn == null)
             {
@@ -101,6 +102,26 @@ namespace OpenGS.EditorTools
                 value = value.Replace(invalid, '_');
             }
             return value;
+        }
+
+        private static string ResolveSourceMap()
+        {
+            var directory = new DirectoryInfo(Application.dataPath);
+            while (directory != null)
+            {
+                var candidate = Path.Combine(
+                    directory.FullName, "OpenGSNativeClient", SourceMapRelativePath);
+                if (File.Exists(candidate))
+                {
+                    return candidate;
+                }
+
+                directory = directory.Parent;
+            }
+
+            throw new FileNotFoundException(
+                "Could not find OpenGSNativeClient/assets/maps/local-original-015-waterfall.json " +
+                "in a parent directory of this Unity project.");
         }
     }
 }
