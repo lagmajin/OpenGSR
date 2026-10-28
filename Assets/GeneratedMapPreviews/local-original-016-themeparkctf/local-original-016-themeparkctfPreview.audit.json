@@ -1,0 +1,1742 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-016-themeparkctf",
+  "sourceFile": "local-original-016-themeparkctf.json",
+  "sourceJsonSha256": "d87f0a40aac2ad42bdd90a6b3dd3f5dea49412bf3430ba214648b57b22b56ece",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/local-original-016-themeparkctfPreview.unity",
+  "spritePlacementCount": 86,
+  "uniqueSpriteFileCount": 33,
+  "copiedSpriteFileCount": 33,
+  "obstacleBoxColliderCount": 2151,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 0,
+  "offlineSpawn": null,
+  "bounds": {
+    "left": -15.0,
+    "bottom": -7.5,
+    "right": 15.0,
+    "top": 7.5
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "016-themepark-01",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4373a821f04d75d9acc39fe652ebb64af621a068d2331055be1a6fabac417e6c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -10.4999981,
+        4.045
+      ],
+      "size": [
+        9.0,
+        6.91
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 4,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        14.29,
+        1.95
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 5,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        12.5,
+        2.88
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 6,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        11.17,
+        4.42
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 7,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        10.48,
+        6.42
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 8,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        -10.53,
+        6.45
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 9,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        -11.21,
+        4.42
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 10,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9990,
+      "position": [
+        -12.54,
+        2.84
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 11,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9989,
+      "position": [
+        -14.34,
+        1.91
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 15,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9985,
+      "position": [
+        -13.54,
+        -4.66
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 16,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9984,
+      "position": [
+        -13.54,
+        -6.49
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 17,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9983,
+      "position": [
+        -13.54,
+        -5.64
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 18,
+      "name": "016-themepark-03-20",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-20.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-20.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "d0410df531b364b81880e6708dc92ce7f39e6e0e12896769c91795bde4c28353",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9982,
+      "position": [
+        -8.52,
+        -6.3
+      ],
+      "size": [
+        0.6,
+        1.54
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 26,
+      "name": "016-themepark-03-10",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "930510cbd8b6946405b08e463ed6074834bcb48a4177a5b79d0815ab6bd12b38",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9974,
+      "position": [
+        -9.9,
+        -3.52
+      ],
+      "size": [
+        1.2,
+        1.76
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 29,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9971,
+      "position": [
+        -9.9,
+        -4.97
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 30,
+      "name": "016-themepark-03-10",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "930510cbd8b6946405b08e463ed6074834bcb48a4177a5b79d0815ab6bd12b38",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9970,
+      "position": [
+        14.14,
+        -3.56
+      ],
+      "size": [
+        1.2,
+        1.76
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 32,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9968,
+      "position": [
+        9.24,
+        -6.49
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 33,
+      "name": "016-themepark-03-10",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "930510cbd8b6946405b08e463ed6074834bcb48a4177a5b79d0815ab6bd12b38",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9967,
+      "position": [
+        9.24,
+        -3.56
+      ],
+      "size": [
+        1.2,
+        1.76
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 34,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9966,
+      "position": [
+        9.24,
+        -4.94
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 46,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9954,
+      "position": [
+        -9.9,
+        -5.95
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 47,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9953,
+      "position": [
+        -9.9,
+        -6.45
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 48,
+      "name": "016-themepark-02-05",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "49110ccd8236a8de214199902cc8cd66e939d349ecc77e6f1d75ca842921841d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9952,
+      "position": [
+        -9.84,
+        -5.71
+      ],
+      "size": [
+        2.06,
+        2.72
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 50,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9950,
+      "position": [
+        14.14,
+        -6.49
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 51,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9949,
+      "position": [
+        14.14,
+        -5.01
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 53,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9947,
+      "position": [
+        9.24,
+        -5.81
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 55,
+      "name": "016-themepark-03-41",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-41.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-41.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "67656c57a45be01323b8039185be97f6a14103dd11e2ea242f3ea4a96e59f1f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9945,
+      "position": [
+        14.14,
+        -6.14
+      ],
+      "size": [
+        0.28,
+        1.14
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 56,
+      "name": "016-themepark-03-10",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "930510cbd8b6946405b08e463ed6074834bcb48a4177a5b79d0815ab6bd12b38",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9944,
+      "position": [
+        -13.54,
+        -3.52
+      ],
+      "size": [
+        1.2,
+        1.76
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 62,
+      "name": "016-themepark-02-04",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "afc18a6f8a361f0717db0bf7f9a87d180d4e9e90ff61d818a946ad5a6affa0a3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9938,
+      "position": [
+        9.03,
+        -5.53
+      ],
+      "size": [
+        1.72,
+        3.26
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 70,
+      "name": "016-themepark-03-21",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-21.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-21.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6235723106632a079a4613c404c8789ebb74487510427be1616570bc8cea7dc7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9930,
+      "position": [
+        10.1,
+        -6.49
+      ],
+      "size": [
+        0.46,
+        1.1
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 78,
+      "name": "016-themepark-03-42",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-42.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-42.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "424a491b82e87d960bad701dbe1e91f3ce26ae85c83ec60c2a39a5e5cd156bcd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9922,
+      "position": [
+        6.79,
+        0.91
+      ],
+      "size": [
+        0.02,
+        3.0
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 82,
+      "name": "016-themepark-03-34",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-34.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-34.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b997f51195821b0ab0cfb7354c4cb225e89055b023d308192baaa8123fe2c2bc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9918,
+      "position": [
+        0.4,
+        0.42
+      ],
+      "size": [
+        0.02,
+        1.0
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 1,
+      "name": "016-themepark-03-40",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-40.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-40.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bcdc771d77abe125af008676e549d4ac01d78c75ef66e01638a0f4efea27d639",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10001,
+      "position": [
+        -6.61,
+        -5.84
+      ],
+      "size": [
+        1.62,
+        2.5
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 2,
+      "name": "016-themepark-03-09",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8ea642dc2b07cd3baf9008f0bf8f4733304ab597fbd138b5160520497a87ffb6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10002,
+      "position": [
+        14.87,
+        -2.08
+      ],
+      "size": [
+        3.1,
+        1.22
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 3,
+      "name": "016-themepark-03-40",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-40.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-40.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bcdc771d77abe125af008676e549d4ac01d78c75ef66e01638a0f4efea27d639",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10003,
+      "position": [
+        5.93,
+        -5.9
+      ],
+      "size": [
+        1.62,
+        2.5
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 12,
+      "name": "005-ruin-flag",
+      "sourcePath": "mpf_recovered_assets/005-ruin/005-ruin-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/005-ruin-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d819e10b956522647f1d7c22bda8bed2ab2261ed659a02a3b6332d0688ab3a0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -9.725,
+        -1.365
+      ],
+      "size": [
+        0.53,
+        0.15
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 13,
+      "name": "016-themepark-03-09",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8ea642dc2b07cd3baf9008f0bf8f4733304ab597fbd138b5160520497a87ffb6",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -15.4,
+        -2.04
+      ],
+      "size": [
+        3.1,
+        1.22
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 14,
+      "name": "016-themepark-03-01",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ce40b1b9aa2128529abfc23179ec0a9d7c1a54f9e39b884f32d86519d0fc6027",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -0.15,
+        -3.64
+      ],
+      "size": [
+        7.48,
+        7.82
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 19,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        -6.04,
+        -7.6
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 20,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        -3.72,
+        -7.6
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 21,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        0.29,
+        -7.6
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 22,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        2.62,
+        -7.6
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 23,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10023,
+      "position": [
+        4.95,
+        -7.6
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 24,
+      "name": "016-themepark-03-11",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "31b3ad57f2fbe980fae9288de94e490169671a76ac31ef188094ec0bb18626ec",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        -7.98,
+        -2.54
+      ],
+      "size": [
+        1.96,
+        0.22
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 25,
+      "name": "016-themepark-03-05",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2d29ef1928a366a6115aa490d93df7a81ddf08337ed370faa931bffa722b0738",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        -6.6,
+        -2.38
+      ],
+      "size": [
+        2.0,
+        4.62
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 27,
+      "name": "016-themepark-03-09",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8ea642dc2b07cd3baf9008f0bf8f4733304ab597fbd138b5160520497a87ffb6",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        -12.63,
+        -2.04
+      ],
+      "size": [
+        3.1,
+        1.22
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 28,
+      "name": "016-themepark-03-08",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "252a3f0aaac884a2c8c1c2b23a285f47e79a005162b7eaea27698e5cf9eb4a32",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        -9.84,
+        -2.05
+      ],
+      "size": [
+        3.14,
+        1.24
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 31,
+      "name": "016-themepark-03-05",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2d29ef1928a366a6115aa490d93df7a81ddf08337ed370faa931bffa722b0738",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10031,
+      "position": [
+        5.96,
+        -2.41
+      ],
+      "size": [
+        2.0,
+        4.62
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 35,
+      "name": "016-themepark-03-11",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "31b3ad57f2fbe980fae9288de94e490169671a76ac31ef188094ec0bb18626ec",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        7.73,
+        -2.58
+      ],
+      "size": [
+        1.96,
+        0.22
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 36,
+      "name": "016-themepark-02-06",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8a8f167f0a350d8d952f50f94bb8c3500cfe031351e9bb917cc9393a8b1bc86a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        12.74,
+        4.99
+      ],
+      "size": [
+        4.56,
+        5.06
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 37,
+      "name": "016-themepark-02-06",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-02-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8a8f167f0a350d8d952f50f94bb8c3500cfe031351e9bb917cc9393a8b1bc86a",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        -12.74,
+        4.99
+      ],
+      "size": [
+        4.56,
+        5.06
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 38,
+      "name": "016-themepark-03-12",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "5293e0e28557dde17a8392463ff1779edf16024695a41e91145eeec2808738c7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        14.31,
+        1.81
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 39,
+      "name": "016-themepark-03-13",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-13.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-13.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b81238bbcc030cefbf08ade297624d8cf56a58aa2faac25b9667166ce0917751",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        12.5,
+        2.73
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 40,
+      "name": "016-themepark-03-14",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-14.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-14.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4253d5c78aa40bd93096b177aa30e7fc9e5b7eede8446326f4df74db93846d65",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        11.17,
+        4.3
+      ],
+      "size": [
+        1.16,
+        1.44
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 41,
+      "name": "016-themepark-03-15",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-15.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-15.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ef3209776ecc0cb5949f7610e5260f9f10bcb159a307a1695ea459c50a9d4e4f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        10.5,
+        6.3
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 54,
+      "sourcePlacement": 42,
+      "name": "016-themepark-03-12",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "5293e0e28557dde17a8392463ff1779edf16024695a41e91145eeec2808738c7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10042,
+      "position": [
+        -10.51,
+        6.3
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 55,
+      "sourcePlacement": 43,
+      "name": "016-themepark-03-13",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-13.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-13.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b81238bbcc030cefbf08ade297624d8cf56a58aa2faac25b9667166ce0917751",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        -11.21,
+        4.3
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 56,
+      "sourcePlacement": 44,
+      "name": "016-themepark-03-14",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-14.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-14.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4253d5c78aa40bd93096b177aa30e7fc9e5b7eede8446326f4df74db93846d65",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10044,
+      "position": [
+        -12.54,
+        2.72
+      ],
+      "size": [
+        1.16,
+        1.44
+      ]
+    },
+    {
+      "index": 57,
+      "sourcePlacement": 45,
+      "name": "016-themepark-03-15",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-15.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-15.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ef3209776ecc0cb5949f7610e5260f9f10bcb159a307a1695ea459c50a9d4e4f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10045,
+      "position": [
+        -14.33,
+        1.79
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 58,
+      "sourcePlacement": 49,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10049,
+      "position": [
+        -8.36,
+        -7.6
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 59,
+      "sourcePlacement": 52,
+      "name": "016-themepark-03-09",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8ea642dc2b07cd3baf9008f0bf8f4733304ab597fbd138b5160520497a87ffb6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        12.1,
+        -2.08
+      ],
+      "size": [
+        3.1,
+        1.22
+      ]
+    },
+    {
+      "index": 60,
+      "sourcePlacement": 54,
+      "name": "016-themepark-03-08",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "252a3f0aaac884a2c8c1c2b23a285f47e79a005162b7eaea27698e5cf9eb4a32",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10054,
+      "position": [
+        9.3,
+        -2.09
+      ],
+      "size": [
+        3.14,
+        1.24
+      ]
+    },
+    {
+      "index": 61,
+      "sourcePlacement": 57,
+      "name": "016-themepark-03-02",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "56f9e6c4b945adfae0e0cb5e587fb3757561e062c3bbe9faf73f61814d3604e5",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10057,
+      "position": [
+        -13.07,
+        -5.87
+      ],
+      "size": [
+        4.14,
+        2.28
+      ]
+    },
+    {
+      "index": 62,
+      "sourcePlacement": 58,
+      "name": "016-themepark-03-03",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2a94fedaaf00a0f039ab2dd3600c67befe4e72008f18d0300ed75fbf67ff0f4a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10058,
+      "position": [
+        -12.66,
+        -7.08
+      ],
+      "size": [
+        4.0,
+        0.28
+      ]
+    },
+    {
+      "index": 63,
+      "sourcePlacement": 59,
+      "name": "016-themepark-03-03",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2a94fedaaf00a0f039ab2dd3600c67befe4e72008f18d0300ed75fbf67ff0f4a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10059,
+      "position": [
+        -14.06,
+        -7.08
+      ],
+      "size": [
+        4.0,
+        0.28
+      ]
+    },
+    {
+      "index": 64,
+      "sourcePlacement": 60,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10060,
+      "position": [
+        -12.37,
+        -7.6
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 65,
+      "sourcePlacement": 61,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10061,
+      "position": [
+        -14.7,
+        -7.61
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 66,
+      "sourcePlacement": 63,
+      "name": "016-themepark-03-18",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-18.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-18.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "914b1d1c0168bed99592e68131432f17f65817c6d80cb9de10a1a78278e8e8e1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10063,
+      "position": [
+        9.03,
+        -6.29
+      ],
+      "size": [
+        2.14,
+        1.86
+      ]
+    },
+    {
+      "index": 67,
+      "sourcePlacement": 64,
+      "name": "016-themepark-03-02",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "56f9e6c4b945adfae0e0cb5e587fb3757561e062c3bbe9faf73f61814d3604e5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10064,
+      "position": [
+        13.04,
+        -5.87
+      ],
+      "size": [
+        4.14,
+        2.28
+      ]
+    },
+    {
+      "index": 68,
+      "sourcePlacement": 65,
+      "name": "016-themepark-03-03",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2a94fedaaf00a0f039ab2dd3600c67befe4e72008f18d0300ed75fbf67ff0f4a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10065,
+      "position": [
+        13.51,
+        -7.07
+      ],
+      "size": [
+        4.0,
+        0.28
+      ]
+    },
+    {
+      "index": 69,
+      "sourcePlacement": 66,
+      "name": "016-themepark-03-03",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2a94fedaaf00a0f039ab2dd3600c67befe4e72008f18d0300ed75fbf67ff0f4a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10066,
+      "position": [
+        12.12,
+        -7.07
+      ],
+      "size": [
+        4.0,
+        0.28
+      ]
+    },
+    {
+      "index": 70,
+      "sourcePlacement": 67,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10067,
+      "position": [
+        8.97,
+        -7.6
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 71,
+      "sourcePlacement": 68,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10068,
+      "position": [
+        11.3,
+        -7.6
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 72,
+      "sourcePlacement": 69,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10069,
+      "position": [
+        13.62,
+        -7.6
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 73,
+      "sourcePlacement": 71,
+      "name": "016-themepark-03-32",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-32.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-32.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "3fa3a513b849202321f0f530a88603a993b87654346e27761a49158f0bcb3521",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10071,
+      "position": [
+        -4.615,
+        3.61
+      ],
+      "size": [
+        1.91,
+        1.06
+      ]
+    },
+    {
+      "index": 74,
+      "sourcePlacement": 72,
+      "name": "016-themepark-03-33",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-33.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-33.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2614dcda5294f43269fb4ddbabb56f51a866c55f515604610e23b606ed43045a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10072,
+      "position": [
+        4.18,
+        3.91
+      ],
+      "size": [
+        1.86,
+        1.06
+      ]
+    },
+    {
+      "index": 75,
+      "sourcePlacement": 73,
+      "name": "016-themepark-03-42",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-42.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-42.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "424a491b82e87d960bad701dbe1e91f3ce26ae85c83ec60c2a39a5e5cd156bcd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10073,
+      "position": [
+        -0.27,
+        1.53
+      ],
+      "size": [
+        0.02,
+        3.0
+      ]
+    },
+    {
+      "index": 76,
+      "sourcePlacement": 74,
+      "name": "016-themepark-03-42",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-42.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-42.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "424a491b82e87d960bad701dbe1e91f3ce26ae85c83ec60c2a39a5e5cd156bcd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10074,
+      "position": [
+        -0.27,
+        4.13
+      ],
+      "size": [
+        0.02,
+        3.0
+      ]
+    },
+    {
+      "index": 77,
+      "sourcePlacement": 75,
+      "name": "016-themepark-03-37",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-37.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-37.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c6c2e1c4a09868fbf90bb048ef861c372d53b1bae50ad72146f27377bbc850e8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10075,
+      "position": [
+        -0.39,
+        6.02
+      ],
+      "size": [
+        1.1,
+        0.96
+      ]
+    },
+    {
+      "index": 78,
+      "sourcePlacement": 76,
+      "name": "016-themepark-03-42",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-42.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-42.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "424a491b82e87d960bad701dbe1e91f3ce26ae85c83ec60c2a39a5e5cd156bcd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10076,
+      "position": [
+        -7.45,
+        0.91
+      ],
+      "size": [
+        0.02,
+        3.0
+      ]
+    },
+    {
+      "index": 79,
+      "sourcePlacement": 77,
+      "name": "016-themepark-03-35",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-35.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-35.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "dc64e6f5298abdf5f7f3043d346af0f0ed18a1717c9a8c74431e13e0533714c2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10077,
+      "position": [
+        -7.46,
+        2.495
+      ],
+      "size": [
+        0.9,
+        0.65
+      ]
+    },
+    {
+      "index": 80,
+      "sourcePlacement": 79,
+      "name": "016-themepark-03-35",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-35.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-35.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "dc64e6f5298abdf5f7f3043d346af0f0ed18a1717c9a8c74431e13e0533714c2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10079,
+      "position": [
+        6.67,
+        2.645
+      ],
+      "size": [
+        0.9,
+        0.65
+      ]
+    },
+    {
+      "index": 81,
+      "sourcePlacement": 80,
+      "name": "016-themepark-03-42",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-42.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-42.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "424a491b82e87d960bad701dbe1e91f3ce26ae85c83ec60c2a39a5e5cd156bcd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10080,
+      "position": [
+        -0.58,
+        1.2
+      ],
+      "size": [
+        0.02,
+        3.0
+      ]
+    },
+    {
+      "index": 82,
+      "sourcePlacement": 81,
+      "name": "016-themepark-03-36",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-36.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-36.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "655434276f83ff7c5fee35ae544d41ad7c3e3bd417e9b690ece3d6c52bd804fa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10081,
+      "position": [
+        -0.77,
+        2.7
+      ],
+      "size": [
+        0.64,
+        0.52
+      ]
+    },
+    {
+      "index": 83,
+      "sourcePlacement": 83,
+      "name": "016-themepark-03-36",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-36.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-36.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "655434276f83ff7c5fee35ae544d41ad7c3e3bd417e9b690ece3d6c52bd804fa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10083,
+      "position": [
+        0.56,
+        0.99
+      ],
+      "size": [
+        0.64,
+        0.52
+      ]
+    },
+    {
+      "index": 84,
+      "sourcePlacement": 84,
+      "name": "005-ruin-flag",
+      "sourcePath": "mpf_recovered_assets/005-ruin/005-ruin-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/005-ruin-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d819e10b956522647f1d7c22bda8bed2ab2261ed659a02a3b6332d0688ab3a0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10084,
+      "position": [
+        9.185,
+        -1.405
+      ],
+      "size": [
+        0.53,
+        0.15
+      ]
+    },
+    {
+      "index": 85,
+      "sourcePlacement": 85,
+      "name": "016-themepark-03-19",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-19.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themeparkctf/Textures/016-themepark-03-19.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "db678dc431b7053607677815b4b42555b64438f45e3cae032a51b6e726317228",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10085,
+      "position": [
+        -9.88,
+        -5.19
+      ],
+      "size": [
+        2.44,
+        1.96
+      ]
+    }
+  ]
+}

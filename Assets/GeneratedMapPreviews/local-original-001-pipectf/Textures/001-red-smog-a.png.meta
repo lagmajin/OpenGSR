@@ -1,0 +1,241 @@
+fileFormatVersion: 2
+guid: 8cbc4a7f19168ba4b9f3975b5291debb
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -7174309976652096920
+    second: 001-red-smog-a_0
+  - first:
+      213: 3847475396000976304
+    second: 001-red-smog-a_1
+  - first:
+      213: 8469600660550217222
+    second: 001-red-smog-a_2
+  - first:
+      213: 8811139491204239446
+    second: 001-red-smog-a_3
+  - first:
+      213: 4877630762846391000
+    second: 001-red-smog-a_4
+  - first:
+      213: 7250837585913694919
+    second: 001-red-smog-a_5
+  - first:
+      213: 2941414145397432419
+    second: 001-red-smog-a_6
+  - first:
+      213: 1999695696923781360
+    second: 001-red-smog-a_7
+  - first:
+      213: -8050916202747956926
+    second: 001-red-smog-a_8
+  - first:
+      213: -8219587479455053026
+    second: 001-red-smog-a_9
+  - first:
+      213: 2802481870444871897
+    second: 001-red-smog-a_10
+  - first:
+      213: -5239753437698366227
+    second: 001-red-smog-a_11
+  - first:
+      213: 7715105897206315570
+    second: 001-red-smog-a_12
+  - first:
+      213: -8392239819486305170
+    second: 001-red-smog-a_13
+  - first:
+      213: -8654056203701609795
+    second: 001-red-smog-a_14
+  - first:
+      213: 6467275641170474343
+    second: 001-red-smog-a_15
+  - first:
+      213: 4037130482502053935
+    second: 001-red-smog-a_16
+  - first:
+      213: -6160611159694949873
+    second: 001-red-smog-a_17
+  - first:
+      213: -5057973789835321577
+    second: 001-red-smog-a_18
+  - first:
+      213: -765420007186685253
+    second: 001-red-smog-a_19
+  - first:
+      213: 4601006956672706144
+    second: 001-red-smog-a_20
+  - first:
+      213: -638664535256087416
+    second: 001-red-smog-a_21
+  - first:
+      213: 5398850976738259474
+    second: 001-red-smog-a_22
+  - first:
+      213: 8023427642486947980
+    second: 001-red-smog-a_23
+  - first:
+      213: -5549520350111761437
+    second: 001-red-smog-a
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 001-red-smog-a
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 280
+        width: 110
+        height: 140
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eb79c9e4a42cf2b0800000000000000
+      internalID: -5549520350111761437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      001-red-smog-a: -5549520350111761437
+      001-red-smog-a_0: -7174309976652096920
+      001-red-smog-a_1: 3847475396000976304
+      001-red-smog-a_10: 2802481870444871897
+      001-red-smog-a_11: -5239753437698366227
+      001-red-smog-a_12: 7715105897206315570
+      001-red-smog-a_13: -8392239819486305170
+      001-red-smog-a_14: -8654056203701609795
+      001-red-smog-a_15: 6467275641170474343
+      001-red-smog-a_16: 4037130482502053935
+      001-red-smog-a_17: -6160611159694949873
+      001-red-smog-a_18: -5057973789835321577
+      001-red-smog-a_19: -765420007186685253
+      001-red-smog-a_2: 8469600660550217222
+      001-red-smog-a_20: 4601006956672706144
+      001-red-smog-a_21: -638664535256087416
+      001-red-smog-a_22: 5398850976738259474
+      001-red-smog-a_23: 8023427642486947980
+      001-red-smog-a_3: 8811139491204239446
+      001-red-smog-a_4: 4877630762846391000
+      001-red-smog-a_5: 7250837585913694919
+      001-red-smog-a_6: 2941414145397432419
+      001-red-smog-a_7: 1999695696923781360
+      001-red-smog-a_8: -8050916202747956926
+      001-red-smog-a_9: -8219587479455053026
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

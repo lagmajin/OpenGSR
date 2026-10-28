@@ -186,7 +186,8 @@ namespace OpenGS
             }
 
             float horizontalInput = inputService != null ? inputService.GetHorizontalAxis() : Input.GetAxis("Horizontal");
-            float verticalInput = inputService != null ? inputService.GetVerticalAxis() : Input.GetAxis("Vertical");
+            // Platform movement is horizontal; jump and booster control height separately.
+            const float verticalInput = 0f;
             if (!IsFinite(transform.position) || !IsFinite(horizontalInput) || !IsFinite(verticalInput))
             {
                 Debug.LogWarning("[PlayerInputSender] Skipping movement packet with non-finite state.");
@@ -194,7 +195,6 @@ namespace OpenGS
             }
 
             horizontalInput = Mathf.Clamp(horizontalInput, -1f, 1f);
-            verticalInput = Mathf.Clamp(verticalInput, -1f, 1f);
 
             var deltaTime = Mathf.Clamp(now - _lastMoveSendTime, 0.001f, 0.25f);
             if (!IsFinite(deltaTime))

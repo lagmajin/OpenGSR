@@ -1,0 +1,365 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-025-fortress",
+  "sourceFile": "local-original-025-fortress.json",
+  "sourceJsonSha256": "2261e79dfbc5ca82db55766796118bd0d8c8014c925a037d0a181bb5c484aaa9",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-025-fortress/local-original-025-fortressPreview.unity",
+  "spritePlacementCount": 17,
+  "uniqueSpriteFileCount": 11,
+  "copiedSpriteFileCount": 11,
+  "obstacleBoxColliderCount": 957,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 9,
+  "offlineSpawn": {
+    "x": -7.2,
+    "y": -3.57
+  },
+  "bounds": {
+    "left": -9.0,
+    "bottom": -4.5,
+    "right": 9.0,
+    "top": 4.5
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "025_fortress-01-01",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-01-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-01-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9caa534d27989c96e1f6e73202271257b7f67c494829e36a7b0ceaf344eb7270",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -4.650002,
+        1.37
+      ],
+      "size": [
+        8.7,
+        6.26
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "025_fortress-02-02",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-02-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-02-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "1e8d72ef7c098e177ff236b3f435ba36b5348e439fb28b8b359ee2db8a00da3a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        0.025,
+        -1.22
+      ],
+      "size": [
+        2.95,
+        1.0
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "025_fortress-02-01",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-02-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-02-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c21ec64df227e45714ebaf0ca890ff6771f1cd35ad94a57d570998340e6bbe9a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        0.035,
+        0.45
+      ],
+      "size": [
+        2.91,
+        0.86
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "025_fortress-03-01",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "d49c198b7ee2af6c2fe67356f8a8b7e6ff1f83655ea55dfedbbf92e4c7cea9ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10003,
+      "position": [
+        -8.235,
+        -2.76
+      ],
+      "size": [
+        1.53,
+        2.7
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "025_fortress-03-04",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e2336c9d321efd80e8d99b57c095c40cdb621172b3b7a1ae2d547b22a1b47349",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10004,
+      "position": [
+        -4.7,
+        -3.69
+      ],
+      "size": [
+        2.0,
+        1.66
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 5,
+      "name": "025_fortress-03-05",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0e43a560261e204a2a8a63ce3f8cf34953b27a7ddbd0e05a72302b72b7d9a844",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10005,
+      "position": [
+        -2.41,
+        -3.11
+      ],
+      "size": [
+        2.58,
+        2.82
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 6,
+      "name": "025_fortress-03-07",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "326c46281a1f191ad970b18d3e67070ff74673c54d8aed12abecf344e26d0176",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10006,
+      "position": [
+        0.03,
+        -2.825
+      ],
+      "size": [
+        3.18,
+        2.25
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 7,
+      "name": "025_fortress-03-05",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0e43a560261e204a2a8a63ce3f8cf34953b27a7ddbd0e05a72302b72b7d9a844",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10007,
+      "position": [
+        2.46,
+        -3.11
+      ],
+      "size": [
+        2.58,
+        2.82
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 8,
+      "name": "025_fortress-03-04",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e2336c9d321efd80e8d99b57c095c40cdb621172b3b7a1ae2d547b22a1b47349",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10008,
+      "position": [
+        4.75,
+        -3.69
+      ],
+      "size": [
+        2.0,
+        1.66
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 9,
+      "name": "025_fortress-03-03",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "775cd4212161fecd4e77f582a2714e6371240225ee9a76849d2845edc6e14553",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10009,
+      "position": [
+        -4.69,
+        -1.36
+      ],
+      "size": [
+        2.14,
+        3.12
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 10,
+      "name": "025_fortress-03-06",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2abf43f5f738efec525806176fae5fe5ae5be2907199cf4c24f2c4fa98b2d2ae",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        0.02,
+        0.79
+      ],
+      "size": [
+        2.96,
+        3.08
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 11,
+      "name": "025_fortress-03-03",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "775cd4212161fecd4e77f582a2714e6371240225ee9a76849d2845edc6e14553",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        4.76,
+        -1.33
+      ],
+      "size": [
+        2.14,
+        3.12
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 12,
+      "name": "025_fortress-03-01",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "d49c198b7ee2af6c2fe67356f8a8b7e6ff1f83655ea55dfedbbf92e4c7cea9ed",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        8.265,
+        -2.76
+      ],
+      "size": [
+        1.53,
+        2.7
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 13,
+      "name": "007-snow-flag",
+      "sourcePath": "mpf_recovered_assets/007-snow/007-snow-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/007-snow-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a31c8efb20efb2979932b2b2da63dfa0150b9e6ee3a84d4a50c09124954e6c58",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -7.205,
+        -4.045
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 14,
+      "name": "025_fortress-03-02",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a5801c9fa496403d9908c94d396d6632e916902d723036110471807b487e5cfc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -7.35,
+        -4.21
+      ],
+      "size": [
+        3.3,
+        0.62
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 15,
+      "name": "007-snow-flag",
+      "sourcePath": "mpf_recovered_assets/007-snow/007-snow-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/007-snow-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a31c8efb20efb2979932b2b2da63dfa0150b9e6ee3a84d4a50c09124954e6c58",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        7.305,
+        -4.035
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 16,
+      "name": "025_fortress-03-02",
+      "sourcePath": "mpf_recovered_assets/025_fortress/025_fortress-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-025-fortress/Textures/025_fortress-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a5801c9fa496403d9908c94d396d6632e916902d723036110471807b487e5cfc",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        7.4,
+        -4.21
+      ],
+      "size": [
+        3.3,
+        0.62
+      ]
+    }
+  ]
+}

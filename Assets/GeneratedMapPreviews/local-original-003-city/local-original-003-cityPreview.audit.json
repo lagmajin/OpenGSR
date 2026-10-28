@@ -1,0 +1,905 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-003-city",
+  "sourceFile": "local-original-003-city.json",
+  "sourceJsonSha256": "371d6f12da194003c2488d9c750f681e0789f493ba078fde476d448c6f74a54f",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-003-city/local-original-003-cityPreview.unity",
+  "spritePlacementCount": 44,
+  "uniqueSpriteFileCount": 44,
+  "copiedSpriteFileCount": 1,
+  "obstacleBoxColliderCount": 522,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 8,
+  "offlineSpawn": {
+    "x": -8.095,
+    "y": -3.26
+  },
+  "bounds": {
+    "left": -9.495,
+    "bottom": -4.1,
+    "right": 9.495,
+    "top": 4.1
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "bg001",
+      "sourcePath": "mpf_recovered_assets/003-city/bg001.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg001.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "91f5dc8b2e5e2359371d049043ef44ea6df8b1f840247a28e1e68ce33e2871e2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -4.2,
+        0.125
+      ],
+      "size": [
+        10.59,
+        7.95
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "bg002-01",
+      "sourcePath": "mpf_recovered_assets/003-city/bg002_01_1_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg002_01_1_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "2ca88494c29f8cb67a6d1372f25a26a277df62a40825b1f92669954da36727b2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -8.352005,
+        -0.531004
+      ],
+      "size": [
+        2.42,
+        6.29
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "bg002-02",
+      "sourcePath": "mpf_recovered_assets/003-city/bg002_02_1_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg002_02_1_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f0874fc10d843336709bc8b5cb08c5ef46e84177c10603d504f9fde72553c062",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        -6.048012,
+        -1.407022
+      ],
+      "size": [
+        2.18,
+        4.53
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "bg002-03",
+      "sourcePath": "mpf_recovered_assets/003-city/bg002_03_1_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg002_03_1_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9d9133093a2874d070bb10f61c8a294588348ad46e23e2766a0671df25f093c7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        -3.414978,
+        -2.147007
+      ],
+      "size": [
+        3.09,
+        3.05
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "bg002-04",
+      "sourcePath": "mpf_recovered_assets/003-city/bg002_04_1_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg002_04_1_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "983204f7177af3162ff7579a8c69d9be666b715bb0bdec8618f58979f285e09c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        -1.130977,
+        -1.272017
+      ],
+      "size": [
+        1.47,
+        4.78
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 5,
+      "name": "bg002-05",
+      "sourcePath": "mpf_recovered_assets/003-city/bg002_05_1_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg002_05_1_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "216a5c97047a9bd967e5e839b292b00f0a63ed96d8af15cecad42f18e6582139",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        0.625015,
+        -0.396996
+      ],
+      "size": [
+        2.03,
+        6.53
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 6,
+      "name": "bg004-01",
+      "sourcePath": "mpf_recovered_assets/003-city/bg004_01_1_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg004_01_1_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d763ad9198838d96a3e9c05133ac494e5c6f292a89093fe33e827937a685df97",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        -9.435983,
+        -0.456002
+      ],
+      "size": [
+        3.56,
+        6.56
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 7,
+      "name": "bg004-02",
+      "sourcePath": "mpf_recovered_assets/003-city/bg004_02_1_1.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-003-city/Textures/bg004_02_1_1.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "5d13733f55cefcbf0d2c45eacfa1f5e4743546a61df2b152454682afe2e6bdc5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        -9.391013,
+        3.094003
+      ],
+      "size": [
+        1.01,
+        0.56
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 8,
+      "name": "bg003-01",
+      "sourcePath": "mpf_recovered_assets/003-city/bg003_01_1_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg003_01_1_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d6ebd4221e51c58996bc18b83d513e6581dd03cd06f4643b574a70bf81581ff0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        2.7,
+        -1.335
+      ],
+      "size": [
+        4.16,
+        4.53
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 9,
+      "name": "bg003-02",
+      "sourcePath": "mpf_recovered_assets/003-city/bg003_02_1_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg003_02_1_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "abc6bfb47af4453446740efea2beb23948a75a9bc6f0ba0a85de27b4993bb2f6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        3.25,
+        1.27
+      ],
+      "size": [
+        2.58,
+        0.68
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 10,
+      "name": "bg005-01",
+      "sourcePath": "mpf_recovered_assets/003-city/bg005_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg005_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1b65f8f0bb32908f01958dcf853c00cb0c78298d4bee7cf8eb37167adf1c5b16",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9990,
+      "position": [
+        -8.314968,
+        -1.553988
+      ],
+      "size": [
+        2.38,
+        4.22
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 11,
+      "name": "bg005-02",
+      "sourcePath": "mpf_recovered_assets/003-city/bg005_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg005_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b87bce8df53f05dfaef505e5b8aeff7c4b7a08d417b89aeceb76e32ac0dcb052",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9989,
+      "position": [
+        -6.214982,
+        -3.154017
+      ],
+      "size": [
+        1.82,
+        1.02
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 12,
+      "name": "bg005-03",
+      "sourcePath": "mpf_recovered_assets/003-city/bg005_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg005_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9bd3d366854c8cce4dafbdcaa1baf645f68e6a8f9b9a9f67fd39b45b33fbd54e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9988,
+      "position": [
+        4.656137,
+        -2.74402
+      ],
+      "size": [
+        3.22,
+        1.44
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 13,
+      "name": "bg005-04",
+      "sourcePath": "mpf_recovered_assets/003-city/bg005_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/bg005_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8682bad8a8733c49614d61aff49db1ae46098f5f341fb40e6eb512b76155fe33",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9987,
+      "position": [
+        5.640261,
+        -2.334016
+      ],
+      "size": [
+        0.18,
+        0.32
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 23,
+      "name": "003-city-s028a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s028a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s028a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "3c186f78164065ee61ee425c07db29204e603d2e978a093393a036a1c4ac184d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9977,
+      "position": [
+        -5.115,
+        1.41
+      ],
+      "size": [
+        0.38,
+        1.68
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 31,
+      "name": "003-city-s018a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s018a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s018a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c3594b1ab24cbc8554457432934caa5e5093288491a0cdaee242096e83fe8403",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9969,
+      "position": [
+        3.085,
+        -3.315
+      ],
+      "size": [
+        1.26,
+        0.71
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 32,
+      "name": "003-city-s032a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s032a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s032a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6a9a970588aecaf6f407882632abe503c572708fd79d22da808ab147f52cce21",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9968,
+      "position": [
+        4.895,
+        2.225
+      ],
+      "size": [
+        0.38,
+        1.95
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 33,
+      "name": "003-city-s034a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s034a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s034a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "974386643d2fa1c0178b8fe6f9cbde1a829a25b9a63b67bda65eeecd3b2a7ebd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9967,
+      "position": [
+        -0.465,
+        -1.07
+      ],
+      "size": [
+        2.18,
+        2.8
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 41,
+      "name": "003-city-s033a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s033a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s033a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "410a32509e05696bd0c912842a564771d0ffd1c1ec27f3ddcc552b4e7d67744d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9959,
+      "position": [
+        -0.445,
+        1.05
+      ],
+      "size": [
+        1.52,
+        0.76
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 43,
+      "name": "003-city-s029a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s029a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s029a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "dd2df106f0836f6a1fd45fcbec575f26b81c9e3b425c0cdac62e9c8255a34d78",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9957,
+      "position": [
+        -0.45,
+        2.46
+      ],
+      "size": [
+        0.99,
+        1.68
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 14,
+      "name": "003-city-s011a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s011a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s011a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7eb90dd8fd6c4fb382ed8a4546eb3516e6a5f36fa410f024b5faf07728b7e1b0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -7.235,
+        -3.71
+      ],
+      "size": [
+        2.42,
+        0.76
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 15,
+      "name": "003-city-s010a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s010a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s010a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "38351c501d96830403b33f1f15e77ed47eadb988b47947ed9f81ebfe71b0766a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        -8.96,
+        -3.905
+      ],
+      "size": [
+        1.07,
+        0.43
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 16,
+      "name": "003-city-s009a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s009a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s009a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1628c7dc644e87c214f9e325e9c42cdd2fa81378e3eaad2a33a767ae279e47ac",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        -8.955,
+        -2.355
+      ],
+      "size": [
+        1.08,
+        1.31
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 17,
+      "name": "003-city-s001a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s001a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s001a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0732ebe5ac3e6091b1deeba96b29e67b9fbc04e1d4eeaf9b5af73513c1373e97",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        -8.985,
+        -3.35
+      ],
+      "size": [
+        1.02,
+        0.7
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 18,
+      "name": "003-city-s014a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s014a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s014a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "33a42f09414897787131aa1173375d8fb4c980bf2738f811e22f3bebf6c3fc0f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        -5.05,
+        -3.73
+      ],
+      "size": [
+        1.97,
+        0.8
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 19,
+      "name": "003-city-s003a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s003a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s003a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "875ca8d3e708ed5e9103621e46a50b054d4203375c703895b0b32408c65b7db0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        -5.055,
+        -2.89
+      ],
+      "size": [
+        1.96,
+        0.9
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 20,
+      "name": "003-city-s013a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s013a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s013a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9238acac3078a72e8c3ab7b574932ae76d6ffb1c5a790c1849011eea4feb9d69",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        -4.655,
+        -2.1
+      ],
+      "size": [
+        2.74,
+        0.82
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 21,
+      "name": "003-city-s012a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s012a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s012a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1adadc55c67796dd9c65d6821efa5aac0502fae099cc0497e4b454d1fe3583e5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        -5.04,
+        -0.17
+      ],
+      "size": [
+        1.97,
+        1.48
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 22,
+      "name": "003-city-s002a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s002a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s002a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "345c3ed5b74804ff8d4a73ca2888d37dfc1b7e8393dbbb3ce9def0350753f2fe",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        -5.045,
+        -1.295
+      ],
+      "size": [
+        1.96,
+        0.79
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 24,
+      "name": "003-city-s019a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s019a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s019a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "88e5a1c20e5a9592843a20d00b69645cbea4a69ef9b92b8c283e7a7cd37ebef5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        0.205,
+        -3.41
+      ],
+      "size": [
+        4.5,
+        0.5
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 25,
+      "name": "003-city-s017a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s017a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s017a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "637dc8a74a27bab5d447a2c8e3a77db06c1d81d852cadc5fb11e98d22748a27b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        -3.06,
+        -3.725
+      ],
+      "size": [
+        2.03,
+        0.79
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 26,
+      "name": "003-city-s024a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s024a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s024a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7c74c78c2e86ea456e9581270ee7536c281f4e814e97a1c52c979f117097bad2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        8.99,
+        -3.725
+      ],
+      "size": [
+        1.03,
+        0.79
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 27,
+      "name": "003-city-s008a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s008a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s008a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7a8b160594b13777b783566a826c3f72a959d3f8f35b8276a77f3cfcf71c0da4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        8.995,
+        -2.895
+      ],
+      "size": [
+        1.02,
+        0.87
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 28,
+      "name": "003-city-s023a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s023a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s023a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "85cd963ced401b690d7a0776fdb795c1dcd2b9896991b83b61a31a1ad55dc0ca",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        8.965,
+        -1.81
+      ],
+      "size": [
+        1.08,
+        1.3
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 29,
+      "name": "003-city-s025a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s025a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s025a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "aa8ef9de849f5b8051c5244bb132072ebc7d0a686124d1a7a0b7d9f5e7321922",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        7.25,
+        -3.345
+      ],
+      "size": [
+        2.45,
+        0.75
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 30,
+      "name": "003-city-s020a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s020a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s020a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b6cc292db4f7fe5c253eaab5c65511bcb63ec14a2e1deeb3820d0215445e743a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        4.87,
+        -3.545
+      ],
+      "size": [
+        2.33,
+        1.17
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 34,
+      "name": "003-city-s007a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s007a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s007a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "86f199d4f399730dd98f8cca08d48b73141e6a0d0423f9bb3ecb5ffaf7bd9cd1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        4.875,
+        -2.535
+      ],
+      "size": [
+        2.3,
+        0.89
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 35,
+      "name": "003-city-s021a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s021a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s021a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a6a8406629027f46b3581a56fc547a4a35c24c9778510bb1b4baeb494264b5dc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        4.87,
+        -1.6
+      ],
+      "size": [
+        2.31,
+        1.02
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 36,
+      "name": "003-city-s006a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s006a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s006a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f73860d8b67e1552f0542dd4cc9535d3e00fdf8a432591e919a9dda61f55e54f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        4.875,
+        -0.67
+      ],
+      "size": [
+        2.3,
+        1.34
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 37,
+      "name": "003-city-s022a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s022a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s022a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "10eaf963c9ffb10b8e23c3d36b4aaf50df9e8640462c71967cc93ad6685942b2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        4.875,
+        0.445
+      ],
+      "size": [
+        2.32,
+        2.05
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 38,
+      "name": "003-city-s004a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s004a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s004a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1dd703795992c9ca92f352250085ab2ea1d9c7878302a4db71035fdf95faa6bb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        2.07,
+        -2.66
+      ],
+      "size": [
+        3.31,
+        1.38
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 39,
+      "name": "003-city-s005a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s005a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s005a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b09f7ee324ad83ec09d70aa7fe1ee8230cab243e29478b383755fa9ba334ea1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        -1.825,
+        -2.835
+      ],
+      "size": [
+        4.48,
+        0.99
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 40,
+      "name": "003-city-s016a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s016a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s016a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1540ae75f406151ed3825632280510d648ae47700ad0e6d11e3202aba9f65ebf",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        -0.47,
+        0.5
+      ],
+      "size": [
+        2.19,
+        0.34
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 42,
+      "name": "003-city-s015a",
+      "sourcePath": "mpf_recovered_assets/003-city/003-city-s015a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/DryDays/003-city-s015a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "74a4f5854d4fb6d79c7a25eab69512c83f1d2d1e6d70e989e02a6213570f9a8b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10042,
+      "position": [
+        -0.475,
+        1.54
+      ],
+      "size": [
+        1.38,
+        0.22
+      ]
+    }
+  ]
+}

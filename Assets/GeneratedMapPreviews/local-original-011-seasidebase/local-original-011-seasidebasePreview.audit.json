@@ -1,0 +1,1305 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-011-seasidebase",
+  "sourceFile": "local-original-011-seasidebase.json",
+  "sourceJsonSha256": "cf20817a6bc3ae45e5a4c1a176bbb26a61a9d21ff392cd54aee9305194f909ac",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/local-original-011-seasidebasePreview.unity",
+  "spritePlacementCount": 64,
+  "uniqueSpriteFileCount": 25,
+  "copiedSpriteFileCount": 25,
+  "obstacleBoxColliderCount": 1730,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 21,
+  "offlineSpawn": {
+    "x": 10.25,
+    "y": 2.69
+  },
+  "bounds": {
+    "left": -10.95,
+    "bottom": -5.0,
+    "right": 10.95,
+    "top": 5.0
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "011-seasidebase-01",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a5ea46fa1a28fd72fbe3942ebb37b1b892881c901c88713d593449449db60c35",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -6.4503026,
+        1.51000214
+      ],
+      "size": [
+        9.0,
+        6.98
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -9.65,
+        -4.12
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 4,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        -8.52,
+        -4.05
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 5,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        -6.41,
+        -2.15
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 6,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        -7.07,
+        -2.15
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 7,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        -10.21,
+        -1.94
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 8,
+      "name": "011-seasidebase-02-01",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "12629b8e52af87f6354857a84106813a001a05d4ffb6e1256d599f44d4c62471",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        -8.67,
+        0.7
+      ],
+      "size": [
+        4.58,
+        5.0
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 9,
+      "name": "011-seasidebase-02-06",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85b02ee7c391719733dd159315b3334fac2641f764fedcd4e13ab9b8836382a8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        -7.12,
+        0.18
+      ],
+      "size": [
+        0.3,
+        1.36
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 10,
+      "name": "011-seasidebase-02-06",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85b02ee7c391719733dd159315b3334fac2641f764fedcd4e13ab9b8836382a8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9990,
+      "position": [
+        -6.56,
+        0.12
+      ],
+      "size": [
+        0.3,
+        1.36
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 11,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9989,
+      "position": [
+        -6.71,
+        1.62
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 12,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9988,
+      "position": [
+        -8.19,
+        0.68
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 13,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9987,
+      "position": [
+        -8.72,
+        0.59
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 14,
+      "name": "011-seasidebase-02-04",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "333f3a04154b7a15c06b23c35f8a9096632ef5dccc752ac05df0d9257b3cc5b6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9986,
+      "position": [
+        0.02,
+        -0.13
+      ],
+      "size": [
+        4.28,
+        0.64
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 15,
+      "name": "011-seasidebase-02-03",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85ac0c8d71b7585ae2a2ecf6dc983dcda35c83a75669a4f698987941379bdf76",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9985,
+      "position": [
+        0.23,
+        -2.95
+      ],
+      "size": [
+        4.5,
+        0.6
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 16,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9984,
+      "position": [
+        7.23,
+        -2.21
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 17,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9983,
+      "position": [
+        6.36,
+        -2.27
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 18,
+      "name": "011-seasidebase-02-06",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85b02ee7c391719733dd159315b3334fac2641f764fedcd4e13ab9b8836382a8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9982,
+      "position": [
+        6.38,
+        -0.2
+      ],
+      "size": [
+        0.3,
+        1.36
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 19,
+      "name": "011-seasidebase-02-06",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85b02ee7c391719733dd159315b3334fac2641f764fedcd4e13ab9b8836382a8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9981,
+      "position": [
+        7.11,
+        0.08
+      ],
+      "size": [
+        0.3,
+        1.36
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 21,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9979,
+      "position": [
+        8.91,
+        -4.0
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 23,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9977,
+      "position": [
+        9.83,
+        -4.05
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 24,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9976,
+      "position": [
+        10.23,
+        -1.95
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 25,
+      "name": "011-seasidebase-02-01",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "12629b8e52af87f6354857a84106813a001a05d4ffb6e1256d599f44d4c62471",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9975,
+      "position": [
+        8.66,
+        0.67
+      ],
+      "size": [
+        4.58,
+        5.0
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 26,
+      "name": "011-seasidebase-02-02",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "cd71c8223cb34cfa6044b4cda0f36cabf3763eb7483797597d6789257d68130c",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9974,
+      "position": [
+        10.45,
+        -2.96
+      ],
+      "size": [
+        1.06,
+        0.78
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 27,
+      "name": "011-seasidebase-02-02",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "cd71c8223cb34cfa6044b4cda0f36cabf3763eb7483797597d6789257d68130c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9973,
+      "position": [
+        -10.48,
+        -2.96
+      ],
+      "size": [
+        1.06,
+        0.78
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 56,
+      "name": "011-seasidebase-03-17",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-17.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-17.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "110f7860177a4ff1fce3832df39ae0c44644cea36678000b316ec8d164a9199b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9944,
+      "position": [
+        2.36,
+        -1.39
+      ],
+      "size": [
+        0.2,
+        0.34
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 57,
+      "name": "011-seasidebase-03-16",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-16.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-16.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9334fed3c3468ec637d2359d82ea77f5d7d6910396f2fb4f9d148278fd1edbf5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9943,
+      "position": [
+        2.33,
+        -0.16
+      ],
+      "size": [
+        0.3,
+        0.42
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 58,
+      "name": "011-seasidebase-03-16",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-16.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-16.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9334fed3c3468ec637d2359d82ea77f5d7d6910396f2fb4f9d148278fd1edbf5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9942,
+      "position": [
+        -2.29,
+        -0.15
+      ],
+      "size": [
+        0.3,
+        0.42
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 59,
+      "name": "011-seasidebase-03-17",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-17.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-17.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "110f7860177a4ff1fce3832df39ae0c44644cea36678000b316ec8d164a9199b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9941,
+      "position": [
+        -2.26,
+        -1.39
+      ],
+      "size": [
+        0.2,
+        0.34
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 2,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10002,
+      "position": [
+        -7.85,
+        -4.03
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 3,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10003,
+      "position": [
+        -9.12,
+        -4.06
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 20,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        8.12,
+        -3.96
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 22,
+      "name": "011-seasidebase-02-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2846e93ad156c5cd33512843e5ad908d2df74bec4932976a66738721f73423b5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        9.4,
+        -4.05
+      ],
+      "size": [
+        0.3,
+        1.1
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 28,
+      "name": "011-seasidebase-03-15",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-15.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-15.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "18dca3f6ab2acec9a92ddcff5b791887f76e4e3bd9fd6844cb145e841b1514ce",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        -8.81,
+        -4.45
+      ],
+      "size": [
+        4.3,
+        1.14
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 29,
+      "name": "011-seasidebase-03-14",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-14.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-14.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c4de6163b1db710a5a760aae06e6f1af0c685879cdf1181e91e373859cfe7b31",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        -7.53,
+        -3.12
+      ],
+      "size": [
+        4.68,
+        1.14
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 30,
+      "name": "011-seasidebase-03-12",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "606d053a6711efc968dbe783db18aeaa849ff95e936df3c6883d3a6c305159f8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        -6.86,
+        -0.94
+      ],
+      "size": [
+        2.06,
+        1.58
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 31,
+      "name": "011-seasidebase-03-11",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2f4ec1cc89e6237ed0c542b78855e48699df623665eec23366c2f4c4c39dc008",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10031,
+      "position": [
+        -9.27,
+        -1.31
+      ],
+      "size": [
+        2.48,
+        1.1
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 32,
+      "name": "011-seasidebase-03-13",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-13.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-13.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4518c2aaea3a88a12b7ecb24f30d20b9043de1e6597904dbf66a6f9da4281104",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10032,
+      "position": [
+        -10.45,
+        -2.47
+      ],
+      "size": [
+        1.06,
+        0.3
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 33,
+      "name": "011-seasidebase-03-10",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0ad3f1138a87b3c600cb6b6e7d7b930a227d9e41d39ba47cec80aa04589b98b1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10033,
+      "position": [
+        -10.34,
+        0.31
+      ],
+      "size": [
+        1.26,
+        0.28
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 34,
+      "name": "011-seasidebase-03-09",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "09310f9d8aed75fd070483aa2d99127c55a2edb3020ceafa8ef8669a9a3441dc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        -7.21,
+        0.47
+      ],
+      "size": [
+        3.38,
+        1.34
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 35,
+      "name": "011-seasidebase-03-07",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f5b7e4a528fa4ef7674f3da1557fdc90fc9f62ef889972e130ee19deedbb89f0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        -8.3,
+        2.3
+      ],
+      "size": [
+        3.68,
+        2.5
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 36,
+      "name": "011-seasidebase-03-08",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "656ae115775149814882266280f271ac12acb697e485e8d412d5777b0681139e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        -10.15,
+        2.15
+      ],
+      "size": [
+        1.62,
+        0.26
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 37,
+      "name": "011-seasidebase-03-06",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b31c750aa69004bc9230fddc94ead80bb22d53386e7240a7d7b4e5fb20957050",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        -4.64,
+        -4.62
+      ],
+      "size": [
+        4.04,
+        1.46
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 38,
+      "name": "011-seasidebase-03-01",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a0bfe420f7f719441e687ca33a6d068f6e2331e6ae67e8dfea4b757d7085324a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        0.01,
+        1.43
+      ],
+      "size": [
+        4.28,
+        2.56
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 39,
+      "name": "011-seasidebase-03-03",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "863d7922b0d6ade797e4c5128e022cf05864f807b375675a0150e3500e8d3b04",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        -3.81,
+        1.28
+      ],
+      "size": [
+        3.42,
+        1.48
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 40,
+      "name": "011-seasidebase-03-04",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ccad685c4af344055518e9da941acc9f1db707ae977e14c4c4d51098100ab522",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        -3.39,
+        -0.67
+      ],
+      "size": [
+        1.86,
+        1.14
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 41,
+      "name": "011-seasidebase-03-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "80f56f594ecb21dfb0b1940cbfe54b181e0a3bbbdcc8a7e2305b8db009fff0eb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        -3.7,
+        -2.16
+      ],
+      "size": [
+        2.5,
+        0.8
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 42,
+      "name": "011-seasidebase-03-15",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-15.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-15.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "18dca3f6ab2acec9a92ddcff5b791887f76e4e3bd9fd6844cb145e841b1514ce",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10042,
+      "position": [
+        8.82,
+        -4.44
+      ],
+      "size": [
+        4.3,
+        1.14
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 43,
+      "name": "011-seasidebase-03-07",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f5b7e4a528fa4ef7674f3da1557fdc90fc9f62ef889972e130ee19deedbb89f0",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        8.33,
+        2.27
+      ],
+      "size": [
+        3.68,
+        2.5
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 44,
+      "name": "011-seasidebase-03-09",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "09310f9d8aed75fd070483aa2d99127c55a2edb3020ceafa8ef8669a9a3441dc",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10044,
+      "position": [
+        7.28,
+        0.42
+      ],
+      "size": [
+        3.38,
+        1.34
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 45,
+      "name": "011-seasidebase-03-11",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2f4ec1cc89e6237ed0c542b78855e48699df623665eec23366c2f4c4c39dc008",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10045,
+      "position": [
+        9.22,
+        -1.41
+      ],
+      "size": [
+        2.48,
+        1.1
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 46,
+      "name": "011-seasidebase-03-14",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-14.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-14.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c4de6163b1db710a5a760aae06e6f1af0c685879cdf1181e91e373859cfe7b31",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10046,
+      "position": [
+        7.67,
+        -3.24
+      ],
+      "size": [
+        4.68,
+        1.14
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 47,
+      "name": "011-seasidebase-03-12",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "606d053a6711efc968dbe783db18aeaa849ff95e936df3c6883d3a6c305159f8",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10047,
+      "position": [
+        6.89,
+        -0.97
+      ],
+      "size": [
+        2.06,
+        1.58
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 48,
+      "name": "011-seasidebase-03-03",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "863d7922b0d6ade797e4c5128e022cf05864f807b375675a0150e3500e8d3b04",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        3.86,
+        1.29
+      ],
+      "size": [
+        3.42,
+        1.48
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 49,
+      "name": "011-seasidebase-03-13",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-13.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-13.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4518c2aaea3a88a12b7ecb24f30d20b9043de1e6597904dbf66a6f9da4281104",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10049,
+      "position": [
+        10.46,
+        -2.49
+      ],
+      "size": [
+        1.06,
+        0.3
+      ]
+    },
+    {
+      "index": 54,
+      "sourcePlacement": 50,
+      "name": "011-seasidebase-03-08",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "656ae115775149814882266280f271ac12acb697e485e8d412d5777b0681139e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10050,
+      "position": [
+        10.16,
+        2.14
+      ],
+      "size": [
+        1.62,
+        0.26
+      ]
+    },
+    {
+      "index": 55,
+      "sourcePlacement": 51,
+      "name": "011-seasidebase-03-10",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0ad3f1138a87b3c600cb6b6e7d7b930a227d9e41d39ba47cec80aa04589b98b1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10051,
+      "position": [
+        10.34,
+        0.26
+      ],
+      "size": [
+        1.26,
+        0.28
+      ]
+    },
+    {
+      "index": 56,
+      "sourcePlacement": 52,
+      "name": "011-seasidebase-03-04",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ccad685c4af344055518e9da941acc9f1db707ae977e14c4c4d51098100ab522",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        3.47,
+        -0.63
+      ],
+      "size": [
+        1.86,
+        1.14
+      ]
+    },
+    {
+      "index": 57,
+      "sourcePlacement": 53,
+      "name": "011-seasidebase-03-05",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "80f56f594ecb21dfb0b1940cbfe54b181e0a3bbbdcc8a7e2305b8db009fff0eb",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10053,
+      "position": [
+        3.79,
+        -2.14
+      ],
+      "size": [
+        2.5,
+        0.8
+      ]
+    },
+    {
+      "index": 58,
+      "sourcePlacement": 54,
+      "name": "tutorial-flag",
+      "sourcePath": "mpf_recovered_assets/Tutorial/tutorial-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/tutorial-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c21466ad9fa438b4cab824c824ef1813348f68c5f170dd8a99de38ac8ea1804f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10054,
+      "position": [
+        -9.595,
+        -0.685
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 59,
+      "sourcePlacement": 55,
+      "name": "tutorial-flag",
+      "sourcePath": "mpf_recovered_assets/Tutorial/tutorial-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/tutorial-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c21466ad9fa438b4cab824c824ef1813348f68c5f170dd8a99de38ac8ea1804f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10055,
+      "position": [
+        9.565,
+        -0.775
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 60,
+      "sourcePlacement": 60,
+      "name": "011-seasidebase-03-02",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fda038062c336bd957019465dd4960b60d7b4aa8c2c47bd3dc0c0b617ef68f1a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10060,
+      "position": [
+        0.05,
+        -2.04
+      ],
+      "size": [
+        5.06,
+        3.76
+      ]
+    },
+    {
+      "index": 61,
+      "sourcePlacement": 61,
+      "name": "011-seasidebase-03-06",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b31c750aa69004bc9230fddc94ead80bb22d53386e7240a7d7b4e5fb20957050",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10061,
+      "position": [
+        -0.67,
+        -4.62
+      ],
+      "size": [
+        4.04,
+        1.46
+      ]
+    },
+    {
+      "index": 62,
+      "sourcePlacement": 62,
+      "name": "011-seasidebase-03-06",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b31c750aa69004bc9230fddc94ead80bb22d53386e7240a7d7b4e5fb20957050",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10062,
+      "position": [
+        1.97,
+        -4.62
+      ],
+      "size": [
+        4.04,
+        1.46
+      ]
+    },
+    {
+      "index": 63,
+      "sourcePlacement": 63,
+      "name": "011-seasidebase-03-06",
+      "sourcePath": "mpf_recovered_assets/011-seasidebase/011-seasidebase-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-011-seasidebase/Textures/011-seasidebase-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b31c750aa69004bc9230fddc94ead80bb22d53386e7240a7d7b4e5fb20957050",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10063,
+      "position": [
+        4.65,
+        -4.62
+      ],
+      "size": [
+        4.04,
+        1.46
+      ]
+    }
+  ]
+}

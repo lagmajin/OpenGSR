@@ -1,0 +1,1205 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-016-themepark",
+  "sourceFile": "local-original-016-themepark.json",
+  "sourceJsonSha256": "81fecd2313f3d7a0bf89fbb2a64695ee1b5e7fd406fded3922e19825a40e4a73",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-016-themepark/local-original-016-themeparkPreview.unity",
+  "spritePlacementCount": 59,
+  "uniqueSpriteFileCount": 33,
+  "copiedSpriteFileCount": 33,
+  "obstacleBoxColliderCount": 1682,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 19,
+  "offlineSpawn": {
+    "x": 5.9,
+    "y": -3.39
+  },
+  "bounds": {
+    "left": -10.0,
+    "bottom": -7.5,
+    "right": 10.0,
+    "top": 7.5
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "016-themepark-01",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4373a821f04d75d9acc39fe652ebb64af621a068d2331055be1a6fabac417e6c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -5.49999762,
+        4.215013
+      ],
+      "size": [
+        9.0,
+        6.91
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 3,
+      "name": "016-themepark-03-10",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "930510cbd8b6946405b08e463ed6074834bcb48a4177a5b79d0815ab6bd12b38",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        6.06,
+        -5.87
+      ],
+      "size": [
+        1.2,
+        1.76
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 4,
+      "name": "016-themepark-03-10",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "930510cbd8b6946405b08e463ed6074834bcb48a4177a5b79d0815ab6bd12b38",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        8.96,
+        -5.87
+      ],
+      "size": [
+        1.2,
+        1.76
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 7,
+      "name": "016-themepark-03-20",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-20.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-20.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "d0410df531b364b81880e6708dc92ce7f39e6e0e12896769c91795bde4c28353",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        -4.19,
+        -4.9
+      ],
+      "size": [
+        0.6,
+        1.54
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 8,
+      "name": "016-themepark-03-21",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-21.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-21.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6235723106632a079a4613c404c8789ebb74487510427be1616570bc8cea7dc7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        1.15,
+        -6.2
+      ],
+      "size": [
+        0.46,
+        1.1
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 20,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9980,
+      "position": [
+        5.45,
+        6.5
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 21,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9979,
+      "position": [
+        6.14,
+        4.48
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 22,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9978,
+      "position": [
+        7.5,
+        2.89
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 23,
+      "name": "016-themepark-02-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-02-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "197c1fbeb1c36edfc359c666563f001a8f28fc569f7c14c4e4bcc7d49352f970",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9977,
+      "position": [
+        9.27,
+        1.98
+      ],
+      "size": [
+        1.08,
+        0.78
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 37,
+      "name": "016-themepark-03-31",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-31.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-31.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "51677e6a1c7122c0686fd54f652cf83ce367efb15c6022692de99e7eaaea2781",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9963,
+      "position": [
+        -9.12,
+        -5.02
+      ],
+      "size": [
+        0.52,
+        1.3
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 42,
+      "name": "016-themepark-02-05",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-02-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "49110ccd8236a8de214199902cc8cd66e939d349ecc77e6f1d75ca842921841d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9958,
+      "position": [
+        -2.71,
+        -4.3
+      ],
+      "size": [
+        2.06,
+        2.72
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 55,
+      "name": "016-themepark-02-04",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "afc18a6f8a361f0717db0bf7f9a87d180d4e9e90ff61d818a946ad5a6affa0a3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9945,
+      "position": [
+        -0.26,
+        -5.07
+      ],
+      "size": [
+        1.72,
+        3.26
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 1,
+      "name": "016-themepark-03-01",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ce40b1b9aa2128529abfc23179ec0a9d7c1a54f9e39b884f32d86519d0fc6027",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10001,
+      "position": [
+        -5.65,
+        0.96
+      ],
+      "size": [
+        7.48,
+        7.82
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 2,
+      "name": "016-themepark-03-05",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2d29ef1928a366a6115aa490d93df7a81ddf08337ed370faa931bffa722b0738",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10002,
+      "position": [
+        3.54,
+        -4.52
+      ],
+      "size": [
+        2.0,
+        4.62
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 5,
+      "name": "016-themepark-03-34",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-34.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-34.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b997f51195821b0ab0cfb7354c4cb225e89055b023d308192baaa8123fe2c2bc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10005,
+      "position": [
+        0.46,
+        -3.91
+      ],
+      "size": [
+        0.02,
+        1.0
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 6,
+      "name": "016-themepark-03-31",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-31.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-31.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "51677e6a1c7122c0686fd54f652cf83ce367efb15c6022692de99e7eaaea2781",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10006,
+      "position": [
+        -2.17,
+        -3.58
+      ],
+      "size": [
+        0.52,
+        1.3
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 9,
+      "name": "016-themepark-03-16",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-16.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-16.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b59b036e999844584365cf1dc2826a6b5277a89587b1671ee705be39beb7b7f9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10009,
+      "position": [
+        4.79,
+        -6.53
+      ],
+      "size": [
+        1.02,
+        0.44
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 10,
+      "name": "016-themepark-03-07",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "1fbdc1ee9a5dcf3ebf8d5673d58686be0305e08d471feac1485c74be3e40261f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        2.52,
+        -6.28
+      ],
+      "size": [
+        0.56,
+        0.94
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 11,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        -9.68,
+        -7.28
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 12,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -7.36,
+        -7.28
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 13,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -3.34,
+        -7.28
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 14,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -1.02,
+        -7.28
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 15,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        1.3,
+        -7.28
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 16,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        5.31,
+        -7.28
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 17,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        7.63,
+        -7.28
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 18,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        9.95,
+        -7.28
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 19,
+      "name": "016-themepark-02-06",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-02-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-02-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8a8f167f0a350d8d952f50f94bb8c3500cfe031351e9bb917cc9393a8b1bc86a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        7.74,
+        5.04
+      ],
+      "size": [
+        4.56,
+        5.06
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 24,
+      "name": "016-themepark-03-12",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "5293e0e28557dde17a8392463ff1779edf16024695a41e91145eeec2808738c7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        5.46,
+        6.35
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 25,
+      "name": "016-themepark-03-13",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-13.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-13.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b81238bbcc030cefbf08ade297624d8cf56a58aa2faac25b9667166ce0917751",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        6.15,
+        4.34
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 26,
+      "name": "016-themepark-03-14",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-14.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-14.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4253d5c78aa40bd93096b177aa30e7fc9e5b7eede8446326f4df74db93846d65",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        7.51,
+        2.76
+      ],
+      "size": [
+        1.16,
+        1.44
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 27,
+      "name": "016-themepark-03-15",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-15.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-15.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ef3209776ecc0cb5949f7610e5260f9f10bcb159a307a1695ea459c50a9d4e4f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        9.29,
+        1.84
+      ],
+      "size": [
+        1.14,
+        1.42
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 28,
+      "name": "016-themepark-03-09",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8ea642dc2b07cd3baf9008f0bf8f4733304ab597fbd138b5160520497a87ffb6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        8.68,
+        -4.4
+      ],
+      "size": [
+        3.1,
+        1.22
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 29,
+      "name": "016-themepark-03-08",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "252a3f0aaac884a2c8c1c2b23a285f47e79a005162b7eaea27698e5cf9eb4a32",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        5.89,
+        -4.41
+      ],
+      "size": [
+        3.14,
+        1.24
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 30,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        -3.97,
+        -6.21
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 31,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10031,
+      "position": [
+        -1.64,
+        -6.21
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 32,
+      "name": "016-themepark-03-23",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e3ad73d1a79be9aca0af58aefbca59db10dfc4bb05b57b7207e076542e1d99ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10032,
+      "position": [
+        -7.86,
+        -6.21
+      ],
+      "size": [
+        4.02,
+        1.08
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 33,
+      "name": "016-themepark-03-22",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "da1f54b9cc5d12f391ea32f4b28a5ff85df10982e592536ff7694be3b1b5a611",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10033,
+      "position": [
+        -9.69,
+        -6.21
+      ],
+      "size": [
+        0.64,
+        1.08
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 34,
+      "name": "016-themepark-03-03",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2a94fedaaf00a0f039ab2dd3600c67befe4e72008f18d0300ed75fbf67ff0f4a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        -4.25,
+        -5.8
+      ],
+      "size": [
+        4.0,
+        0.28
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 35,
+      "name": "016-themepark-03-03",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2a94fedaaf00a0f039ab2dd3600c67befe4e72008f18d0300ed75fbf67ff0f4a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        -3.31,
+        -5.8
+      ],
+      "size": [
+        4.0,
+        0.28
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 36,
+      "name": "016-themepark-03-06",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "77722211e2c725cb5678fcceeecb803f2dcf72a5a24efb3d8a5a2a019118392e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        -1.24,
+        -5.76
+      ],
+      "size": [
+        0.82,
+        2.02
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 38,
+      "name": "016-themepark-03-31",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-31.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-31.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "51677e6a1c7122c0686fd54f652cf83ce367efb15c6022692de99e7eaaea2781",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        -9.12,
+        -3.6
+      ],
+      "size": [
+        0.52,
+        1.3
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 39,
+      "name": "016-themepark-03-42",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-42.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-42.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "424a491b82e87d960bad701dbe1e91f3ce26ae85c83ec60c2a39a5e5cd156bcd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        -2.57,
+        2.12
+      ],
+      "size": [
+        0.02,
+        3.0
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 40,
+      "name": "016-themepark-03-02",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "56f9e6c4b945adfae0e0cb5e587fb3757561e062c3bbe9faf73f61814d3604e5",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        -7.99,
+        -4.56
+      ],
+      "size": [
+        4.14,
+        2.28
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 41,
+      "name": "016-themepark-03-03",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2a94fedaaf00a0f039ab2dd3600c67befe4e72008f18d0300ed75fbf67ff0f4a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        -8.24,
+        -5.8
+      ],
+      "size": [
+        4.0,
+        0.28
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 43,
+      "name": "016-themepark-03-19",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-19.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-19.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "db678dc431b7053607677815b4b42555b64438f45e3cae032a51b6e726317228",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        -2.76,
+        -3.79
+      ],
+      "size": [
+        2.44,
+        1.96
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 44,
+      "name": "016-themepark-03-32",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-32.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-32.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "3fa3a513b849202321f0f530a88603a993b87654346e27761a49158f0bcb3521",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10044,
+      "position": [
+        -1.785,
+        5.37
+      ],
+      "size": [
+        1.91,
+        1.06
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 45,
+      "name": "016-themepark-03-34",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-34.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-34.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b997f51195821b0ab0cfb7354c4cb225e89055b023d308192baaa8123fe2c2bc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10045,
+      "position": [
+        2.84,
+        -2.12
+      ],
+      "size": [
+        0.02,
+        1.0
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 46,
+      "name": "016-themepark-03-34",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-34.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-34.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b997f51195821b0ab0cfb7354c4cb225e89055b023d308192baaa8123fe2c2bc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10046,
+      "position": [
+        2.84,
+        -1.16
+      ],
+      "size": [
+        0.02,
+        1.0
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 47,
+      "name": "016-themepark-03-34",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-34.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-34.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b997f51195821b0ab0cfb7354c4cb225e89055b023d308192baaa8123fe2c2bc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10047,
+      "position": [
+        2.84,
+        -0.21
+      ],
+      "size": [
+        0.02,
+        1.0
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 48,
+      "name": "016-themepark-03-37",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-37.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-37.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c6c2e1c4a09868fbf90bb048ef861c372d53b1bae50ad72146f27377bbc850e8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        2.71,
+        0.67
+      ],
+      "size": [
+        1.1,
+        0.96
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 49,
+      "name": "016-themepark-03-33",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-33.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-33.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2614dcda5294f43269fb4ddbabb56f51a866c55f515604610e23b606ed43045a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10049,
+      "position": [
+        2.59,
+        4.21
+      ],
+      "size": [
+        1.86,
+        1.06
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 50,
+      "name": "016-themepark-03-33",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-33.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-33.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2614dcda5294f43269fb4ddbabb56f51a866c55f515604610e23b606ed43045a",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10050,
+      "position": [
+        -8.96,
+        4.34
+      ],
+      "size": [
+        1.86,
+        1.06
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 51,
+      "name": "016-themepark-03-42",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-42.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-42.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "424a491b82e87d960bad701dbe1e91f3ce26ae85c83ec60c2a39a5e5cd156bcd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10051,
+      "position": [
+        -0.48,
+        -2.94
+      ],
+      "size": [
+        0.02,
+        3.0
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 52,
+      "name": "016-themepark-03-42",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-42.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-42.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "424a491b82e87d960bad701dbe1e91f3ce26ae85c83ec60c2a39a5e5cd156bcd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        -0.48,
+        0.06
+      ],
+      "size": [
+        0.02,
+        3.0
+      ]
+    },
+    {
+      "index": 54,
+      "sourcePlacement": 53,
+      "name": "016-themepark-03-35",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-35.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-35.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "dc64e6f5298abdf5f7f3043d346af0f0ed18a1717c9a8c74431e13e0533714c2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10053,
+      "position": [
+        -0.59,
+        1.825
+      ],
+      "size": [
+        0.9,
+        0.65
+      ]
+    },
+    {
+      "index": 55,
+      "sourcePlacement": 54,
+      "name": "016-themepark-03-36",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-36.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-36.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "655434276f83ff7c5fee35ae544d41ad7c3e3bd417e9b690ece3d6c52bd804fa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10054,
+      "position": [
+        -2.56,
+        3.76
+      ],
+      "size": [
+        0.64,
+        0.52
+      ]
+    },
+    {
+      "index": 56,
+      "sourcePlacement": 56,
+      "name": "016-themepark-03-18",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-18.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-18.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "914b1d1c0168bed99592e68131432f17f65817c6d80cb9de10a1a78278e8e8e1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10056,
+      "position": [
+        -0.26,
+        -5.82
+      ],
+      "size": [
+        2.14,
+        1.86
+      ]
+    },
+    {
+      "index": 57,
+      "sourcePlacement": 57,
+      "name": "016-themepark-03-34",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-34.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-34.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b997f51195821b0ab0cfb7354c4cb225e89055b023d308192baaa8123fe2c2bc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10057,
+      "position": [
+        0.46,
+        -2.92
+      ],
+      "size": [
+        0.02,
+        1.0
+      ]
+    },
+    {
+      "index": 58,
+      "sourcePlacement": 58,
+      "name": "016-themepark-03-35",
+      "sourcePath": "mpf_recovered_assets/016-themepark/016-themepark-03-35.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-016-themepark/Textures/016-themepark-03-35.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "dc64e6f5298abdf5f7f3043d346af0f0ed18a1717c9a8c74431e13e0533714c2",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10058,
+      "position": [
+        0.55,
+        -2.155
+      ],
+      "size": [
+        0.9,
+        0.65
+      ]
+    }
+  ]
+}

@@ -1,0 +1,645 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-018-cave",
+  "sourceFile": "local-original-018-cave.json",
+  "sourceJsonSha256": "3b033157a5f0571661c0971a0adfaf239abf32d2d6a1f41d1da002ea51a358b1",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-018-cave/local-original-018-cavePreview.unity",
+  "spritePlacementCount": 31,
+  "uniqueSpriteFileCount": 15,
+  "copiedSpriteFileCount": 10,
+  "obstacleBoxColliderCount": 1171,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 10,
+  "offlineSpawn": {
+    "x": -4.23,
+    "y": 2.32
+  },
+  "bounds": {
+    "left": -5.03,
+    "bottom": -3.45,
+    "right": 5.03,
+    "top": 3.45
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "018-cave-01-01",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-01-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-01-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "104ec7d031051402490731c452cd9719afbd51c776e8d2226f910f6e71a783fd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -0.93,
+        0.375
+      ],
+      "size": [
+        8.2,
+        6.15
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 5,
+      "name": "018-cave-02-01",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-02-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-cave-02-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "02bc54969749eb65952961bbf776d1cc1931804db93a3850e80396aa9abb53a7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        -3.46,
+        -0.73
+      ],
+      "size": [
+        2.06,
+        4.58
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 6,
+      "name": "018-cave-02-02",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-02-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-02-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1831fa66cc8a52acef18ed4d3741ba0ec2e3958ad97311c7c61c0e5cc7baf7ad",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        -0.64,
+        -1.02
+      ],
+      "size": [
+        2.36,
+        3.24
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 7,
+      "name": "018-cave-02-03",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "3175895af4ccc659512225307e484e58ff0ed20aa8d62bf1c8e32a476419efa4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        1.89,
+        -0.97
+      ],
+      "size": [
+        1.06,
+        3.22
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 8,
+      "name": "018-cave-02-04",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-cave-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "dd13c36b70aa5a0d0a3c0fde539c776dcae76bf7dff96c7214130078bd8459a0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        3.73,
+        -0.57
+      ],
+      "size": [
+        1.72,
+        4.58
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 1,
+      "name": "018-cave-03-01",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-03-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-03-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c2316cc58be2c4ed394944409673526b8d1e559818614c5caa8fe197d6bfd086",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10001,
+      "position": [
+        -0.68,
+        0.92
+      ],
+      "size": [
+        1.12,
+        0.32
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 2,
+      "name": "018-cave-03-01",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-03-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-03-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c2316cc58be2c4ed394944409673526b8d1e559818614c5caa8fe197d6bfd086",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10002,
+      "position": [
+        0.9,
+        0.94
+      ],
+      "size": [
+        1.12,
+        0.32
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 3,
+      "name": "018-cave-03-01",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-03-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-03-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c2316cc58be2c4ed394944409673526b8d1e559818614c5caa8fe197d6bfd086",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10003,
+      "position": [
+        -0.8,
+        -2.65
+      ],
+      "size": [
+        1.12,
+        0.32
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 4,
+      "name": "018-cave-03-01",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-03-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-03-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c2316cc58be2c4ed394944409673526b8d1e559818614c5caa8fe197d6bfd086",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10004,
+      "position": [
+        1.03,
+        -2.63
+      ],
+      "size": [
+        1.12,
+        0.32
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 9,
+      "name": "018-cave-03-02",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-03-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-03-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a1139892d8570d929142ce47aa2261c35f824e18ec59b9a6b868bf4d56f3e218",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10009,
+      "position": [
+        -4.08,
+        -2.82
+      ],
+      "size": [
+        2.24,
+        0.52
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 10,
+      "name": "018-cave-04-03",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-04-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-cave-04-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "39a958642d74dbb37f1419c8051f349fb904853e387389f3097978ea4908bfe8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        -2.41,
+        -1.685
+      ],
+      "size": [
+        5.26,
+        3.53
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 11,
+      "name": "018-cave-03-02",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-03-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/LavaCave/018-cave-03-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a1139892d8570d929142ce47aa2261c35f824e18ec59b9a6b868bf4d56f3e218",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        3.92,
+        -2.81
+      ],
+      "size": [
+        2.24,
+        0.52
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 12,
+      "name": "018-cave-04-04",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-04-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-cave-04-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "98e3e69367f86608959429f5fc4b8a0e053344ecea12865a16d7353b7adf05d8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        2.62,
+        -1.69
+      ],
+      "size": [
+        4.8,
+        3.52
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 13,
+      "name": "008-house-flag",
+      "sourcePath": "mpf_recovered_assets/008-house/008-house-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/008-house-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bb5a2c73777cfff1d5702efe32251bd787fcfc2332a1144a94f010115a15e014",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -3.985,
+        0.54
+      ],
+      "size": [
+        0.77,
+        0.36
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 14,
+      "name": "018-cave-04-01",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-04-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-cave-04-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "553e6d5ab37e4c5e8bf1b6ca20ef066f54b0ecf4e8908825e256eb67f04f04ae",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -2.4,
+        1.76
+      ],
+      "size": [
+        5.26,
+        3.38
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 15,
+      "name": "008-house-flag",
+      "sourcePath": "mpf_recovered_assets/008-house/008-house-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/008-house-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bb5a2c73777cfff1d5702efe32251bd787fcfc2332a1144a94f010115a15e014",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        4.205,
+        0.55
+      ],
+      "size": [
+        0.77,
+        0.36
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 16,
+      "name": "018-cave-04-02",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-cave-04-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-cave-04-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bc1f04ddf3f3d1d9111275d369cf37af7dee4d47e231bad248a63cc4268fc8c6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        2.62,
+        1.76
+      ],
+      "size": [
+        4.8,
+        3.38
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 17,
+      "name": "018-water",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-water.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-water.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "768e7332eda9e12845654556136545828be74ec9027bca6271c983fde8c2d10f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        -4.67,
+        -2.64
+      ],
+      "size": [
+        1.0,
+        0.16
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 18,
+      "name": "018-water",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-water.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-water.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "768e7332eda9e12845654556136545828be74ec9027bca6271c983fde8c2d10f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        -3.96,
+        -2.6
+      ],
+      "size": [
+        1.0,
+        0.16
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 19,
+      "name": "018-water",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-water.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-water.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "768e7332eda9e12845654556136545828be74ec9027bca6271c983fde8c2d10f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        4.76,
+        -2.64
+      ],
+      "size": [
+        1.0,
+        0.16
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 20,
+      "name": "018-water",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-water.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-water.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "768e7332eda9e12845654556136545828be74ec9027bca6271c983fde8c2d10f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        4.23,
+        -2.59
+      ],
+      "size": [
+        1.0,
+        0.16
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 21,
+      "name": "018-light",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-light.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-light.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "352386d74bfa0170dbc2eafb6fe2d959308dee21fdead7fb24d2811fcb48a572",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        0.8,
+        2.06
+      ],
+      "size": [
+        0.46,
+        0.46
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 22,
+      "name": "018-light",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-light.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-light.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "352386d74bfa0170dbc2eafb6fe2d959308dee21fdead7fb24d2811fcb48a572",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        -0.44,
+        2.03
+      ],
+      "size": [
+        0.46,
+        0.46
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 23,
+      "name": "018-lava",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-lava.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-lava.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "35bee94a7fc48054041b777f018c01ae070f08191b821a5e44cae04125bc9d8c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10023,
+      "position": [
+        -0.94,
+        -2.44
+      ],
+      "size": [
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 24,
+      "name": "018-lava",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-lava.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-lava.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "35bee94a7fc48054041b777f018c01ae070f08191b821a5e44cae04125bc9d8c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        0.74,
+        -2.42
+      ],
+      "size": [
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 25,
+      "name": "018-lava",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-lava.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-lava.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "35bee94a7fc48054041b777f018c01ae070f08191b821a5e44cae04125bc9d8c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        1.05,
+        -2.42
+      ],
+      "size": [
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 26,
+      "name": "018-lava",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-lava.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-lava.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "35bee94a7fc48054041b777f018c01ae070f08191b821a5e44cae04125bc9d8c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        -0.95,
+        1.13
+      ],
+      "size": [
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 27,
+      "name": "018-lava",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-lava.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-lava.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "35bee94a7fc48054041b777f018c01ae070f08191b821a5e44cae04125bc9d8c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        -0.73,
+        1.11
+      ],
+      "size": [
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 28,
+      "name": "018-lava",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-lava.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-lava.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "35bee94a7fc48054041b777f018c01ae070f08191b821a5e44cae04125bc9d8c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        0.88,
+        1.14
+      ],
+      "size": [
+        0.2,
+        0.2
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 29,
+      "name": "018-water",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-water.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-water.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "768e7332eda9e12845654556136545828be74ec9027bca6271c983fde8c2d10f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        -2.37,
+        -3.24
+      ],
+      "size": [
+        1.0,
+        0.16
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 30,
+      "name": "018-water",
+      "sourcePath": "mpf_recovered_assets/018-Cave/018-water.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-018-cave/Textures/018-water.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "768e7332eda9e12845654556136545828be74ec9027bca6271c983fde8c2d10f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        1.54,
+        -3.22
+      ],
+      "size": [
+        1.0,
+        0.16
+      ]
+    }
+  ]
+}

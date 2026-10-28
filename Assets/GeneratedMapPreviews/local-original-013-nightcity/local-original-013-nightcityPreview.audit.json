@@ -1,0 +1,1265 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-013-nightcity",
+  "sourceFile": "local-original-013-nightcity.json",
+  "sourceJsonSha256": "db5d1fbf852e684b10b8a6c4f46962cb658878a6c9b5aac9a5531b759a995820",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-013-nightcity/local-original-013-nightcityPreview.unity",
+  "spritePlacementCount": 62,
+  "uniqueSpriteFileCount": 24,
+  "copiedSpriteFileCount": 1,
+  "obstacleBoxColliderCount": 582,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 10,
+  "offlineSpawn": {
+    "x": -7.0,
+    "y": 2.72
+  },
+  "bounds": {
+    "left": -10.0,
+    "bottom": -5.0,
+    "right": 10.0,
+    "top": 5.0
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "bg013-nightcity-01",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c0e93d719e926a11f92be49cdcaafc1d3bd7208117b0e8bde9dc8fdba1845fea",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -5.750306,
+        1.905
+      ],
+      "size": [
+        8.5,
+        6.19
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "bg013-nightcity-02-05",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ab312c2d00f479db339e4603abdd5c7cbd7923f04b510106af3f59cf19f0fbf9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -7.64,
+        -3.79
+      ],
+      "size": [
+        1.06,
+        0.46
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "bg013-nightcity-02-06",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c8b7b63d0b99ab679cc734488673d8bdd992c0c5bd64e8d4ab00379bf8900d15",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        -6.12,
+        -3.81
+      ],
+      "size": [
+        1.06,
+        0.46
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "bg013-nightcity-02-05",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ab312c2d00f479db339e4603abdd5c7cbd7923f04b510106af3f59cf19f0fbf9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        5.68,
+        -3.81
+      ],
+      "size": [
+        1.06,
+        0.46
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "bg013-nightcity-02-06",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c8b7b63d0b99ab679cc734488673d8bdd992c0c5bd64e8d4ab00379bf8900d15",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        6.83,
+        -3.8
+      ],
+      "size": [
+        1.06,
+        0.46
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 9,
+      "name": "bg013-nightcity-03-18",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c50a173c1f3510f1f7e4a6b56a124feb692e20d316de059826ee5b02630dd5cd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        -1.65,
+        -3.07
+      ],
+      "size": [
+        0.9,
+        1.88
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 10,
+      "name": "bg013-nightcity-03-18",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c50a173c1f3510f1f7e4a6b56a124feb692e20d316de059826ee5b02630dd5cd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9990,
+      "position": [
+        -0.16,
+        -3.08
+      ],
+      "size": [
+        0.9,
+        1.88
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 11,
+      "name": "bg013-nightcity-03-18",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c50a173c1f3510f1f7e4a6b56a124feb692e20d316de059826ee5b02630dd5cd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9989,
+      "position": [
+        -2.4,
+        -3.07
+      ],
+      "size": [
+        0.9,
+        1.88
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 12,
+      "name": "bg013-nightcity-03-21",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-21.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-21.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "560c3638581963347cbe5c34794265d17b67c33f00770406b5d091ebc2cffeb0",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9988,
+      "position": [
+        2.45,
+        -3.86
+      ],
+      "size": [
+        0.92,
+        0.46
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 17,
+      "name": "bg013-nightcity-02-01",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "be627b22b92f65b37266742ba5ab57ccf82458d26a92d3d33992b9f69162ba2b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9983,
+      "position": [
+        -7.63,
+        -1.27
+      ],
+      "size": [
+        1.06,
+        0.46
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 18,
+      "name": "bg013-nightcity-02-02",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b9bc6f53f306a2820fe0e98a67437157572edde2b954531779c7b7e3af98fb7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9982,
+      "position": [
+        -6.12,
+        -1.26
+      ],
+      "size": [
+        1.06,
+        0.46
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 19,
+      "name": "bg013-nightcity-02-03",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b47f79bbe2d2bf5044cc4d6276243b0d87b47fdef66a3f00071112bacc0f7f4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9981,
+      "position": [
+        -7.63,
+        -2.53
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 20,
+      "name": "bg013-nightcity-02-03",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b47f79bbe2d2bf5044cc4d6276243b0d87b47fdef66a3f00071112bacc0f7f4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9980,
+      "position": [
+        -7.63,
+        -1.84
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 21,
+      "name": "bg013-nightcity-02-03",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b47f79bbe2d2bf5044cc4d6276243b0d87b47fdef66a3f00071112bacc0f7f4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9979,
+      "position": [
+        -7.63,
+        -3.22
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 22,
+      "name": "bg013-nightcity-02-04",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "377d172823ef184ac5b5b5785ecefb69a67700e6b1f3fa5712cf5afd7094c403",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9978,
+      "position": [
+        -6.11,
+        -1.84
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 23,
+      "name": "bg013-nightcity-02-04",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "377d172823ef184ac5b5b5785ecefb69a67700e6b1f3fa5712cf5afd7094c403",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9977,
+      "position": [
+        -6.11,
+        -3.24
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 24,
+      "name": "bg013-nightcity-02-04",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "377d172823ef184ac5b5b5785ecefb69a67700e6b1f3fa5712cf5afd7094c403",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9976,
+      "position": [
+        -6.11,
+        -2.54
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 25,
+      "name": "bg013-nightcity-02-03",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b47f79bbe2d2bf5044cc4d6276243b0d87b47fdef66a3f00071112bacc0f7f4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9975,
+      "position": [
+        5.68,
+        -3.23
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 26,
+      "name": "bg013-nightcity-02-03",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b47f79bbe2d2bf5044cc4d6276243b0d87b47fdef66a3f00071112bacc0f7f4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9974,
+      "position": [
+        5.68,
+        -2.53
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 27,
+      "name": "bg013-nightcity-02-03",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b47f79bbe2d2bf5044cc4d6276243b0d87b47fdef66a3f00071112bacc0f7f4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9973,
+      "position": [
+        5.68,
+        -1.83
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 28,
+      "name": "bg013-nightcity-02-04",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "377d172823ef184ac5b5b5785ecefb69a67700e6b1f3fa5712cf5afd7094c403",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9972,
+      "position": [
+        6.84,
+        -3.24
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 29,
+      "name": "bg013-nightcity-02-04",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "377d172823ef184ac5b5b5785ecefb69a67700e6b1f3fa5712cf5afd7094c403",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9971,
+      "position": [
+        6.84,
+        -2.54
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 30,
+      "name": "bg013-nightcity-02-04",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "377d172823ef184ac5b5b5785ecefb69a67700e6b1f3fa5712cf5afd7094c403",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9970,
+      "position": [
+        6.84,
+        -1.84
+      ],
+      "size": [
+        0.58,
+        0.74
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 31,
+      "name": "bg013-nightcity-02-01",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "be627b22b92f65b37266742ba5ab57ccf82458d26a92d3d33992b9f69162ba2b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9969,
+      "position": [
+        5.68,
+        -1.26
+      ],
+      "size": [
+        1.06,
+        0.46
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 32,
+      "name": "bg013-nightcity-02-02",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9b9bc6f53f306a2820fe0e98a67437157572edde2b954531779c7b7e3af98fb7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9968,
+      "position": [
+        6.85,
+        -1.26
+      ],
+      "size": [
+        1.06,
+        0.46
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 35,
+      "name": "bg013-nightcity-02-09",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-09.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-09.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "053601579a0149a3cabe9bff919fefa0dfc009fafd354b8100e2bbfe1b962150",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9965,
+      "position": [
+        -7.42,
+        1.65
+      ],
+      "size": [
+        0.86,
+        0.56
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 36,
+      "name": "bg013-nightcity-02-09",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-02-09.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-02-09.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "053601579a0149a3cabe9bff919fefa0dfc009fafd354b8100e2bbfe1b962150",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9964,
+      "position": [
+        -6.36,
+        1.66
+      ],
+      "size": [
+        0.86,
+        0.56
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 39,
+      "name": "bg013-nightcity-03-18",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c50a173c1f3510f1f7e4a6b56a124feb692e20d316de059826ee5b02630dd5cd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9961,
+      "position": [
+        -0.9,
+        -3.08
+      ],
+      "size": [
+        0.9,
+        1.88
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 40,
+      "name": "bg013-nightcity-03-18",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c50a173c1f3510f1f7e4a6b56a124feb692e20d316de059826ee5b02630dd5cd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9960,
+      "position": [
+        0.59,
+        -3.08
+      ],
+      "size": [
+        0.9,
+        1.88
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 41,
+      "name": "bg013-nightcity-03-18",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c50a173c1f3510f1f7e4a6b56a124feb692e20d316de059826ee5b02630dd5cd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9959,
+      "position": [
+        1.34,
+        -3.08
+      ],
+      "size": [
+        0.9,
+        1.88
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 42,
+      "name": "bg013-nightcity-03-18",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c50a173c1f3510f1f7e4a6b56a124feb692e20d316de059826ee5b02630dd5cd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9958,
+      "position": [
+        2.08,
+        -3.08
+      ],
+      "size": [
+        0.9,
+        1.88
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 5,
+      "name": "bg013-nightcity-03-14",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5e28c428a28c2e9378296db45ba75447e0c956dbc2a8d35f984e06010f7fa749",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10005,
+      "position": [
+        -8.55,
+        -4.5
+      ],
+      "size": [
+        2.98,
+        1.04
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 6,
+      "name": "bg013-nightcity-03-16",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-16.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-16.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8bcb6714d4913a32822d5a4af20cbeba7137d4d669dc3b38d7a40a1ba1f61029",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10006,
+      "position": [
+        -6.88,
+        -4.38
+      ],
+      "size": [
+        0.42,
+        1.28
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 7,
+      "name": "bg013-nightcity-03-16",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-16.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-16.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8bcb6714d4913a32822d5a4af20cbeba7137d4d669dc3b38d7a40a1ba1f61029",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10007,
+      "position": [
+        -3.54,
+        -4.39
+      ],
+      "size": [
+        0.42,
+        1.28
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 8,
+      "name": "bg013-nightcity-03-02",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f50f527cd8b0aaf96909842af95450cab0246d8f3fa44fdeab6e8e852869b52b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10008,
+      "position": [
+        6.26,
+        0.04
+      ],
+      "size": [
+        4.08,
+        2.22
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 13,
+      "name": "bg013-nightcity-03-14",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5e28c428a28c2e9378296db45ba75447e0c956dbc2a8d35f984e06010f7fa749",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        4.81,
+        -4.51
+      ],
+      "size": [
+        2.98,
+        1.04
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 14,
+      "name": "bg013-nightcity-03-16",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-16.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-16.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8bcb6714d4913a32822d5a4af20cbeba7137d4d669dc3b38d7a40a1ba1f61029",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        6.48,
+        -4.39
+      ],
+      "size": [
+        0.42,
+        1.28
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 15,
+      "name": "bg013-nightcity-03-23",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-23.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-23.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0f8dee0618b3cdfeff872de6709c29e1ee0223902cc03b089a549d09ab06f37f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        7.94,
+        -3.89
+      ],
+      "size": [
+        0.66,
+        0.3
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 16,
+      "name": "bg013-nightcity-03-16",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-16.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-16.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8bcb6714d4913a32822d5a4af20cbeba7137d4d669dc3b38d7a40a1ba1f61029",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        9.82,
+        -4.38
+      ],
+      "size": [
+        0.42,
+        1.28
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 33,
+      "name": "bg013-nightcity-03-03",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a72c10738436c67d45a8742043da9cbd67f0d3169ce9c1432391951d2d544d7c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10033,
+      "position": [
+        4.76,
+        1.89
+      ],
+      "size": [
+        1.04,
+        1.66
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 34,
+      "name": "bg013-nightcity-03-04",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "3b74dad7cb46f53b5ef8e2988de42d98b5b998fcf6ed1220017c581ad21cc102",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        7.77,
+        1.81
+      ],
+      "size": [
+        1.02,
+        1.48
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 37,
+      "name": "bg013-nightcity-03-13",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-13.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-13.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "30e33117db28f6a659638e6dd30f663dfcf1f8ee8f8b03192259426a959e74aa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        -6.87,
+        2.11
+      ],
+      "size": [
+        2.14,
+        0.38
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 38,
+      "name": "bg013-nightcity-03-01",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "3c31cc310c5548661b77f556a1714a8a6a98c2d66525b1641e1bf296d84e5890",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        -6.85,
+        0.18
+      ],
+      "size": [
+        3.98,
+        2.46
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 43,
+      "name": "bg013-nightcity-03-16",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-16.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-16.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8bcb6714d4913a32822d5a4af20cbeba7137d4d669dc3b38d7a40a1ba1f61029",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        -0.2,
+        -4.39
+      ],
+      "size": [
+        0.42,
+        1.28
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 44,
+      "name": "bg013-nightcity-03-14",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5e28c428a28c2e9378296db45ba75447e0c956dbc2a8d35f984e06010f7fa749",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10044,
+      "position": [
+        -1.87,
+        -4.49
+      ],
+      "size": [
+        2.98,
+        1.04
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 45,
+      "name": "bg013-nightcity-03-20",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-20.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-20.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a5e98025c99ad0aa8253584b294dedab8ec16e83f6e86a7048de9150ede2229c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10045,
+      "position": [
+        -0.91,
+        2.02
+      ],
+      "size": [
+        0.04,
+        1.2
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 46,
+      "name": "bg013-nightcity-03-20",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-20.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-20.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a5e98025c99ad0aa8253584b294dedab8ec16e83f6e86a7048de9150ede2229c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10046,
+      "position": [
+        0.74,
+        2.02
+      ],
+      "size": [
+        0.04,
+        1.2
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 47,
+      "name": "bg013-nightcity-03-08",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8d2eb09a0f77e8f3c7180f08bd7a883e1a91bf300fd09659072997ae59f3e98e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10047,
+      "position": [
+        1.76,
+        -1.53
+      ],
+      "size": [
+        1.06,
+        0.44
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 48,
+      "name": "bg013-nightcity-03-20",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-20.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-20.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a5e98025c99ad0aa8253584b294dedab8ec16e83f6e86a7048de9150ede2229c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        -0.88,
+        4.37
+      ],
+      "size": [
+        0.04,
+        1.2
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 49,
+      "name": "bg013-nightcity-03-20",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-20.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-20.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a5e98025c99ad0aa8253584b294dedab8ec16e83f6e86a7048de9150ede2229c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10049,
+      "position": [
+        0.74,
+        4.38
+      ],
+      "size": [
+        0.04,
+        1.2
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 50,
+      "name": "bg013-nightcity-03-19",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-19.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-19.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0797c078a3323881096f840446428af0610bf95a4d9782dd8ce900a8c75356c3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10050,
+      "position": [
+        -0.08,
+        3.17
+      ],
+      "size": [
+        2.22,
+        1.28
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 51,
+      "name": "bg013-nightcity-03-23",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-23.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-23.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0f8dee0618b3cdfeff872de6709c29e1ee0223902cc03b089a549d09ab06f37f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10051,
+      "position": [
+        -2.11,
+        -1.58
+      ],
+      "size": [
+        0.66,
+        0.3
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 52,
+      "name": "bg013-nightcity-03-21",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-21.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-21.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "560c3638581963347cbe5c34794265d17b67c33f00770406b5d091ebc2cffeb0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        -4.46,
+        -3.78
+      ],
+      "size": [
+        0.92,
+        0.46
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 53,
+      "name": "bg013-nightcity-03-17",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-17.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-17.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "83d663c5fc88f1e0a353c8400fa27743a3571241203885d0d6c74bc3b34f473f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10053,
+      "position": [
+        -1.6,
+        -1.93
+      ],
+      "size": [
+        2.98,
+        0.46
+      ]
+    },
+    {
+      "index": 54,
+      "sourcePlacement": 54,
+      "name": "bg013-nightcity-03-22",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-22.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-013-nightcity/Textures/bg013-nightcity-03-22.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c1a98673adc1b702be4838ec78b90918de18cb371fcfff263f2a5aa26aa97168",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10054,
+      "position": [
+        2.17,
+        -3.86
+      ],
+      "size": [
+        0.7,
+        0.34
+      ]
+    },
+    {
+      "index": 55,
+      "sourcePlacement": 55,
+      "name": "bg013-nightcity-03-24",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f2c3d35b5254e6daaec0a829e8b04d4eebbc1c87ec845df2ef6c9c72c8288bc5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10055,
+      "position": [
+        7.56,
+        -3.93
+      ],
+      "size": [
+        0.28,
+        0.2
+      ]
+    },
+    {
+      "index": 56,
+      "sourcePlacement": 56,
+      "name": "bg013-nightcity-03-14",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5e28c428a28c2e9378296db45ba75447e0c956dbc2a8d35f984e06010f7fa749",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10056,
+      "position": [
+        1.47,
+        -4.5
+      ],
+      "size": [
+        2.98,
+        1.04
+      ]
+    },
+    {
+      "index": 57,
+      "sourcePlacement": 57,
+      "name": "bg013-nightcity-03-14",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5e28c428a28c2e9378296db45ba75447e0c956dbc2a8d35f984e06010f7fa749",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10057,
+      "position": [
+        -5.21,
+        -4.49
+      ],
+      "size": [
+        2.98,
+        1.04
+      ]
+    },
+    {
+      "index": 58,
+      "sourcePlacement": 58,
+      "name": "bg013-nightcity-03-14",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5e28c428a28c2e9378296db45ba75447e0c956dbc2a8d35f984e06010f7fa749",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10058,
+      "position": [
+        8.15,
+        -4.5
+      ],
+      "size": [
+        2.98,
+        1.04
+      ]
+    },
+    {
+      "index": 59,
+      "sourcePlacement": 59,
+      "name": "bg013-nightcity-03-16",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-16.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-16.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8bcb6714d4913a32822d5a4af20cbeba7137d4d669dc3b38d7a40a1ba1f61029",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10059,
+      "position": [
+        3.14,
+        -4.39
+      ],
+      "size": [
+        0.42,
+        1.28
+      ]
+    },
+    {
+      "index": 60,
+      "sourcePlacement": 60,
+      "name": "bg013-nightcity-03-13",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-13.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-13.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "30e33117db28f6a659638e6dd30f663dfcf1f8ee8f8b03192259426a959e74aa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10060,
+      "position": [
+        -0.07,
+        1.32
+      ],
+      "size": [
+        2.14,
+        0.38
+      ]
+    },
+    {
+      "index": 61,
+      "sourcePlacement": 61,
+      "name": "bg013-nightcity-03-17",
+      "sourcePath": "mpf_recovered_assets/013-NightCity/bg013-nightcity-03-17.png",
+      "unityAssetPath": "Assets/Sprites/Stages/CityOfDarkness2/bg013-nightcity-03-17.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "83d663c5fc88f1e0a353c8400fa27743a3571241203885d0d6c74bc3b34f473f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10061,
+      "position": [
+        1.36,
+        -1.93
+      ],
+      "size": [
+        2.98,
+        0.46
+      ]
+    }
+  ]
+}

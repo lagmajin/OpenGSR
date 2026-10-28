@@ -1,0 +1,785 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-024-city-marine",
+  "sourceFile": "local-original-024-city-marine.json",
+  "sourceJsonSha256": "114702b6445e4214e7f917619bd945114fabdf4d7888b1f8551dc275f3db7c21",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-024-city-marine/local-original-024-city-marinePreview.unity",
+  "spritePlacementCount": 38,
+  "uniqueSpriteFileCount": 12,
+  "copiedSpriteFileCount": 12,
+  "obstacleBoxColliderCount": 796,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 13,
+  "offlineSpawn": {
+    "x": -1.1,
+    "y": -4.85
+  },
+  "bounds": {
+    "left": -7.0,
+    "bottom": -10.0,
+    "right": 7.0,
+    "top": 10.0
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "024-city_marine_01_01",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_01_01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_01_01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8c1159a3f546f7e030ad7a5963b6700b248d3cd2c9c84485547f4a2b35c27406",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -1.92000258,
+        7.05000353
+      ],
+      "size": [
+        8.66,
+        5.9
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "024-city_marine_01_02",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_01_02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_01_02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fa8f0649f60f9168db9958bd05805de135cbb2af8655ba988a2066f56fdf4f5e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -1.91800094,
+        1.49495411
+      ],
+      "size": [
+        8.66,
+        5.21
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 7,
+      "name": "024-city_marine_03_02",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f40c6c5943e3dc90318cdd2bf13882a6f4475b0ecb4b8dfa5408ab43f3f2c2aa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        -5.57,
+        -10.58
+      ],
+      "size": [
+        2.88,
+        5.86
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 9,
+      "name": "024-city_marine_03_01",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "36c5c360a10e6f8976e3cbc6aef683231509e3d8016d16a7f74ff2deb803aae3",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        5.67,
+        -4.7
+      ],
+      "size": [
+        2.7,
+        5.9
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 11,
+      "name": "024-city_marine_03_02",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f40c6c5943e3dc90318cdd2bf13882a6f4475b0ecb4b8dfa5408ab43f3f2c2aa",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9989,
+      "position": [
+        5.58,
+        -10.57
+      ],
+      "size": [
+        2.88,
+        5.86
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 2,
+      "name": "024-city_marine_03_01",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "36c5c360a10e6f8976e3cbc6aef683231509e3d8016d16a7f74ff2deb803aae3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10002,
+      "position": [
+        -5.71,
+        7.05
+      ],
+      "size": [
+        2.7,
+        5.9
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 3,
+      "name": "024-city_marine_03_02",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f40c6c5943e3dc90318cdd2bf13882a6f4475b0ecb4b8dfa5408ab43f3f2c2aa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10003,
+      "position": [
+        -5.62,
+        1.18
+      ],
+      "size": [
+        2.88,
+        5.86
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 4,
+      "name": "024-city_marine_03_01",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "36c5c360a10e6f8976e3cbc6aef683231509e3d8016d16a7f74ff2deb803aae3",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10004,
+      "position": [
+        5.67,
+        7.05
+      ],
+      "size": [
+        2.7,
+        5.9
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 5,
+      "name": "024-city_marine_03_01",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "36c5c360a10e6f8976e3cbc6aef683231509e3d8016d16a7f74ff2deb803aae3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10005,
+      "position": [
+        -5.72,
+        -4.7
+      ],
+      "size": [
+        2.7,
+        5.9
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 6,
+      "name": "024-city_marine_03_01",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "36c5c360a10e6f8976e3cbc6aef683231509e3d8016d16a7f74ff2deb803aae3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10006,
+      "position": [
+        -5.45,
+        -4.7
+      ],
+      "size": [
+        2.7,
+        5.9
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 8,
+      "name": "024-city_marine_03_02",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f40c6c5943e3dc90318cdd2bf13882a6f4475b0ecb4b8dfa5408ab43f3f2c2aa",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10008,
+      "position": [
+        5.58,
+        1.17
+      ],
+      "size": [
+        2.88,
+        5.86
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 10,
+      "name": "024-city_marine_03_01",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "36c5c360a10e6f8976e3cbc6aef683231509e3d8016d16a7f74ff2deb803aae3",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        5.44,
+        -4.7
+      ],
+      "size": [
+        2.7,
+        5.9
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 12,
+      "name": "024-city_marine_03_12",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "96a269e53a1cf87588c477ce9d1f49fe8188c6d85b5c7fb6520663fd430602d6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -3.06,
+        -10.08
+      ],
+      "size": [
+        2.7,
+        0.58
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 13,
+      "name": "024-city_marine_03_07",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "657a79aac6b63f17d89eb624e52037b377f6d326a25a0726b585c94a02e88199",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -0.06,
+        -8.63
+      ],
+      "size": [
+        1.72,
+        2.4
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 14,
+      "name": "024-city_marine_03_05",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "7cde3e8d417f3be445c5d3419bf740b92b8195733f905a83fe09d93e360ed112",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        2.8,
+        -9.17
+      ],
+      "size": [
+        0.4,
+        0.3
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 15,
+      "name": "024-city_marine_03_08",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "81d298e39bd1930fe8be5d5b6bac6766745f4d058d55af04e3d2ea2f78c58ea3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        -2.83,
+        -9.29
+      ],
+      "size": [
+        0.36,
+        0.66
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 16,
+      "name": "024-city_marine_03_03",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85878d71df4860686f4650e6adf81b2e1a40e2dd42096c689dea8ece2d49ba21",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        -1.01,
+        -5.52
+      ],
+      "size": [
+        1.86,
+        0.54
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 17,
+      "name": "024-city_marine_03_12",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "96a269e53a1cf87588c477ce9d1f49fe8188c6d85b5c7fb6520663fd430602d6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        -0.36,
+        -10.08
+      ],
+      "size": [
+        2.7,
+        0.58
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 18,
+      "name": "024-city_marine_03_12",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "96a269e53a1cf87588c477ce9d1f49fe8188c6d85b5c7fb6520663fd430602d6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        2.29,
+        -10.08
+      ],
+      "size": [
+        2.7,
+        0.58
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 19,
+      "name": "024-city_marine_03_12",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "96a269e53a1cf87588c477ce9d1f49fe8188c6d85b5c7fb6520663fd430602d6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        4.97,
+        -10.08
+      ],
+      "size": [
+        2.7,
+        0.58
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 20,
+      "name": "024-city_marine_03_12",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "96a269e53a1cf87588c477ce9d1f49fe8188c6d85b5c7fb6520663fd430602d6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        -3.05,
+        -9.55
+      ],
+      "size": [
+        2.7,
+        0.58
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 21,
+      "name": "024-city_marine_03_02",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f40c6c5943e3dc90318cdd2bf13882a6f4475b0ecb4b8dfa5408ab43f3f2c2aa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        -5.36,
+        -10.58
+      ],
+      "size": [
+        2.88,
+        5.86
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 22,
+      "name": "024-city_marine_03_12",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "96a269e53a1cf87588c477ce9d1f49fe8188c6d85b5c7fb6520663fd430602d6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        -0.36,
+        -9.55
+      ],
+      "size": [
+        2.7,
+        0.58
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 23,
+      "name": "024-city_marine_03_12",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "96a269e53a1cf87588c477ce9d1f49fe8188c6d85b5c7fb6520663fd430602d6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10023,
+      "position": [
+        2.34,
+        -9.55
+      ],
+      "size": [
+        2.7,
+        0.58
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 24,
+      "name": "024-city_marine_03_12",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "96a269e53a1cf87588c477ce9d1f49fe8188c6d85b5c7fb6520663fd430602d6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        5.04,
+        -9.55
+      ],
+      "size": [
+        2.7,
+        0.58
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 25,
+      "name": "024-city_marine_03_02",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f40c6c5943e3dc90318cdd2bf13882a6f4475b0ecb4b8dfa5408ab43f3f2c2aa",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        5.35,
+        -10.57
+      ],
+      "size": [
+        2.88,
+        5.86
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 26,
+      "name": "024-city_marine_03_07",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "657a79aac6b63f17d89eb624e52037b377f6d326a25a0726b585c94a02e88199",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        2.99,
+        -2.42
+      ],
+      "size": [
+        1.72,
+        2.4
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 27,
+      "name": "024-city_marine_03_03",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85878d71df4860686f4650e6adf81b2e1a40e2dd42096c689dea8ece2d49ba21",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        1.87,
+        6.85
+      ],
+      "size": [
+        1.86,
+        0.54
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 28,
+      "name": "024-city_marine_03_03",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85878d71df4860686f4650e6adf81b2e1a40e2dd42096c689dea8ece2d49ba21",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        -1.6,
+        6.84
+      ],
+      "size": [
+        1.86,
+        0.54
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 29,
+      "name": "024-city_marine_03_07",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "657a79aac6b63f17d89eb624e52037b377f6d326a25a0726b585c94a02e88199",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        0.12,
+        7.72
+      ],
+      "size": [
+        1.72,
+        2.4
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 30,
+      "name": "024-city_marine_03_10",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bd6fafe1b4164d248432cdefa49668b2efdadd04cf37e45f9196451f3376ac16",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        -2.91,
+        3.77
+      ],
+      "size": [
+        2.54,
+        1.86
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 31,
+      "name": "024-city_marine_03_10",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bd6fafe1b4164d248432cdefa49668b2efdadd04cf37e45f9196451f3376ac16",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10031,
+      "position": [
+        2.67,
+        3.75
+      ],
+      "size": [
+        2.54,
+        1.86
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 32,
+      "name": "024-city_marine_03_04",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b12b8dd8b4d3f1f5b91124b51e0a2b4fe706f7489db51a229a01c0f710aa3049",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10032,
+      "position": [
+        -0.02,
+        4.62
+      ],
+      "size": [
+        1.4,
+        0.58
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 33,
+      "name": "024-city_marine_03_04",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b12b8dd8b4d3f1f5b91124b51e0a2b4fe706f7489db51a229a01c0f710aa3049",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10033,
+      "position": [
+        -3.91,
+        1.33
+      ],
+      "size": [
+        1.4,
+        0.58
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 34,
+      "name": "024-city_marine_03_11",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "d1efcadb6d524c87256eee4e830fe59717bb62e995b682434ae171ba2fcb459b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        -1.09,
+        -0.14
+      ],
+      "size": [
+        2.54,
+        1.9
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 35,
+      "name": "024-city_marine_03_04",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b12b8dd8b4d3f1f5b91124b51e0a2b4fe706f7489db51a229a01c0f710aa3049",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        1.57,
+        1.04
+      ],
+      "size": [
+        1.4,
+        0.58
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 36,
+      "name": "024-city_marine_03_04",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b12b8dd8b4d3f1f5b91124b51e0a2b4fe706f7489db51a229a01c0f710aa3049",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        -2.49,
+        -2.84
+      ],
+      "size": [
+        1.4,
+        0.58
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 37,
+      "name": "024-city_marine_03_11",
+      "sourcePath": "mpf_recovered_assets/024-city_marine/024-city_marine_03_11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-024-city-marine/Textures/024-city_marine_03_11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "d1efcadb6d524c87256eee4e830fe59717bb62e995b682434ae171ba2fcb459b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        1.07,
+        -5.51
+      ],
+      "size": [
+        2.54,
+        1.9
+      ]
+    }
+  ]
+}

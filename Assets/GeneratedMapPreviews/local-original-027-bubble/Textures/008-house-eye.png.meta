@@ -1,0 +1,237 @@
+fileFormatVersion: 2
+guid: 31ac849a796d0214e9de8ae3e7b0bc2e
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: 3130792876479870819
+    second: 008-house-eye_0
+  - first:
+      213: 5152996173569843458
+    second: 008-house-eye_1
+  - first:
+      213: 7719620822162352589
+    second: 008-house-eye_2
+  - first:
+      213: -1128785692148983296
+    second: 008-house-eye_3
+  - first:
+      213: -4775938141560566833
+    second: 008-house-eye_4
+  - first:
+      213: -4373533437737190056
+    second: 008-house-eye_5
+  - first:
+      213: 1344720338955399681
+    second: 008-house-eye_6
+  - first:
+      213: 4869491868284340778
+    second: 008-house-eye_7
+  - first:
+      213: -3732686432968435724
+    second: 008-house-eye_8
+  - first:
+      213: -3458695794307869805
+    second: 008-house-eye_9
+  - first:
+      213: 2822285477690634060
+    second: 008-house-eye_10
+  - first:
+      213: 578977464354692387
+    second: 008-house-eye_11
+  - first:
+      213: -2226420889888488090
+    second: 008-house-eye_12
+  - first:
+      213: -534516294092890365
+    second: 008-house-eye_13
+  - first:
+      213: -4945975019224471265
+    second: 008-house-eye_14
+  - first:
+      213: -6205150384270198883
+    second: 008-house-eye_15
+  - first:
+      213: -8443451149634545499
+    second: 008-house-eye_16
+  - first:
+      213: 6160992909028946124
+    second: 008-house-eye_17
+  - first:
+      213: -2933969552016670694
+    second: 008-house-eye_18
+  - first:
+      213: -4658298963319877634
+    second: 008-house-eye_19
+  - first:
+      213: -2641221594599243665
+    second: 008-house-eye_20
+  - first:
+      213: -3777269005185579774
+    second: 008-house-eye_21
+  - first:
+      213: -3690778611517050826
+    second: 008-house-eye_22
+  - first:
+      213: -4175482751816923245
+    second: 008-house-eye
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationMethod: 0
+  spriteTessellationDetail: -1
+  spriteGeometrySubdivision: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 008-house-eye
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 54
+        width: 18
+        height: 18
+      alignment: 9
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3978e245f84bd06c0800000000000000
+      internalID: -4175482751816923245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      008-house-eye: -4175482751816923245
+      008-house-eye_0: 3130792876479870819
+      008-house-eye_1: 5152996173569843458
+      008-house-eye_10: 2822285477690634060
+      008-house-eye_11: 578977464354692387
+      008-house-eye_12: -2226420889888488090
+      008-house-eye_13: -534516294092890365
+      008-house-eye_14: -4945975019224471265
+      008-house-eye_15: -6205150384270198883
+      008-house-eye_16: -8443451149634545499
+      008-house-eye_17: 6160992909028946124
+      008-house-eye_18: -2933969552016670694
+      008-house-eye_19: -4658298963319877634
+      008-house-eye_2: 7719620822162352589
+      008-house-eye_20: -2641221594599243665
+      008-house-eye_21: -3777269005185579774
+      008-house-eye_22: -3690778611517050826
+      008-house-eye_3: -1128785692148983296
+      008-house-eye_4: -4775938141560566833
+      008-house-eye_5: -4373533437737190056
+      008-house-eye_6: 1344720338955399681
+      008-house-eye_7: 4869491868284340778
+      008-house-eye_8: -3732686432968435724
+      008-house-eye_9: -3458695794307869805
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

@@ -1,0 +1,425 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-027-bubble",
+  "sourceFile": "local-original-027-bubble.json",
+  "sourceJsonSha256": "abebd463261419526607f6d34ed9897737c29ea1498436a42f72a70be91ac3f5",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-027-bubble/local-original-027-bubblePreview.unity",
+  "spritePlacementCount": 20,
+  "uniqueSpriteFileCount": 19,
+  "copiedSpriteFileCount": 19,
+  "obstacleBoxColliderCount": 1639,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 8,
+  "offlineSpawn": {
+    "x": 1.2,
+    "y": -4.05
+  },
+  "bounds": {
+    "left": -6.8,
+    "bottom": -5.09,
+    "right": 6.8,
+    "top": 5.09
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "008bg001-01",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg001-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg001-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "69a5653dd156a22a86d5f9e285dc89e2b4c526d66d3c4a7dfef4308321a98362",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -4.239503,
+        -0.238628
+      ],
+      "size": [
+        5.12,
+        5.12
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "008bg001-02",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg001-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg001-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "970cc3c5313f3562c67b0efcf80ff6495d6bea3cc5f73a880f7aae9761efce78",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        0.876449,
+        -0.238628
+      ],
+      "size": [
+        5.12,
+        5.12
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "008bg001-03",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg001-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg001-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fa9b10798d44c99f7e6ed5be714fd7be0fe6a5f41aef4fcf6b096d3ab0b3f2de",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        3.801123,
+        -0.238831
+      ],
+      "size": [
+        0.76,
+        5.12
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "008bg001-04",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg001-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg001-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "1cedd45d6a4dc40d89a08412192dd876fb2118dc587d0d7a45807d353a33e2e9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        1.612637,
+        3.7075
+      ],
+      "size": [
+        5.12,
+        2.78
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "008bg001-05",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg001-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg001-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "45368faca517ecc6ff3fe8171b74a04fc8b31c20d4da6d084a3d111fd70ff4cb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        -3.495506,
+        3.707499
+      ],
+      "size": [
+        5.12,
+        2.78
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 5,
+      "name": "008bg001-06",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg001-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg001-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "087295bd4762266fd34a1717e46ebf7c37029a43e315c5ec7c09045421d2f0d7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        -6.417022,
+        3.714499
+      ],
+      "size": [
+        0.76,
+        2.78
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 6,
+      "name": "008bg002-01",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg002-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg002-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "dc23e74c6f9273510b647c2515e9cd661e096e88fcc1e9b8c07e52b8385e3548",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        -2.33,
+        -2.12
+      ],
+      "size": [
+        5.1,
+        5.12
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 7,
+      "name": "008bg002-02",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg002-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg002-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "35d1eb0cd2d00864455d2244bc45791777ff749458d57f74d2bdf0318fed2bc0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        2.53,
+        -2.12
+      ],
+      "size": [
+        4.62,
+        5.12
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 8,
+      "name": "008bg002-03",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg002-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg002-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e9b7679452369791c76c838860ad574c44c3b4825b449db03a7967b626f9d928",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        -2.16,
+        2.12
+      ],
+      "size": [
+        4.98,
+        3.36
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 9,
+      "name": "008bg002-04",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg002-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg002-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "922411a7ed6cee779ff58b0c5651788a966603ed2a5506dcf1a3dcc38afcb992",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        2.21,
+        2.15
+      ],
+      "size": [
+        3.76,
+        3.42
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 14,
+      "name": "008-house-eye",
+      "sourcePath": "mpf_recovered_assets/008-house/008-house-eye.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008-house-eye.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "00d0d55bdf94841c2b1d1bb799f1b9d9ff792d64a02aefd08e1d42487e85f5cc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9986,
+      "position": [
+        -1.76,
+        -2.94
+      ],
+      "size": [
+        0.18,
+        0.18
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 15,
+      "name": "008-house-mouth",
+      "sourcePath": "mpf_recovered_assets/008-house/008-house-mouth.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008-house-mouth.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "93e2d8e893701b2bdff390cc50b7b0ee0445af9dcdb3f7a0a9bdfb0e10ad644a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9985,
+      "position": [
+        1.95,
+        -3.325
+      ],
+      "size": [
+        0.3,
+        0.19
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 18,
+      "name": "008-house-flag",
+      "sourcePath": "mpf_recovered_assets/008-house/008-house-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008-house-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bb5a2c73777cfff1d5702efe32251bd787fcfc2332a1144a94f010115a15e014",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9982,
+      "position": [
+        -5.245,
+        -1.97
+      ],
+      "size": [
+        0.77,
+        0.36
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 10,
+      "name": "008bg003-02",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg003-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg003-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9565348ef707055aee5b024c12a2524f0fd108d19beaa8b29cb2c32346caa9bc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        1.93,
+        -2.11
+      ],
+      "size": [
+        5.12,
+        5.12
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 11,
+      "name": "008bg003-04",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg003-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg003-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "482a3bdaaea2d0f2cd72bea2672afae314cbcb93b40cee1d0992f7681db3c591",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        2.04,
+        2.2
+      ],
+      "size": [
+        5.04,
+        3.5
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 12,
+      "name": "008bg003-05",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg003-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg003-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "116b43acda5ef1c8de6dd83b862e3c33a50667283b323d341ee050d6df1bcbc8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -2.82,
+        1.96
+      ],
+      "size": [
+        4.7,
+        3.02
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 13,
+      "name": "008-house-Under",
+      "sourcePath": "mpf_recovered_assets/008-house/008-house-Under.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008-house-Under.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9cafb39903f5ca9bd54aa4074a6759886419dfacc25846d3c02cb9c570421d36",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -0.025,
+        -4.88
+      ],
+      "size": [
+        9.07,
+        0.42
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 16,
+      "name": "008-house-flag",
+      "sourcePath": "mpf_recovered_assets/008-house/008-house-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008-house-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bb5a2c73777cfff1d5702efe32251bd787fcfc2332a1144a94f010115a15e014",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        5.225,
+        -1.93
+      ],
+      "size": [
+        0.77,
+        0.36
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 17,
+      "name": "008bg003-03",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg003-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg003-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ca454f742f88ef9d82fa4da0bf95eeddae77b7d4b4ffd27899929191c137bd2f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        5.09,
+        -1.97
+      ],
+      "size": [
+        1.2,
+        1.36
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 19,
+      "name": "008bg003-01",
+      "sourcePath": "mpf_recovered_assets/008-house/008bg003-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-027-bubble/Textures/008bg003-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e6d515762cb4d91f66e605a34769b470087af65c967ffae335a77e87b6d6b7ac",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        -3.19,
+        -2.11
+      ],
+      "size": [
+        5.12,
+        5.12
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1425 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-012-bluffstructure",
+  "sourceFile": "local-original-012-bluffstructure.json",
+  "sourceJsonSha256": "a32d6bd01701f4288864bf206a284d9fa6ed468644edd4077ba53a9a1826ab42",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/local-original-012-bluffstructurePreview.unity",
+  "spritePlacementCount": 70,
+  "uniqueSpriteFileCount": 28,
+  "copiedSpriteFileCount": 28,
+  "obstacleBoxColliderCount": 1253,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 21,
+  "offlineSpawn": {
+    "x": 4.8,
+    "y": -11.53
+  },
+  "bounds": {
+    "left": -6.0,
+    "bottom": -12.5,
+    "right": 6.0,
+    "top": 12.5
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "012-bluffstructure-01a-01",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-01a-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-01a-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4780f611358a199d4c65f64640aed491a8b392b62ca8bfe2edb10d6dbc82fce5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -1.00420475,
+        8.794566
+      ],
+      "size": [
+        10.0,
+        7.88
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "012-bluffstructure-02a-02",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-02a-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-02a-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "92b7f0b8a23dd0d3db673036c808461e865a85370150e73b7c45cdbd7e83c00e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -1.00420475,
+        0.7695744
+      ],
+      "size": [
+        10.0,
+        8.17
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "012-bluffstructure-02-03",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-02-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-02-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2b71578f0bd3bda173d9ee4467f8d32cb0d48ace866fd77287fd24e64d3fa2d2",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        0.09,
+        -10.1
+      ],
+      "size": [
+        1.22,
+        2.78
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "012-bluffstructure-02-01",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-02-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-02-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "84586872c5c38bca9af3ed56e799c4cedfebcc2ab03a4784349b934f4224a9db",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        0.11,
+        8.24
+      ],
+      "size": [
+        3.94,
+        3.34
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "012-bluffstructure-02-02",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-02-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-02-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c51d1d044ade3683eb0da7f0380b8ba1f0529d143f535d6e8400feda8b9c29c9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        2.36,
+        -3.33
+      ],
+      "size": [
+        1.3,
+        0.74
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 45,
+      "name": "012-bluffstructure-03-27",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-27.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-27.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8dfdfab4430a82abe0c16f0001a1e5cabea7ae4f1dfd65a95352f6d4edadf420",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9955,
+      "position": [
+        -5.56,
+        10.56
+      ],
+      "size": [
+        0.86,
+        0.44
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 46,
+      "name": "012-bluffstructure-03-27",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-27.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-27.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8dfdfab4430a82abe0c16f0001a1e5cabea7ae4f1dfd65a95352f6d4edadf420",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9954,
+      "position": [
+        -4.85,
+        10.56
+      ],
+      "size": [
+        0.86,
+        0.44
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 47,
+      "name": "012-bluffstructure-03-27",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-27.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-27.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8dfdfab4430a82abe0c16f0001a1e5cabea7ae4f1dfd65a95352f6d4edadf420",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9953,
+      "position": [
+        -4.14,
+        10.56
+      ],
+      "size": [
+        0.86,
+        0.44
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 49,
+      "name": "012-bluffstructure-03-27",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-27.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-27.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8dfdfab4430a82abe0c16f0001a1e5cabea7ae4f1dfd65a95352f6d4edadf420",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9951,
+      "position": [
+        5.59,
+        10.55
+      ],
+      "size": [
+        0.86,
+        0.44
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 50,
+      "name": "012-bluffstructure-03-27",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-27.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-27.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8dfdfab4430a82abe0c16f0001a1e5cabea7ae4f1dfd65a95352f6d4edadf420",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9950,
+      "position": [
+        4.88,
+        10.55
+      ],
+      "size": [
+        0.86,
+        0.44
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 51,
+      "name": "012-bluffstructure-03-27",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-27.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-27.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "8dfdfab4430a82abe0c16f0001a1e5cabea7ae4f1dfd65a95352f6d4edadf420",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9949,
+      "position": [
+        4.17,
+        10.55
+      ],
+      "size": [
+        0.86,
+        0.44
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 62,
+      "name": "012-bluffstructure-03-06",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "05a1b5aac6fb6111baa0acb0453bcc971d8c95d4999b927ef82c5ada4a844db3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9938,
+      "position": [
+        4.63,
+        1.29
+      ],
+      "size": [
+        0.88,
+        0.16
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 5,
+      "name": "012-bluffstructure-03-21",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-21.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-21.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c1bdd7c81b3b94575be9aa7cb9bd3d59ed6e55042f884de12d91cbc13ec295d5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10005,
+      "position": [
+        5.87,
+        0.82
+      ],
+      "size": [
+        0.38,
+        0.98
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 6,
+      "name": "012-bluffstructure-03-21",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-21.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-21.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c1bdd7c81b3b94575be9aa7cb9bd3d59ed6e55042f884de12d91cbc13ec295d5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10006,
+      "position": [
+        5.51,
+        0.82
+      ],
+      "size": [
+        0.38,
+        0.98
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 7,
+      "name": "012-bluffstructure-03-21",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-21.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-21.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c1bdd7c81b3b94575be9aa7cb9bd3d59ed6e55042f884de12d91cbc13ec295d5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10007,
+      "position": [
+        5.15,
+        0.82
+      ],
+      "size": [
+        0.38,
+        0.98
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 8,
+      "name": "012-bluffstructure-03-21",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-21.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-21.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c1bdd7c81b3b94575be9aa7cb9bd3d59ed6e55042f884de12d91cbc13ec295d5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10008,
+      "position": [
+        4.78,
+        0.82
+      ],
+      "size": [
+        0.38,
+        0.98
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 9,
+      "name": "012-bluffstructure-03-20",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-20.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-20.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f07b3cc5d4fcbbe4ffabae308e953b983bdaf4807c198db197de28e6626254aa",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10009,
+      "position": [
+        3.97,
+        0.82
+      ],
+      "size": [
+        1.26,
+        0.98
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 10,
+      "name": "012-bluffstructure-03-25",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-25.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-25.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e5c62076e26bb9a5f13bdb43d1f5a7b6aba65e9d0b5282bddb0be9694cd2e042",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        1.14,
+        4.75
+      ],
+      "size": [
+        1.22,
+        0.32
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 11,
+      "name": "012-bluffstructure-03-25",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-25.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-25.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e5c62076e26bb9a5f13bdb43d1f5a7b6aba65e9d0b5282bddb0be9694cd2e042",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        0.42,
+        4.75
+      ],
+      "size": [
+        1.22,
+        0.32
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 12,
+      "name": "012-bluffstructure-03-25",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-25.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-25.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e5c62076e26bb9a5f13bdb43d1f5a7b6aba65e9d0b5282bddb0be9694cd2e042",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -0.68,
+        4.75
+      ],
+      "size": [
+        1.22,
+        0.32
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 13,
+      "name": "012-bluffstructure-03-13",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-13.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-13.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "48c81cd01f7aa61d4d9ad36063065f61be05af73bbfdc1c883186d4ee3e7ae22",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -3.66,
+        -2.57
+      ],
+      "size": [
+        2.72,
+        0.76
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 14,
+      "name": "012-bluffstructure-03-09",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "63a793a55c3b4610544a509975323c44c0fa52d9b74e39b7f1aaf6c113f0ecff",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -4.93,
+        -12.58
+      ],
+      "size": [
+        2.18,
+        1.14
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 15,
+      "name": "012-bluffstructure-03-09",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "63a793a55c3b4610544a509975323c44c0fa52d9b74e39b7f1aaf6c113f0ecff",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        -2.75,
+        -12.58
+      ],
+      "size": [
+        2.18,
+        1.14
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 16,
+      "name": "012-bluffstructure-03-09",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "63a793a55c3b4610544a509975323c44c0fa52d9b74e39b7f1aaf6c113f0ecff",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        -0.57,
+        -12.58
+      ],
+      "size": [
+        2.18,
+        1.14
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 17,
+      "name": "012-bluffstructure-03-09",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "63a793a55c3b4610544a509975323c44c0fa52d9b74e39b7f1aaf6c113f0ecff",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        1.61,
+        -12.58
+      ],
+      "size": [
+        2.18,
+        1.14
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 18,
+      "name": "012-bluffstructure-03-09",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "63a793a55c3b4610544a509975323c44c0fa52d9b74e39b7f1aaf6c113f0ecff",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        3.79,
+        -12.58
+      ],
+      "size": [
+        2.18,
+        1.14
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 19,
+      "name": "012-bluffstructure-03-09",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "63a793a55c3b4610544a509975323c44c0fa52d9b74e39b7f1aaf6c113f0ecff",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        5.97,
+        -12.58
+      ],
+      "size": [
+        2.18,
+        1.14
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 20,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        -5.35,
+        -12.02
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 21,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        -4.07,
+        -12.02
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 22,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        5.04,
+        -12.02
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 23,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10023,
+      "position": [
+        3.75,
+        -12.02
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 24,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        2.46,
+        -12.02
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 25,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        -2.78,
+        -12.02
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 26,
+      "name": "012-bluffstructure-03-04",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0bad03cfbc61ac95bd1b4225d94c3bfc9fe88794fd233a8bdef01487aa9275d8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        0.12,
+        -9.39
+      ],
+      "size": [
+        3.4,
+        5.42
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 27,
+      "name": "012-bluffstructure-03-06",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "05a1b5aac6fb6111baa0acb0453bcc971d8c95d4999b927ef82c5ada4a844db3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        -2.01,
+        -12.02
+      ],
+      "size": [
+        0.88,
+        0.16
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 28,
+      "name": "012-bluffstructure-03-06",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "05a1b5aac6fb6111baa0acb0453bcc971d8c95d4999b927ef82c5ada4a844db3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        6.12,
+        -12.02
+      ],
+      "size": [
+        0.88,
+        0.16
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 29,
+      "name": "012-bluffstructure-03-10",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fd42a867ae8435efb8003a301ed8f05076712be62a886a832ebb6e6a7b5b5191",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        -4.36,
+        -8.78
+      ],
+      "size": [
+        3.26,
+        1.16
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 30,
+      "name": "012-bluffstructure-03-10",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fd42a867ae8435efb8003a301ed8f05076712be62a886a832ebb6e6a7b5b5191",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        4.41,
+        -8.81
+      ],
+      "size": [
+        3.26,
+        1.16
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 31,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10031,
+      "position": [
+        -3.38,
+        -8.21
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 32,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10032,
+      "position": [
+        -4.18,
+        -8.21
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 33,
+      "name": "012-bluffstructure-03-06",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "05a1b5aac6fb6111baa0acb0453bcc971d8c95d4999b927ef82c5ada4a844db3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10033,
+      "position": [
+        -5.75,
+        -8.21
+      ],
+      "size": [
+        0.88,
+        0.16
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 34,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        3.43,
+        -8.24
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 35,
+      "name": "012-bluffstructure-03-07",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6d7112cbdd7e77983644d50ff90fb53c478a977c1e59cfaeb3cb94f3210a1354",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        4.72,
+        -8.24
+      ],
+      "size": [
+        1.3,
+        0.16
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 36,
+      "name": "012-bluffstructure-03-06",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "05a1b5aac6fb6111baa0acb0453bcc971d8c95d4999b927ef82c5ada4a844db3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        5.8,
+        -8.24
+      ],
+      "size": [
+        0.88,
+        0.16
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 37,
+      "name": "012-bluffstructure-03-11",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9ebbc9c67efc898683edb8cc8011feb769a10edc5ef9ff3a8d3c5284bf93f2a0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        -1.49,
+        -2.46
+      ],
+      "size": [
+        1.72,
+        0.54
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 38,
+      "name": "012-bluffstructure-03-12",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-12.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-12.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f3e14db5d1b513224baa63ff365121bfadba0c75ef205b3bbfa55b778c8362c7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        -5.54,
+        -2.46
+      ],
+      "size": [
+        1.14,
+        0.54
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 39,
+      "name": "012-bluffstructure-03-01",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "89d970cd16f75a052bbb5f1c176a6f0e7be8fa31c94f7ddea07cb90ee1adedc4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        2.93,
+        -3.81
+      ],
+      "size": [
+        3.4,
+        4.7
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 40,
+      "name": "012-bluffstructure-03-02",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "58ae83ea970f0dec21078ed52c7b460946856ea1a15b6e5c56851673ba78fd4d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        5.67,
+        -5.07
+      ],
+      "size": [
+        0.7,
+        2.16
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 41,
+      "name": "012-bluffstructure-03-02",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "58ae83ea970f0dec21078ed52c7b460946856ea1a15b6e5c56851673ba78fd4d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        4.97,
+        -5.07
+      ],
+      "size": [
+        0.7,
+        2.16
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 42,
+      "name": "012-bluffstructure-03-05",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "cb0e810afaa6a7bf68b8f5ddc06c7fc13706b6f35fca89a6d4905d182ff2955e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10042,
+      "position": [
+        -5.19,
+        -7.43
+      ],
+      "size": [
+        1.72,
+        1.68
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 43,
+      "name": "012-bluffstructure-03-14",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-14.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-14.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b66618afd625940c0eaa233fecfcf7690d8b375d43efa02247e576c5cf373efc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        -3.65,
+        0.73
+      ],
+      "size": [
+        4.74,
+        2.76
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 44,
+      "name": "012-bluffstructure-03-18",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-18.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-18.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4ac9e89e9a7a009794c087ec3277239e49c5d4edceae4bfeeefabe2ac863eb44",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10044,
+      "position": [
+        0.11,
+        9.4
+      ],
+      "size": [
+        3.94,
+        3.52
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 48,
+      "name": "012-bluffstructure-03-19",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-19.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-19.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "cbb5ff20ca582d68b122b4e118a56ec2b42017126384907dbc6aad7b24b3207c",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        -4.78,
+        9.83
+      ],
+      "size": [
+        2.4,
+        1.14
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 52,
+      "name": "012-bluffstructure-03-19",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-19.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-19.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "cbb5ff20ca582d68b122b4e118a56ec2b42017126384907dbc6aad7b24b3207c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        4.82,
+        9.84
+      ],
+      "size": [
+        2.4,
+        1.14
+      ]
+    },
+    {
+      "index": 54,
+      "sourcePlacement": 53,
+      "name": "012-bluffstructure-03-23",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "febfd690e4928d3da6f83981760bcad4ac27c804667672480105ead1f94ea072",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10053,
+      "position": [
+        4.53,
+        0.04
+      ],
+      "size": [
+        1.2,
+        0.78
+      ]
+    },
+    {
+      "index": 55,
+      "sourcePlacement": 54,
+      "name": "012-bluffstructure-03-23",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "febfd690e4928d3da6f83981760bcad4ac27c804667672480105ead1f94ea072",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10054,
+      "position": [
+        5.43,
+        0.04
+      ],
+      "size": [
+        1.2,
+        0.78
+      ]
+    },
+    {
+      "index": 56,
+      "sourcePlacement": 55,
+      "name": "012-bluffstructure-03-23",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "febfd690e4928d3da6f83981760bcad4ac27c804667672480105ead1f94ea072",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10055,
+      "position": [
+        3.61,
+        0.04
+      ],
+      "size": [
+        1.2,
+        0.78
+      ]
+    },
+    {
+      "index": 57,
+      "sourcePlacement": 56,
+      "name": "012-bluffstructure-03-23",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "febfd690e4928d3da6f83981760bcad4ac27c804667672480105ead1f94ea072",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10056,
+      "position": [
+        2.69,
+        0.04
+      ],
+      "size": [
+        1.2,
+        0.78
+      ]
+    },
+    {
+      "index": 58,
+      "sourcePlacement": 57,
+      "name": "012-bluffstructure-03-28",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-28.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-28.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fdb5b3a7dde48057c606099aff21884344d088867f60b72903955266e42f70b6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10057,
+      "position": [
+        -1.3,
+        4.89
+      ],
+      "size": [
+        0.28,
+        0.6
+      ]
+    },
+    {
+      "index": 59,
+      "sourcePlacement": 58,
+      "name": "012-bluffstructure-03-28",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-28.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-28.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fdb5b3a7dde48057c606099aff21884344d088867f60b72903955266e42f70b6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10058,
+      "position": [
+        1.78,
+        4.91
+      ],
+      "size": [
+        0.28,
+        0.6
+      ]
+    },
+    {
+      "index": 60,
+      "sourcePlacement": 59,
+      "name": "012-bluffstructure-03-24",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-24.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-24.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "555a8a1a039683c77ffdb389fd0e661b1630193aa7169ee0b0dcf2f39a7c1d2b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10059,
+      "position": [
+        0.24,
+        4.11
+      ],
+      "size": [
+        3.36,
+        1.12
+      ]
+    },
+    {
+      "index": 61,
+      "sourcePlacement": 60,
+      "name": "012-bluffstructure-03-03",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a2f0779d226f8e7d1c155b45a7482a9662fd7dc4d6fee128776f7f1d0cd25a8c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10060,
+      "position": [
+        -0.84,
+        -5.175
+      ],
+      "size": [
+        2.3,
+        0.79
+      ]
+    },
+    {
+      "index": 62,
+      "sourcePlacement": 61,
+      "name": "012-bluffstructure-03-05",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "cb0e810afaa6a7bf68b8f5ddc06c7fc13706b6f35fca89a6d4905d182ff2955e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10061,
+      "position": [
+        5.26,
+        2.07
+      ],
+      "size": [
+        1.72,
+        1.68
+      ]
+    },
+    {
+      "index": 63,
+      "sourcePlacement": 63,
+      "name": "012-bluffstructure-03-17",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-17.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-17.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a2c3fea6b906c68e5788684a3b3f01bf4508fb21359c47ed1594366ac4ae2658",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10063,
+      "position": [
+        -5.01,
+        5.76
+      ],
+      "size": [
+        2.02,
+        1.08
+      ]
+    },
+    {
+      "index": 64,
+      "sourcePlacement": 64,
+      "name": "012-bluffstructure-03-17",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-17.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-17.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a2c3fea6b906c68e5788684a3b3f01bf4508fb21359c47ed1594366ac4ae2658",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10064,
+      "position": [
+        5.02,
+        6.03
+      ],
+      "size": [
+        2.02,
+        1.08
+      ]
+    },
+    {
+      "index": 65,
+      "sourcePlacement": 65,
+      "name": "012-bluffstructure-03-10",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fd42a867ae8435efb8003a301ed8f05076712be62a886a832ebb6e6a7b5b5191",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10065,
+      "position": [
+        -2.26,
+        -3.02
+      ],
+      "size": [
+        3.26,
+        1.16
+      ]
+    },
+    {
+      "index": 66,
+      "sourcePlacement": 66,
+      "name": "012-bluffstructure-03-09",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "63a793a55c3b4610544a509975323c44c0fa52d9b74e39b7f1aaf6c113f0ecff",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10066,
+      "position": [
+        -4.97,
+        -3.02
+      ],
+      "size": [
+        2.18,
+        1.14
+      ]
+    },
+    {
+      "index": 67,
+      "sourcePlacement": 67,
+      "name": "012-bluffstructure-03-23",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-23.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-23.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "febfd690e4928d3da6f83981760bcad4ac27c804667672480105ead1f94ea072",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10067,
+      "position": [
+        1.77,
+        0.04
+      ],
+      "size": [
+        1.2,
+        0.78
+      ]
+    },
+    {
+      "index": 68,
+      "sourcePlacement": 68,
+      "name": "012-bluffstructure-03-25",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-25.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-25.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e5c62076e26bb9a5f13bdb43d1f5a7b6aba65e9d0b5282bddb0be9694cd2e042",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10068,
+      "position": [
+        5.09,
+        -3.85
+      ],
+      "size": [
+        1.22,
+        0.32
+      ]
+    },
+    {
+      "index": 69,
+      "sourcePlacement": 69,
+      "name": "012-bluffstructure-03-25",
+      "sourcePath": "mpf_recovered_assets/012-BluffStructure/012-bluffstructure-03-25.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-012-bluffstructure/Textures/012-bluffstructure-03-25.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "e5c62076e26bb9a5f13bdb43d1f5a7b6aba65e9d0b5282bddb0be9694cd2e042",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10069,
+      "position": [
+        5.81,
+        -3.85
+      ],
+      "size": [
+        1.22,
+        0.32
+      ]
+    }
+  ]
+}

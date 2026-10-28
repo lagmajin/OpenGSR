@@ -1,0 +1,445 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-019-archlord",
+  "sourceFile": "local-original-019-archlord.json",
+  "sourceJsonSha256": "4ffc5c6e5524d310267d07da959f1886261f427ef75b0d1cbc54d1010f566ce6",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-019-archlord/local-original-019-archlordPreview.unity",
+  "spritePlacementCount": 21,
+  "uniqueSpriteFileCount": 15,
+  "copiedSpriteFileCount": 15,
+  "obstacleBoxColliderCount": 1159,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 8,
+  "offlineSpawn": {
+    "x": 2.4,
+    "y": -3.6
+  },
+  "bounds": {
+    "left": -5.0,
+    "bottom": -10.0,
+    "right": 5.0,
+    "top": 10.0
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "019-archlord-01",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "b013fea7894e32aa993a3fe3130cc7f991da166cdd7514ef78d6e183f3513129",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -0.75,
+        6.809999
+      ],
+      "size": [
+        8.5,
+        6.38
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "019-archlord-02-03",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-02-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-02-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "85c4f3a8a1a921714f4f96e452b9170b4f6b68b6aba6e888ef62686e76ea9a06",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -1.95,
+        -7.22
+      ],
+      "size": [
+        3.88,
+        5.56
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "019-archlord-02-04",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-02-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-02-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "d78e154489fa56b47ef201240420091b3d03baacdb657d431e4b3f991b3491a3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        1.9,
+        -7.23
+      ],
+      "size": [
+        3.82,
+        5.56
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 6,
+      "name": "019-archlord-02-01",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-02-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-02-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c5bb40f179e3deff249bf71816c393e78df74090760033250a5a34fba66113cb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        -1.85,
+        -2.75
+      ],
+      "size": [
+        3.54,
+        2.48
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 9,
+      "name": "019-archlord-02-02",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-02-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-02-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "30f6f70ed88985fa5ae2d26570bff3b8c1113c16e88a2ee0195e46a7c0fc09a9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        1.68,
+        -2.75
+      ],
+      "size": [
+        3.52,
+        2.48
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 3,
+      "name": "019-archlord-03-10",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2b04d4ade513e2e2376154df3952e2350090dbdacfbb7dc548afc65df865cd0c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10003,
+      "position": [
+        -2.75,
+        -9.865
+      ],
+      "size": [
+        4.54,
+        0.57
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 4,
+      "name": "019-archlord-03-10",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2b04d4ade513e2e2376154df3952e2350090dbdacfbb7dc548afc65df865cd0c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10004,
+      "position": [
+        1.77,
+        -9.865
+      ],
+      "size": [
+        4.54,
+        0.57
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 5,
+      "name": "019-archlord-03-10",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-10.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-10.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2b04d4ade513e2e2376154df3952e2350090dbdacfbb7dc548afc65df865cd0c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10005,
+      "position": [
+        4.45,
+        -9.865
+      ],
+      "size": [
+        4.54,
+        0.57
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 7,
+      "name": "019-archlord-03-08",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a66a68dc934b22d35cf38fff7bbf344f663af28e3757213ef3e09ff2ee0327cb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10007,
+      "position": [
+        0.67,
+        -7.0
+      ],
+      "size": [
+        1.8,
+        0.92
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 8,
+      "name": "019-archlord-03-08",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a66a68dc934b22d35cf38fff7bbf344f663af28e3757213ef3e09ff2ee0327cb",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10008,
+      "position": [
+        -1.1,
+        -7.0
+      ],
+      "size": [
+        1.8,
+        0.92
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 10,
+      "name": "019-archlord-03-04",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-04.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-04.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c5c04fe206d177ce0191ced1f48d19214199a0526c919fa548be277568374249",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        -2.62,
+        -1.605
+      ],
+      "size": [
+        2.98,
+        4.79
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 11,
+      "name": "019-archlord-03-05",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-05.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-05.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "5b2bbc651a0a31552d630303dc1f80781910d418213e22034b8c3786c5230934",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        2.455,
+        -1.6
+      ],
+      "size": [
+        2.93,
+        4.78
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 12,
+      "name": "019-archlord-03-03",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4b752cd4244b5ad931ec0981614c4e32d92b536a500866601bdaf892e350f83a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -0.03,
+        0.83
+      ],
+      "size": [
+        2.2,
+        5.06
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 13,
+      "name": "019-archlord-03-06",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bc8a6abaf1038681552315715f60c880bcdc817dd64795818532b9af73daab0b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -2.09,
+        -4.6
+      ],
+      "size": [
+        4.26,
+        1.24
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 14,
+      "name": "019-archlord-03-07",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-07.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-07.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a7de87e68d9b87fc32580f46f13eb5ca39be4f0ac59f83a43d4c990b10c738e5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        1.985,
+        -4.585
+      ],
+      "size": [
+        3.97,
+        1.21
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 15,
+      "name": "019-archlord-03-08",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a66a68dc934b22d35cf38fff7bbf344f663af28e3757213ef3e09ff2ee0327cb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        -4.11,
+        0.94
+      ],
+      "size": [
+        1.8,
+        0.92
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 16,
+      "name": "019-archlord-03-02",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "05f4358afce65c681c8669d39be358c27a0db37a2be4a68cb8f4d8d417f105ad",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        -0.07,
+        5.81
+      ],
+      "size": [
+        1.62,
+        4.9
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 17,
+      "name": "019-archlord-03-01",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "724e89eaeb8e6249e04e29fedb91e7aa559882f571f6454ed866c7870e874b08",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        -0.07,
+        10.59
+      ],
+      "size": [
+        0.14,
+        4.68
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 18,
+      "name": "019-archlord-03-08",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-08.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-08.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a66a68dc934b22d35cf38fff7bbf344f663af28e3757213ef3e09ff2ee0327cb",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        4.13,
+        0.94
+      ],
+      "size": [
+        1.8,
+        0.92
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 19,
+      "name": "019-archlord-03-09",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c8d378aaeb19ea51dec6f72a8568bc1feabe04b3315f4a4084bd8747f2cdd505",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        -2.885,
+        5.4
+      ],
+      "size": [
+        1.95,
+        3.52
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 20,
+      "name": "019-archlord-03-09",
+      "sourcePath": "mpf_recovered_assets/019-Archlord/019-archlord-03-09.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-019-archlord/Textures/019-archlord-03-09.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c8d378aaeb19ea51dec6f72a8568bc1feabe04b3315f4a4084bd8747f2cdd505",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        2.875,
+        5.33
+      ],
+      "size": [
+        1.95,
+        3.52
+      ]
+    }
+  ]
+}

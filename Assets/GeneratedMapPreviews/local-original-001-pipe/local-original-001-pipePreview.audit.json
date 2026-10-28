@@ -1,0 +1,1105 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-001-pipe",
+  "sourceFile": "local-original-001-pipe.json",
+  "sourceJsonSha256": "751725a48a27a3c6eea2e4e427b633ab53441468781972f6063c292289a53d0c",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-001-pipe/local-original-001-pipePreview.unity",
+  "spritePlacementCount": 54,
+  "uniqueSpriteFileCount": 30,
+  "copiedSpriteFileCount": 7,
+  "obstacleBoxColliderCount": 1265,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 7,
+  "offlineSpawn": {
+    "x": -8.9,
+    "y": 3.58
+  },
+  "bounds": {
+    "left": -10.0,
+    "bottom": -5.0,
+    "right": 10.0,
+    "top": 5.0
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "pbg001",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pbg001.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pbg001.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1cdfe8cdc953382cb5c7267a7ee76b94ca53056dd170d3c8e9d42cdb4d9148cd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -3.900048,
+        0.54904
+      ],
+      "size": [
+        15.38,
+        9.26
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "001-red-piston-c",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-c.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-c.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9360f097a766aa69204bc28691542fb86261f100c885340f8c87f17ad9f10037",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        9.73,
+        -2.105
+      ],
+      "size": [
+        0.34,
+        0.21
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 4,
+      "name": "001-red-piston-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "1789e115420f434aa9161d211862b9aa23d02fe2dbccac60582c6a43b537b625",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        7.09,
+        -3.34
+      ],
+      "size": [
+        0.6,
+        0.3
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 5,
+      "name": "001-red-piston-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "1789e115420f434aa9161d211862b9aa23d02fe2dbccac60582c6a43b537b625",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        8.54,
+        0.23
+      ],
+      "size": [
+        0.6,
+        0.3
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 6,
+      "name": "001-red-piston-c",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-c.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-c.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9360f097a766aa69204bc28691542fb86261f100c885340f8c87f17ad9f10037",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        8.73,
+        2.775
+      ],
+      "size": [
+        0.34,
+        0.21
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 7,
+      "name": "001-red-piston-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "1789e115420f434aa9161d211862b9aa23d02fe2dbccac60582c6a43b537b625",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        -3.66,
+        0.35
+      ],
+      "size": [
+        0.6,
+        0.3
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 9,
+      "name": "001-red-s042",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-s042.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-s042.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "de856347cbe82b1bb7cd2f5d1bffd620644493510bbbf2c0e8e425ddc3eb97db",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        -8.78,
+        -0.19
+      ],
+      "size": [
+        2.56,
+        5.26
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 13,
+      "name": "001-red-piston-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9ec11ab4decefc9b32279f466c191ab2021dac092b83ea48f9554c617a7bc850",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9987,
+      "position": [
+        -8.225,
+        -3.835
+      ],
+      "size": [
+        0.29,
+        0.39
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 22,
+      "name": "001-red-s045",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-s045.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-s045.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "681eadc6aeb421c685f2b2da1684d8d724d0c01ad7e00057c7bde022d613e53b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9978,
+      "position": [
+        8.305,
+        -2.755
+      ],
+      "size": [
+        3.35,
+        2.47
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 28,
+      "name": "001-red-bridge02",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-bridge02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-bridge02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ed83ad49586d8b9cd955b594e999837de27b80c2fbb639aaa5709e82ec8b5752",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9972,
+      "position": [
+        -3.105,
+        0.525
+      ],
+      "size": [
+        1.87,
+        0.79
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 42,
+      "name": "001-red-piston-c",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-c.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-c.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9360f097a766aa69204bc28691542fb86261f100c885340f8c87f17ad9f10037",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9958,
+      "position": [
+        4.56,
+        -4.175
+      ],
+      "size": [
+        0.34,
+        0.21
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 44,
+      "name": "001-red-redlight-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-redlight-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-redlight-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "7e8c7f7bcd408c5ad3f07332aeca1d920e6be926041595eac56dcda43aa5b60d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9956,
+      "position": [
+        -9.42,
+        0.22
+      ],
+      "size": [
+        0.3,
+        0.3
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 51,
+      "name": "001-red-piston-c",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-c.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-c.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9360f097a766aa69204bc28691542fb86261f100c885340f8c87f17ad9f10037",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9949,
+      "position": [
+        1.14,
+        0.995
+      ],
+      "size": [
+        0.34,
+        0.21
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 2,
+      "name": "block01",
+      "sourcePath": "mpf_recovered_assets/001_pipe/block01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/block01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d2440d50efa5af87f3b432270ab36104d389bf88df9894cdf9691143309dc468",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10002,
+      "position": [
+        0.295,
+        -3.26
+      ],
+      "size": [
+        0.53,
+        0.82
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 3,
+      "name": "block02",
+      "sourcePath": "mpf_recovered_assets/001_pipe/block02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/block02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "76e577ca2231426a692f8b95b296c278aaba3e901a58e4c891eb9684ec9bea03",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10003,
+      "position": [
+        -0.235,
+        -3.26
+      ],
+      "size": [
+        0.53,
+        0.82
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 8,
+      "name": "001-red-s041",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-s041.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-s041.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "430b7451e1b7c95d8b0aa3e41b1554a7214182e6b41da210b5ba1973072008a6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10008,
+      "position": [
+        0.07,
+        -4.355
+      ],
+      "size": [
+        8.76,
+        2.17
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 10,
+      "name": "pipe08",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c39531fdc8dd8b8cbf37d6fdca39288696de3e64af2309e1dcb5bcbaf456bb59",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        -4.755,
+        -3.505
+      ],
+      "size": [
+        0.89,
+        0.17
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 11,
+      "name": "pipe8",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c39531fdc8dd8b8cbf37d6fdca39288696de3e64af2309e1dcb5bcbaf456bb59",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        -5.635,
+        -3.505
+      ],
+      "size": [
+        0.89,
+        0.17
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 12,
+      "name": "pipe8",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c39531fdc8dd8b8cbf37d6fdca39288696de3e64af2309e1dcb5bcbaf456bb59",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -6.515,
+        -3.505
+      ],
+      "size": [
+        0.89,
+        0.17
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 14,
+      "name": "oil01",
+      "sourcePath": "mpf_recovered_assets/001_pipe/oil01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/oil01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "3f117e270f553f4bbf698620826e38df24c53da8560ace99c29c77c045c40aaf",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -7.475,
+        -3.51
+      ],
+      "size": [
+        1.03,
+        0.32
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 15,
+      "name": "pipe07",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5d6b08c0d8a360e772cc7d57ea491dd24a398e055658b71de156b8cefbd3cf6c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        -8.225,
+        -3.045
+      ],
+      "size": [
+        0.27,
+        0.47
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 16,
+      "name": "oil01",
+      "sourcePath": "mpf_recovered_assets/001_pipe/oil01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/oil01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "3f117e270f553f4bbf698620826e38df24c53da8560ace99c29c77c045c40aaf",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        4.755,
+        -3.71
+      ],
+      "size": [
+        1.03,
+        0.32
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 17,
+      "name": "pipe02",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "494f888f2b76eef98e88d1839488e10032ca8e3d62d69a8f6d9e720e44516db6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        5.46,
+        -3.66
+      ],
+      "size": [
+        0.38,
+        0.36
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 18,
+      "name": "pipe07",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5d6b08c0d8a360e772cc7d57ea491dd24a398e055658b71de156b8cefbd3cf6c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        5.515,
+        -3.245
+      ],
+      "size": [
+        0.27,
+        0.47
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 19,
+      "name": "pipe04",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a90e6da7be67a0374e7dea151754da4a9a82472e4f467c7db516a0c03d275aa1",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        5.57,
+        -2.83
+      ],
+      "size": [
+        0.38,
+        0.36
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 20,
+      "name": "pipe06",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "04ad1b52d40fb44a9bc05daf7adef058a922fe9e0ee0c8256c3c0f144fd84368",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        5.995,
+        -2.775
+      ],
+      "size": [
+        0.49,
+        0.25
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 21,
+      "name": "pipe06",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "04ad1b52d40fb44a9bc05daf7adef058a922fe9e0ee0c8256c3c0f144fd84368",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        6.485,
+        -2.775
+      ],
+      "size": [
+        0.49,
+        0.25
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 23,
+      "name": "001-red-piston-c",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-piston-c.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-piston-c.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "9360f097a766aa69204bc28691542fb86261f100c885340f8c87f17ad9f10037",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10023,
+      "position": [
+        9.73,
+        -1.895
+      ],
+      "size": [
+        0.34,
+        0.21
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 24,
+      "name": "007-snow-s007a",
+      "sourcePath": "mpf_recovered_assets/007-snow/007-snow-s007a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/IceVally/007-snow-s007a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4c62fa0b6b081359412434a38982dcef420af124e3645b0af8827be5d904cdc9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        4.73,
+        1.165
+      ],
+      "size": [
+        3.48,
+        0.79
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 25,
+      "name": "007-snow-s008a",
+      "sourcePath": "mpf_recovered_assets/007-snow/007-snow-s008a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/IceVally/007-snow-s008a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "992ebe96312f744ba00fefb7f3ac2ea7dbbf90cf9dae350fff34bc2a87db991c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        -0.5,
+        1.155
+      ],
+      "size": [
+        3.48,
+        0.79
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 26,
+      "name": "001-red-s044",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-s044.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-s044.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "e2ba5ba8514cea95d53da90d50b986ebfc819a328048aca37b29422094e6595d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        7.48,
+        1.745
+      ],
+      "size": [
+        3.22,
+        3.39
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 27,
+      "name": "pipe-004",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe-004.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe-004.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7d1fa5b76602f9df2379900142deb4e4ced2d188cbe6dd3798ae1481417baf51",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        -0.83,
+        2.98
+      ],
+      "size": [
+        0.7,
+        0.66
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 29,
+      "name": "block07",
+      "sourcePath": "mpf_recovered_assets/001_pipe/block07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/block07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "628ef4526f352bd105f83c6ed3896672ac6f82b91539d19af5256afa717912c8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        -8.805,
+        2.785
+      ],
+      "size": [
+        2.35,
+        0.73
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 30,
+      "name": "001-red-s048",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-s048.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-s048.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c310413fe2132e87eebdae6ac68286de40962fa93eda7865e9b26b62565e510c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        -5.45,
+        -1.205
+      ],
+      "size": [
+        2.02,
+        0.99
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 31,
+      "name": "001-red-s046",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-s046.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-s046.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5b690cc9dc1f7083a6ddb6f0162086e0cde03c068960b837b6d6a9bdd4b3e7cb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10031,
+      "position": [
+        -4.69,
+        3.33
+      ],
+      "size": [
+        1.98,
+        0.98
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 32,
+      "name": "001-red-s047",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-s047.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-s047.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6ad12ed59b867d45f5b2723b0be610fc8549f22e70d0fb12e37910fbcf521df0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10032,
+      "position": [
+        1.615,
+        -1.18
+      ],
+      "size": [
+        2.67,
+        1.14
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 33,
+      "name": "pipe-004",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe-004.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe-004.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7d1fa5b76602f9df2379900142deb4e4ced2d188cbe6dd3798ae1481417baf51",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10033,
+      "position": [
+        3.96,
+        3.38
+      ],
+      "size": [
+        0.7,
+        0.66
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 34,
+      "name": "001-red-enginefire-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-enginefire-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-enginefire-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d6e375fdbc7086e7f5b4345871cf4cd732117f5f821a3f11ef120914867013b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        -5.99,
+        -1.815
+      ],
+      "size": [
+        0.42,
+        0.37
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 35,
+      "name": "001-red-enginefire-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-enginefire-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-enginefire-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d6e375fdbc7086e7f5b4345871cf4cd732117f5f821a3f11ef120914867013b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        -5.47,
+        -1.805
+      ],
+      "size": [
+        0.42,
+        0.37
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 36,
+      "name": "001-red-enginefire-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-enginefire-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-enginefire-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d6e375fdbc7086e7f5b4345871cf4cd732117f5f821a3f11ef120914867013b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        -4.96,
+        -1.815
+      ],
+      "size": [
+        0.42,
+        0.37
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 37,
+      "name": "001-red-enginefire-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-enginefire-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-enginefire-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d6e375fdbc7086e7f5b4345871cf4cd732117f5f821a3f11ef120914867013b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        -4.7,
+        2.735
+      ],
+      "size": [
+        0.42,
+        0.37
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 38,
+      "name": "001-red-enginefire-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-enginefire-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-enginefire-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "394b3d02ba2368a2e376576e240cb34155f168e1f07362403c809a3f0f3a9f5b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        -4.22,
+        2.725
+      ],
+      "size": [
+        0.28,
+        0.31
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 39,
+      "name": "001-red-enginefire-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-enginefire-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-enginefire-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "394b3d02ba2368a2e376576e240cb34155f168e1f07362403c809a3f0f3a9f5b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        -5.18,
+        2.725
+      ],
+      "size": [
+        0.28,
+        0.31
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 40,
+      "name": "001-red-enginefire-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-enginefire-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-enginefire-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d6e375fdbc7086e7f5b4345871cf4cd732117f5f821a3f11ef120914867013b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        -0.83,
+        2.545
+      ],
+      "size": [
+        0.42,
+        0.37
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 41,
+      "name": "001-red-enginefire-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-enginefire-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-enginefire-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "0d6e375fdbc7086e7f5b4345871cf4cd732117f5f821a3f11ef120914867013b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        3.96,
+        2.945
+      ],
+      "size": [
+        0.42,
+        0.37
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 43,
+      "name": "001-red-redlight-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-redlight-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-redlight-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "7e8c7f7bcd408c5ad3f07332aeca1d920e6be926041595eac56dcda43aa5b60d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        -9.42,
+        0.63
+      ],
+      "size": [
+        0.3,
+        0.3
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 45,
+      "name": "001-red-redlight-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-redlight-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-redlight-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ae240a3fc3c738a92bfb06215b45d7ff957c4322565df722a3448e82722f27af",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10045,
+      "position": [
+        -9.015,
+        0.57
+      ],
+      "size": [
+        0.35,
+        0.34
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 46,
+      "name": "001-red-redlight-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-redlight-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-redlight-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ae240a3fc3c738a92bfb06215b45d7ff957c4322565df722a3448e82722f27af",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10046,
+      "position": [
+        -1.455,
+        -4.38
+      ],
+      "size": [
+        0.35,
+        0.34
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 47,
+      "name": "001-red-redlight-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-redlight-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-redlight-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "7e8c7f7bcd408c5ad3f07332aeca1d920e6be926041595eac56dcda43aa5b60d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10047,
+      "position": [
+        8.17,
+        -2.68
+      ],
+      "size": [
+        0.3,
+        0.3
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 48,
+      "name": "001-red-redlight-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-redlight-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-redlight-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ae240a3fc3c738a92bfb06215b45d7ff957c4322565df722a3448e82722f27af",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        9.275,
+        -2.29
+      ],
+      "size": [
+        0.35,
+        0.34
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 49,
+      "name": "001-red-redlight-b",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-redlight-b.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-redlight-b.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "ae240a3fc3c738a92bfb06215b45d7ff957c4322565df722a3448e82722f27af",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10049,
+      "position": [
+        4.115,
+        -4.07
+      ],
+      "size": [
+        0.35,
+        0.34
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 50,
+      "name": "001-red-redlight-a",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-redlight-a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-001-pipe/Textures/001-red-redlight-a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "7e8c7f7bcd408c5ad3f07332aeca1d920e6be926041595eac56dcda43aa5b60d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10050,
+      "position": [
+        7.62,
+        2.41
+      ],
+      "size": [
+        0.3,
+        0.3
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 52,
+      "name": "pipe01",
+      "sourcePath": "mpf_recovered_assets/001_pipe/pipe01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/pipe01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "2700369f0b434517a66a4ccd08c2382a9dffdb2a3b79e8c6c81e1fda4bedf4af",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        -8.225,
+        -3.515
+      ],
+      "size": [
+        0.49,
+        0.47
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 53,
+      "name": "001-red-bridge01",
+      "sourcePath": "mpf_recovered_assets/001_pipe/001-red-bridge01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Pipe/001-red-bridge01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "57874a8160281667075bd189b89ccc3eb1db6bd8b30fbfac922989eadfc06fc9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10053,
+      "position": [
+        2.19,
+        1.05
+      ],
+      "size": [
+        1.98,
+        0.68
+      ]
+    }
+  ]
+}

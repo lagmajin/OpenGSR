@@ -1,0 +1,2505 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-002-greenctf",
+  "sourceFile": "local-original-002-greenctf.json",
+  "sourceJsonSha256": "144dd09229396b56557a52d5689eea3281b64bec6db7a5792c4088df9bf03a44",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-002-greenctf/local-original-002-greenctfPreview.unity",
+  "spritePlacementCount": 124,
+  "uniqueSpriteFileCount": 48,
+  "copiedSpriteFileCount": 3,
+  "obstacleBoxColliderCount": 2168,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 16,
+  "offlineSpawn": {
+    "x": -21.65,
+    "y": 1.35
+  },
+  "bounds": {
+    "left": -23.25,
+    "bottom": -4.25,
+    "right": 23.25,
+    "top": 4.25
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "bg004_01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg004_01_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg004_01_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "bd093fa1d3475262cad0b5d2a922110869fee8f689ca9aceb50a2920ecce10ee",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -20.6900024,
+        3.675
+      ],
+      "size": [
+        5.12,
+        1.15
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "bg004_02",
+      "sourcePath": "mpf_recovered_assets/002-green/bg004_02_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg004_02_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "49d1b868fd43fabc1a2fedeb075c27609fed34cfd122e45dd1491961828645dc",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -15.5680046,
+        3.675
+      ],
+      "size": [
+        5.12,
+        1.15
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "bg004_01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg004_01_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg004_01_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "bd093fa1d3475262cad0b5d2a922110869fee8f689ca9aceb50a2920ecce10ee",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        -10.46193,
+        3.675
+      ],
+      "size": [
+        5.12,
+        1.15
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "bg003_01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg003_01_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg003_01_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b6b8888001c95359f5a6ed7437108e7dd99fe325e54fd6d80376c94b08760058",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        -20.69,
+        2.68
+      ],
+      "size": [
+        5.12,
+        1.64
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "bg003_02",
+      "sourcePath": "mpf_recovered_assets/002-green/bg003_02_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg003_02_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "db110368e9d5b0505152498696d992f60ca4637be0022b74b5b0154668d3f58d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        -15.5675,
+        2.71
+      ],
+      "size": [
+        5.12,
+        1.7
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 5,
+      "name": "bg003_01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg003_01_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg003_01_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b6b8888001c95359f5a6ed7437108e7dd99fe325e54fd6d80376c94b08760058",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        -10.46,
+        2.69
+      ],
+      "size": [
+        5.12,
+        1.64
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 6,
+      "name": "bg003_02",
+      "sourcePath": "mpf_recovered_assets/002-green/bg003_02_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg003_02_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "db110368e9d5b0505152498696d992f60ca4637be0022b74b5b0154668d3f58d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        -5.34,
+        2.72
+      ],
+      "size": [
+        5.12,
+        1.7
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 7,
+      "name": "bg002_01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002_01_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002_01_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f2e214f36ad8f138351df525d16837b37a4d3ea52b8ebfae22612c7edfba922e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        -20.6900158,
+        0.107992
+      ],
+      "size": [
+        5.12,
+        5.48
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 8,
+      "name": "bg002_02",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002_02_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002_02_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da8eef79218bde401a692345e20cff3add456b26d1a195746f968132015e31c4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        -15.5670156,
+        0.168004
+      ],
+      "size": [
+        5.12,
+        5.6
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 9,
+      "name": "bg002_03",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002_03_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002_03_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "dc10a6d402a475704eaf4760bb74a308be2522292f2b6bb29973f9167f730bad",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        -10.4504242,
+        0.124992
+      ],
+      "size": [
+        5.12,
+        5.51
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 10,
+      "name": "bg002_04",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002_04_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002_04_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "cea1f386943f6c933fa9f439519f75c6cfae005700436a7a93fd2c513ae08844",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9990,
+      "position": [
+        -5.33156,
+        0.194
+      ],
+      "size": [
+        5.12,
+        5.64
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 11,
+      "name": "bg002_05",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002_05_1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002_05_1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6e8b2603c25dc0c94408dd4f1bda0f1dd0cfd5eb31d601b30294e7e8f872fc23",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9989,
+      "position": [
+        -0.293528,
+        -0.004004
+      ],
+      "size": [
+        4.98,
+        5.26
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 15,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9985,
+      "position": [
+        -9.51,
+        -2.525
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 29,
+      "name": "tree_02",
+      "sourcePath": "mpf_recovered_assets/002-green/tree_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/tree_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "caa6ee69ea82711830cbe0c4366be39c371a5227005ae2fa9ccd7137c63fc715",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9971,
+      "position": [
+        -8.43,
+        -1.865
+      ],
+      "size": [
+        0.94,
+        1.51
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 30,
+      "name": "stone_03",
+      "sourcePath": "mpf_recovered_assets/002-green/stone_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/stone_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "863341a440ff0fdfa24cc86b230217fb9d49d21dd7da1fca42e2457fbe5d3fef",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9970,
+      "position": [
+        8.755,
+        -2.065
+      ],
+      "size": [
+        0.41,
+        0.53
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 31,
+      "name": "stone_02",
+      "sourcePath": "mpf_recovered_assets/002-green/stone_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/stone_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c08aa10b6a2d422cafaefd8969aa39647f4b2915a1324d345690664afadc2de1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9969,
+      "position": [
+        12.375,
+        -2.22
+      ],
+      "size": [
+        0.37,
+        0.2
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 32,
+      "name": "stone_05",
+      "sourcePath": "mpf_recovered_assets/002-green/stone_05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/stone_05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8c2c004ede3c86711fd999342eb67147a704a989806977feb6d8600cc423848c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9968,
+      "position": [
+        22.385,
+        0.525
+      ],
+      "size": [
+        1.95,
+        0.97
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 33,
+      "name": "tree_02",
+      "sourcePath": "mpf_recovered_assets/002-green/tree_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/tree_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "caa6ee69ea82711830cbe0c4366be39c371a5227005ae2fa9ccd7137c63fc715",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9967,
+      "position": [
+        14.42,
+        -1.565
+      ],
+      "size": [
+        0.94,
+        1.51
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 34,
+      "name": "tree_02",
+      "sourcePath": "mpf_recovered_assets/002-green/tree_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/tree_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "caa6ee69ea82711830cbe0c4366be39c371a5227005ae2fa9ccd7137c63fc715",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9966,
+      "position": [
+        -0.22,
+        -0.785
+      ],
+      "size": [
+        0.94,
+        1.51
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 35,
+      "name": "stone_05",
+      "sourcePath": "mpf_recovered_assets/002-green/stone_05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/stone_05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8c2c004ede3c86711fd999342eb67147a704a989806977feb6d8600cc423848c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9965,
+      "position": [
+        -22.275,
+        0.655
+      ],
+      "size": [
+        1.95,
+        0.97
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 38,
+      "name": "grass_02",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "463570ed4303a3ac420b4013d78d96bfe2123519d77293dadec693e81f72141d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9962,
+      "position": [
+        -14.1,
+        2.535
+      ],
+      "size": [
+        0.82,
+        0.17
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 46,
+      "name": "grass_05",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4b01a5abdf793efb96d5176b215f25cbe57c4ee279f0765fd9082e73f11fe578",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9954,
+      "position": [
+        -9.85,
+        -2.29
+      ],
+      "size": [
+        0.8,
+        0.68
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 49,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9951,
+      "position": [
+        -14.53,
+        2.545
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 55,
+      "name": "stone_03",
+      "sourcePath": "mpf_recovered_assets/002-green/stone_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/stone_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "863341a440ff0fdfa24cc86b230217fb9d49d21dd7da1fca42e2457fbe5d3fef",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9945,
+      "position": [
+        -6.795,
+        -2.365
+      ],
+      "size": [
+        0.41,
+        0.53
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 56,
+      "name": "grass_04",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "59d022d3b43b4081a05a8bb3a73b56ef36f8485125899e765d2727b23f678128",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9944,
+      "position": [
+        -7.1,
+        -2.525
+      ],
+      "size": [
+        0.82,
+        0.21
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 77,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9923,
+      "position": [
+        11.37,
+        -2.235
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 79,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9921,
+      "position": [
+        -4.51,
+        -2.525
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 82,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9918,
+      "position": [
+        1.13,
+        -1.475
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 83,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9917,
+      "position": [
+        0.92,
+        -1.455
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 84,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9916,
+      "position": [
+        0.55,
+        -1.435
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 85,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9915,
+      "position": [
+        0.11,
+        -1.455
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 86,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9914,
+      "position": [
+        -0.38,
+        -1.465
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 87,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9913,
+      "position": [
+        -0.79,
+        -1.455
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 88,
+      "name": "grass_01",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da52999f7c0f74ed141a998171014caa1d74af4557e9bc223a7e6f5cd3439277",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9912,
+      "position": [
+        -0.565,
+        -1.485
+      ],
+      "size": [
+        0.45,
+        0.15
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 89,
+      "name": "grass_01",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da52999f7c0f74ed141a998171014caa1d74af4557e9bc223a7e6f5cd3439277",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9911,
+      "position": [
+        -0.135,
+        -1.485
+      ],
+      "size": [
+        0.45,
+        0.15
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 90,
+      "name": "grass_01",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da52999f7c0f74ed141a998171014caa1d74af4557e9bc223a7e6f5cd3439277",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9910,
+      "position": [
+        0.695,
+        -1.515
+      ],
+      "size": [
+        0.45,
+        0.15
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 92,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9908,
+      "position": [
+        7.4,
+        -2.315
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 94,
+      "name": "grass_01",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da52999f7c0f74ed141a998171014caa1d74af4557e9bc223a7e6f5cd3439277",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9906,
+      "position": [
+        11.745,
+        2.045
+      ],
+      "size": [
+        0.45,
+        0.15
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 95,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9905,
+      "position": [
+        11.96,
+        2.075
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 96,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9904,
+      "position": [
+        12.11,
+        2.095
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 97,
+      "name": "grass_03",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "44654745596c367684334ba9d45b712b1a5d001e194dd5fe8e8a1074a079232e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9903,
+      "position": [
+        17.715,
+        1.42
+      ],
+      "size": [
+        1.03,
+        0.16
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 98,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9902,
+      "position": [
+        17.58,
+        1.455
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 99,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9901,
+      "position": [
+        18.15,
+        1.455
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 100,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9900,
+      "position": [
+        -17.38,
+        1.875
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 101,
+      "name": "grass_02",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "463570ed4303a3ac420b4013d78d96bfe2123519d77293dadec693e81f72141d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9899,
+      "position": [
+        -17.8,
+        1.865
+      ],
+      "size": [
+        0.82,
+        0.17
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 102,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9898,
+      "position": [
+        -18.16,
+        1.915
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 107,
+      "name": "002-green-biggrass2",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-biggrass2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-green-biggrass2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "16142d5df5e5f804a254a7c3153374fdbaedb5f65f798a4796cc4023b67e73b3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9893,
+      "position": [
+        6.565,
+        -2.0
+      ],
+      "size": [
+        0.55,
+        0.38
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 108,
+      "name": "002-green-biggrass1",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-biggrass1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/002-green-biggrass1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7a448d210b9f34581578da0c27f5cfb1fd1b0791a46cd7debf1de3b98477fcb5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9892,
+      "position": [
+        6.61,
+        -2.185
+      ],
+      "size": [
+        0.8,
+        0.47
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 109,
+      "name": "002-green-biggrass2",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-biggrass2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-green-biggrass2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "16142d5df5e5f804a254a7c3153374fdbaedb5f65f798a4796cc4023b67e73b3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9891,
+      "position": [
+        -10.655,
+        -2.26
+      ],
+      "size": [
+        0.55,
+        0.38
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 110,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9890,
+      "position": [
+        6.81,
+        -2.315
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 111,
+      "name": "002-green-biggrass1",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-biggrass1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/002-green-biggrass1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7a448d210b9f34581578da0c27f5cfb1fd1b0791a46cd7debf1de3b98477fcb5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9889,
+      "position": [
+        -10.61,
+        -2.425
+      ],
+      "size": [
+        0.8,
+        0.47
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 115,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9885,
+      "position": [
+        -11.15,
+        -2.515
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 120,
+      "name": "002-green-flag",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-green-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c1cb87c147da67a02e4e52130d8c3c74030ee17798fced0c7bd97d2dd4f2de3b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9880,
+      "position": [
+        12.595,
+        1.99
+      ],
+      "size": [
+        0.97,
+        0.38
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 12,
+      "name": "bg001_01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b8c1aaaca8a067a003911a9316bf77e1013aaae917a04c15a374ca2ccb3f33d0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -21.345,
+        -2.04
+      ],
+      "size": [
+        3.81,
+        4.5
+      ]
+    },
+    {
+      "index": 54,
+      "sourcePlacement": 13,
+      "name": "bg001_02",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9d75fc87624dae844d52bd89a9a1346fb52c899a1f7eee8ff94215100106c049",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -17.95,
+        -2.075
+      ],
+      "size": [
+        2.98,
+        4.41
+      ]
+    },
+    {
+      "index": 55,
+      "sourcePlacement": 14,
+      "name": "bg001_03",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b2af9db5ae2e065daab61ba712ecf02c85de0874253fba59049466f88ade1a36",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        -14.13,
+        -2.835
+      ],
+      "size": [
+        4.66,
+        2.89
+      ]
+    },
+    {
+      "index": 56,
+      "sourcePlacement": 16,
+      "name": "bg001_05",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "db23841dd86c8e8b73816c5937ca8a9ec17ed5ed60606b7c5133ba9de9035d2d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        -5.68,
+        -3.445
+      ],
+      "size": [
+        2.02,
+        1.67
+      ]
+    },
+    {
+      "index": 57,
+      "sourcePlacement": 17,
+      "name": "bg001_06",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "138a658c47dd7b882d23c33735d5a077aaa061b5d10c1432b3eed855b6da2876",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        -3.675,
+        -3.49
+      ],
+      "size": [
+        1.99,
+        1.58
+      ]
+    },
+    {
+      "index": 58,
+      "sourcePlacement": 18,
+      "name": "bg001_07",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da3e36dcbac2b1babb7dffcfa07c8e9c357947049cc0c7445cd8cd2086c674ec",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        -2.005,
+        -2.925
+      ],
+      "size": [
+        1.35,
+        2.71
+      ]
+    },
+    {
+      "index": 59,
+      "sourcePlacement": 19,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        -10.91,
+        -2.525
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 60,
+      "sourcePlacement": 20,
+      "name": "bg001_09",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_09.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_09.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b1979c8d20e1f3c9aafb613360995b3d01355424163aa5920656ec4f6c00ac89",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        2.795,
+        -2.92
+      ],
+      "size": [
+        1.23,
+        2.7
+      ]
+    },
+    {
+      "index": 61,
+      "sourcePlacement": 21,
+      "name": "bg001_10",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_10.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_10.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6e4dac8e4b67ff7d030a1436a90b9bb608407646a1c7a1d5bc60d24969f1f79a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        4.39,
+        -3.38
+      ],
+      "size": [
+        1.96,
+        1.78
+      ]
+    },
+    {
+      "index": 62,
+      "sourcePlacement": 22,
+      "name": "bg001_12",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b610072358e65db17b3cb73248c31e3610fd7fa7e4423f2f203d2e7a4a4d1ee9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        6.59,
+        -3.34
+      ],
+      "size": [
+        2.44,
+        1.86
+      ]
+    },
+    {
+      "index": 63,
+      "sourcePlacement": 23,
+      "name": "bg001_13",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_13.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_13.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "83821288e541bfd61b0de77fc737926f36dc27d165fcc620e63b461f404c7304",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10023,
+      "position": [
+        9.74,
+        -3.3
+      ],
+      "size": [
+        3.86,
+        1.96
+      ]
+    },
+    {
+      "index": 64,
+      "sourcePlacement": 24,
+      "name": "bg001_14",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5ee45216ce7cae413d7f33f544124894b87b09e4e3d7aad9b126de42ec7e56d7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        13.43,
+        -3.3
+      ],
+      "size": [
+        3.52,
+        1.98
+      ]
+    },
+    {
+      "index": 65,
+      "sourcePlacement": 25,
+      "name": "bg001_15",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_15.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_15.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "718a9c2346a502c7923182157abebe8f1837d5911664df45a4ec9d02b35beabe",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        16.14,
+        -2.79
+      ],
+      "size": [
+        1.9,
+        3.02
+      ]
+    },
+    {
+      "index": 66,
+      "sourcePlacement": 26,
+      "name": "bg001_16",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_16.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_16.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9472ce4fa530dd01b46d7a922fe3a737c8b920c53c2e4e009dfa19c699476b82",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        18.08,
+        -2.15
+      ],
+      "size": [
+        1.98,
+        4.3
+      ]
+    },
+    {
+      "index": 67,
+      "sourcePlacement": 27,
+      "name": "bg001_17",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_17.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_17.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "00b084441ce1c7bc2ca1c185cba7c86ba51c5038bde0ef57c577499ff71b0cf1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        21.15,
+        -2.1
+      ],
+      "size": [
+        4.16,
+        4.38
+      ]
+    },
+    {
+      "index": 68,
+      "sourcePlacement": 28,
+      "name": "tree_01",
+      "sourcePath": "mpf_recovered_assets/002-green/tree_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/tree_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "dc821f5e4c9159fa96a51b10226101ba36ee76ea9cde7cf7fe7c5c53968e7525",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        -10.865,
+        -1.53
+      ],
+      "size": [
+        1.57,
+        2.18
+      ]
+    },
+    {
+      "index": 69,
+      "sourcePlacement": 36,
+      "name": "tree_01",
+      "sourcePath": "mpf_recovered_assets/002-green/tree_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/tree_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "dc821f5e4c9159fa96a51b10226101ba36ee76ea9cde7cf7fe7c5c53968e7525",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        0.305,
+        -0.46
+      ],
+      "size": [
+        1.57,
+        2.18
+      ]
+    },
+    {
+      "index": 70,
+      "sourcePlacement": 37,
+      "name": "grass_05",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4b01a5abdf793efb96d5176b215f25cbe57c4ee279f0765fd9082e73f11fe578",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        -19.92,
+        0.46
+      ],
+      "size": [
+        0.8,
+        0.68
+      ]
+    },
+    {
+      "index": 71,
+      "sourcePlacement": 39,
+      "name": "grass_02",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "463570ed4303a3ac420b4013d78d96bfe2123519d77293dadec693e81f72141d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        5.99,
+        -2.335
+      ],
+      "size": [
+        0.82,
+        0.17
+      ]
+    },
+    {
+      "index": 72,
+      "sourcePlacement": 40,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        -8.63,
+        2.155
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 73,
+      "sourcePlacement": 41,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        -14.18,
+        2.555
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 74,
+      "sourcePlacement": 42,
+      "name": "grass_04",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "59d022d3b43b4081a05a8bb3a73b56ef36f8485125899e765d2727b23f678128",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10042,
+      "position": [
+        12.38,
+        -2.235
+      ],
+      "size": [
+        0.82,
+        0.21
+      ]
+    },
+    {
+      "index": 75,
+      "sourcePlacement": 43,
+      "name": "grass_02",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "463570ed4303a3ac420b4013d78d96bfe2123519d77293dadec693e81f72141d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        13.02,
+        -2.255
+      ],
+      "size": [
+        0.82,
+        0.17
+      ]
+    },
+    {
+      "index": 76,
+      "sourcePlacement": 44,
+      "name": "grass_02",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "463570ed4303a3ac420b4013d78d96bfe2123519d77293dadec693e81f72141d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10044,
+      "position": [
+        11.69,
+        -2.265
+      ],
+      "size": [
+        0.82,
+        0.17
+      ]
+    },
+    {
+      "index": 77,
+      "sourcePlacement": 45,
+      "name": "grass_03",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "44654745596c367684334ba9d45b712b1a5d001e194dd5fe8e8a1074a079232e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10045,
+      "position": [
+        19.755,
+        0.08
+      ],
+      "size": [
+        1.03,
+        0.16
+      ]
+    },
+    {
+      "index": 78,
+      "sourcePlacement": 47,
+      "name": "grass_04",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "59d022d3b43b4081a05a8bb3a73b56ef36f8485125899e765d2727b23f678128",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10047,
+      "position": [
+        -6.4,
+        -2.525
+      ],
+      "size": [
+        0.82,
+        0.21
+      ]
+    },
+    {
+      "index": 79,
+      "sourcePlacement": 48,
+      "name": "grass_04",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "59d022d3b43b4081a05a8bb3a73b56ef36f8485125899e765d2727b23f678128",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        -5.79,
+        -2.515
+      ],
+      "size": [
+        0.82,
+        0.21
+      ]
+    },
+    {
+      "index": 80,
+      "sourcePlacement": 50,
+      "name": "grass_03",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "44654745596c367684334ba9d45b712b1a5d001e194dd5fe8e8a1074a079232e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10050,
+      "position": [
+        14.725,
+        -2.25
+      ],
+      "size": [
+        1.03,
+        0.16
+      ]
+    },
+    {
+      "index": 81,
+      "sourcePlacement": 51,
+      "name": "grass_02",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "463570ed4303a3ac420b4013d78d96bfe2123519d77293dadec693e81f72141d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10051,
+      "position": [
+        13.84,
+        -2.245
+      ],
+      "size": [
+        0.82,
+        0.17
+      ]
+    },
+    {
+      "index": 82,
+      "sourcePlacement": 52,
+      "name": "grass_01",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da52999f7c0f74ed141a998171014caa1d74af4557e9bc223a7e6f5cd3439277",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        11.145,
+        -2.265
+      ],
+      "size": [
+        0.45,
+        0.15
+      ]
+    },
+    {
+      "index": 83,
+      "sourcePlacement": 53,
+      "name": "grass_05",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4b01a5abdf793efb96d5176b215f25cbe57c4ee279f0765fd9082e73f11fe578",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10053,
+      "position": [
+        7.16,
+        -2.07
+      ],
+      "size": [
+        0.8,
+        0.68
+      ]
+    },
+    {
+      "index": 84,
+      "sourcePlacement": 54,
+      "name": "grass_03",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "44654745596c367684334ba9d45b712b1a5d001e194dd5fe8e8a1074a079232e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10054,
+      "position": [
+        21.235,
+        0.11
+      ],
+      "size": [
+        1.03,
+        0.16
+      ]
+    },
+    {
+      "index": 85,
+      "sourcePlacement": 57,
+      "name": "bg002-green-s04",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4afa233c03cc1bb467e32c061dc1ec06b7178ce349fa240bd7a1da1c1eb73722",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10057,
+      "position": [
+        0.37,
+        1.9
+      ],
+      "size": [
+        2.96,
+        0.52
+      ]
+    },
+    {
+      "index": 86,
+      "sourcePlacement": 58,
+      "name": "bg002-green-s01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b8801a0b550910e3655c1c1d809c6a75479ce9333c611d4f9578390947f90254",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10058,
+      "position": [
+        -1.4,
+        1.87
+      ],
+      "size": [
+        0.88,
+        0.74
+      ]
+    },
+    {
+      "index": 87,
+      "sourcePlacement": 59,
+      "name": "bg002-green-s03",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "07954ff4a98c30d4088766735630484748c9a969b74c6fe6fa29b97905ee4c40",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10059,
+      "position": [
+        2.18,
+        1.67
+      ],
+      "size": [
+        0.98,
+        1.0
+      ]
+    },
+    {
+      "index": 88,
+      "sourcePlacement": 60,
+      "name": "002-green-biggrass1",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-biggrass1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/002-green-biggrass1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7a448d210b9f34581578da0c27f5cfb1fd1b0791a46cd7debf1de3b98477fcb5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10060,
+      "position": [
+        -15.15,
+        -1.185
+      ],
+      "size": [
+        0.8,
+        0.47
+      ]
+    },
+    {
+      "index": 89,
+      "sourcePlacement": 61,
+      "name": "002-green-biggrass2",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-biggrass2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-green-biggrass2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "16142d5df5e5f804a254a7c3153374fdbaedb5f65f798a4796cc4023b67e73b3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10061,
+      "position": [
+        -15.185,
+        -0.95
+      ],
+      "size": [
+        0.55,
+        0.38
+      ]
+    },
+    {
+      "index": 90,
+      "sourcePlacement": 62,
+      "name": "bg002-green-s07",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7600e6d610a2051c561d5e2a0da1a26565f7e20247a636d72fb8c35cc9769e60",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10062,
+      "position": [
+        17.64,
+        2.32
+      ],
+      "size": [
+        1.16,
+        0.98
+      ]
+    },
+    {
+      "index": 91,
+      "sourcePlacement": 63,
+      "name": "bg002-green-s05",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a9b999f4f4799083d27c70522cd9e6fda27b05fd744379f22e30fcd8924a6b1a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10063,
+      "position": [
+        18.92,
+        0.97
+      ],
+      "size": [
+        3.88,
+        0.88
+      ]
+    },
+    {
+      "index": 92,
+      "sourcePlacement": 64,
+      "name": "bg002-green-s02",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d0c319109a67fe8fe1885d933cf46d8de982c1815d2eda01f5a836eff100d4a8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10064,
+      "position": [
+        5.2,
+        0.27
+      ],
+      "size": [
+        1.68,
+        1.12
+      ]
+    },
+    {
+      "index": 93,
+      "sourcePlacement": 65,
+      "name": "bg002-green-s02",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d0c319109a67fe8fe1885d933cf46d8de982c1815d2eda01f5a836eff100d4a8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10065,
+      "position": [
+        -5.2,
+        0.42
+      ],
+      "size": [
+        1.68,
+        1.12
+      ]
+    },
+    {
+      "index": 94,
+      "sourcePlacement": 66,
+      "name": "bg002-green-s08",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f077dd938a5a8ab2cf7bfe3b0728f7c3123b8774316052c5edec089af879bc3c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10066,
+      "position": [
+        19.54,
+        2.33
+      ],
+      "size": [
+        2.06,
+        1.44
+      ]
+    },
+    {
+      "index": 95,
+      "sourcePlacement": 67,
+      "name": "bg002-green-s01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b8801a0b550910e3655c1c1d809c6a75479ce9333c611d4f9578390947f90254",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10067,
+      "position": [
+        16.32,
+        0.4
+      ],
+      "size": [
+        0.88,
+        0.74
+      ]
+    },
+    {
+      "index": 96,
+      "sourcePlacement": 68,
+      "name": "bg002-green-s01",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b8801a0b550910e3655c1c1d809c6a75479ce9333c611d4f9578390947f90254",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10068,
+      "position": [
+        15.03,
+        1.06
+      ],
+      "size": [
+        0.88,
+        0.74
+      ]
+    },
+    {
+      "index": 97,
+      "sourcePlacement": 69,
+      "name": "bg002-green-s04",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4afa233c03cc1bb467e32c061dc1ec06b7178ce349fa240bd7a1da1c1eb73722",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10069,
+      "position": [
+        9.78,
+        1.84
+      ],
+      "size": [
+        2.96,
+        0.52
+      ]
+    },
+    {
+      "index": 98,
+      "sourcePlacement": 70,
+      "name": "bg002-green-s07",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7600e6d610a2051c561d5e2a0da1a26565f7e20247a636d72fb8c35cc9769e60",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10070,
+      "position": [
+        7.95,
+        1.72
+      ],
+      "size": [
+        1.16,
+        0.98
+      ]
+    },
+    {
+      "index": 99,
+      "sourcePlacement": 71,
+      "name": "bg002-green-s05",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a9b999f4f4799083d27c70522cd9e6fda27b05fd744379f22e30fcd8924a6b1a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10071,
+      "position": [
+        -18.64,
+        1.42
+      ],
+      "size": [
+        3.88,
+        0.88
+      ]
+    },
+    {
+      "index": 100,
+      "sourcePlacement": 72,
+      "name": "bg002-green-s08",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f077dd938a5a8ab2cf7bfe3b0728f7c3123b8774316052c5edec089af879bc3c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10072,
+      "position": [
+        -19.08,
+        2.94
+      ],
+      "size": [
+        2.06,
+        1.44
+      ]
+    },
+    {
+      "index": 101,
+      "sourcePlacement": 73,
+      "name": "bg002-green-s03",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "07954ff4a98c30d4088766735630484748c9a969b74c6fe6fa29b97905ee4c40",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10073,
+      "position": [
+        -15.52,
+        0.61
+      ],
+      "size": [
+        0.98,
+        1.0
+      ]
+    },
+    {
+      "index": 102,
+      "sourcePlacement": 74,
+      "name": "bg002-green-s07",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7600e6d610a2051c561d5e2a0da1a26565f7e20247a636d72fb8c35cc9769e60",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10074,
+      "position": [
+        -17.27,
+        2.75
+      ],
+      "size": [
+        1.16,
+        0.98
+      ]
+    },
+    {
+      "index": 103,
+      "sourcePlacement": 75,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10075,
+      "position": [
+        -3.16,
+        -2.515
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 104,
+      "sourcePlacement": 76,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10076,
+      "position": [
+        5.7,
+        -2.335
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 105,
+      "sourcePlacement": 78,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10078,
+      "position": [
+        8.19,
+        2.175
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 106,
+      "sourcePlacement": 80,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10080,
+      "position": [
+        -5.18,
+        -2.535
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 107,
+      "sourcePlacement": 81,
+      "name": "bg002-green-s09",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s09.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s09.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9c6342fbed5a0e536f8c5cfd2ec13d32cc4cb6a0aefc8b320fb09d06301aaeb7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10081,
+      "position": [
+        -3.9,
+        -2.43
+      ],
+      "size": [
+        3.22,
+        1.02
+      ]
+    },
+    {
+      "index": 108,
+      "sourcePlacement": 91,
+      "name": "bg001_08",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1e74559f9e8f6a313f4c26dbdf9a45111a10fa06de925dbfc880332db1ebd74c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10091,
+      "position": [
+        0.425,
+        -2.895
+      ],
+      "size": [
+        3.51,
+        2.75
+      ]
+    },
+    {
+      "index": 109,
+      "sourcePlacement": 93,
+      "name": "grass_01",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da52999f7c0f74ed141a998171014caa1d74af4557e9bc223a7e6f5cd3439277",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10093,
+      "position": [
+        7.515,
+        -2.335
+      ],
+      "size": [
+        0.45,
+        0.15
+      ]
+    },
+    {
+      "index": 110,
+      "sourcePlacement": 103,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10103,
+      "position": [
+        -17.89,
+        1.915
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 111,
+      "sourcePlacement": 104,
+      "name": "002-green-biggrass2",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-biggrass2.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-green-biggrass2.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "16142d5df5e5f804a254a7c3153374fdbaedb5f65f798a4796cc4023b67e73b3",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10104,
+      "position": [
+        9.205,
+        -1.88
+      ],
+      "size": [
+        0.55,
+        0.38
+      ]
+    },
+    {
+      "index": 112,
+      "sourcePlacement": 105,
+      "name": "002-green-biggrass1",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-biggrass1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/002-green-biggrass1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7a448d210b9f34581578da0c27f5cfb1fd1b0791a46cd7debf1de3b98477fcb5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10105,
+      "position": [
+        9.22,
+        -2.095
+      ],
+      "size": [
+        0.8,
+        0.47
+      ]
+    },
+    {
+      "index": 113,
+      "sourcePlacement": 106,
+      "name": "grass_01",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "da52999f7c0f74ed141a998171014caa1d74af4557e9bc223a7e6f5cd3439277",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10106,
+      "position": [
+        9.065,
+        -2.255
+      ],
+      "size": [
+        0.45,
+        0.15
+      ]
+    },
+    {
+      "index": 114,
+      "sourcePlacement": 112,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10112,
+      "position": [
+        -10.76,
+        -2.515
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 115,
+      "sourcePlacement": 113,
+      "name": "grass_02",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "463570ed4303a3ac420b4013d78d96bfe2123519d77293dadec693e81f72141d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10113,
+      "position": [
+        6.54,
+        -2.345
+      ],
+      "size": [
+        0.82,
+        0.17
+      ]
+    },
+    {
+      "index": 116,
+      "sourcePlacement": 114,
+      "name": "grass_02",
+      "sourcePath": "mpf_recovered_assets/002-green/grass_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/grass_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "463570ed4303a3ac420b4013d78d96bfe2123519d77293dadec693e81f72141d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10114,
+      "position": [
+        -10.39,
+        -2.545
+      ],
+      "size": [
+        0.82,
+        0.17
+      ]
+    },
+    {
+      "index": 117,
+      "sourcePlacement": 116,
+      "name": "002-windgrass01",
+      "sourcePath": "mpf_recovered_assets/002-green/002-windgrass01.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-windgrass01.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "f0c727bec3e855a77818d15edffbc4236d524281f787754a27d7db4b4b23a80e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10116,
+      "position": [
+        -11.41,
+        -2.525
+      ],
+      "size": [
+        0.44,
+        0.23
+      ]
+    },
+    {
+      "index": 118,
+      "sourcePlacement": 117,
+      "name": "bg001_04",
+      "sourcePath": "mpf_recovered_assets/002-green/bg001_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg001_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0387a11382f81c42dff74e8d665275d6fc48cd792a92f01d7d261cc3b74be349",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10117,
+      "position": [
+        -9.245,
+        -3.445
+      ],
+      "size": [
+        5.11,
+        1.67
+      ]
+    },
+    {
+      "index": 119,
+      "sourcePlacement": 118,
+      "name": "002-green-flag",
+      "sourcePath": "mpf_recovered_assets/002-green/002-green-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-002-greenctf/Textures/002-green-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "c1cb87c147da67a02e4e52130d8c3c74030ee17798fced0c7bd97d2dd4f2de3b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10118,
+      "position": [
+        -13.495,
+        2.46
+      ],
+      "size": [
+        0.97,
+        0.38
+      ]
+    },
+    {
+      "index": 120,
+      "sourcePlacement": 119,
+      "name": "bg002-green-s06",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5b7498a3d6484f5a75192877972d10da962e6b0f545055de9498f24e30c38ef5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10119,
+      "position": [
+        -13.42,
+        1.91
+      ],
+      "size": [
+        2.9,
+        1.2
+      ]
+    },
+    {
+      "index": 121,
+      "sourcePlacement": 121,
+      "name": "bg002-green-s06",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s06.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s06.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5b7498a3d6484f5a75192877972d10da962e6b0f545055de9498f24e30c38ef5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10121,
+      "position": [
+        12.62,
+        1.44
+      ],
+      "size": [
+        2.9,
+        1.2
+      ]
+    },
+    {
+      "index": 122,
+      "sourcePlacement": 122,
+      "name": "bg002-green-s04",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4afa233c03cc1bb467e32c061dc1ec06b7178ce349fa240bd7a1da1c1eb73722",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10122,
+      "position": [
+        -10.56,
+        1.99
+      ],
+      "size": [
+        2.96,
+        0.52
+      ]
+    },
+    {
+      "index": 123,
+      "sourcePlacement": 123,
+      "name": "bg002-green-s07",
+      "sourcePath": "mpf_recovered_assets/002-green/bg002-green-s07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/GreenHill2/bg002-green-s07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7600e6d610a2051c561d5e2a0da1a26565f7e20247a636d72fb8c35cc9769e60",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10123,
+      "position": [
+        -8.89,
+        1.71
+      ],
+      "size": [
+        1.16,
+        0.98
+      ]
+    }
+  ]
+}

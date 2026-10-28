@@ -1,0 +1,1345 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-017-forest",
+  "sourceFile": "local-original-017-forest.json",
+  "sourceJsonSha256": "4b4f63bbf950f59ebf9f9c20053c875aabc6ec7ce1bc597567e567c2311fc850",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-017-forest/local-original-017-forestPreview.unity",
+  "spritePlacementCount": 66,
+  "uniqueSpriteFileCount": 28,
+  "copiedSpriteFileCount": 3,
+  "obstacleBoxColliderCount": 1991,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 12,
+  "offlineSpawn": {
+    "x": -5.1,
+    "y": 4.52
+  },
+  "bounds": {
+    "left": -9.0,
+    "bottom": -5.0,
+    "right": 9.0,
+    "top": 5.0
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "017_forest_01_01",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_01_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_01_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "31d0eb1c347d7ad76b0bd1bc40c567b13cff349661cb8df3672091e039c228f9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -4.499993,
+        1.83000076
+      ],
+      "size": [
+        9.0,
+        6.34
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 3,
+      "name": "017_forest_03_08",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_08.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_08.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "353a1e821d4164a6da851820d08c9451a78bcf6f93709f49a41db68cc26b4889",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        -7.75,
+        3.36
+      ],
+      "size": [
+        0.62,
+        0.88
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 4,
+      "name": "017_forest_03_35",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_35.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_35.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d4f259409382166a4a6691b9a0b936dfad2b1bfdff6dac0821cf6fc871d9ea0d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        6.04,
+        2.05
+      ],
+      "size": [
+        0.42,
+        1.38
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 5,
+      "name": "017_forest_03_35",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_35.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_35.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "d4f259409382166a4a6691b9a0b936dfad2b1bfdff6dac0821cf6fc871d9ea0d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        -5.79,
+        1.89
+      ],
+      "size": [
+        0.42,
+        1.38
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 6,
+      "name": "017_forest_03_34",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_34.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-017-forest/Textures/017_forest_03_34.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bf424cfd0215c9e1c6386aa7952341c681eb6f1c0039dcf65eeb342f87d77848",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        -0.74,
+        4.29
+      ],
+      "size": [
+        0.34,
+        1.38
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 7,
+      "name": "017_forest_03_34",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_34.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-017-forest/Textures/017_forest_03_34.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "bf424cfd0215c9e1c6386aa7952341c681eb6f1c0039dcf65eeb342f87d77848",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        1.7,
+        4.91
+      ],
+      "size": [
+        0.34,
+        1.38
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 8,
+      "name": "017_forest_03_33",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_33.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_33.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ede545f652613f9084f6053e8439558afe0c92c01c168e65da00403fdf99c80f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        -2.32,
+        -0.65
+      ],
+      "size": [
+        0.32,
+        1.36
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 9,
+      "name": "017_forest_03_33",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_33.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_33.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ede545f652613f9084f6053e8439558afe0c92c01c168e65da00403fdf99c80f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        3.44,
+        -0.49
+      ],
+      "size": [
+        0.32,
+        1.36
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 46,
+      "name": "017_forest_03_18",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a938d20ae534e7b9985d1234b67e580e648b864b49d767877a2310955ae6fe69",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9954,
+      "position": [
+        -1.65,
+        0.45
+      ],
+      "size": [
+        0.92,
+        0.68
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 57,
+      "name": "017_forest_03_27",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_27.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_27.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5811b207dc0aca54247a7b13ab55c347fdc8261082245d42506b1bff8b7e59d0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9943,
+      "position": [
+        1.11,
+        -2.36
+      ],
+      "size": [
+        0.92,
+        0.88
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 60,
+      "name": "017_forest_03_36",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_36.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_36.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4275e593a3eb9d24ecc40274e95e30b6bda3e0f97d21f24ebfdc8534c8cb43a1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9940,
+      "position": [
+        -2.24,
+        -1.47
+      ],
+      "size": [
+        0.82,
+        0.66
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 61,
+      "name": "017_forest_03_37",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_37.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_37.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5d9f432c54abf0fcc47dbc555045948620cc436cc74c510cf7948bb10473eeb7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9939,
+      "position": [
+        3.41,
+        -1.4
+      ],
+      "size": [
+        0.88,
+        0.78
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 1,
+      "name": "017_forest_03_29",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_29.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_29.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0ddd78dede8973420c30d8a3a331168991ffde8d0ed13af0f4df110b5c758c8e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10001,
+      "position": [
+        7.74,
+        -0.215
+      ],
+      "size": [
+        1.0,
+        0.59
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 2,
+      "name": "017_forest_03_29",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_29.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_29.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0ddd78dede8973420c30d8a3a331168991ffde8d0ed13af0f4df110b5c758c8e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10002,
+      "position": [
+        -7.93,
+        -0.615
+      ],
+      "size": [
+        1.0,
+        0.59
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 10,
+      "name": "007-snow-flag",
+      "sourcePath": "mpf_recovered_assets/007-snow/007-snow-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-017-forest/Textures/007-snow-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a31c8efb20efb2979932b2b2da63dfa0150b9e6ee3a84d4a50c09124954e6c58",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        -6.725,
+        -0.845
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 11,
+      "name": "007-snow-flag",
+      "sourcePath": "mpf_recovered_assets/007-snow/007-snow-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-017-forest/Textures/007-snow-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a31c8efb20efb2979932b2b2da63dfa0150b9e6ee3a84d4a50c09124954e6c58",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        6.725,
+        -0.815
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 12,
+      "name": "017_forest_03_16a",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_16a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_16a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "45ec12d7119c94fb317c6a1d8279f63df7d95af6a1df0a2271667479113b4da5",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10012,
+      "position": [
+        -2.23,
+        -3.955
+      ],
+      "size": [
+        4.82,
+        2.61
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 13,
+      "name": "017_forest_03_16b",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_16b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_16b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a0ec65345c4b580df4c9cb42fceab2c43d5e1cf9da1be8703c9a5d4b1c0e51c6",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        2.52,
+        -3.92
+      ],
+      "size": [
+        4.7,
+        2.68
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 14,
+      "name": "017_forest_03_31",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_31.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_31.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "24e51b6cb26fe73800d9881b1fb1cfe90c1e68042633189f3343bb795228612c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        6.32,
+        -4.01
+      ],
+      "size": [
+        2.16,
+        1.94
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 15,
+      "name": "017_forest_03_31",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_31.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_31.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "24e51b6cb26fe73800d9881b1fb1cfe90c1e68042633189f3343bb795228612c",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        -6.23,
+        -3.99
+      ],
+      "size": [
+        2.16,
+        1.94
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 16,
+      "name": "017_forest_03_15",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_15.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_15.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ae7991e90ca7fe9fa252721f13839372b50de27c8dda1a92ffe09e93f0a183fb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        7.71,
+        -1.03
+      ],
+      "size": [
+        1.78,
+        2.36
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 17,
+      "name": "017_forest_03_14",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c82f90bd4d990954fd36aef5588ff2f184135f25ab5d49f6c479d0d1bbffbd2a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        -7.9,
+        -1.49
+      ],
+      "size": [
+        2.14,
+        2.66
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 18,
+      "name": "017_forest_03_14",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_14.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_14.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c82f90bd4d990954fd36aef5588ff2f184135f25ab5d49f6c479d0d1bbffbd2a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        8.17,
+        -3.22
+      ],
+      "size": [
+        2.14,
+        2.66
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 19,
+      "name": "017_forest_03_15",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_15.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_15.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ae7991e90ca7fe9fa252721f13839372b50de27c8dda1a92ffe09e93f0a183fb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10019,
+      "position": [
+        -8.05,
+        -3.38
+      ],
+      "size": [
+        1.78,
+        2.36
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 20,
+      "name": "017_forest_03_11",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-017-forest/Textures/017_forest_03_11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "450f90f12e28259d00389725707003c3a64d5ac8427a9817368d9b88f3313852",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10020,
+      "position": [
+        -6.76,
+        -1.2
+      ],
+      "size": [
+        1.0,
+        0.94
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 21,
+      "name": "017_forest_03_24",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "58cf198bac83020478a53e08a3c612a3b0dc21580871f1fd8e2ab9cf2cbb5d47",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10021,
+      "position": [
+        7.25,
+        -3.99
+      ],
+      "size": [
+        1.26,
+        0.96
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 22,
+      "name": "017_forest_03_24",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "58cf198bac83020478a53e08a3c612a3b0dc21580871f1fd8e2ab9cf2cbb5d47",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10022,
+      "position": [
+        -8.35,
+        -4.36
+      ],
+      "size": [
+        1.26,
+        0.96
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 23,
+      "name": "017_forest_03_24",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "58cf198bac83020478a53e08a3c612a3b0dc21580871f1fd8e2ab9cf2cbb5d47",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10023,
+      "position": [
+        -7.27,
+        -3.75
+      ],
+      "size": [
+        1.26,
+        0.96
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 24,
+      "name": "017_forest_03_24",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "58cf198bac83020478a53e08a3c612a3b0dc21580871f1fd8e2ab9cf2cbb5d47",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        8.6,
+        -3.98
+      ],
+      "size": [
+        1.26,
+        0.96
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 25,
+      "name": "017_forest_03_18",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a938d20ae534e7b9985d1234b67e580e648b864b49d767877a2310955ae6fe69",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        -8.56,
+        -3.77
+      ],
+      "size": [
+        0.92,
+        0.68
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 26,
+      "name": "017_forest_03_23",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_23.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_23.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "66814041c6c00347071869c33aa05d3360d4e4cadebcfc23b39307f42d5ca85a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        7.84,
+        -4.47
+      ],
+      "size": [
+        1.8,
+        0.98
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 27,
+      "name": "017_forest_03_23",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_23.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_23.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "66814041c6c00347071869c33aa05d3360d4e4cadebcfc23b39307f42d5ca85a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10027,
+      "position": [
+        -7.57,
+        -4.39
+      ],
+      "size": [
+        1.8,
+        0.98
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 28,
+      "name": "017_forest_03_18",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a938d20ae534e7b9985d1234b67e580e648b864b49d767877a2310955ae6fe69",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        7.84,
+        -4.18
+      ],
+      "size": [
+        0.92,
+        0.68
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 29,
+      "name": "017_forest_03_18",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a938d20ae534e7b9985d1234b67e580e648b864b49d767877a2310955ae6fe69",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        -7.4,
+        -1.31
+      ],
+      "size": [
+        0.92,
+        0.68
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 30,
+      "name": "017_forest_03_18",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a938d20ae534e7b9985d1234b67e580e648b864b49d767877a2310955ae6fe69",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        -8.94,
+        -2.84
+      ],
+      "size": [
+        0.92,
+        0.68
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 31,
+      "name": "017_forest_03_28",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_28.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_28.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8c041102a6239235c20870411fd6cf4c39791ca84390b9479b5fa4612dc68bb1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10031,
+      "position": [
+        8.05,
+        2.785
+      ],
+      "size": [
+        2.18,
+        1.13
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 32,
+      "name": "017_forest_03_38",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_38.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_38.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9c6b51c3170b944cd58852332745530fa5460113f789d4790b4d4a78a2a50619",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10032,
+      "position": [
+        5.75,
+        3.36
+      ],
+      "size": [
+        2.8,
+        1.7
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 33,
+      "name": "017_forest_03_24",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "58cf198bac83020478a53e08a3c612a3b0dc21580871f1fd8e2ab9cf2cbb5d47",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10033,
+      "position": [
+        7.14,
+        3.03
+      ],
+      "size": [
+        1.26,
+        0.96
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 34,
+      "name": "017_forest_03_23",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_23.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_23.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "66814041c6c00347071869c33aa05d3360d4e4cadebcfc23b39307f42d5ca85a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        6.68,
+        2.82
+      ],
+      "size": [
+        1.8,
+        0.98
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 35,
+      "name": "017_forest_03_09",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_09.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_09.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "3361fb71b950bd50d7cc24503542cf28c8bdfa8953a8c5318a72d0ea74719772",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10035,
+      "position": [
+        8.51,
+        3.77
+      ],
+      "size": [
+        1.36,
+        1.74
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 36,
+      "name": "017_forest_03_28",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_28.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_28.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8c041102a6239235c20870411fd6cf4c39791ca84390b9479b5fa4612dc68bb1",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10036,
+      "position": [
+        -8.04,
+        2.785
+      ],
+      "size": [
+        2.18,
+        1.13
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 37,
+      "name": "017_forest_03_38",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_38.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_38.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "9c6b51c3170b944cd58852332745530fa5460113f789d4790b4d4a78a2a50619",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        -5.69,
+        3.39
+      ],
+      "size": [
+        2.8,
+        1.7
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 38,
+      "name": "017_forest_03_24",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "58cf198bac83020478a53e08a3c612a3b0dc21580871f1fd8e2ab9cf2cbb5d47",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        -6.93,
+        3.01
+      ],
+      "size": [
+        1.26,
+        0.96
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 39,
+      "name": "017_forest_03_23",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_23.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_23.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "66814041c6c00347071869c33aa05d3360d4e4cadebcfc23b39307f42d5ca85a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10039,
+      "position": [
+        -6.41,
+        2.67
+      ],
+      "size": [
+        1.8,
+        0.98
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 40,
+      "name": "017_forest_03_07",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_07.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_07.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b2757f4c0c137cff575def5fba0f369e6043b0b69e91e0201d425d554da30942",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10040,
+      "position": [
+        -8.88,
+        3.62
+      ],
+      "size": [
+        1.06,
+        1.78
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 41,
+      "name": "017_forest_03_36",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_36.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_36.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "4275e593a3eb9d24ecc40274e95e30b6bda3e0f97d21f24ebfdc8534c8cb43a1",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        6.08,
+        1.19
+      ],
+      "size": [
+        0.82,
+        0.66
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 42,
+      "name": "017_forest_03_13",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_13.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_13.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "560b45848a393714fb4cda137a4b8c4c17156b5b1876c1fb2d7f4aa0ff127913",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10042,
+      "position": [
+        6.01,
+        1.51
+      ],
+      "size": [
+        0.4,
+        0.24
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 43,
+      "name": "017_forest_03_12",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6b7d814797eceadeff2c1dfba8e26428ef8e1baa4e6af40e215daee038799f22",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        6.26,
+        1.37
+      ],
+      "size": [
+        0.4,
+        0.4
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 44,
+      "name": "017_forest_03_31",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_31.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_31.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "24e51b6cb26fe73800d9881b1fb1cfe90c1e68042633189f3343bb795228612c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10044,
+      "position": [
+        -2.16,
+        0.63
+      ],
+      "size": [
+        2.16,
+        1.94
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 45,
+      "name": "017_forest_03_31",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_31.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_31.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "24e51b6cb26fe73800d9881b1fb1cfe90c1e68042633189f3343bb795228612c",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10045,
+      "position": [
+        3.18,
+        0.71
+      ],
+      "size": [
+        2.16,
+        1.94
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 47,
+      "name": "017_forest_03_37",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_37.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_37.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5d9f432c54abf0fcc47dbc555045948620cc436cc74c510cf7948bb10473eeb7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10047,
+      "position": [
+        -5.75,
+        0.95
+      ],
+      "size": [
+        0.88,
+        0.78
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 48,
+      "name": "017_forest_03_13",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_13.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_13.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "560b45848a393714fb4cda137a4b8c4c17156b5b1876c1fb2d7f4aa0ff127913",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        -5.79,
+        1.38
+      ],
+      "size": [
+        0.4,
+        0.24
+      ]
+    },
+    {
+      "index": 52,
+      "sourcePlacement": 49,
+      "name": "017_forest_03_12",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6b7d814797eceadeff2c1dfba8e26428ef8e1baa4e6af40e215daee038799f22",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10049,
+      "position": [
+        -5.63,
+        1.17
+      ],
+      "size": [
+        0.4,
+        0.4
+      ]
+    },
+    {
+      "index": 53,
+      "sourcePlacement": 50,
+      "name": "017_forest_03_25",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_25.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_25.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "43cce9240039969e132b015e2f606a596ac552f05f8ac60abc3322bd8ecc39ff",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10050,
+      "position": [
+        1.1,
+        1.07
+      ],
+      "size": [
+        2.46,
+        0.42
+      ]
+    },
+    {
+      "index": 54,
+      "sourcePlacement": 51,
+      "name": "017_forest_03_26",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_26.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_26.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "78c8db311b3007c6e5208f84032f82e8eb37d43b460511c5c3bbd51f146ef35c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10051,
+      "position": [
+        -0.6,
+        1.03
+      ],
+      "size": [
+        1.32,
+        0.36
+      ]
+    },
+    {
+      "index": 55,
+      "sourcePlacement": 52,
+      "name": "017_forest_03_23",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_23.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_23.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "66814041c6c00347071869c33aa05d3360d4e4cadebcfc23b39307f42d5ca85a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10052,
+      "position": [
+        -1.31,
+        0.47
+      ],
+      "size": [
+        1.8,
+        0.98
+      ]
+    },
+    {
+      "index": 56,
+      "sourcePlacement": 53,
+      "name": "017_forest_03_24",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "58cf198bac83020478a53e08a3c612a3b0dc21580871f1fd8e2ab9cf2cbb5d47",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10053,
+      "position": [
+        -0.72,
+        0.1
+      ],
+      "size": [
+        1.26,
+        0.96
+      ]
+    },
+    {
+      "index": 57,
+      "sourcePlacement": 54,
+      "name": "017_forest_03_23",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_23.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_23.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "66814041c6c00347071869c33aa05d3360d4e4cadebcfc23b39307f42d5ca85a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10054,
+      "position": [
+        2.12,
+        0.67
+      ],
+      "size": [
+        1.8,
+        0.98
+      ]
+    },
+    {
+      "index": 58,
+      "sourcePlacement": 55,
+      "name": "017_forest_03_24",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_24.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_24.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "58cf198bac83020478a53e08a3c612a3b0dc21580871f1fd8e2ab9cf2cbb5d47",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10055,
+      "position": [
+        2.59,
+        0.25
+      ],
+      "size": [
+        1.26,
+        0.96
+      ]
+    },
+    {
+      "index": 59,
+      "sourcePlacement": 56,
+      "name": "017_forest_03_27",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_27.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_27.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5811b207dc0aca54247a7b13ab55c347fdc8261082245d42506b1bff8b7e59d0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10056,
+      "position": [
+        0.38,
+        -2.34
+      ],
+      "size": [
+        0.92,
+        0.88
+      ]
+    },
+    {
+      "index": 60,
+      "sourcePlacement": 58,
+      "name": "017_forest_03_30",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_30.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_30.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a0c53167c8437f7077d1f759496295062a603852c97bd441857e053ee77cd7ef",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10058,
+      "position": [
+        -0.63,
+        3.15
+      ],
+      "size": [
+        1.38,
+        1.34
+      ]
+    },
+    {
+      "index": 61,
+      "sourcePlacement": 59,
+      "name": "017_forest_03_30",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_30.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_30.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a0c53167c8437f7077d1f759496295062a603852c97bd441857e053ee77cd7ef",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10059,
+      "position": [
+        1.82,
+        3.75
+      ],
+      "size": [
+        1.38,
+        1.34
+      ]
+    },
+    {
+      "index": 62,
+      "sourcePlacement": 62,
+      "name": "017_forest_03_12",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6b7d814797eceadeff2c1dfba8e26428ef8e1baa4e6af40e215daee038799f22",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10062,
+      "position": [
+        3.53,
+        -1.1
+      ],
+      "size": [
+        0.4,
+        0.4
+      ]
+    },
+    {
+      "index": 63,
+      "sourcePlacement": 63,
+      "name": "017_forest_03_12",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_12.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_12.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6b7d814797eceadeff2c1dfba8e26428ef8e1baa4e6af40e215daee038799f22",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10063,
+      "position": [
+        -2.31,
+        -1.33
+      ],
+      "size": [
+        0.4,
+        0.4
+      ]
+    },
+    {
+      "index": 64,
+      "sourcePlacement": 64,
+      "name": "017_forest_03_11",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_11.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-017-forest/Textures/017_forest_03_11.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "450f90f12e28259d00389725707003c3a64d5ac8427a9817368d9b88f3313852",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10064,
+      "position": [
+        6.73,
+        -1.2
+      ],
+      "size": [
+        1.0,
+        0.94
+      ]
+    },
+    {
+      "index": 65,
+      "sourcePlacement": 65,
+      "name": "017_forest_03_18",
+      "sourcePath": "mpf_recovered_assets/017-Forest/017_forest_03_18.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Forest/017_forest_03_18.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a938d20ae534e7b9985d1234b67e580e648b864b49d767877a2310955ae6fe69",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10065,
+      "position": [
+        7.39,
+        -0.97
+      ],
+      "size": [
+        0.92,
+        0.68
+      ]
+    }
+  ]
+}

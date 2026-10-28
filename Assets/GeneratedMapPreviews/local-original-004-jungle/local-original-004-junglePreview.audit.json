@@ -1,0 +1,1065 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-004-jungle",
+  "sourceFile": "local-original-004-jungle.json",
+  "sourceJsonSha256": "66c67d2493b11cd5e880f967a78e61892ae2c05541a044574ed76de951e60696",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-004-jungle/local-original-004-junglePreview.unity",
+  "spritePlacementCount": 52,
+  "uniqueSpriteFileCount": 38,
+  "copiedSpriteFileCount": 5,
+  "obstacleBoxColliderCount": 1496,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 22,
+  "offlineSpawn": {
+    "x": -12.4,
+    "y": 2.31
+  },
+  "bounds": {
+    "left": -15.0,
+    "bottom": -3.8,
+    "right": 15.0,
+    "top": 3.8
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "004-jungle-s025c",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s025c.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s025c.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "844de8157b81f8dd7c4cf0435ef2089f8960f29b57cd5cec1db47c8eb9a827ce",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -12.65,
+        1.22
+      ],
+      "size": [
+        4.64,
+        7.68
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "004-jungle-s026c",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s026c.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s026c.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "cef3c361654d44f86f74842489eb9a3acaeaded003b8f6247337ab063779d292",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -7.65999746,
+        1.22
+      ],
+      "size": [
+        5.36,
+        7.68
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "004-jungle-s025c",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s025c.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s025c.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "844de8157b81f8dd7c4cf0435ef2089f8960f29b57cd5cec1db47c8eb9a827ce",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        -2.67,
+        1.22
+      ],
+      "size": [
+        4.64,
+        7.68
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "004-jungle-s020b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s020b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s020b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "193759e5a9eddaa92a6485397fac28305df76d4072ae219d1b73437b7e141949",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        -13.8499823,
+        -1.66499
+      ],
+      "size": [
+        2.02,
+        2.27
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "004-jungle-s021b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s021b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s021b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "721e97981108c90b83f7b2bdd3b3fb2c1d65f928aad90380054a2a3ed236882d",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        -11.0299988,
+        -1.544991
+      ],
+      "size": [
+        3.64,
+        2.49
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 5,
+      "name": "004-jungle-s022b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s022b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s022b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "e026227209c3ec6f21e0402909d6ee813d8ecb5705ac894a1b873195e1f4cb46",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9995,
+      "position": [
+        -7.152984,
+        -1.74498546
+      ],
+      "size": [
+        4.14,
+        2.11
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 6,
+      "name": "004-jungle-s023b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s023b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s023b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0b17152462f1ae6fa0a68b04517d7454cf96a2659a98c8171ab10e1b153fd2cb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9994,
+      "position": [
+        -3.105023,
+        -1.84498954
+      ],
+      "size": [
+        3.97,
+        1.91
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 7,
+      "name": "004-jungle-s017b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s017b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s017b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "36ab8c041b09f97e4d4e7e9865070ec0f887a9a64a4444aa4590ee885c73f9f4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9993,
+      "position": [
+        -7.77,
+        1.105
+      ],
+      "size": [
+        5.01,
+        8.43
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 8,
+      "name": "004-jungle-s019b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s019b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s019b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8945c81bdd82699950fb6212f2e8586f2e1047d698cb8979e489015761ee0beb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9992,
+      "position": [
+        0.98,
+        0.03
+      ],
+      "size": [
+        3.42,
+        6.0
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 9,
+      "name": "004-jungle-s018b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s018b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s018b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "048fcc5500f1b0a682aa8865f744f09ad51816eaa61411f14aeab3ecd40c5cce",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9991,
+      "position": [
+        -4.295,
+        0.665
+      ],
+      "size": [
+        8.07,
+        7.21
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 10,
+      "name": "004-jungle-s019b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s019b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s019b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8945c81bdd82699950fb6212f2e8586f2e1047d698cb8979e489015761ee0beb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9990,
+      "position": [
+        -11.645,
+        -0.02
+      ],
+      "size": [
+        3.42,
+        6.0
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 11,
+      "name": "004-jungle-s017b1",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s017b1.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s017b1.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "103f0da87ba8e03b00b8817da27971f8a4feb503d02ee9f8db2fe95a4acdf276",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9989,
+      "position": [
+        -11.55,
+        -1.605
+      ],
+      "size": [
+        2.55,
+        2.65
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 12,
+      "name": "004-jungle-s002b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s002b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s002b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8af3ca78089f079a97cfb805f26074e93d5798d2fb6ec5a744bebe54e61f7e2e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9988,
+      "position": [
+        -12.85,
+        -1.3
+      ],
+      "size": [
+        5.1,
+        5.02
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 14,
+      "name": "004-jungle-s005a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s005a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s005a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ccc5c0064f7d3e69ea7fbb56ce17ca6a35ddf0c403a4179bdb0a5ec24c8e41bf",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9986,
+      "position": [
+        -11.65,
+        -0.015
+      ],
+      "size": [
+        0.6,
+        1.53
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 15,
+      "name": "004-jungle-s009b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s009b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s009b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5afa45939a8395b55491e6db0793dfd7afdb3a057d3ce74a1075d88a17e04411",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9985,
+      "position": [
+        -6.94,
+        -2.425
+      ],
+      "size": [
+        3.72,
+        2.79
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 16,
+      "name": "004-jungle-s008c",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s008c.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s008c.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0b63f975bb4fd9460f5ca175c71d17281008b68ae24ef096013dd0166699da66",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9984,
+      "position": [
+        -4.645,
+        -2.405
+      ],
+      "size": [
+        1.37,
+        2.87
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 17,
+      "name": "004-jungle-s008b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s008b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s008b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b1f2a3657a7519fe83d2e4109a87d74465915fa34c10daef1843164113933e42",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9983,
+      "position": [
+        -4.735,
+        1.32
+      ],
+      "size": [
+        3.73,
+        4.58
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 18,
+      "name": "004-jungle-s015b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s015b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s015b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "40adea90dc3e72cbfb0adf8fc896201198e97a4fddc1e9c77c5432d5ae849df8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9982,
+      "position": [
+        4.085,
+        -2.365
+      ],
+      "size": [
+        4.61,
+        2.93
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 19,
+      "name": "004-jungle-s004a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s004a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s004a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6e85ff51475d74fd8d7a60dd671979fa35831dc27da4a6f263dfbda038814731",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9981,
+      "position": [
+        11.885,
+        -0.075
+      ],
+      "size": [
+        0.51,
+        1.53
+      ]
+    },
+    {
+      "index": 19,
+      "sourcePlacement": 20,
+      "name": "004-jungle-s005a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s005a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s005a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ccc5c0064f7d3e69ea7fbb56ce17ca6a35ddf0c403a4179bdb0a5ec24c8e41bf",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9980,
+      "position": [
+        13.82,
+        -0.105
+      ],
+      "size": [
+        0.6,
+        1.53
+      ]
+    },
+    {
+      "index": 20,
+      "sourcePlacement": 21,
+      "name": "004-jungle-s008c",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s008c.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s008c.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "0b63f975bb4fd9460f5ca175c71d17281008b68ae24ef096013dd0166699da66",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9979,
+      "position": [
+        -0.355,
+        -2.385
+      ],
+      "size": [
+        1.37,
+        2.87
+      ]
+    },
+    {
+      "index": 21,
+      "sourcePlacement": 22,
+      "name": "004-jungle-s009b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s009b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s009b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "5afa45939a8395b55491e6db0793dfd7afdb3a057d3ce74a1075d88a17e04411",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9978,
+      "position": [
+        9.33,
+        -2.855
+      ],
+      "size": [
+        3.72,
+        2.79
+      ]
+    },
+    {
+      "index": 22,
+      "sourcePlacement": 23,
+      "name": "004-jungle-s003b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s003b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s003b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c99f2cbe5f8da5464197b7d0d7dc86a1d12e9ada11e88dc3fc13dde6a9f9e42c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9977,
+      "position": [
+        -13.345,
+        -3.635
+      ],
+      "size": [
+        3.91,
+        0.57
+      ]
+    },
+    {
+      "index": 23,
+      "sourcePlacement": 27,
+      "name": "004-jungle-s007b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s007b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s007b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "e8ecce0c2790adb6c382d2ee2b5ce7ea8e6e5e1527efb92d71b500588428c459",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9973,
+      "position": [
+        -6.845,
+        -3.24
+      ],
+      "size": [
+        4.89,
+        1.2
+      ]
+    },
+    {
+      "index": 24,
+      "sourcePlacement": 31,
+      "name": "004-jungle-s006b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s006b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s006b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8ac048a50811de638ff4de6f05f3547c88c488eff632122222cabf194b7d8091",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9969,
+      "position": [
+        -3.085,
+        -1.895
+      ],
+      "size": [
+        1.59,
+        3.85
+      ]
+    },
+    {
+      "index": 25,
+      "sourcePlacement": 33,
+      "name": "004-jungle-s010b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s010b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s010b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8052b18fe6d11a41957118a57b140f117431fb3925f36ebff2ce8afb418fc029",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9967,
+      "position": [
+        -1.47,
+        -3.335
+      ],
+      "size": [
+        3.4,
+        0.95
+      ]
+    },
+    {
+      "index": 26,
+      "sourcePlacement": 35,
+      "name": "004-jungle-s011b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s011b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s011b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "26cdf755301e9486c90fc54d1fce8b485d7be4138168edbf96d1a9a9472461c4",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9965,
+      "position": [
+        2.585,
+        -3.32
+      ],
+      "size": [
+        4.13,
+        0.96
+      ]
+    },
+    {
+      "index": 27,
+      "sourcePlacement": 36,
+      "name": "004-jungle-s012b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s012b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s012b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "2cd1df15fc8afcebb20867777ff3cc7c06448f339c9e53ff18d99ae8e4464d4c",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9964,
+      "position": [
+        6.78,
+        -3.32
+      ],
+      "size": [
+        4.28,
+        0.96
+      ]
+    },
+    {
+      "index": 28,
+      "sourcePlacement": 39,
+      "name": "004-jungle-s013b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s013b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s013b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8697ef73891b3f17fa8fafc875655d2503380a21742484f2da72ab09901cd2f7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9961,
+      "position": [
+        3.085,
+        1.625
+      ],
+      "size": [
+        4.67,
+        5.07
+      ]
+    },
+    {
+      "index": 29,
+      "sourcePlacement": 40,
+      "name": "004-jungle-s014b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s014b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s014b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "54eab32c26781b3671b7ea9a71d8a646abbc01db7e4a56a3c2f603179d919d5e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9960,
+      "position": [
+        6.29,
+        1.28
+      ],
+      "size": [
+        1.74,
+        4.36
+      ]
+    },
+    {
+      "index": 30,
+      "sourcePlacement": 44,
+      "name": "004-jungle-s002b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s002b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s002b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "8af3ca78089f079a97cfb805f26074e93d5798d2fb6ec5a744bebe54e61f7e2e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9956,
+      "position": [
+        12.71,
+        -1.32
+      ],
+      "size": [
+        5.1,
+        5.02
+      ]
+    },
+    {
+      "index": 31,
+      "sourcePlacement": 47,
+      "name": "004-jungle-s007b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s007b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s007b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "e8ecce0c2790adb6c382d2ee2b5ce7ea8e6e5e1527efb92d71b500588428c459",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9953,
+      "position": [
+        12.525,
+        -3.33
+      ],
+      "size": [
+        4.89,
+        1.2
+      ]
+    },
+    {
+      "index": 32,
+      "sourcePlacement": 49,
+      "name": "004-jungle-s008b",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s008b.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s008b.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "b1f2a3657a7519fe83d2e4109a87d74465915fa34c10daef1843164113933e42",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9951,
+      "position": [
+        -0.445,
+        1.34
+      ],
+      "size": [
+        3.73,
+        4.58
+      ]
+    },
+    {
+      "index": 33,
+      "sourcePlacement": 13,
+      "name": "004-jungle-s004a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s004a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s004a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "6e85ff51475d74fd8d7a60dd671979fa35831dc27da4a6f263dfbda038814731",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10013,
+      "position": [
+        -13.695,
+        0.005
+      ],
+      "size": [
+        0.51,
+        1.53
+      ]
+    },
+    {
+      "index": 34,
+      "sourcePlacement": 24,
+      "name": "004-jungle-s003a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s003a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-004-jungle/Textures/004-jungle-s003a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "4380b98f64e4dac2e4a45592e0840f98069fff4ea55bc5b7f33e08a28fcc1fd8",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10024,
+      "position": [
+        -13.255,
+        -3.27
+      ],
+      "size": [
+        4.15,
+        1.02
+      ]
+    },
+    {
+      "index": 35,
+      "sourcePlacement": 25,
+      "name": "004-jungle-s002a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s002a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s002a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7ad4aea433f6a13c112543ba83d713eecfe62cdcce50a1cff35a213aab466022",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10025,
+      "position": [
+        -12.79,
+        -1.06
+      ],
+      "size": [
+        4.58,
+        0.6
+      ]
+    },
+    {
+      "index": 36,
+      "sourcePlacement": 26,
+      "name": "004-jungle-s001a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s001a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s001a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ad7c0ad93b547726cb03bfcd1b9a0f295868d571d3f548da630e68fccfd59806",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10026,
+      "position": [
+        -12.845,
+        1.105
+      ],
+      "size": [
+        5.41,
+        2.15
+      ]
+    },
+    {
+      "index": 37,
+      "sourcePlacement": 28,
+      "name": "004-jungle-s007a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s007a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s007a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ef97699070eb7be3a3ad43a8aa49c37d1ca97ccf3d9649c95ecb9f57295d9e42",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10028,
+      "position": [
+        -6.9,
+        -2.845
+      ],
+      "size": [
+        5.1,
+        0.95
+      ]
+    },
+    {
+      "index": 38,
+      "sourcePlacement": 29,
+      "name": "004-jungle-s009a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s009a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s009a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f62755b29578b1ec1414c9f1cdbe2c9bc80aed37a41c8b020b666d4b6c8c74c0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10029,
+      "position": [
+        -6.895,
+        -0.99
+      ],
+      "size": [
+        3.83,
+        1.48
+      ]
+    },
+    {
+      "index": 39,
+      "sourcePlacement": 30,
+      "name": "004-jungle-s008a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s008a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-004-jungle/Textures/004-jungle-s008a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "3823b8d0175d0fe9f129e0170e15bf720515248981950b9ec8931ecb558a8236",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10030,
+      "position": [
+        -4.67,
+        2.045
+      ],
+      "size": [
+        2.1,
+        1.57
+      ]
+    },
+    {
+      "index": 40,
+      "sourcePlacement": 32,
+      "name": "004-jungle-s006a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s006a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s006a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c078eb17f9bb78ca5c1c35dd42dabe0236d3e959d18a035c39431478ad1a86f7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10032,
+      "position": [
+        -3.14,
+        0.115
+      ],
+      "size": [
+        1.82,
+        0.73
+      ]
+    },
+    {
+      "index": 41,
+      "sourcePlacement": 34,
+      "name": "004-jungle-s010a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s010a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s010a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f567d870ef8897c63b52d88efe1d7c7630c843149813b98a3dc21a454e5b8a5e",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10034,
+      "position": [
+        -1.52,
+        -3.005
+      ],
+      "size": [
+        3.32,
+        0.77
+      ]
+    },
+    {
+      "index": 42,
+      "sourcePlacement": 37,
+      "name": "004-jungle-s011a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s011a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s011a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "a398847342c5aaaf624be919616352d826ef9ee50d4cc7d0399ca33a200e6f57",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10037,
+      "position": [
+        2.605,
+        -2.74
+      ],
+      "size": [
+        4.17,
+        0.72
+      ]
+    },
+    {
+      "index": 43,
+      "sourcePlacement": 38,
+      "name": "004-jungle-s012a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s012a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s012a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "e7f987ecb38d0ff85b5171b4f9c940972b1e5ce3ba79c216bf856ecec6e9894b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10038,
+      "position": [
+        6.805,
+        -2.57
+      ],
+      "size": [
+        4.25,
+        1.12
+      ]
+    },
+    {
+      "index": 44,
+      "sourcePlacement": 41,
+      "name": "004-jungle-s014a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s014a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-004-jungle/Textures/004-jungle-s014a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "eb29e94d9d975a9defd3eb737b3fd96108437010effbb21ae4463218809af4e7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10041,
+      "position": [
+        2.39,
+        0.125
+      ],
+      "size": [
+        2.1,
+        1.45
+      ]
+    },
+    {
+      "index": 45,
+      "sourcePlacement": 42,
+      "name": "004-jungle-s015a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s015a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-004-jungle/Textures/004-jungle-s015a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2eb363da63e6c04745f1caa512528dc1a5cdc8e3b33f6356fc5b7cad96fe68b9",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10042,
+      "position": [
+        5.35,
+        0.205
+      ],
+      "size": [
+        2.1,
+        1.43
+      ]
+    },
+    {
+      "index": 46,
+      "sourcePlacement": 43,
+      "name": "004-jungle-s013a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s013a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-004-jungle/Textures/004-jungle-s013a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "2310ff57900fc62316fe9a641fcdb331f921d1f12c411e88b39e8a5db3879300",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10043,
+      "position": [
+        4.25,
+        2.595
+      ],
+      "size": [
+        2.1,
+        1.57
+      ]
+    },
+    {
+      "index": 47,
+      "sourcePlacement": 45,
+      "name": "004-jungle-s001a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s001a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s001a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ad7c0ad93b547726cb03bfcd1b9a0f295868d571d3f548da630e68fccfd59806",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10045,
+      "position": [
+        12.655,
+        1.165
+      ],
+      "size": [
+        5.41,
+        2.15
+      ]
+    },
+    {
+      "index": 48,
+      "sourcePlacement": 46,
+      "name": "004-jungle-s002a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s002a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s002a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "7ad4aea433f6a13c112543ba83d713eecfe62cdcce50a1cff35a213aab466022",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10046,
+      "position": [
+        12.72,
+        -1.16
+      ],
+      "size": [
+        4.58,
+        0.6
+      ]
+    },
+    {
+      "index": 49,
+      "sourcePlacement": 48,
+      "name": "004-jungle-s007a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s007a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s007a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "ef97699070eb7be3a3ad43a8aa49c37d1ca97ccf3d9649c95ecb9f57295d9e42",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10048,
+      "position": [
+        12.48,
+        -2.925
+      ],
+      "size": [
+        5.1,
+        0.95
+      ]
+    },
+    {
+      "index": 50,
+      "sourcePlacement": 50,
+      "name": "004-jungle-s008a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s008a.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-004-jungle/Textures/004-jungle-s008a.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "3823b8d0175d0fe9f129e0170e15bf720515248981950b9ec8931ecb558a8236",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10050,
+      "position": [
+        -0.35,
+        2.045
+      ],
+      "size": [
+        2.1,
+        1.57
+      ]
+    },
+    {
+      "index": 51,
+      "sourcePlacement": 51,
+      "name": "004-jungle-s006a",
+      "sourcePath": "mpf_recovered_assets/004-jungle/004-jungle-s006a.png",
+      "unityAssetPath": "Assets/Sprites/Stages/Jungle/004-jungle-s006a.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c078eb17f9bb78ca5c1c35dd42dabe0236d3e959d18a035c39431478ad1a86f7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10051,
+      "position": [
+        8.66,
+        -1.505
+      ],
+      "size": [
+        1.82,
+        0.73
+      ]
+    }
+  ]
+}

@@ -1,0 +1,405 @@
+{
+  "schema": "OpenGS.UnityNativeMapPreview/1",
+  "mapId": "local-original-026-snowbase",
+  "sourceFile": "local-original-026-snowbase.json",
+  "sourceJsonSha256": "5b5abc79b61e18bfae2367296d590cfcbc277bca92a49152007adab3190dfdc6",
+  "previewScene": "Assets/GeneratedMapPreviews/local-original-026-snowbase/local-original-026-snowbasePreview.unity",
+  "spritePlacementCount": 19,
+  "uniqueSpriteFileCount": 13,
+  "copiedSpriteFileCount": 4,
+  "obstacleBoxColliderCount": 799,
+  "polygonColliderCount": 0,
+  "groundColliderCount": 8,
+  "offlineSpawn": {
+    "x": -5.9,
+    "y": -0.5
+  },
+  "bounds": {
+    "left": -9.0,
+    "bottom": -5.0,
+    "right": 9.0,
+    "top": 5.0
+  },
+  "sprites": [
+    {
+      "index": 0,
+      "sourcePlacement": 0,
+      "name": "026_snow_base_01_01",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_01_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_01_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "1ae571a2b16a75df511fbefa3a29219441b8ebbdca5968e7d44de7c247b2e31b",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -10000,
+      "position": [
+        -4.9,
+        2.03
+      ],
+      "size": [
+        8.2,
+        6.08
+      ]
+    },
+    {
+      "index": 1,
+      "sourcePlacement": 1,
+      "name": "026_snow_base_02_02",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_02_02.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-026-snowbase/Textures/026_snow_base_02_02.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6858cfdf9fe42062d121ac02c077d85b947e0e6f62c7ad65ee977b7f4a6ab8b7",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9999,
+      "position": [
+        -0.155,
+        -2.665
+      ],
+      "size": [
+        2.89,
+        2.27
+      ]
+    },
+    {
+      "index": 2,
+      "sourcePlacement": 2,
+      "name": "026_snow_base_02_01",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_02_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_02_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "3471fec561f9d8bae828d81598a411e280a1e3fd4891d85652c55c653fe70feb",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9998,
+      "position": [
+        -0.165,
+        0.695
+      ],
+      "size": [
+        1.95,
+        2.69
+      ]
+    },
+    {
+      "index": 3,
+      "sourcePlacement": 3,
+      "name": "026_snow_base_02_04",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_02_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_02_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "63f0f1b4781c0e0acef722e5d00fdde929355b8a67f933f191b1c2d1e65b200f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9997,
+      "position": [
+        -7.425,
+        -3.795
+      ],
+      "size": [
+        0.97,
+        1.97
+      ]
+    },
+    {
+      "index": 4,
+      "sourcePlacement": 4,
+      "name": "026_snow_base_02_03",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_02_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_02_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "15b3e5301dedb27fd4e8f44f3061cf57bf3eecd7c157b26dbaddb934cc47570a",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9996,
+      "position": [
+        -4.755,
+        -3.475
+      ],
+      "size": [
+        1.81,
+        1.61
+      ]
+    },
+    {
+      "index": 5,
+      "sourcePlacement": 12,
+      "name": "026_snow_base_02_03",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_02_03.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_02_03.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "15b3e5301dedb27fd4e8f44f3061cf57bf3eecd7c157b26dbaddb934cc47570a",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": -9988,
+      "position": [
+        4.795,
+        -3.405
+      ],
+      "size": [
+        1.81,
+        1.61
+      ]
+    },
+    {
+      "index": 6,
+      "sourcePlacement": 13,
+      "name": "026_snow_base_02_04",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_02_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_02_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "63f0f1b4781c0e0acef722e5d00fdde929355b8a67f933f191b1c2d1e65b200f",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": -9987,
+      "position": [
+        7.435,
+        -3.795
+      ],
+      "size": [
+        0.97,
+        1.97
+      ]
+    },
+    {
+      "index": 7,
+      "sourcePlacement": 5,
+      "name": "026_snow_base_03_06",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-026-snowbase/Textures/026_snow_base_03_06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6678435739b0ff42af3e2487302e0a5797457912dcf44fea7a8bc0b726cfd3ae",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10005,
+      "position": [
+        -7.505,
+        -3.85
+      ],
+      "size": [
+        2.99,
+        2.34
+      ]
+    },
+    {
+      "index": 8,
+      "sourcePlacement": 6,
+      "name": "007-snow-flag",
+      "sourcePath": "mpf_recovered_assets/007-snow/007-snow-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-026-snowbase/Textures/007-snow-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a31c8efb20efb2979932b2b2da63dfa0150b9e6ee3a84d4a50c09124954e6c58",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10006,
+      "position": [
+        -7.405,
+        -2.605
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 9,
+      "sourcePlacement": 7,
+      "name": "026_snow_base_03_05",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_03_05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f292f7475b27a99fd5aa39c88404a42f95655adbb29a72276b168a3914dcd872",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10007,
+      "position": [
+        4.315,
+        -4.32
+      ],
+      "size": [
+        3.39,
+        1.4
+      ]
+    },
+    {
+      "index": 10,
+      "sourcePlacement": 8,
+      "name": "007-snow-flag",
+      "sourcePath": "mpf_recovered_assets/007-snow/007-snow-flag.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-026-snowbase/Textures/007-snow-flag.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "a31c8efb20efb2979932b2b2da63dfa0150b9e6ee3a84d4a50c09124954e6c58",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10008,
+      "position": [
+        7.455,
+        -2.595
+      ],
+      "size": [
+        0.59,
+        0.17
+      ]
+    },
+    {
+      "index": 11,
+      "sourcePlacement": 9,
+      "name": "026_snow_base_03_03",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_03.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-026-snowbase/Textures/026_snow_base_03_03.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "fde3f98e646c9cc5a628a2515d5b0c24e8e509e4e8ab17e38f69e2dd80aad685",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10009,
+      "position": [
+        -0.135,
+        -1.305
+      ],
+      "size": [
+        3.13,
+        2.79
+      ]
+    },
+    {
+      "index": 12,
+      "sourcePlacement": 10,
+      "name": "026_snow_base_03_04",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_04.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_03_04.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "74df499942165df502b13ef8c0c38d49c9ed1fccefd2c5158132d0ca969d8ebd",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10010,
+      "position": [
+        0.075,
+        -4.11
+      ],
+      "size": [
+        5.39,
+        1.82
+      ]
+    },
+    {
+      "index": 13,
+      "sourcePlacement": 11,
+      "name": "026_snow_base_03_05",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_05.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_03_05.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "f292f7475b27a99fd5aa39c88404a42f95655adbb29a72276b168a3914dcd872",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10011,
+      "position": [
+        -4.315,
+        -4.32
+      ],
+      "size": [
+        3.39,
+        1.4
+      ]
+    },
+    {
+      "index": 14,
+      "sourcePlacement": 14,
+      "name": "026_snow_base_03_7",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_7.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_03_7.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "c002092cf29b56dd764b7f017e4b8a0f59817f4d7aca52b87e239da6082387ed",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10014,
+      "position": [
+        2.435,
+        -4.58
+      ],
+      "size": [
+        0.63,
+        1.2
+      ]
+    },
+    {
+      "index": 15,
+      "sourcePlacement": 15,
+      "name": "026_snow_base_03_06",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_06.png",
+      "unityAssetPath": "Assets/GeneratedMapPreviews/local-original-026-snowbase/Textures/026_snow_base_03_06.png",
+      "copiedIntoPreview": true,
+      "sourceSha256": "6678435739b0ff42af3e2487302e0a5797457912dcf44fea7a8bc0b726cfd3ae",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10015,
+      "position": [
+        7.505,
+        -3.85
+      ],
+      "size": [
+        2.99,
+        2.34
+      ]
+    },
+    {
+      "index": 16,
+      "sourcePlacement": 16,
+      "name": "026_snow_base_03_01",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_03_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "43de02daf315a6115dfef559081ec6a3da0697d88da2a85f1bf0a2f6630138d0",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10016,
+      "position": [
+        -5.635,
+        -1.625
+      ],
+      "size": [
+        4.73,
+        2.43
+      ]
+    },
+    {
+      "index": 17,
+      "sourcePlacement": 17,
+      "name": "026_snow_base_03_02",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_02.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_03_02.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "607f05afb5eb1535d3aa42bf1b6a114b99fbea868d0323ede726cfd213c14a52",
+      "flipX": false,
+      "flipY": false,
+      "sortingOrder": 10017,
+      "position": [
+        -0.155,
+        2.21
+      ],
+      "size": [
+        2.95,
+        0.42
+      ]
+    },
+    {
+      "index": 18,
+      "sourcePlacement": 18,
+      "name": "026_snow_base_03_01",
+      "sourcePath": "mpf_recovered_assets/026_snow_base/026_snow_base_03_01.png",
+      "unityAssetPath": "Assets/Sprites/Stages/BlizzardOfSiberia/026_snow_base_03_01.png",
+      "copiedIntoPreview": false,
+      "sourceSha256": "43de02daf315a6115dfef559081ec6a3da0697d88da2a85f1bf0a2f6630138d0",
+      "flipX": true,
+      "flipY": false,
+      "sortingOrder": 10018,
+      "position": [
+        5.635,
+        -1.615
+      ],
+      "size": [
+        4.73,
+        2.43
+      ]
+    }
+  ]
+}

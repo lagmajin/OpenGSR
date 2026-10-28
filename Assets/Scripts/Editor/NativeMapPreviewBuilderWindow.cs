@@ -31,6 +31,83 @@ namespace OpenGS
             GetWindow<NativeMapPreviewBuilderWindow>("Native Map Preview");
         }
 
+        [MenuItem("Tools/OpenGS/Build Recovered MPF Map Previews")]
+        public static void BuildRecoveredMpfPreviews()
+        {
+            const string sourceRoot = @"J:\dev\OpenGSNativeClient\assets\maps";
+            var mapIds = new[]
+            {
+                "001-pipe", "001-pipectf", "002-green", "002-greenctf", "003-city", "003-citysuv",
+                "004-jungle", "004-junglectf", "011-seasidebase", "012-bluffstructure", "012-bluffstructurectf",
+                "013-nightcity", "013-nightcity01", "016-themepark", "016-themeparkctf", "017-forest",
+                "015-waterfall", "018-cave", "019-archlord", "024-city-marine", "025-fortress", "026-snowbase", "027-bubble"
+            };
+            var results = new List<string>();
+            foreach (var id in mapIds)
+            {
+                var outputFolder = $"Assets/GeneratedMapPreviews/{SafeName($"local-original-{id}")}";
+                if (AssetDatabase.IsValidFolder(outputFolder)) continue;
+                var source = Path.Combine(sourceRoot, $"local-original-{id}.json");
+                results.Add(BuildPreview(source));
+            }
+            Debug.Log($"[NativeMapPreview] Built {results.Count} missing recovered MPF maps; existing previews were preserved and test maps were excluded.\n" +
+                      string.Join("\n", results));
+            EditorUtility.DisplayDialog("Recovered MPF previews built", $"Built {results.Count} missing isolated map preview scenes. Existing previews were preserved. See the Console for paths.", "OK");
+        }
+
+        [MenuItem("Tools/OpenGS/Audit Waterfall Production Layout")]
+        public static void AuditWaterfallProductionLayout()
+        {
+            const string scenePath = "Assets/Scenes/Map/Battle/WaterFall.unity";
+            const string sourcePath = @"J:\dev\OpenGSNativeClient\assets\maps\local-original-015-waterfall.json";
+            var source = JObject.Parse(File.ReadAllText(sourcePath));
+            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
+            try
+            {
+                var renderers = Resources.FindObjectsOfTypeAll<SpriteRenderer>()
+                    .Where(renderer => renderer != null && renderer.gameObject.scene == scene).ToList();
+                var byName = renderers.GroupBy(renderer => renderer.sprite != null ? renderer.sprite.name : string.Empty)
+                    .ToDictionary(group => group.Key, group => new Queue<SpriteRenderer>(group), StringComparer.Ordinal);
+                var missing = new List<string>();
+                var positionMismatches = new List<string>();
+                var orientationMismatches = new List<string>();
+                foreach (var token in (JArray)source["sprites"])
+                {
+                    var name = token["name"]?.ToString() ?? string.Empty;
+                    if (!byName.TryGetValue(name, out var matches) || matches.Count == 0)
+                    {
+                        missing.Add(name);
+                        continue;
+                    }
+                    var renderer = matches.Dequeue();
+                    var expected = ReadAffineTransform((JArray)token["worldTransform"], name);
+                    var delta = Vector2.Distance(renderer.transform.position, new Vector2(expected.X, expected.Y));
+                    if (delta > 0.01f) positionMismatches.Add($"{name}: delta={delta:F4}");
+                    var expectedFlipY = ReadBool(token["flipY"], false) ^ expected.FlipY;
+                    if (renderer.flipX != ReadBool(token["flipX"], false) || renderer.flipY != expectedFlipY)
+                        orientationMismatches.Add(name);
+                }
+                var extras = byName.Values.Sum(queue => queue.Count);
+                var sceneSprites = string.Join(";", renderers.Select(renderer =>
+                    $"{renderer.gameObject.name}/{(renderer.sprite != null ? renderer.sprite.name : "<none>")}@{renderer.transform.position.x:F2},{renderer.transform.position.y:F2}"));
+                var roots = string.Join(",", scene.GetRootGameObjects().Select(gameObject => gameObject.name));
+                var colliders = string.Join(";", scene.GetRootGameObjects().SelectMany(gameObject =>
+                    gameObject.GetComponentsInChildren<Collider2D>(true)).Select(collider =>
+                        $"{collider.GetType().Name}:{collider.gameObject.name}:trigger={collider.isTrigger}:enabled={collider.enabled}"));
+                Debug.Log($"[NativeMapPreview] Waterfall production scene audit: sourceSprites={((JArray)source["sprites"]).Count}, " +
+                          $"sceneSpriteRenderers={renderers.Count}, missing={missing.Count}, extra={extras}, " +
+                          $"positionMismatches={positionMismatches.Count}, orientationMismatches={orientationMismatches.Count}; " +
+                          $"missingNames={string.Join(",", missing.Take(20))}; " +
+                          $"positionSamples={string.Join(";", positionMismatches.Take(10))}; " +
+                          $"orientationSamples={string.Join(",", orientationMismatches.Take(20))}; " +
+                          $"sceneSprites={sceneSprites}; roots={roots}; colliders={colliders}");
+            }
+            finally
+            {
+                EditorSceneManager.CloseScene(scene, true);
+            }
+        }
+
         private void OnGUI()
         {
             this.scrollPosition = EditorGUILayout.BeginScrollView(this.scrollPosition);
@@ -152,6 +229,8 @@ namespace OpenGS
             var plans = BuildSpritePlans(spriteTokens, sourceDirectory, spriteSearchRoot, mapOutputFolder);
             var obstacles = map["obstacles"] as JArray ?? new JArray();
             var polygons = map["polygons"] as JArray ?? new JArray();
+            var groundColliders = map["groundColliders"] as JArray ?? new JArray();
+            var offlineSpawn = map["offlineSpawn"] as JObject;
             ValidateColliders(obstacles, polygons);
 
             var outputFolderCreated = false;
@@ -203,7 +282,10 @@ namespace OpenGS
                     }
                 }
 
-                previewScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Additive);
+                var sceneMode = Application.isBatchMode && string.IsNullOrEmpty(previousActiveScene.path)
+                    ? NewSceneMode.Single
+                    : NewSceneMode.Additive;
+                previewScene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, sceneMode);
                 if (!previewScene.IsValid() || !previewScene.isLoaded)
                 {
                     throw new InvalidOperationException("Could not create an isolated Unity preview scene.");
@@ -215,6 +297,8 @@ namespace OpenGS
                 spriteRoot.transform.SetParent(root.transform, false);
                 var collisionRoot = new GameObject("Collision");
                 collisionRoot.transform.SetParent(root.transform, false);
+                var groundRoot = new GameObject("Ground Surface");
+                groundRoot.transform.SetParent(root.transform, false);
 
                 var spriteAudit = new JArray();
                 foreach (var plan in plans)
@@ -298,6 +382,33 @@ namespace OpenGS
                     polygonColliderCount++;
                 }
 
+                var groundColliderCount = 0;
+                foreach (var token in groundColliders.OfType<JObject>())
+                {
+                    var paths = token["paths"] as JArray;
+                    if (paths == null || paths.Count == 0) continue;
+                    var groundObject = new GameObject(token["name"]?.ToString() ?? $"Ground_{groundColliderCount:D3}");
+                    groundObject.transform.SetParent(groundRoot.transform, false);
+                    var collider = groundObject.AddComponent<PolygonCollider2D>();
+                    collider.pathCount = paths.Count;
+                    for (var pathIndex = 0; pathIndex < paths.Count; pathIndex++)
+                    {
+                        var path = paths[pathIndex] as JArray;
+                        if (path == null || path.Count < 3)
+                            throw new InvalidDataException($"Ground collider {groundColliderCount} has a path with fewer than 3 points.");
+                        collider.SetPath(pathIndex, path.Select(point => ReadPoint(point as JObject, "ground point")).ToArray());
+                    }
+                    groundColliderCount++;
+                }
+
+                if (offlineSpawn != null)
+                {
+                    var spawn = new GameObject("Offline Spawn");
+                    spawn.transform.SetParent(root.transform, false);
+                    spawn.transform.localPosition = new Vector3(
+                        ReadFloat(offlineSpawn["x"], 0f), ReadFloat(offlineSpawn["y"], 0f), 0f);
+                }
+
                 CreatePreviewCamera(root.transform, left, bottom, right, top);
                 if (!EditorSceneManager.SaveScene(previewScene, sceneAssetPath))
                 {
@@ -317,6 +428,12 @@ namespace OpenGS
                         .Select(plan => plan.RelativeSourcePath).Distinct(StringComparer.OrdinalIgnoreCase).Count(),
                     ["obstacleBoxColliderCount"] = boxColliderCount,
                     ["polygonColliderCount"] = polygonColliderCount,
+                    ["groundColliderCount"] = groundColliderCount,
+                    ["offlineSpawn"] = offlineSpawn == null ? null : new JObject
+                    {
+                        ["x"] = ReadFloat(offlineSpawn["x"], 0f),
+                        ["y"] = ReadFloat(offlineSpawn["y"], 0f)
+                    },
                     ["bounds"] = new JObject
                     {
                         ["left"] = left,
