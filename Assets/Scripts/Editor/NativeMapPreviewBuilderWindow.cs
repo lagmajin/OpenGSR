@@ -132,7 +132,8 @@ namespace OpenGS
         public static string BuildPreview(
             string sourceMapJsonPath,
             string generatedAssetsRoot = DefaultOutputRoot,
-            string existingSpriteSearchRoot = DefaultSpriteSearchRoot)
+            string existingSpriteSearchRoot = DefaultSpriteSearchRoot,
+            bool nativeOverview = true)
         {
             var absoluteMapPath = Path.GetFullPath(sourceMapJsonPath ?? string.Empty);
             if (!File.Exists(absoluteMapPath))
@@ -282,8 +283,12 @@ namespace OpenGS
                     var spriteJson = plan.Json;
                     var sourceTransform = ReadAffineTransform(spriteJson["worldTransform"] as JArray, plan.Name);
                     var transform = sourceTransform;
-                    ApplyNativeOverviewParallax(ref transform, spriteJson["parallax"] as JObject,
-                        map, left, bottom, right, top, cameraWorldWidth);
+                    var parallax = spriteJson["parallax"] as JObject;
+                    if (nativeOverview)
+                    {
+                        ApplyNativeOverviewParallax(ref transform, parallax,
+                            map, left, bottom, right, top, cameraWorldWidth);
+                    }
                     var rendererObject = new GameObject($"{plan.Index:D4}_{SafeName(plan.Name)}");
                     rendererObject.transform.SetParent(spriteRoot.transform, false);
                     rendererObject.transform.localPosition = new Vector3(transform.X, transform.Y, 0f);
@@ -310,6 +315,16 @@ namespace OpenGS
                     var sourcePlacement = ReadInt(spriteJson["sourcePlacement"], plan.Index);
                     var sortingLayerOrder = ReadInt(spriteJson["sortingLayerOrder"], 0);
                     renderer.sortingOrder = sortingLayerOrder * 10000 + sourcePlacement;
+
+                    if (!nativeOverview && parallax != null)
+                    {
+                        var factorX = ReadFloat(parallax["x"], 1f);
+                        var factorY = ReadFloat(parallax["y"], 1f);
+                        if (!Mathf.Approximately(factorX, 1f) || !Mathf.Approximately(factorY, 1f))
+                        {
+                            rendererObject.AddComponent<MpfParallaxLayer>().Configure(factorX, factorY);
+                        }
+                    }
 
                     spriteAudit.Add(new JObject
                     {
@@ -391,7 +406,7 @@ namespace OpenGS
                         ReadFloat(offlineSpawn["x"], 0f), ReadFloat(offlineSpawn["y"], 0f), 0f);
                 }
 
-                CreatePreviewCamera(root.transform, left, bottom, right, top);
+                CreatePreviewCamera(root.transform, left, bottom, right, top, cameraWorldWidth, nativeOverview);
                 if (!EditorSceneManager.SaveScene(previewScene, sceneAssetPath))
                 {
                     throw new IOException($"Could not save generated scene {sceneAssetPath}.");
@@ -412,7 +427,7 @@ namespace OpenGS
                     ["polygonColliderCount"] = polygonColliderCount,
                     ["groundColliderCount"] = groundColliderCount,
                     ["collisionLayer"] = LayerMask.LayerToName(platformLayer),
-                    ["previewAspect"] = NativeOverviewAspect,
+                    ["previewAspect"] = nativeOverview ? NativeOverviewAspect : 16f / 9f,
                     ["offlineSpawn"] = offlineSpawn == null ? null : new JObject
                     {
                         ["x"] = ReadFloat(offlineSpawn["x"], 0f),
@@ -652,16 +667,23 @@ namespace OpenGS
             }
         }
 
-        private static void CreatePreviewCamera(Transform parent, float left, float bottom, float right, float top)
+        private static void CreatePreviewCamera(
+            Transform parent, float left, float bottom, float right, float top,
+            float cameraWorldWidth, bool nativeOverview)
         {
-            const float previewAspect = NativeOverviewAspect;
+            var previewAspect = nativeOverview ? NativeOverviewAspect : 16f / 9f;
             var center = new Vector2((left + right) * 0.5f, (bottom + top) * 0.5f);
-            var overviewWidth = Mathf.Max(right - left, (top - bottom) * previewAspect);
-            var size = overviewWidth / (2f * previewAspect) * 1.02f;
+            var size = nativeOverview
+                ? Mathf.Max(right - left, (top - bottom) * previewAspect) / (2f * previewAspect) * 1.02f
+                : cameraWorldWidth / (2f * previewAspect);
             var cameraObject = new GameObject("Preview Camera");
             cameraObject.transform.SetParent(parent, false);
             cameraObject.transform.localPosition = new Vector3(center.x, center.y, -10f);
             var camera = cameraObject.AddComponent<Camera>();
+            if (!nativeOverview)
+            {
+                cameraObject.tag = "MainCamera";
+            }
             camera.tag = "MainCamera";
             camera.orthographic = true;
             camera.orthographicSize = size;

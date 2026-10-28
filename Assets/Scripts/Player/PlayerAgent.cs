@@ -339,16 +339,25 @@ namespace OpenGS
 
         private void AutoBindComponents()
         {
-            playerTransform ??= transform;
-            rigidbody2D ??= GetComponent<Rigidbody2D>();
-            spriteRenderer ??= GetComponent<SpriteRenderer>();
-            headController ??= GetComponent<HeadController>();
-            armController ??= GetComponentInChildren<WeaponArmController>(true);
-            jetBooster ??= GetComponentInChildren<JetBooster>(true);
-            primaryGunController ??= GetComponentInChildren<AbstractGunController>(true);
+            // UnityEngine.Object overloads == null to include destroyed native
+            // objects. The C# null-coalescing operator only checks the managed
+            // wrapper, so a stale serialized Transform skipped rebinding and
+            // threw MissingReferenceException at the first GetComponent call.
+            if (playerTransform == null) playerTransform = transform;
+            if (rigidbody2D == null) rigidbody2D = GetComponent<Rigidbody2D>();
+            if (spriteRenderer == null) spriteRenderer = GetComponent<SpriteRenderer>();
+            if (headController == null) headController = GetComponent<HeadController>();
+            if (armController == null) armController = GetComponentInChildren<WeaponArmController>(true);
+            if (jetBooster == null) jetBooster = GetComponentInChildren<JetBooster>(true);
+            if (primaryGunController == null) primaryGunController = GetComponentInChildren<AbstractGunController>(true);
 
-            head ??= transform.Find("Head");
-            weaponArm ??= transform.Find("Arm");
+            // These child transforms are stable names in every playable
+            // character prefab. Rebind from the live hierarchy so stale prefab
+            // object references cannot survive a Unity deserialization cycle.
+            var liveHead = transform.Find("Head");
+            if (liveHead != null) head = liveHead;
+            var liveWeaponArm = transform.Find("Arm");
+            if (liveWeaponArm != null) weaponArm = liveWeaponArm;
         }
 
         private void OnEnable()
