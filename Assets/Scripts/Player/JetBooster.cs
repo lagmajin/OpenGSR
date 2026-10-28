@@ -61,6 +61,11 @@ namespace OpenGS
             boostHeld = active;
         }
 
+        public void BindPlayer(PlayerAgent owner)
+        {
+            player = owner;
+        }
+
         public float StepBoost(float dt)
         {
             if (!float.IsFinite(dt) || dt < 0f)

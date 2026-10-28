@@ -349,6 +349,9 @@ namespace OpenGS
             if (headController == null) headController = GetComponent<HeadController>();
             if (armController == null) armController = GetComponentInChildren<WeaponArmController>(true);
             if (jetBooster == null) jetBooster = GetComponentInChildren<JetBooster>(true);
+            if (jetBooster == null && PlayerType() == EPlayerType.MyPlayer)
+                jetBooster = gameObject.AddComponent<JetBooster>();
+            if (jetBooster != null) jetBooster.BindPlayer(this);
             if (primaryGunController == null) primaryGunController = GetComponentInChildren<AbstractGunController>(true);
 
             // These child transforms are stable names in every playable
@@ -1006,7 +1009,7 @@ namespace OpenGS
                 {
                     headController?.OnGround();
                     jetBooster?.OnLanding();
-                    animator?.SetBool("IsJump", false);
+                    if (animator != null) animator.SetBool("IsJump", false);
                 }
 
                 if (verticalSpeed < 0f)
@@ -1115,7 +1118,7 @@ namespace OpenGS
                 isGrounded = false;
                 verticalSpeed = jumpVelocity;
                 headController?.Jump();
-                animator?.SetBool("IsJump", true);
+                if (animator != null) animator.SetBool("IsJump", true);
             }
 
             if (!isGrounded || verticalSpeed > 0f)
