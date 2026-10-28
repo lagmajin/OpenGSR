@@ -3,6 +3,7 @@ using UnityEngine;
 namespace OpenGS
 {
     /// <summary>Camera follow used by isolated recovered-map playtest scenes.</summary>
+    [DefaultExecutionOrder(100)]
     public sealed class RecoveredMapCameraFollow : MonoBehaviour
     {
         [SerializeField] private Transform target;

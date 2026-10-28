@@ -6,6 +6,7 @@ namespace OpenGS
     /// Keeps one recovered MPF background at its source transform while the
     /// camera moves, using the source map's normalized parallax factors.
     /// </summary>
+    [DefaultExecutionOrder(101)]
     public sealed class MpfParallaxLayer : MonoBehaviour
     {
         [SerializeField] private float factorX = 1f;
