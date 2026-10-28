@@ -10,6 +10,7 @@ namespace OpenGS
     {
         private readonly UnityInputService physical;
         private Vector2 move;
+        private bool hasVirtualMove;
         private Vector2 aim;
         private bool hasVirtualAim;
         private bool fire;
@@ -25,6 +26,7 @@ namespace OpenGS
 
         public void SetMove(Vector2 value)
         {
+            hasVirtualMove = true;
             if (!IsFinite(value))
             {
                 move = Vector2.zero;
@@ -32,6 +34,11 @@ namespace OpenGS
             }
 
             move = Vector2.ClampMagnitude(value, 1f);
+        }
+        public void ClearMove()
+        {
+            move = Vector2.zero;
+            hasVirtualMove = false;
         }
         public void SetAim(Vector2 worldPosition)
         {
@@ -65,7 +72,7 @@ namespace OpenGS
         public void PressReload() => reload = true;
         public void ReleaseAll()
         {
-            move = Vector2.zero;
+            ClearMove();
             ClearAim();
             fire = false;
             fireJustPressed = false;
@@ -102,8 +109,8 @@ namespace OpenGS
         public bool IsSitJustPressed() => physical.IsSitJustPressed();
         public bool IsLieDownJustPressed() => physical.IsLieDownJustPressed();
         public int GetInstantItemSlotJustPressed() => physical.GetInstantItemSlotJustPressed();
-        public float GetHorizontalAxis() => Mathf.Abs(move.x) > 0.01f ? move.x : physical.GetHorizontalAxis();
-        public float GetVerticalAxis() => Mathf.Abs(move.y) > 0.01f ? move.y : physical.GetVerticalAxis();
+        public float GetHorizontalAxis() => hasVirtualMove ? move.x : physical.GetHorizontalAxis();
+        public float GetVerticalAxis() => hasVirtualMove ? move.y : physical.GetVerticalAxis();
         public bool IsJumpPressed() => jump || physical.IsJumpPressed();
         public bool IsBoosterPressed() => booster || physical.IsBoosterPressed();
         public bool IsScoreboardJustPressed() => physical.IsScoreboardJustPressed();

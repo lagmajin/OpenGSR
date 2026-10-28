@@ -1253,6 +1253,16 @@ namespace OpenGS
                 return position + delta;
             }
 
+            // A horizontal cast can immediately hit the walkable surface the
+            // player is already standing on, especially on recovered MPF
+            // polygons with many short edges. Follow the grounded tangent and
+            // let the next ground probe/snap resolve the surface instead of
+            // reducing every step to the collision skin width.
+            if (isGrounded && Mathf.Abs(delta.x) > 0.0001f && IsWalkable(hit.normal))
+            {
+                return position + delta;
+            }
+
             float moveDistance = Mathf.Max(0f, hit.distance - collisionSkinWidth);
             position += direction * moveDistance;
 
