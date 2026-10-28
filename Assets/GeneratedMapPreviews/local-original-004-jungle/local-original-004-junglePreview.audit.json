@@ -10,6 +10,8 @@
   "obstacleBoxColliderCount": 1496,
   "polygonColliderCount": 0,
   "groundColliderCount": 22,
+  "collisionLayer": "Platforms",
+  "previewAspect": 1.6,
   "offlineSpawn": {
     "x": -12.4,
     "y": 2.31
@@ -41,8 +43,8 @@
         7.68
       ],
       "previewPosition": [
-        -47.4375,
-        14.2906808
+        -16.4999981,
+        0.9187502
       ],
       "previewScale": [
         3.75,
@@ -69,8 +71,8 @@
         7.68
       ],
       "previewPosition": [
-        -28.7249906,
-        14.2906808
+        2.21250963,
+        0.9187502
       ],
       "previewScale": [
         3.75,
@@ -97,8 +99,8 @@
         7.68
       ],
       "previewPosition": [
-        -10.0125,
-        14.2906808
+        20.925,
+        0.9187502
       ],
       "previewScale": [
         3.75,
@@ -125,8 +127,8 @@
         2.27
       ],
       "previewPosition": [
-        -51.9374344,
-        2.1765442
+        -25.1249332,
+        -9.412462
       ],
       "previewScale": [
         3.75,
@@ -153,8 +155,8 @@
         2.49
       ],
       "previewPosition": [
-        -41.3624962,
-        2.6265404
+        -14.5499954,
+        -8.962466
       ],
       "previewScale": [
         3.75,
@@ -181,8 +183,8 @@
         2.11
       ],
       "previewPosition": [
-        -26.82369,
-        1.8765611
+        -0.011190176,
+        -9.712445
       ],
       "previewScale": [
         3.75,
@@ -209,8 +211,8 @@
         1.91
       ],
       "previewPosition": [
-        -11.6438362,
-        1.5015461
+        15.1686649,
+        -10.0874605
       ],
       "previewScale": [
         3.75,
@@ -237,8 +239,8 @@
         8.43
       ],
       "previewPosition": [
-        -29.1375,
-        10.6208705
+        -8.5125,
+        1.70625019
       ],
       "previewScale": [
         3.75,
@@ -265,8 +267,8 @@
         6.0
       ],
       "previewPosition": [
-        3.675,
-        6.5896205
+        24.3,
+        -2.32499981
       ],
       "previewScale": [
         3.75,
@@ -293,8 +295,8 @@
         7.21
       ],
       "previewPosition": [
-        -16.10625,
-        8.9708705
+        4.51874971,
+        0.05625017
       ],
       "previewScale": [
         3.75,
@@ -321,8 +323,8 @@
         6.0
       ],
       "previewPosition": [
-        -43.66875,
-        6.4021205
+        -23.04375,
+        -2.51249981
       ],
       "previewScale": [
         3.75,
@@ -349,8 +351,8 @@
         2.65
       ],
       "previewPosition": [
-        -43.3125,
-        0.4583705
+        -22.6875,
+        -8.45625
       ],
       "previewScale": [
         3.75,
@@ -1477,7 +1479,5 @@
         1.0
       ]
     }
-  ],
-  "collisionLayer": "Platforms",
-  "previewAspect": 2.0676923076923077
+  ]
 }

@@ -10,6 +10,8 @@
   "obstacleBoxColliderCount": 2532,
   "polygonColliderCount": 0,
   "groundColliderCount": 29,
+  "collisionLayer": "Platforms",
+  "previewAspect": 1.6,
   "offlineSpawn": {
     "x": -7.8,
     "y": 2.79
@@ -41,8 +43,8 @@
         6.5
       ],
       "previewPosition": [
-        -25.8750057,
-        6.5566685
+        -6.46875572,
+        -1.36562467
       ],
       "previewScale": [
         2.875,
@@ -69,8 +71,8 @@
         6.5
       ],
       "previewPosition": [
-        -11.3418894,
-        6.5566685
+        8.064361,
+        -1.36562467
       ],
       "previewScale": [
         2.875,
@@ -2989,7 +2991,5 @@
         1.0
       ]
     }
-  ],
-  "collisionLayer": "Platforms",
-  "previewAspect": 2.0676923076923077
+  ]
 }
