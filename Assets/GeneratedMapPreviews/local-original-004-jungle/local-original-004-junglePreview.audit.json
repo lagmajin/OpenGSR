@@ -1061,5 +1061,6 @@
         0.73
       ]
     }
-  ]
+  ],
+  "collisionLayer": "Platforms"
 }

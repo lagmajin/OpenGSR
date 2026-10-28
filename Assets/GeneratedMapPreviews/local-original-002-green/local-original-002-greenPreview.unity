@@ -3658,7 +3658,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1135120046}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground Surface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5585,7 +5585,7 @@ GameObject:
   - component: {fileID: 1656332549}
   - component: {fileID: 1656332548}
   - component: {fileID: 1656332547}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -43318,7 +43318,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2083738186}
   - component: {fileID: 2083738187}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}

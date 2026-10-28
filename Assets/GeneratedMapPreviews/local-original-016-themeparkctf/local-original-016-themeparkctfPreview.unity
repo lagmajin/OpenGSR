@@ -1359,7 +1359,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 356076819}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground Surface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6761,7 +6761,7 @@ GameObject:
   - component: {fileID: 1149079598}
   - component: {fileID: 1149079597}
   - component: {fileID: 1149079596}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}

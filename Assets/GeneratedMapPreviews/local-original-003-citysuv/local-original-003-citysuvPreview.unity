@@ -221,7 +221,7 @@ GameObject:
   m_Component:
   - component: {fileID: 122723762}
   - component: {fileID: 122723763}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1279,7 +1279,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 413919013}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Ground Surface
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3016,7 +3016,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1259684071}
   - component: {fileID: 1259684072}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3235,7 +3235,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1285236731}
   - component: {fileID: 1285236732}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 8
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3320,7 +3320,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1299963178}
   - component: {fileID: 1299963179}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 7
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3540,7 +3540,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1302660850}
   - component: {fileID: 1302660851}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3973,7 +3973,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1486117961}
   - component: {fileID: 1486117962}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4198,7 +4198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1491242361}
   - component: {fileID: 1491242362}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4563,7 +4563,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1655144741}
   - component: {fileID: 1655144742}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: MPF 0x80 surface 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5994,7 +5994,7 @@ GameObject:
   - component: {fileID: 2044233387}
   - component: {fileID: 2044233386}
   - component: {fileID: 2044233385}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Collision
   m_TagString: Untagged
   m_Icon: {fileID: 0}

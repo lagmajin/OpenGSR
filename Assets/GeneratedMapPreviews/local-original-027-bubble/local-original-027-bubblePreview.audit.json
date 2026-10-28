@@ -421,5 +421,6 @@
         5.12
       ]
     }
-  ]
+  ],
+  "collisionLayer": "Platforms"
 }

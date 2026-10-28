@@ -35,13 +35,7 @@ namespace OpenGS
         public static void BuildRecoveredMpfPreviews()
         {
             const string sourceRoot = @"J:\dev\OpenGSNativeClient\assets\maps";
-            var mapIds = new[]
-            {
-                "001-pipe", "001-pipectf", "002-green", "002-greenctf", "003-city", "003-citysuv",
-                "004-jungle", "004-junglectf", "011-seasidebase", "012-bluffstructure", "012-bluffstructurectf",
-                "013-nightcity", "013-nightcity01", "016-themepark", "016-themeparkctf", "017-forest",
-                "015-waterfall", "018-cave", "019-archlord", "024-city-marine", "025-fortress", "026-snowbase", "027-bubble"
-            };
+            var mapIds = RecoveredMpfMapIds();
             var results = new List<string>();
             foreach (var id in mapIds)
             {
@@ -55,58 +49,30 @@ namespace OpenGS
             EditorUtility.DisplayDialog("Recovered MPF previews built", $"Built {results.Count} missing isolated map preview scenes. Existing previews were preserved. See the Console for paths.", "OK");
         }
 
-        [MenuItem("Tools/OpenGS/Audit Waterfall Production Layout")]
-        public static void AuditWaterfallProductionLayout()
+        [MenuItem("Tools/OpenGS/Rebuild Recovered MPF Previews")]
+        public static void RebuildRecoveredMpfPreviews()
         {
-            const string scenePath = "Assets/Scenes/Map/Battle/WaterFall.unity";
-            const string sourcePath = @"J:\dev\OpenGSNativeClient\assets\maps\local-original-015-waterfall.json";
-            var source = JObject.Parse(File.ReadAllText(sourcePath));
-            var scene = EditorSceneManager.OpenScene(scenePath, OpenSceneMode.Additive);
-            try
+            var mapIds = RecoveredMpfMapIds();
+            foreach (var id in mapIds)
             {
-                var renderers = Resources.FindObjectsOfTypeAll<SpriteRenderer>()
-                    .Where(renderer => renderer != null && renderer.gameObject.scene == scene).ToList();
-                var byName = renderers.GroupBy(renderer => renderer.sprite != null ? renderer.sprite.name : string.Empty)
-                    .ToDictionary(group => group.Key, group => new Queue<SpriteRenderer>(group), StringComparer.Ordinal);
-                var missing = new List<string>();
-                var positionMismatches = new List<string>();
-                var orientationMismatches = new List<string>();
-                foreach (var token in (JArray)source["sprites"])
+                var outputFolder = $"Assets/GeneratedMapPreviews/{SafeName($"local-original-{id}")}";
+                if (AssetDatabase.IsValidFolder(outputFolder))
                 {
-                    var name = token["name"]?.ToString() ?? string.Empty;
-                    if (!byName.TryGetValue(name, out var matches) || matches.Count == 0)
-                    {
-                        missing.Add(name);
-                        continue;
-                    }
-                    var renderer = matches.Dequeue();
-                    var expected = ReadAffineTransform((JArray)token["worldTransform"], name);
-                    var delta = Vector2.Distance(renderer.transform.position, new Vector2(expected.X, expected.Y));
-                    if (delta > 0.01f) positionMismatches.Add($"{name}: delta={delta:F4}");
-                    var expectedFlipY = ReadBool(token["flipY"], false) ^ expected.FlipY;
-                    if (renderer.flipX != ReadBool(token["flipX"], false) || renderer.flipY != expectedFlipY)
-                        orientationMismatches.Add(name);
+                    if (!AssetDatabase.DeleteAsset(outputFolder))
+                        throw new IOException($"Could not replace generated preview folder {outputFolder}.");
                 }
-                var extras = byName.Values.Sum(queue => queue.Count);
-                var sceneSprites = string.Join(";", renderers.Select(renderer =>
-                    $"{renderer.gameObject.name}/{(renderer.sprite != null ? renderer.sprite.name : "<none>")}@{renderer.transform.position.x:F2},{renderer.transform.position.y:F2}"));
-                var roots = string.Join(",", scene.GetRootGameObjects().Select(gameObject => gameObject.name));
-                var colliders = string.Join(";", scene.GetRootGameObjects().SelectMany(gameObject =>
-                    gameObject.GetComponentsInChildren<Collider2D>(true)).Select(collider =>
-                        $"{collider.GetType().Name}:{collider.gameObject.name}:trigger={collider.isTrigger}:enabled={collider.enabled}"));
-                Debug.Log($"[NativeMapPreview] Waterfall production scene audit: sourceSprites={((JArray)source["sprites"]).Count}, " +
-                          $"sceneSpriteRenderers={renderers.Count}, missing={missing.Count}, extra={extras}, " +
-                          $"positionMismatches={positionMismatches.Count}, orientationMismatches={orientationMismatches.Count}; " +
-                          $"missingNames={string.Join(",", missing.Take(20))}; " +
-                          $"positionSamples={string.Join(";", positionMismatches.Take(10))}; " +
-                          $"orientationSamples={string.Join(",", orientationMismatches.Take(20))}; " +
-                          $"sceneSprites={sceneSprites}; roots={roots}; colliders={colliders}");
             }
-            finally
-            {
-                EditorSceneManager.CloseScene(scene, true);
-            }
+            AssetDatabase.Refresh(ImportAssetOptions.ForceSynchronousImport);
+            BuildRecoveredMpfPreviews();
         }
+
+        private static string[] RecoveredMpfMapIds() => new[]
+        {
+            "001-pipe", "001-pipectf", "002-green", "002-greenctf", "003-city", "003-citysuv",
+            "004-jungle", "004-junglectf", "011-seasidebase", "012-bluffstructure", "012-bluffstructurectf",
+            "013-nightcity", "013-nightcity01", "016-themepark", "016-themeparkctf", "017-forest",
+            "015-waterfall", "018-cave", "019-archlord", "024-city-marine", "025-fortress", "026-snowbase", "027-bubble"
+        };
 
         private void OnGUI()
         {
@@ -299,6 +265,13 @@ namespace OpenGS
                 collisionRoot.transform.SetParent(root.transform, false);
                 var groundRoot = new GameObject("Ground Surface");
                 groundRoot.transform.SetParent(root.transform, false);
+                var platformLayer = LayerMask.NameToLayer("Platforms");
+                if (platformLayer < 0)
+                {
+                    throw new InvalidOperationException("Unity project has no 'Platforms' physics layer; generated map colliders cannot support PlayerAgent ground checks.");
+                }
+                collisionRoot.layer = platformLayer;
+                groundRoot.layer = platformLayer;
 
                 var spriteAudit = new JArray();
                 foreach (var plan in plans)
@@ -389,6 +362,7 @@ namespace OpenGS
                     if (paths == null || paths.Count == 0) continue;
                     var groundObject = new GameObject(token["name"]?.ToString() ?? $"Ground_{groundColliderCount:D3}");
                     groundObject.transform.SetParent(groundRoot.transform, false);
+                    groundObject.layer = platformLayer;
                     var collider = groundObject.AddComponent<PolygonCollider2D>();
                     collider.pathCount = paths.Count;
                     for (var pathIndex = 0; pathIndex < paths.Count; pathIndex++)
@@ -429,6 +403,7 @@ namespace OpenGS
                     ["obstacleBoxColliderCount"] = boxColliderCount,
                     ["polygonColliderCount"] = polygonColliderCount,
                     ["groundColliderCount"] = groundColliderCount,
+                    ["collisionLayer"] = LayerMask.LayerToName(platformLayer),
                     ["offlineSpawn"] = offlineSpawn == null ? null : new JObject
                     {
                         ["x"] = ReadFloat(offlineSpawn["x"], 0f),
