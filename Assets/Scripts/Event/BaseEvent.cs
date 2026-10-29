@@ -131,19 +131,37 @@ namespace OpenGS
         private string attackerID_;
         private int damage_;
         private int remainingHp_;
+        private bool hasAuthoritativeState_;
+        private float remainingArmor_;
+        private int maxHp_;
+        private float maxArmor_;
+        private bool isDown_;
 
-        public PlayerDamageEvent(string targetId, string attackerId, int damage, int remainingHp)
+        public PlayerDamageEvent(
+            string targetId, string attackerId, int damage, int remainingHp,
+            bool hasAuthoritativeState = false, float remainingArmor = 0f,
+            int maxHp = 0, float maxArmor = 0f, bool isDown = false)
         {
             targetID_ = targetId;
             attackerID_ = attackerId;
             damage_ = damage;
             remainingHp_ = remainingHp;
+            hasAuthoritativeState_ = hasAuthoritativeState;
+            remainingArmor_ = remainingArmor;
+            maxHp_ = maxHp;
+            maxArmor_ = maxArmor;
+            isDown_ = isDown;
         }
 
         public string TargetID() => targetID_;
         public string AttackerID() => attackerID_;
         public int Damage() => damage_;
         public int RemainingHp() => remainingHp_;
+        public bool HasAuthoritativeState() => hasAuthoritativeState_;
+        public float RemainingArmor() => remainingArmor_;
+        public int MaxHp() => maxHp_;
+        public float MaxArmor() => maxArmor_;
+        public bool IsDown() => isDown_;
     }
 
     /// <summary>
@@ -206,6 +224,11 @@ namespace OpenGS
     {
         private string playerID_;
         private Vector2 position_;
+        private int currentHealth_;
+        private int maxHealth_;
+        private float currentArmor_;
+        private float maxArmor_;
+        private bool hasAuthoritativeState_;
 
         public PlayerRespawnEvent(string playerId, Vector2 position)
         {
@@ -213,8 +236,25 @@ namespace OpenGS
             position_ = position;
         }
 
+        public PlayerRespawnEvent(
+            string playerId, Vector2 position, int currentHealth, int maxHealth,
+            float currentArmor, float maxArmor, bool hasAuthoritativeState)
+            : this(playerId, position)
+        {
+            currentHealth_ = currentHealth;
+            maxHealth_ = maxHealth;
+            currentArmor_ = currentArmor;
+            maxArmor_ = maxArmor;
+            hasAuthoritativeState_ = hasAuthoritativeState;
+        }
+
         public string PlayerID() => playerID_;
         public Vector2 Position() => position_;
+        public int CurrentHealth() => currentHealth_;
+        public int MaxHealth() => maxHealth_;
+        public float CurrentArmor() => currentArmor_;
+        public float MaxArmor() => maxArmor_;
+        public bool HasAuthoritativeState() => hasAuthoritativeState_;
     }
 
     /// <summary>

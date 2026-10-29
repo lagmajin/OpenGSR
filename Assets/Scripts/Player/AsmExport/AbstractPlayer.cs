@@ -188,6 +188,27 @@ namespace OpenGS
             GameEventBroker.Publish(new PlayerRespawnEvent(UniqueID().ToString(), (Vector2)transform.position));
         }
 
+        public void ApplyAuthoritativeRespawn(
+            Vector3 position, float currentHp, float maxHp, float currentArmor, float maxArmor)
+        {
+            if (Status != null)
+            {
+                if (maxHp > 0f) Status.MaxHp = maxHp;
+                if (maxArmor >= 0f) Status.MaxArmor = maxArmor;
+                Status.Hp = currentHp;
+                Status.Armor = currentArmor;
+            }
+
+            transform.position = position;
+            isDead = false;
+            ResetPowerupState();
+            ExitSpectatorMode();
+            canJump = true;
+            canWarp = true;
+            isSitting = false;
+            isLyingDown = false;
+        }
+
         public virtual void ReserveReSpawn(float delay)
         {
             if (!MatchModeResolver.CanRespawnCurrentMatch())
@@ -337,6 +358,19 @@ namespace OpenGS
         public virtual float GetBooster() => Status?.Booster ?? 0f;
 
         public virtual float GetMaxBooster() => Status?.MaxBooster ?? 100f;
+
+        public bool ApplyAuthoritativeVitals(float currentHp, float currentArmor, bool isDown)
+        {
+            if (Status == null) return false;
+
+            Status.Hp = currentHp;
+            Status.Armor = currentArmor;
+            if (!isDown || isDead) return false;
+
+            isDead = true;
+            OnDead();
+            return true;
+        }
 
         // ─── IPlayer: プレイヤーリンク ────────────────────────────────
 

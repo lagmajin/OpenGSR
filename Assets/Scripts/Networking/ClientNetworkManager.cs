@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections;
+using System.Collections.Concurrent;
 using UnityEngine;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
@@ -39,6 +40,7 @@ namespace OpenGS
         private byte[] _tcpReceiveBuffer;
         private const int TcpBufferSize = 8192; // 8KB
         private readonly StringBuilder _tcpMessageBuffer = new StringBuilder();
+        private readonly ConcurrentQueue<AbstractGameEvent> _pendingGameEvents = new ConcurrentQueue<AbstractGameEvent>();
 
         public event Action<JObject> FriendRequestResponseReceived;
         public event Action<JObject> FriendApproveResponseReceived;
@@ -86,7 +88,19 @@ namespace OpenGS
         private void Update()
         {
             _netClient?.PollEvents(); // LiteNetLibのイベントをポーリング
-            // TCPデータ受信は非同期で処理するため、ここではポーリング不要
+            while (_pendingGameEvents.TryDequeue(out var gameEvent))
+            {
+                if (gameEvent is PlayerDamageEvent damageEvent && damageEvent.HasAuthoritativeState())
+                {
+                    PlayerRegistry.Instance?.ApplyAuthoritativeDamage(damageEvent);
+                }
+                else if (gameEvent is PlayerRespawnEvent respawnEvent && respawnEvent.HasAuthoritativeState())
+                {
+                    PlayerRegistry.Instance?.ApplyAuthoritativeRespawn(respawnEvent);
+                }
+
+                GameEventBroker.Publish(gameEvent);
+            }
         }
 
         private void OnDestroy()
@@ -640,17 +654,17 @@ namespace OpenGS
             }
         }
 
-        private static void PublishGameEvent(AbstractGameEvent gameEvent)
+        private void PublishGameEvent(AbstractGameEvent gameEvent)
         {
             if (gameEvent == null)
             {
                 return;
             }
 
-            GameEventBroker.Publish(gameEvent);
+            _pendingGameEvents.Enqueue(gameEvent);
         }
 
-        private static bool TryPublishNetworkGameEvent(JObject message)
+        private bool TryPublishNetworkGameEvent(JObject message)
         {
             var gameEvent = NetworkEventDeserializer.Deserialize(message);
             if (gameEvent == null) return false;

@@ -182,6 +182,84 @@ namespace OpenGS
             return true;
         }
 
+        public bool ApplyAuthoritativeDamage(PlayerDamageEvent evt)
+        {
+            if (evt == null || !evt.HasAuthoritativeState() ||
+                !Guid.TryParse(evt.TargetID(), out var playerId) ||
+                !TryGetPlayer(playerId, out var player) || player == null || player.Status == null)
+            {
+                return false;
+            }
+
+            if (evt.MaxHp() > 0) player.Status.MaxHp = evt.MaxHp();
+            if (evt.MaxArmor() >= 0) player.Status.MaxArmor = evt.MaxArmor();
+
+            var previousHp = GetPlayerHpSafe(player);
+            var previousArmor = GetPlayerArmorSafe(player);
+            var enteredDownState = player.ApplyAuthoritativeVitals(
+                evt.RemainingHp(), evt.RemainingArmor(), evt.IsDown());
+            var currentHp = GetPlayerHpSafe(player);
+            var currentArmor = GetPlayerArmorSafe(player);
+
+            if (!Mathf.Approximately(previousHp, currentHp))
+            {
+                OnPlayerHealthChanged?.Invoke(player, currentHp);
+            }
+
+            if (!Mathf.Approximately(previousArmor, currentArmor))
+            {
+                OnPlayerArmorChanged?.Invoke(player, currentArmor);
+            }
+
+            if (enteredDownState)
+            {
+                player.Status.DeathCount++;
+                OnPlayerDied?.Invoke(player);
+                if (ShouldPlayLocalPlayerSound(player))
+                {
+                    SoundManager.Instance.PlayPlayerSound(GetDeathSound(player));
+                }
+            }
+            else if (!Mathf.Approximately(previousHp, currentHp) &&
+                     ShouldPlayLocalPlayerSound(player))
+            {
+                SoundManager.Instance.PlayPlayerSound(GetDamageSound(player));
+            }
+
+            return true;
+        }
+
+        public bool ApplyAuthoritativeRespawn(PlayerRespawnEvent evt)
+        {
+            if (evt == null || !evt.HasAuthoritativeState() ||
+                !Guid.TryParse(evt.PlayerID(), out var playerId) ||
+                !TryGetPlayer(playerId, out var player) || player == null || player.Status == null)
+            {
+                return false;
+            }
+
+            var previousHp = GetPlayerHpSafe(player);
+            var previousArmor = GetPlayerArmorSafe(player);
+            player.ApplyAuthoritativeRespawn(
+                new Vector3(evt.Position().x, evt.Position().y, player.transform.position.z),
+                evt.CurrentHealth(), evt.MaxHealth(), evt.CurrentArmor(), evt.MaxArmor());
+
+            var currentHp = GetPlayerHpSafe(player);
+            var currentArmor = GetPlayerArmorSafe(player);
+            if (!Mathf.Approximately(previousHp, currentHp))
+            {
+                OnPlayerHealthChanged?.Invoke(player, currentHp);
+            }
+
+            if (!Mathf.Approximately(previousArmor, currentArmor))
+            {
+                OnPlayerArmorChanged?.Invoke(player, currentArmor);
+            }
+
+            OnPlayerRespawned?.Invoke(player);
+            return true;
+        }
+
         private float GetPlayerHpSafe(AbstractPlayer p)
         {
             try

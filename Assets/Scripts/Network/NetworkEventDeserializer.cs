@@ -148,11 +148,20 @@ namespace OpenGS
 
         private static PlayerDamageEvent DeserializePlayerDamage(JObject json)
         {
+            var hasAuthoritativeState = string.Equals(
+                MessageType.Normalize(S(json, "MessageType")),
+                RUDPMessageTypes.PlayerDamaged,
+                StringComparison.OrdinalIgnoreCase);
             return new PlayerDamageEvent(
                 S(json, "TargetId", S(json, "DamagedPlayerID", S(json, "TargetID"))),
                 S(json, "AttackerId", S(json, "AttackerID")),
                 I(json, "Damage"),
-                I(json, "RemainingHp", I(json, "RemainingHealth"))
+                I(json, "RemainingHp", I(json, "RemainingHealth")),
+                hasAuthoritativeState,
+                F(json, "CurrentArmor"),
+                I(json, "MaxHealth"),
+                F(json, "MaxArmor"),
+                B(json, "IsDown")
             );
         }
 
@@ -170,9 +179,15 @@ namespace OpenGS
 
         private static PlayerRespawnEvent DeserializePlayerRespawn(JObject json)
         {
+            var hasAuthoritativeState = json["CurrentHealth"] != null || json["MaxHealth"] != null;
             return new PlayerRespawnEvent(
-                S(json, "PlayerId"),
-                new Vector2(F(json, "PosX"), F(json, "PosY"))
+                S(json, "PlayerId", S(json, "PlayerID")),
+                new Vector2(F(json, "PosX"), F(json, "PosY")),
+                I(json, "CurrentHealth"),
+                I(json, "MaxHealth"),
+                F(json, "CurrentArmor"),
+                F(json, "MaxArmor"),
+                hasAuthoritativeState
             );
         }
 
