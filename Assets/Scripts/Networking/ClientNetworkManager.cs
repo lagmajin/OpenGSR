@@ -26,6 +26,8 @@ namespace OpenGS
         [Header("Client State")]
         public string ClientPlayerId { get; private set; } = string.Empty;
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
+        public bool IsLobbyConnected => _tcpClient != null && _tcpClient.Connected && _tcpStream != null && _tcpStream.CanWrite;
+        public bool IsLobbyAuthenticated { get; private set; }
         public bool IsMatchUdpConnected => _serverPeer != null &&
             _serverPeer.ConnectionState == ConnectionState.Connected;
         [Tooltip("Enable detailed UDP receive logs for match traffic. Non-verbose match warnings still remain visible.")]
@@ -43,6 +45,7 @@ namespace OpenGS
         private const int TcpBufferSize = 8192; // 8KB
         private readonly StringBuilder _tcpMessageBuffer = new StringBuilder();
         private readonly ConcurrentQueue<AbstractGameEvent> _pendingGameEvents = new ConcurrentQueue<AbstractGameEvent>();
+        private JObject _pendingAccountCreationLogin;
 
         public event Action<JObject> FriendRequestResponseReceived;
         public event Action<JObject> FriendApproveResponseReceived;
@@ -92,6 +95,17 @@ namespace OpenGS
             _matchConnectRoutine = StartCoroutine(ConnectToMatchUdpWhenReady());
         }
 
+        public void ConfigureLobbyEndpoint(string ip, int port)
+        {
+            if (_tcpClient != null || string.IsNullOrWhiteSpace(ip) || port <= 0)
+            {
+                return;
+            }
+
+            serverIp = ip;
+            tcpPort = port;
+        }
+
         private void Update()
         {
             _netClient?.PollEvents(); // LiteNetLibのイベントをポーリング
@@ -130,13 +144,6 @@ namespace OpenGS
                 // サーバーからの非同期受信を開始
                 _ = ReceiveTcpDataAsync();
 
-                // ログイン要求などを送信する（簡略化のためここでは省略）
-                SendTcpMessage(new JObject
-                {
-                    ["MessageType"] = MessageType.LoginRequest, // MessageTypeを使用
-                    ["PlayerID"] = ClientPlayerId,
-                    ["PlayerName"] = "UnityClient_" + ClientPlayerId.Substring(0, Math.Min(4, ClientPlayerId.Length))
-                });
             }
             catch (Exception ex)
             {
@@ -154,6 +161,7 @@ namespace OpenGS
                     if (bytesRead == 0)
                     {
                         Debug.Log("[ClientNetwork] Lobby TCP server disconnected.");
+                        IsLobbyAuthenticated = false;
                         break;
                     }
 
@@ -187,6 +195,7 @@ namespace OpenGS
             }
             catch (Exception ex)
             {
+                IsLobbyAuthenticated = false;
                 Debug.LogError($"[ClientNetwork] Error receiving TCP data: {ex.Message}");
             }
         }
@@ -231,11 +240,26 @@ namespace OpenGS
                 return;
             }
 
-            string messageType = MessageType.Normalize(message.GetStringOrNull("MessageType"));
+            var messageType = MessageType.Normalize(message.GetStringOrNull("MessageType"));
+            if (messageType == MessageType.LoginResponse)
+            {
+                IsLobbyAuthenticated = message["Success"]?.ToObject<bool>() ?? true;
+            }
+
+            try
+            {
+                DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>()?.ReceiveRemoteMessage(message);
+            }
+            catch
+            {
+                // The lobby bridge may not be registered yet during startup.
+            }
+
             switch (messageType)
             {
                 case MessageType.LoginResponse:
                     bool success = message["Success"]?.ToObject<bool>() ?? true;
+                    IsLobbyAuthenticated = success;
                     if (success)
                     {
                         string resolvedPlayerId = message.GetStringOrNull("PlayerID") ?? message.GetStringOrNull("GlobalUserId");
@@ -254,6 +278,9 @@ namespace OpenGS
                     {
                         Debug.LogError($"[ClientNetwork] Login failed: {message.GetStringOrNull("Error")}");
                     }
+                    break;
+                case MessageType.CreateAccountResponse:
+                    HandleCreateAccountResponse(message);
                     break;
                 case MessageType.PlayerInfoResponse:
                     HandlePlayerInfoResponse(message);
@@ -294,8 +321,57 @@ namespace OpenGS
             _ = TrySendTcpMessage(message);
         }
 
+        public bool TrySendLobbyMessage(JObject message)
+        {
+            if (message == null)
+            {
+                return false;
+            }
+
+            var messageType = MessageType.Normalize(message?.GetStringOrNull("MessageType"));
+            if (messageType == MessageType.CreateAccountRequest)
+            {
+                var accountId = message.GetStringOrNull("AccountID") ?? message.GetStringOrNull("AccountId");
+                var password = message.GetStringOrNull("Password");
+                _pendingAccountCreationLogin = string.IsNullOrWhiteSpace(accountId) || string.IsNullOrWhiteSpace(password)
+                    ? null
+                    : new JObject
+                    {
+                        ["MessageType"] = MessageType.LoginRequest,
+                        ["AccountID"] = accountId,
+                        ["Password"] = password,
+                        ["PlayerName"] = message.GetStringOrNull("DisplayName") ?? message.GetStringOrNull("AccountName") ?? accountId
+                    };
+            }
+
+            var sent = TrySendTcpMessage(message);
+            if (!sent && messageType == MessageType.CreateAccountRequest)
+            {
+                _pendingAccountCreationLogin = null;
+            }
+
+            return sent;
+        }
+
+        private void HandleCreateAccountResponse(JObject response)
+        {
+            var pendingLogin = _pendingAccountCreationLogin;
+            _pendingAccountCreationLogin = null;
+            if (response["Success"]?.ToObject<bool>() != true || pendingLogin == null)
+            {
+                return;
+            }
+
+            TrySendTcpMessage(pendingLogin);
+        }
+
         public bool RequestMatchServerInfo(string roomId)
         {
+            if (!IsLobbyAuthenticated)
+            {
+                return false;
+            }
+
             var playerId = ResolveLocalPlayerId();
             if (string.IsNullOrWhiteSpace(playerId))
             {
@@ -314,15 +390,23 @@ namespace OpenGS
         {
             if (_tcpStream != null && _tcpStream.CanWrite)
             {
-                string jsonString = message.ToString(Formatting.None);
-                byte[] payload = Encoding.UTF8.GetBytes(jsonString);
-                byte[] separator = { 0x1F };
-                byte[] data = new byte[payload.Length + separator.Length];
-                Buffer.BlockCopy(payload, 0, data, 0, payload.Length);
-                Buffer.BlockCopy(separator, 0, data, payload.Length, separator.Length);
-                _tcpStream.Write(data, 0, data.Length);
-                //Debug.Log($"[ClientNetwork] Sent TCP data: {jsonString}");
-                return true;
+                try
+                {
+                    string jsonString = message.ToString(Formatting.None);
+                    byte[] payload = Encoding.UTF8.GetBytes(jsonString);
+                    byte[] separator = { 0x1F };
+                    byte[] data = new byte[payload.Length + separator.Length];
+                    Buffer.BlockCopy(payload, 0, data, 0, payload.Length);
+                    Buffer.BlockCopy(separator, 0, data, payload.Length, separator.Length);
+                    _tcpStream.Write(data, 0, data.Length);
+                    return true;
+                }
+                catch (Exception ex)
+                {
+                    IsLobbyAuthenticated = false;
+                    Debug.LogWarning($"[ClientNetwork] Lobby TCP send failed: {ex.Message}");
+                    return false;
+                }
             }
 
             Debug.LogWarning("[ClientNetwork] Not connected to TCP server. Message not sent.");

@@ -443,6 +443,11 @@ namespace OpenGS
             {
                 NormalizeMessageType(json);
 
+                if (TrySendToRemoteLobby(json))
+                {
+                    return;
+                }
+
                 if (HandleLocalWaitRoomMessage(json))
                 {
                     return;
@@ -471,6 +476,17 @@ namespace OpenGS
 
         private void SendUpdateRoomRequestCore(System.Collections.Generic.List<OpenGSCore.EGameMode> modes)
         {
+            var request = new JObject
+            {
+                ["MessageType"] = MessageType.RoomListUpdateRequest,
+                ["MatchRoomType"] = (modes == null || modes.Count == 0) ? "All" : string.Join(",", modes),
+                ["Options"] = ""
+            };
+            if (TrySendToRemoteLobby(request))
+            {
+                return;
+            }
+
             var snapshot = new RoomListSnapshot();
             foreach (var room in localRooms)
             {
@@ -487,16 +503,27 @@ namespace OpenGS
                 });
             }
 
-            var json = snapshot.ToJson();
-            json["MessageType"] = MessageType.RoomListUpdateRequest;
-            json["MatchRoomType"] = (modes == null || modes.Count == 0) ? "All" : string.Join(",", modes);
-            json["Options"] = "";
-            SendMessage(json);
+            SendMessage(request);
             EmitToClient(snapshot.ToJson());
         }
 
         public void SendCreateNewWaitRoomRequest(string roomName, int capacity, string gameMode, bool teamBalance, string password = "")
         {
+            var request = new JObject
+            {
+                ["MessageType"] = MessageType.CreateRoomRequest,
+                ["RoomName"] = string.IsNullOrWhiteSpace(roomName) ? "New Room" : roomName,
+                ["Capacity"] = capacity,
+                ["GameMode"] = string.IsNullOrWhiteSpace(gameMode) ? "TeamDeathMatch" : gameMode,
+                ["TeamBalance"] = teamBalance,
+                ["Password"] = password ?? "",
+                ["PlayerName"] = ResolveLocalPlayerName()
+            };
+            if (TrySendToRemoteLobby(request))
+            {
+                return;
+            }
+
             var roomId = $"room-{localRoomSequence++:D4}";
             var ownerId = ResolveLocalPlayerId();
             currentRoomId = roomId;
@@ -522,6 +549,19 @@ namespace OpenGS
 
         public void SendEnterWaitRoomRequest(string roomId, string playerId, string playerName, string password = "")
         {
+            var request = new JObject
+            {
+                ["MessageType"] = MessageType.JoinRoomRequest,
+                ["RoomID"] = roomId ?? "",
+                ["PlayerID"] = playerId ?? "",
+                ["PlayerName"] = playerName ?? "Player",
+                ["Password"] = password ?? ""
+            };
+            if (TrySendToRemoteLobby(request))
+            {
+                return;
+            }
+
             var room = localRooms.Find(r => string.Equals(r.RoomId, roomId, StringComparison.OrdinalIgnoreCase));
             if (room == null)
             {
@@ -584,6 +624,35 @@ namespace OpenGS
             NormalizeMessageType(json);
             CacheLastMatchResult(json);
             dataReceivedSubject.OnNext(json);
+        }
+
+        public void ReceiveRemoteMessage(JObject json)
+        {
+            if (json == null)
+            {
+                return;
+            }
+
+            EmitToClient(json);
+        }
+
+        private bool TrySendToRemoteLobby(JObject json)
+        {
+            var clientNetworkManager = UnityEngine.Object.FindFirstObjectByType<ClientNetworkManager>();
+            if (clientNetworkManager == null || !clientNetworkManager.IsLobbyConnected)
+            {
+                return false;
+            }
+
+            var messageType = MessageType.Normalize(json?["MessageType"]?.ToString());
+            var isAuthenticationRequest = messageType == MessageType.LoginRequest ||
+                messageType == MessageType.CreateAccountRequest;
+            if (!clientNetworkManager.IsLobbyAuthenticated && !isAuthenticationRequest)
+            {
+                return false;
+            }
+
+            return clientNetworkManager.TrySendLobbyMessage(json);
         }
 
         private void CacheLastMatchResult(JObject json)

@@ -49,6 +49,8 @@ namespace OpenGS
                 networkManager.SendMessage(new JObject
                 {
                     ["MessageType"] = MessageType.CreateAccountRequest,
+                    ["AccountID"] = resolvedName,
+                    ["DisplayName"] = resolvedName,
                     ["AccountName"] = resolvedName,
                     ["Password"] = password ?? "",
                     ["GlobalUserId"] = globalUserId

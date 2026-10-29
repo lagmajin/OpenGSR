@@ -51,6 +51,7 @@ namespace OpenGS
                 networkManager.SendMessage(new JObject
                 {
                     ["MessageType"] = MessageType.LoginRequest,
+                    ["AccountID"] = accountName,
                     ["AccountName"] = accountName,
                     ["Password"] = password,
                     ["GlobalUserId"] = globalUserId
@@ -74,6 +75,8 @@ namespace OpenGS
                 networkManager.SendMessage(new JObject
                 {
                     ["MessageType"] = MessageType.CreateAccountRequest,
+                    ["AccountID"] = id,
+                    ["DisplayName"] = id,
                     ["AccountName"] = id,
                     ["Password"] = password,
                     ["GlobalUserId"] = globalUserId

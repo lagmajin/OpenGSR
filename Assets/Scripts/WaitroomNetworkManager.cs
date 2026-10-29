@@ -360,6 +360,10 @@ namespace OpenGS
 
             switch (messageType)
             {
+                case MessageType.CreateRoomResponse:
+                case MessageType.JoinRoomResponse:
+                    HandleRoomEntryResponse(json);
+                    break;
                 // ロビー関連
                 // ウェイトルーム関連
                 case MessageType.JoinRoomRequest:
@@ -369,6 +373,7 @@ namespace OpenGS
                     HandleWaitRoomLeave(json);
                     break;
                 case MessageType.WaitRoomPlayerList:
+                case MessageType.WaitRoomUpdateNotification:
                     HandleWaitRoomPlayerList(json);
                     break;
                 case MessageType.LobbyChatRequest:
@@ -455,7 +460,8 @@ namespace OpenGS
 
         private void HandleWaitRoomPlayerList(JObject json)
         {
-            var snapshot = OpenGSCore.WaitRoomSnapshot.FromJson(json);
+            var roomData = json["RoomInfo"] as JObject ?? json;
+            var snapshot = OpenGSCore.WaitRoomSnapshot.FromJson(roomData);
             var roomId = snapshot.RoomId;
             var roomName = snapshot.RoomName;
             var players = snapshot.Players;
@@ -471,7 +477,7 @@ namespace OpenGS
 
             if (players != null)
             {
-                currentPlayers = json["Players"] as JArray ?? new JArray();
+                currentPlayers = roomData["Players"] as JArray ?? new JArray();
                 if (waitRoomManager?.WaitRoom != null)
                 {
                     waitRoomManager.WaitRoom.RoomName = currentRoomName;
@@ -500,6 +506,27 @@ namespace OpenGS
 
                 PrettyLogger.Bold("WaitRoom", $"参加者更新: {players.Count}人 room={roomId}");
                 onPlayerList.OnNext(currentPlayers);
+            }
+        }
+
+        private void HandleRoomEntryResponse(JObject json)
+        {
+            if (json["Success"]?.ToObject<bool>() == false)
+            {
+                Debug.LogWarning($"[WaitRoomNetworkManager] Room entry failed: {json["ErrorMessage"]?.ToString()}");
+                return;
+            }
+
+            var roomData = json["RoomInfo"] as JObject ?? json;
+            var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString() ?? roomData["RoomID"]?.ToString() ?? roomData["RoomId"]?.ToString();
+            if (!string.IsNullOrWhiteSpace(roomId))
+            {
+                currentRoomId = roomId;
+                currentRoomName = json["RoomName"]?.ToString() ?? roomData["RoomName"]?.ToString() ?? currentRoomName;
+                if (waitRoomManager != null)
+                {
+                    waitRoomManager.CreateNewWaitRoomFromJson(roomData);
+                }
             }
         }
 

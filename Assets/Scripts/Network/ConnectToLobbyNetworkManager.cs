@@ -8,6 +8,16 @@ namespace OpenGS
         public void ConnectToLobbyServer(string ip, int port)
         {
             Debug.Log($"[ConnectToLobbyNetworkManager] ConnectToLobbyServer {ip}:{port}");
+
+            var clientNetworkManager = FindFirstObjectByType<ClientNetworkManager>();
+            if (clientNetworkManager == null)
+            {
+                var clientObject = new GameObject("ClientNetworkManager");
+                DontDestroyOnLoad(clientObject);
+                clientNetworkManager = clientObject.AddComponent<ClientNetworkManager>();
+            }
+            clientNetworkManager.ConfigureLobbyEndpoint(ip, port);
+
             try
             {
                 var manager = DependencyInjectionConfig.Resolve<GeneralServerNetworkManager>();
