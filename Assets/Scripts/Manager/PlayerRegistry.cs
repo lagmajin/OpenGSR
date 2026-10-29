@@ -70,8 +70,16 @@ namespace OpenGS
                 foreach (var entry in remotePositionTargets)
                 {
                     if (!players.TryGetValue(entry.Key, out var player) || player == null ||
-                        player.PlayerType() == EPlayerType.MyPlayer)
+                        player.IsDead())
                     {
+                        continue;
+                    }
+
+                    var isLocalPlayer = player.PlayerType() == EPlayerType.MyPlayer;
+                    if (isLocalPlayer && Vector3.Distance(player.transform.position, entry.Value) > 1.5f)
+                    {
+                        player.transform.position = entry.Value;
+                        remotePositionVelocities[entry.Key] = Vector3.zero;
                         continue;
                     }
 
@@ -82,13 +90,13 @@ namespace OpenGS
                         player.transform.position,
                         entry.Value,
                         ref velocity,
-                        RemotePositionSmoothTime);
+                        isLocalPlayer ? 0.085f : RemotePositionSmoothTime);
                     remotePositionVelocities[entry.Key] = velocity;
                 }
             }
         }
 
-        public bool ApplyRemotePosition(Guid id, Vector3 position)
+        public bool ApplyNetworkPosition(Guid id, Vector3 position)
         {
             if (!IsFinite(position.x) || !IsFinite(position.y) || !IsFinite(position.z))
             {
@@ -97,8 +105,7 @@ namespace OpenGS
 
             lock (locker)
             {
-                if (!players.TryGetValue(id, out var player) || player == null ||
-                    player.PlayerType() == EPlayerType.MyPlayer)
+                if (!players.TryGetValue(id, out var player) || player == null)
                 {
                     return false;
                 }

@@ -47,6 +47,10 @@ namespace OpenGS
             if (rigidbody2D == null) rigidbody2D = GetComponent<Rigidbody2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
             matchNetworkManager = FindFirstObjectByType<ClientNetworkManager>();
+            if (PlayerType() != EPlayerType.MyPlayer && rigidbody2D != null)
+            {
+                rigidbody2D.simulated = false;
+            }
             wasGrounded = IsGround();
             
             Status.FullRecovery();
@@ -54,7 +58,7 @@ namespace OpenGS
 
         protected virtual void Update()
         {
-            if (isDead || inputService == null) return;
+            if (isDead || inputService == null || PlayerType() != EPlayerType.MyPlayer) return;
 
             UpdateFacing();
             HandleActions();
@@ -68,7 +72,7 @@ namespace OpenGS
 
         protected virtual void FixedUpdate()
         {
-            if (isDead || inputService == null) return;
+            if (isDead || inputService == null || PlayerType() != EPlayerType.MyPlayer) return;
 
             HandleMovement();
             HandleBooster();
@@ -162,7 +166,7 @@ namespace OpenGS
 
         protected virtual void LateUpdate()
         {
-            if (isDead)
+            if (isDead || PlayerType() != EPlayerType.MyPlayer)
             {
                 wasGrounded = IsGround();
                 return;

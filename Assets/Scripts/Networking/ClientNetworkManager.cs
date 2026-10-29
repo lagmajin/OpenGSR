@@ -751,7 +751,20 @@ namespace OpenGS
                             message["PosX"]?.Value<float>() ?? nestedPosition?["X"]?.Value<float>() ?? 0f,
                             message["PosY"]?.Value<float>() ?? nestedPosition?["Y"]?.Value<float>() ?? 0f,
                             message["PosZ"]?.Value<float>() ?? nestedPosition?["Z"]?.Value<float>() ?? 0f);
-                        PlayerRegistry.Instance?.ApplyRemotePosition(remotePlayerId, position);
+                        PlayerRegistry.Instance?.ApplyNetworkPosition(remotePlayerId, position);
+                    }
+                    break;
+                }
+                case "ServerTransformState":
+                {
+                    var playerId = message.GetStringOrNull("PlayerID") ?? message.GetStringOrNull("PlayerId");
+                    if (Guid.TryParse(playerId, out var playerGuid))
+                    {
+                        var position = new Vector3(
+                            message["PosX"]?.Value<float>() ?? message["PositionX"]?.Value<float>() ?? 0f,
+                            message["PosY"]?.Value<float>() ?? message["PositionY"]?.Value<float>() ?? 0f,
+                            message["PosZ"]?.Value<float>() ?? message["PositionZ"]?.Value<float>() ?? 0f);
+                        PlayerRegistry.Instance?.ApplyNetworkPosition(playerGuid, position);
                     }
                     break;
                 }
