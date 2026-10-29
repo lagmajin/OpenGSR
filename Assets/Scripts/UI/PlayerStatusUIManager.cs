@@ -77,6 +77,7 @@ namespace OpenGS
         private string myPlayerId;
         private GrenadeSlotImage[] grenadeSlotImages;
         private IDisposable ammoSub;
+        private IDisposable reloadSub;
         private IDisposable weaponSub;
         private IDisposable killSub;
         
@@ -96,6 +97,7 @@ namespace OpenGS
 
             // MessagePipe (GameEventBroker) 購読
             ammoSub = GameEventBroker.Subscribe<AmmoUpdateEvent>(HandleAmmoUpdate);
+            reloadSub = GameEventBroker.Subscribe<PlayerReloadEvent>(HandleServerReloadUpdate);
             weaponSub = GameEventBroker.Subscribe<WeaponChangeEvent>(HandleWeaponChange);
 
             TryFindMyPlayer();
@@ -117,6 +119,7 @@ namespace OpenGS
             UnbindGrenadeSlotEvents();
 
             ammoSub?.Dispose();
+            reloadSub?.Dispose();
             weaponSub?.Dispose();
             killSub?.Dispose();
         }
@@ -300,7 +303,7 @@ namespace OpenGS
                 if (!MatchesWeapon(gun, evt.WeaponType())) continue;
                 gun.SetMagazineCountFromServer(evt.CurrentAmmo());
 
-                if (gun == currentWeapon && weaponUI.ammoText != null)
+                if (gun == currentWeapon && weaponUI != null && weaponUI.ammoText != null)
                 {
                     weaponUI.ammoText.text = $"{evt.CurrentAmmo()} / {evt.MaxAmmo()}";
                 }
@@ -329,6 +332,26 @@ namespace OpenGS
                 if (char.IsLetterOrDigit(character)) normalized.Append(char.ToLowerInvariant(character));
             }
             return normalized.ToString();
+        }
+
+        private void HandleServerReloadUpdate(PlayerReloadEvent evt)
+        {
+            if (evt == null || !evt.HasAuthoritativeState() || myPlayer == null ||
+                !string.Equals(evt.PlayerID(), myPlayerId, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            var currentWeapon = myPlayer.GetComponentInChildren<AbstractGunController>();
+            foreach (var gun in myPlayer.GetComponentsInChildren<AbstractGunController>(true))
+            {
+                if (!MatchesWeapon(gun, evt.WeaponType())) continue;
+                gun.ApplyServerReloadResult(evt);
+                if (gun == currentWeapon && weaponUI != null && weaponUI.ammoText != null)
+                {
+                    weaponUI.ammoText.text = $"{evt.CurrentAmmo()} / {evt.MaxAmmo()}";
+                }
+            }
         }
 
         private void HandleWeaponChange(WeaponChangeEvent evt)

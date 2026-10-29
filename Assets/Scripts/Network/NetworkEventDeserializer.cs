@@ -73,6 +73,7 @@ namespace OpenGS
                 RUDPMessageTypes.AmmoUpdate     => DeserializeAmmoUpdate(json),
                 RUDPMessageTypes.GrenadeThrow   => DeserializeGrenadeThrow(json),
                 RUDPMessageTypes.PlayerReload   => DeserializePlayerReload(json),
+                RUDPMessageTypes.PlayerReloaded => DeserializePlayerReload(json),
                 RUDPMessageTypes.PlayerMelee    => DeserializePlayerMelee(json),
 
                 // 投票
@@ -290,7 +291,18 @@ namespace OpenGS
 
         private static PlayerReloadEvent DeserializePlayerReload(JObject json)
         {
-            return new PlayerReloadEvent(S(json, "PlayerId"), S(json, "WeaponType"), B(json, "IsEmpty"));
+            var playerId = S(json, "PlayerId", S(json, "PlayerID"));
+            var weaponType = S(json, "WeaponType");
+            if (!string.Equals(MessageType.Normalize(S(json, "MessageType")),
+                RUDPMessageTypes.PlayerReloaded, StringComparison.OrdinalIgnoreCase))
+            {
+                return new PlayerReloadEvent(playerId, weaponType, B(json, "IsEmpty"));
+            }
+
+            return new PlayerReloadEvent(
+                playerId, weaponType, false,
+                B(json, "Accepted"), I(json, "CurrentAmmo"), I(json, "MaxAmmo"),
+                I(json, "ReserveAmmo"), S(json, "Reason"), F(json, "ReloadSeconds"));
         }
 
         private static PlayerMeleeEvent DeserializePlayerMelee(JObject json)

@@ -531,6 +531,7 @@ namespace OpenGS
             json["MessageType"] = RUDPMessageTypes.PlayerReload;
             json["PlayerId"] = e.PlayerID();
             json["WeaponType"] = e.WeaponType();
+            json["WeaponVariant"] = e.WeaponType();
             json["IsEmpty"] = e.IsEmpty();
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
@@ -671,6 +672,14 @@ namespace OpenGS
             {
                 try
                 {
+                    var clientNetworkManager = UnityEngine.Object.FindFirstObjectByType<ClientNetworkManager>();
+                    if (clientNetworkManager != null && clientNetworkManager.IsMatchUdpConnected)
+                    {
+                        clientNetworkManager.SendMatchEvent(json);
+                        Debug.Log("[NetworkEventSerializer] Sent over match UDP: " + json["MessageType"]);
+                        return;
+                    }
+
                     var networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
                     if (networkManager != null && networkManager.IsConnected())
                     {

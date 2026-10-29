@@ -88,6 +88,7 @@ namespace OpenGS
         public const string AmmoUpdate = "AmmoUpdate";            // アモ更新
         public const string GrenadeThrow = "GrenadeThrow";        // グレネード投擲
         public const string PlayerReload = "PlayerReload";       // リロード
+        public const string PlayerReloaded = MessageType.PlayerReloaded;
         public const string PlayerMelee = "PlayerMelee";          // 近接攻撃
 
         // 投票システム - 双方向

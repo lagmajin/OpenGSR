@@ -498,6 +498,13 @@ namespace OpenGS
         private string playerID_;
         private string weaponType_;
         private bool isEmpty_;
+        private bool hasAuthoritativeState_;
+        private bool accepted_;
+        private int currentAmmo_;
+        private int maxAmmo_;
+        private int reserveAmmo_;
+        private string reason_;
+        private float reloadSeconds_;
 
         public PlayerReloadEvent(string playerId, string weaponType, bool isEmpty)
         {
@@ -506,9 +513,30 @@ namespace OpenGS
             isEmpty_ = isEmpty;
         }
 
+        public PlayerReloadEvent(
+            string playerId, string weaponType, bool isEmpty, bool accepted,
+            int currentAmmo, int maxAmmo, int reserveAmmo, string reason, float reloadSeconds)
+            : this(playerId, weaponType, isEmpty)
+        {
+            hasAuthoritativeState_ = true;
+            accepted_ = accepted;
+            currentAmmo_ = currentAmmo;
+            maxAmmo_ = maxAmmo;
+            reserveAmmo_ = reserveAmmo;
+            reason_ = reason;
+            reloadSeconds_ = reloadSeconds;
+        }
+
         public string PlayerID() => playerID_;
         public string WeaponType() => weaponType_;
         public bool IsEmpty() => isEmpty_;
+        public bool HasAuthoritativeState() => hasAuthoritativeState_;
+        public bool Accepted() => accepted_;
+        public int CurrentAmmo() => currentAmmo_;
+        public int MaxAmmo() => maxAmmo_;
+        public int ReserveAmmo() => reserveAmmo_;
+        public string Reason() => reason_;
+        public float ReloadSeconds() => reloadSeconds_;
     }
 
     /// <summary>

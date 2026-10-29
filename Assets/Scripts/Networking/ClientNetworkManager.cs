@@ -26,6 +26,8 @@ namespace OpenGS
         [Header("Client State")]
         public string ClientPlayerId { get; private set; } = Guid.NewGuid().ToString("N");
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
+        public bool IsMatchUdpConnected => _serverPeer != null &&
+            _serverPeer.ConnectionState == ConnectionState.Connected;
         [Tooltip("Enable detailed UDP receive logs for match traffic. Non-verbose match warnings still remain visible.")]
         [SerializeField] private bool verboseUdpLogs = false;
 
@@ -630,6 +632,7 @@ namespace OpenGS
                 case RUDPMessageTypes.WeaponChange:
                 case RUDPMessageTypes.AmmoUpdate:
                 case RUDPMessageTypes.PlayerReload:
+                case RUDPMessageTypes.PlayerReloaded:
                 case RUDPMessageTypes.ItemPickup:
                 case RUDPMessageTypes.ItemUse:
                 case RUDPMessageTypes.ItemSpawn:
@@ -704,6 +707,16 @@ namespace OpenGS
             {
                 Debug.LogWarning("[ClientNetwork] Not connected to UDP server. Input not sent.");
             }
+        }
+
+        public void SendMatchEvent(JObject message)
+        {
+            if (message == null) return;
+            var messageType = MessageType.Normalize(message.GetStringOrNull("MessageType"));
+            var delivery = string.Equals(messageType, RUDPMessageTypes.PlayerShot, StringComparison.OrdinalIgnoreCase)
+                ? DeliveryMethod.Unreliable
+                : DeliveryMethod.ReliableOrdered;
+            SendUdpInput(message, delivery);
         }
 
         public void SendShootRequest(Vector2 position, Vector2 direction, string weaponType)

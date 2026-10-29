@@ -50,6 +50,9 @@ namespace OpenGS
         protected bool reloadingNow = false;
         protected bool reloadCancelFlag = false;
         protected float reloadDelay = 0.0f;
+        private float reloadTimeBeforeServerOverride;
+        private bool hasServerReloadTimeOverride;
+        private bool serverReloadPending;
 
         Vector3 originalHeadPos;
         public GameObject bulletPrefab;
@@ -126,6 +129,7 @@ namespace OpenGS
         private void UpdateReloading()
         {
             reloadDelay += Time.deltaTime;
+            if (serverReloadPending) return;
             if (reloadDelay >= reloadTime)
             {
                 ReloadComplete();
@@ -192,10 +196,12 @@ namespace OpenGS
 
         public virtual void ReloadStart()
         {
-            if (reloadingNow || remains >= magazine) return;
+            if (reloadingNow || remains >= MagazineMaxCount()) return;
 
+            serverReloadPending = TrySendServerReload();
             reloadCancelFlag = false;
             reloadingNow = true;
+            reloadDelay = 0f;
             if (data != null && soundService != null)
             {
                 soundService.PlayWeaponReload(data.weaponType);
@@ -206,14 +212,18 @@ namespace OpenGS
         {
             reloadingNow = false;
             reloadCancelFlag = true;
+            serverReloadPending = false;
+            RestoreReloadTimeAfterServerOverride();
         }
 
         public virtual void ReloadComplete()
         {
             reloadingNow = false;
             reloadCancelFlag = false;
+            serverReloadPending = false;
             reloadDelay = 0.0f;
-            remains = magazine;
+            remains = MagazineMaxCount();
+            RestoreReloadTimeAfterServerOverride();
             PublishAmmoUpdate();
         }
 
@@ -228,6 +238,79 @@ namespace OpenGS
         public void SetMagazineCountFromServer(int value)
         {
             remains = Mathf.Clamp(value, 0, MagazineMaxCount());
+        }
+
+        public void ApplyServerReloadResult(PlayerReloadEvent evt)
+        {
+            if (evt == null || !evt.HasAuthoritativeState()) return;
+
+            remains = Mathf.Clamp(evt.CurrentAmmo(), 0, MagazineMaxCount());
+            if (!evt.Accepted())
+            {
+                reloadingNow = false;
+                reloadCancelFlag = true;
+                serverReloadPending = false;
+                reloadDelay = 0f;
+                RestoreReloadTimeAfterServerOverride();
+                return;
+            }
+
+            if (string.Equals(evt.Reason(), "Completed", StringComparison.OrdinalIgnoreCase))
+            {
+                reloadingNow = false;
+                reloadCancelFlag = false;
+                serverReloadPending = false;
+                reloadDelay = 0f;
+                RestoreReloadTimeAfterServerOverride();
+                return;
+            }
+
+            reloadingNow = true;
+            reloadCancelFlag = false;
+            serverReloadPending = true;
+            reloadDelay = 0f;
+            if (evt.ReloadSeconds() > 0f)
+            {
+                if (!hasServerReloadTimeOverride)
+                {
+                    reloadTimeBeforeServerOverride = reloadTime;
+                    hasServerReloadTimeOverride = true;
+                }
+                reloadTime = evt.ReloadSeconds();
+            }
+        }
+
+        private void RestoreReloadTimeAfterServerOverride()
+        {
+            if (!hasServerReloadTimeOverride) return;
+            reloadTime = reloadTimeBeforeServerOverride;
+            hasServerReloadTimeOverride = false;
+        }
+
+        protected virtual bool TrySendServerReload()
+        {
+            try
+            {
+                var owner = GetOwnerPlayer();
+                var weaponType = data != null ? data.weaponType.ToString() : Name;
+                var reload = new PlayerReloadEvent(GetPlayerID(owner), weaponType, remains <= 0);
+                var clientNetworkManager = UnityEngine.Object.FindFirstObjectByType<ClientNetworkManager>();
+                if (clientNetworkManager != null && clientNetworkManager.IsMatchUdpConnected)
+                {
+                    NetworkEventSerializer.SerializeAndSend(reload);
+                    return true;
+                }
+
+                var legacyNetworkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+                if (legacyNetworkManager == null || !legacyNetworkManager.IsConnected()) return false;
+                NetworkEventSerializer.SerializeAndSend(reload);
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Debug.LogWarning($"[AbstractGunController] Failed to send server reload: {ex.Message}");
+                return false;
+            }
         }
 
         protected void PublishAmmoUpdate()
@@ -301,16 +384,18 @@ namespace OpenGS
 
         public virtual bool CanShot() => shotTimer <= 0 && remains > 0 && !reloadingNow;
 
-        public bool CanReload() => magazine > remains;
+        public bool CanReload() => MagazineMaxCount() > remains;
 
         protected virtual bool TrySendServerShot()
         {
             try
             {
-                var networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
-                if (networkManager == null || !networkManager.IsConnected())
+                var clientNetworkManager = UnityEngine.Object.FindFirstObjectByType<ClientNetworkManager>();
+                var isMatchUdpConnected = clientNetworkManager != null && clientNetworkManager.IsMatchUdpConnected;
+                if (!isMatchUdpConnected)
                 {
-                    return false;
+                    var networkManager = DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>();
+                    if (networkManager == null || !networkManager.IsConnected()) return false;
                 }
 
                 var owner = GetOwnerPlayer();
