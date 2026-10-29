@@ -145,7 +145,7 @@ namespace OpenGS
         {
             // A local shooter can receive its own authoritative event after it has
             // already created the predicted projectile. Preserve that visual.
-            if (IsLocalPlayer(e.PlayerID())) return;
+            if (IsLocalPlayer(e.PlayerID()) && !e.IsSnapshot()) return;
 
             var id = e.ProjectileID();
             if (string.IsNullOrWhiteSpace(id)) return;

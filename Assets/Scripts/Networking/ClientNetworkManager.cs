@@ -236,6 +236,12 @@ namespace OpenGS
                 case MessageType.MatchServerInfoResponse:
                     HandleMatchServerInfoResponse(message);
                     break;
+                case RUDPMessageTypes.AmmoUpdate:
+                case RUDPMessageTypes.GrenadeThrow:
+                case RUDPMessageTypes.ObjectSpawned:
+                case RUDPMessageTypes.ObjectDestroyed:
+                    PublishGameEvent(NetworkEventDeserializer.Deserialize(message));
+                    break;
                 case MessageType.FriendRequestResponse:
                     FriendRequestResponseReceived?.Invoke(message);
                     break;
@@ -605,6 +611,7 @@ namespace OpenGS
                 case RUDPMessageTypes.PlayerLeft:
                 case RUDPMessageTypes.PlayerTeamSwitch:
                 case RUDPMessageTypes.WeaponChange:
+                case RUDPMessageTypes.AmmoUpdate:
                 case RUDPMessageTypes.PlayerReload:
                 case RUDPMessageTypes.ItemPickup:
                 case RUDPMessageTypes.ItemUse:

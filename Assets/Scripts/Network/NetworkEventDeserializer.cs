@@ -266,7 +266,8 @@ namespace OpenGS
                 S(json, "ObjectId", S(json, "ProjectileId")),
                 F(json, "Speed"),
                 F(json, "RemainingFuseSeconds"),
-                F(json, "GravityScale", 1f)
+                F(json, "GravityScale", 1f),
+                B(json, "IsSnapshot")
             );
         }
 

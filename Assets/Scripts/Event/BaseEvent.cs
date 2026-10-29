@@ -416,6 +416,7 @@ namespace OpenGS
         private float speed_;
         private float remainingFuseSeconds_;
         private float gravityScale_ = 1f;
+        private bool isSnapshot_;
 
         public GrenadeThrowEvent(string playerId, Vector2 position, Vector2 direction, string grenadeType)
         {
@@ -427,13 +428,15 @@ namespace OpenGS
 
         public GrenadeThrowEvent(
             string playerId, Vector2 position, Vector2 direction, string grenadeType,
-            string projectileId, float speed, float remainingFuseSeconds, float gravityScale = 1f)
+            string projectileId, float speed, float remainingFuseSeconds,
+            float gravityScale = 1f, bool isSnapshot = false)
             : this(playerId, position, direction, grenadeType)
         {
             projectileID_ = projectileId;
             speed_ = speed;
             remainingFuseSeconds_ = remainingFuseSeconds;
             gravityScale_ = gravityScale;
+            isSnapshot_ = isSnapshot;
         }
 
         public string PlayerID() => playerID_;
@@ -444,6 +447,7 @@ namespace OpenGS
         public float Speed() => speed_;
         public float RemainingFuseSeconds() => remainingFuseSeconds_;
         public float GravityScale() => gravityScale_;
+        public bool IsSnapshot() => isSnapshot_;
     }
 
     /// <summary>
