@@ -294,6 +294,22 @@ namespace OpenGS
             _ = TrySendTcpMessage(message);
         }
 
+        public bool RequestMatchServerInfo(string roomId)
+        {
+            var playerId = ResolveLocalPlayerId();
+            if (string.IsNullOrWhiteSpace(playerId))
+            {
+                playerId = ClientPlayerId;
+            }
+
+            return TrySendTcpMessage(new JObject
+            {
+                ["MessageType"] = MessageType.MatchServerInfoRequest,
+                ["PlayerID"] = playerId,
+                ["RoomID"] = roomId ?? string.Empty
+            });
+        }
+
         private bool TrySendTcpMessage(JObject message)
         {
             if (_tcpStream != null && _tcpStream.CanWrite)

@@ -53,11 +53,18 @@ namespace OpenGS
         public void SendMatchServerInfoRequest()
         {
             RefreshExpectedPlayerCount();
+            var roomId = waitRoomManager?.WaitRoom?.RoomId ?? string.Empty;
+            var clientNetworkManager = FindFirstObjectByType<ClientNetworkManager>();
+            if (clientNetworkManager != null && clientNetworkManager.RequestMatchServerInfo(roomId))
+            {
+                return;
+            }
+
             var json = new JObject
             {
                 ["MessageType"] = MessageType.MatchServerInfoRequest,
                 ["PlayerID"] = ResolveLocalPlayerId(),
-                ["RoomID"] = waitRoomManager?.WaitRoom?.RoomId ?? string.Empty
+                ["RoomID"] = roomId
             };
 
             SendToServer(json);
