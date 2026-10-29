@@ -114,14 +114,23 @@ namespace OpenGS
         {
             if (player == null) return false;
             var id = player.UniqueID();
+            AbstractPlayer replacedPlayer = null;
             lock (locker)
             {
-                if (players.ContainsKey(id)) return false;
+                if (players.TryGetValue(id, out replacedPlayer) && replacedPlayer == player)
+                {
+                    return false;
+                }
+
                 players[id] = player;
                 remotePositionTargets.Remove(id);
                 remotePositionVelocities.Remove(id);
             }
 
+            if (replacedPlayer != null)
+            {
+                OnPlayerUnregistered?.Invoke(replacedPlayer);
+            }
             OnPlayerRegistered?.Invoke(player);
             return true;
         }
@@ -129,7 +138,22 @@ namespace OpenGS
         public bool UnregisterPlayer(AbstractPlayer player)
         {
             if (player == null) return false;
-            return UnregisterPlayer(player.UniqueID());
+
+            var id = player.UniqueID();
+            lock (locker)
+            {
+                if (!players.TryGetValue(id, out var registeredPlayer) || registeredPlayer != player)
+                {
+                    return false;
+                }
+
+                players.Remove(id);
+                remotePositionTargets.Remove(id);
+                remotePositionVelocities.Remove(id);
+            }
+
+            OnPlayerUnregistered?.Invoke(player);
+            return true;
         }
 
         public bool UnregisterPlayer(Guid id)
