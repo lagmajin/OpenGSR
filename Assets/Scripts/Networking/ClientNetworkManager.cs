@@ -741,6 +741,20 @@ namespace OpenGS
                     CurrentMatchRoomId = message.GetStringOrNull("RoomID");
                     Debug.Log($"[ClientNetwork] Joined Match Room [{FormatRoomTag(CurrentMatchRoomId)}]");
                     break;
+                case RUDPMessageTypes.PlayerPositionUpdate:
+                {
+                    var playerId = message.GetStringOrNull("PlayerID") ?? message.GetStringOrNull("PlayerId");
+                    if (Guid.TryParse(playerId, out var remotePlayerId))
+                    {
+                        var nestedPosition = message["Position"] as JObject;
+                        var position = new Vector3(
+                            message["PosX"]?.Value<float>() ?? nestedPosition?["X"]?.Value<float>() ?? 0f,
+                            message["PosY"]?.Value<float>() ?? nestedPosition?["Y"]?.Value<float>() ?? 0f,
+                            message["PosZ"]?.Value<float>() ?? nestedPosition?["Z"]?.Value<float>() ?? 0f);
+                        PlayerRegistry.Instance?.ApplyRemotePosition(remotePlayerId, position);
+                    }
+                    break;
+                }
                 case RUDPMessageTypes.PlayerShot:
                     LogUdpEvent("PlayerShot", message.GetStringOrNull("RoomID"), message.GetStringOrNull("PlayerID"), message.GetStringOrNull("ObjectId"));
                     PublishGameEvent(NetworkEventDeserializer.Deserialize(message));

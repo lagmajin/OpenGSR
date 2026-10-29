@@ -1142,6 +1142,7 @@ namespace OpenGS
         protected virtual void OnDisable()
         {
             UnSubscribeEvent();
+            PlayerRegistry.Instance?.UnregisterPlayer(this);
         }
     }
 }

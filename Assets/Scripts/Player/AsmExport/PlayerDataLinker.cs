@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 namespace OpenGS
 {
@@ -8,6 +9,18 @@ namespace OpenGS
         private AbstractPlayer cachedPlayer;
 
         public bool HasPlayer => cachedPlayer != null;
+
+        public new void SetPlayerId(string value)
+        {
+            base.SetPlayerId(value);
+            if (!Guid.TryParse(value, out var playerId))
+            {
+                return;
+            }
+
+            cachedPlayer ??= GetComponent<AbstractPlayer>();
+            cachedPlayer?.SetUniqueID(playerId);
+        }
 
         public void Start()
         {

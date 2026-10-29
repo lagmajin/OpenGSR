@@ -17,7 +17,11 @@ namespace OpenGS
 
         // players keyed by GUID
         private readonly Dictionary<Guid, AbstractPlayer> players = new Dictionary<Guid, AbstractPlayer>();
+        private readonly Dictionary<Guid, Vector3> remotePositionTargets = new Dictionary<Guid, Vector3>();
+        private readonly Dictionary<Guid, Vector3> remotePositionVelocities = new Dictionary<Guid, Vector3>();
         private readonly object locker = new object();
+
+        private const float RemotePositionSmoothTime = 0.06f;
 
         public event Action<AbstractPlayer> OnPlayerRegistered;
         public event Action<AbstractPlayer> OnPlayerUnregistered;
@@ -28,6 +32,19 @@ namespace OpenGS
         public event Action<AbstractPlayer> OnPlayerRespawned;
         public event Action<AbstractPlayer, PlayerStatus> OnPlayerStatusChanged;
         public event Action<AbstractPlayer, float> OnPlayerBoosterChanged;
+
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        private static void EnsurePersistentRegistry()
+        {
+            if (Instance != null || FindFirstObjectByType<PlayerRegistry>() != null)
+            {
+                return;
+            }
+
+            var registryObject = new GameObject(nameof(PlayerRegistry));
+            DontDestroyOnLoad(registryObject);
+            registryObject.AddComponent<PlayerRegistry>();
+        }
 
         void Awake()
         {
@@ -46,6 +63,53 @@ namespace OpenGS
             if (Instance == this) Instance = null;
         }
 
+        private void LateUpdate()
+        {
+            lock (locker)
+            {
+                foreach (var entry in remotePositionTargets)
+                {
+                    if (!players.TryGetValue(entry.Key, out var player) || player == null ||
+                        player.PlayerType() == EPlayerType.MyPlayer)
+                    {
+                        continue;
+                    }
+
+                    var velocity = remotePositionVelocities.TryGetValue(entry.Key, out var currentVelocity)
+                        ? currentVelocity
+                        : Vector3.zero;
+                    player.transform.position = Vector3.SmoothDamp(
+                        player.transform.position,
+                        entry.Value,
+                        ref velocity,
+                        RemotePositionSmoothTime);
+                    remotePositionVelocities[entry.Key] = velocity;
+                }
+            }
+        }
+
+        public bool ApplyRemotePosition(Guid id, Vector3 position)
+        {
+            if (!IsFinite(position.x) || !IsFinite(position.y) || !IsFinite(position.z))
+            {
+                return false;
+            }
+
+            lock (locker)
+            {
+                if (!players.TryGetValue(id, out var player) || player == null ||
+                    player.PlayerType() == EPlayerType.MyPlayer)
+                {
+                    return false;
+                }
+
+                remotePositionTargets[id] = position;
+                return true;
+            }
+        }
+
+        private static bool IsFinite(float value) => !float.IsNaN(value) && !float.IsInfinity(value);
+
         public bool RegisterPlayer(AbstractPlayer player)
         {
             if (player == null) return false;
@@ -54,6 +118,8 @@ namespace OpenGS
             {
                 if (players.ContainsKey(id)) return false;
                 players[id] = player;
+                remotePositionTargets.Remove(id);
+                remotePositionVelocities.Remove(id);
             }
 
             OnPlayerRegistered?.Invoke(player);
@@ -73,6 +139,8 @@ namespace OpenGS
             {
                 if (!players.TryGetValue(id, out removed)) return false;
                 players.Remove(id);
+                remotePositionTargets.Remove(id);
+                remotePositionVelocities.Remove(id);
             }
 
             if (removed != null)
@@ -344,6 +412,7 @@ namespace OpenGS
         public void PublishPlayerSpawned(AbstractPlayer player)
         {
             if (player == null) return;
+            RegisterPlayer(player);
             OnPlayerSpawned?.Invoke(player);
         }
 

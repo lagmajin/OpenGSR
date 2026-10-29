@@ -258,6 +258,10 @@ namespace OpenGS
             {
                 pAgent.SetPlayerType(EPlayerType.MyPlayer);
                 pAgent.SetTeam(team);
+                if (Guid.TryParse(AccountManager.Instance?.CurrentProfile?.GlobalUserId, out var playerId))
+                {
+                    pAgent.SetUniqueID(playerId);
+                }
                 
                 // 装備の反映（ブースターの色など）
                 pAgent.OnSpawn();
