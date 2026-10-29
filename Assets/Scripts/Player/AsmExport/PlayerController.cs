@@ -1,6 +1,8 @@
 using UnityEngine;
 using Zenject;
 using OpenGSCore;
+using LiteNetLib;
+using Newtonsoft.Json.Linq;
 
 namespace OpenGS
 {
@@ -27,6 +29,10 @@ namespace OpenGS
         private bool wasBoosting;
         private bool wasGrounded;
         private float boosterLoopTimer;
+        private ClientNetworkManager matchNetworkManager;
+        private float positionSyncTimer;
+
+        private const float PositionSyncInterval = 0.05f;
 
         [Inject]
         public void Construct(IInputService inputService, ISoundService soundService, IEffectService effectService)
@@ -40,6 +46,7 @@ namespace OpenGS
         {
             if (rigidbody2D == null) rigidbody2D = GetComponent<Rigidbody2D>();
             spriteRenderer = GetComponent<SpriteRenderer>();
+            matchNetworkManager = FindFirstObjectByType<ClientNetworkManager>();
             wasGrounded = IsGround();
             
             Status.FullRecovery();
@@ -65,6 +72,36 @@ namespace OpenGS
 
             HandleMovement();
             HandleBooster();
+            SendPositionUpdate();
+        }
+
+        private void SendPositionUpdate()
+        {
+            if (PlayerType() != EPlayerType.MyPlayer || matchNetworkManager == null ||
+                !matchNetworkManager.IsMatchUdpConnected)
+            {
+                return;
+            }
+
+            positionSyncTimer += Time.fixedDeltaTime;
+            if (positionSyncTimer < PositionSyncInterval)
+            {
+                return;
+            }
+
+            var position = transform.position;
+            var message = new JObject
+            {
+                ["MessageType"] = RUDPMessageTypes.PlayerPositionUpdate,
+                ["PosX"] = position.x,
+                ["PosY"] = position.y,
+                ["PosZ"] = position.z,
+                ["Rotation"] = transform.eulerAngles.z,
+                ["DeltaTime"] = positionSyncTimer
+            };
+
+            matchNetworkManager.SendUdpInput(message, DeliveryMethod.Unreliable);
+            positionSyncTimer = 0f;
         }
 
         private void HandleMovement()
