@@ -645,6 +645,15 @@ namespace OpenGS
             }
 
             var messageType = MessageType.Normalize(json?["MessageType"]?.ToString());
+            if (messageType == MessageType.MatchServerInfoRequest)
+            {
+                DebugSettingsManager.EnsureLoaded();
+                if (DebugSettingsManager.settings?.localServerTestMode == true)
+                {
+                    return false;
+                }
+            }
+
             var isAuthenticationRequest = messageType == MessageType.LoginRequest ||
                 messageType == MessageType.CreateAccountRequest;
             if (!clientNetworkManager.IsLobbyAuthenticated && !isAuthenticationRequest)

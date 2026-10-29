@@ -55,7 +55,9 @@ namespace OpenGS
             RefreshExpectedPlayerCount();
             var roomId = waitRoomManager?.WaitRoom?.RoomId ?? string.Empty;
             var clientNetworkManager = FindFirstObjectByType<ClientNetworkManager>();
-            if (clientNetworkManager != null && clientNetworkManager.RequestMatchServerInfo(roomId))
+            DebugSettingsManager.EnsureLoaded();
+            var useLocalServerTestMode = DebugSettingsManager.settings?.localServerTestMode ?? false;
+            if (!useLocalServerTestMode && clientNetworkManager != null && clientNetworkManager.RequestMatchServerInfo(roomId))
             {
                 return;
             }

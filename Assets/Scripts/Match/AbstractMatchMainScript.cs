@@ -492,7 +492,7 @@ namespace OpenGS
 
             if (IsOnlineMatch() && !matchNetworkManager.IsConnected())
             {
-                matchNetworkManager.ConnectToLocalServer(0);
+                matchNetworkManager.ConnectToServer(0);
             }
 
             matchNetworkSubscribed = true;

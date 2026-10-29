@@ -43,9 +43,13 @@ namespace OpenGS
             DependencyInjectionConfig.EnsureLocalTestServerStarted();
             EnsureTitleBgm();
 
+            DebugSettingsManager.EnsureLoaded();
+            var settings = DebugSettingsManager.settings;
             var serverIP = isOverrideServerAddress && !string.IsNullOrWhiteSpace(OverrideServerAddress)
                 ? OverrideServerAddress
-                : defaultServerAddress;
+                : settings != null && !settings.localServerTestMode && !string.IsNullOrWhiteSpace(settings.externalServerIP)
+                    ? settings.externalServerIP
+                    : defaultServerAddress;
             var port = ResolveServerPort();
             Debug.Log($"[ConnectToGeneralServerScene] Connecting to lobby server at {serverIP}:{port}");
 
@@ -64,13 +68,13 @@ namespace OpenGS
         {
             DebugSettingsManager.EnsureLoaded();
             var settings = DebugSettingsManager.settings;
-            if (settings != null && settings.localTCPPort > 0)
+            if (settings != null && settings.localServerTestMode && settings.localTCPPort > 0)
             {
-                Debug.Log($"[ConnectToGeneralServerScene] Using debug settings TCP port: {settings.localTCPPort}");
+                Debug.Log($"[ConnectToGeneralServerScene] Using local test TCP port: {settings.localTCPPort}");
                 return settings.localTCPPort;
             }
 
-            Debug.Log($"[ConnectToGeneralServerScene] Using default TCP port: {defaultServerPort}");
+            Debug.Log($"[ConnectToGeneralServerScene] Using server TCP port: {defaultServerPort}");
             return defaultServerPort;
         }
 

@@ -51,6 +51,7 @@ namespace OpenGS
         public event Action<JObject> FriendApproveResponseReceived;
         public event Action<JObject> FriendListResponseReceived;
         public event Action<JObject> FriendRequestNotificationReceived;
+        public event Action<JObject> MatchUdpMessageReceived;
 
         // MatchRoomManagerへの参照
         private MatchRoomManager _matchRoomManager;
@@ -672,11 +673,28 @@ namespace OpenGS
                 ["RoomID"] = OnlineManager.Instance.MatchServerInfo.RoomID ?? CurrentMatchRoomId,
                 ["UdpToken"] = OnlineManager.Instance.MatchServerInfo.UdpToken
             }, DeliveryMethod.ReliableOrdered);
+
+            try
+            {
+                DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>()?.ConnectToRemoteClient(this);
+            }
+            catch
+            {
+                // The match bridge may not be registered while the lobby is loading.
+            }
         }
 
         private void OnPeerDisconnected(NetPeer peer, DisconnectInfo disconnectInfo)
         {
             Debug.Log($"[ClientNetwork] Disconnected from Match UDP server: {disconnectInfo.Reason}");
+            try
+            {
+                DependencyInjectionConfig.Resolve<MatchRUDPServerNetworkManager>()?.DisconnectRemoteClient(this);
+            }
+            catch
+            {
+                // The match bridge may already have been disposed during a scene transition.
+            }
             _serverPeer = null;
         }
 
@@ -705,6 +723,7 @@ namespace OpenGS
 
         private void ProcessUdpMessage(JObject message)
         {
+            MatchUdpMessageReceived?.Invoke(message);
             string messageType = message.GetStringOrNull("MessageType");
             switch (messageType)
             {
@@ -850,8 +869,10 @@ namespace OpenGS
             if (message == null) return;
             var messageType = MessageType.Normalize(message.GetStringOrNull("MessageType"));
             var delivery = string.Equals(messageType, RUDPMessageTypes.PlayerShot, StringComparison.OrdinalIgnoreCase)
-                ? DeliveryMethod.Unreliable
-                : DeliveryMethod.ReliableOrdered;
+                || string.Equals(messageType, RUDPMessageTypes.PlayerPose, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(messageType, RUDPMessageTypes.PlayerPositionUpdate, StringComparison.OrdinalIgnoreCase)
+                    ? DeliveryMethod.Unreliable
+                    : DeliveryMethod.ReliableOrdered;
             SendUdpInput(message, delivery);
         }
 

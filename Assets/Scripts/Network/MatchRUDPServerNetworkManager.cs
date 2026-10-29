@@ -17,6 +17,7 @@ namespace OpenGS
         private readonly CompositeDisposable subscriptions = new CompositeDisposable();
 
         private LocalTestMatchRUDPServer localServer;
+        private ClientNetworkManager remoteClient;
         private bool connected;
 
         public System.IObservable<JObject> DataReceivedStream => dataReceivedSubject.AsObservable();
@@ -39,6 +40,12 @@ namespace OpenGS
         {
             connected = false;
             subscriptions.Clear();
+
+            if (remoteClient != null)
+            {
+                remoteClient.MatchUdpMessageReceived -= OnRemoteMessage;
+                remoteClient = null;
+            }
 
             if (localServer != null)
             {
@@ -66,6 +73,12 @@ namespace OpenGS
             json["MessageType"] = messageType;
             Debug.Log($"[MatchRUDPServerNetworkManager] SendToServer: {messageType}");
 
+            if (remoteClient != null && remoteClient.IsMatchUdpConnected)
+            {
+                remoteClient.SendMatchEvent(json);
+                return;
+            }
+
             if (localServer != null)
             {
                 localServer.ProcessIncomingMessage(json);
@@ -78,6 +91,22 @@ namespace OpenGS
         private void ConnectInternal(int port, bool isLocal)
         {
             Debug.Log($"[MatchRUDPServerNetworkManager] {(isLocal ? "ConnectToLocalServer" : "ConnectToServer")} port={port}");
+
+            if (!isLocal)
+            {
+                var clientNetworkManager = UnityEngine.Object.FindFirstObjectByType<ClientNetworkManager>();
+                if (clientNetworkManager != null && clientNetworkManager.IsMatchUdpConnected)
+                {
+                    ConnectToRemoteClient(clientNetworkManager);
+                    return;
+                }
+            }
+
+            if (remoteClient != null)
+            {
+                remoteClient.MatchUdpMessageReceived -= OnRemoteMessage;
+                remoteClient = null;
+            }
 
             try
             {
@@ -97,6 +126,52 @@ namespace OpenGS
 
             connected = true;
             connectedSubject.OnNext(Unit.Default);
+        }
+
+        public void ConnectToRemoteClient(ClientNetworkManager client)
+        {
+            if (client == null || !client.IsMatchUdpConnected || ReferenceEquals(remoteClient, client))
+            {
+                return;
+            }
+
+            if (localServer != null)
+            {
+                localServer.MessageProduced -= OnServerProducedMessage;
+                localServer = null;
+            }
+
+            if (remoteClient != null)
+            {
+                remoteClient.MatchUdpMessageReceived -= OnRemoteMessage;
+            }
+
+            remoteClient = client;
+            remoteClient.MatchUdpMessageReceived += OnRemoteMessage;
+            connected = true;
+            connectedSubject.OnNext(Unit.Default);
+            Debug.Log("[MatchRUDPServerNetworkManager] Using authenticated match UDP client.");
+        }
+
+        public void DisconnectRemoteClient(ClientNetworkManager client)
+        {
+            if (remoteClient != client)
+            {
+                return;
+            }
+
+            remoteClient.MatchUdpMessageReceived -= OnRemoteMessage;
+            remoteClient = null;
+            connected = false;
+            disconnectedSubject.OnNext(Unit.Default);
+        }
+
+        private void OnRemoteMessage(JObject json)
+        {
+            if (json != null && remoteClient != null)
+            {
+                dataReceivedSubject.OnNext(json);
+            }
         }
 
         private void OnServerProducedMessage(JObject json)
