@@ -598,7 +598,7 @@ namespace OpenGS
             var json = new JObject
             {
                 ["MessageType"] = MessageType.AddLobbyChat,
-                ["Chat"] = str
+                ["Message"] = str
             };
             networkManager.SendMessage(json);
         }

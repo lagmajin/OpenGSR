@@ -372,11 +372,19 @@ namespace OpenGS
                 case MessageType.LeaveRoomRequest:
                     HandleWaitRoomLeave(json);
                     break;
+                case MessageType.LeaveRoomResponse:
+                    if (json["Success"]?.ToObject<bool>() == true)
+                    {
+                        ClearCurrentRoomState();
+                    }
+                    break;
                 case MessageType.WaitRoomPlayerList:
                 case MessageType.WaitRoomUpdateNotification:
                     HandleWaitRoomPlayerList(json);
                     break;
                 case MessageType.LobbyChatRequest:
+                case MessageType.LobbyChatNotification:
+                case "WaitRoomChatNotification":
                     HandleWaitRoomChat(json);
                     break;
                 case MessageType.WaitRoomPlayerReady:
