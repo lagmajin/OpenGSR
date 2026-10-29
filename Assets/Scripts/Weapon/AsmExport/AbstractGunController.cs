@@ -225,6 +225,11 @@ namespace OpenGS
             PublishAmmoUpdate();
         }
 
+        public void SetMagazineCountFromServer(int value)
+        {
+            remains = Mathf.Clamp(value, 0, MagazineMaxCount());
+        }
+
         protected void PublishAmmoUpdate()
         {
             var pid = GetPlayerID(GetOwnerPlayer());

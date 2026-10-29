@@ -288,13 +288,47 @@ namespace OpenGS
 
         private void HandleAmmoUpdate(AmmoUpdateEvent evt)
         {
-            if (evt.PlayerID() != myPlayerId) return;
-            
-            // 弾薬表示更新
-            if (weaponUI.ammoText != null)
+            if (evt == null || !string.Equals(evt.PlayerID(), myPlayerId, StringComparison.OrdinalIgnoreCase) ||
+                myPlayer == null)
             {
-                weaponUI.ammoText.text = $"{evt.CurrentAmmo()} / {evt.MaxAmmo()}";
+                return;
             }
+
+            var currentWeapon = myPlayer.GetComponentInChildren<AbstractGunController>();
+            foreach (var gun in myPlayer.GetComponentsInChildren<AbstractGunController>(true))
+            {
+                if (!MatchesWeapon(gun, evt.WeaponType())) continue;
+                gun.SetMagazineCountFromServer(evt.CurrentAmmo());
+
+                if (gun == currentWeapon && weaponUI.ammoText != null)
+                {
+                    weaponUI.ammoText.text = $"{evt.CurrentAmmo()} / {evt.MaxAmmo()}";
+                }
+            }
+        }
+
+        private static bool MatchesWeapon(AbstractGunController gun, string weaponType)
+        {
+            if (gun == null || string.IsNullOrWhiteSpace(weaponType)) return false;
+            var key = NormalizeWeaponKey(weaponType);
+            if (key.Length == 0) return false;
+
+            if (string.Equals(NormalizeWeaponKey(gun.Name), key, StringComparison.Ordinal)) return true;
+            return gun.data != null &&
+                   string.Equals(NormalizeWeaponKey(gun.data.weaponType.ToString()), key, StringComparison.Ordinal);
+        }
+
+        private static string NormalizeWeaponKey(string value)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return string.Empty;
+            var cloneSuffix = value.IndexOf("(Clone)", StringComparison.OrdinalIgnoreCase);
+            if (cloneSuffix >= 0) value = value.Remove(cloneSuffix, "(Clone)".Length);
+            var normalized = new System.Text.StringBuilder(value.Length);
+            foreach (var character in value)
+            {
+                if (char.IsLetterOrDigit(character)) normalized.Append(char.ToLowerInvariant(character));
+            }
+            return normalized.ToString();
         }
 
         private void HandleWeaponChange(WeaponChangeEvent evt)
