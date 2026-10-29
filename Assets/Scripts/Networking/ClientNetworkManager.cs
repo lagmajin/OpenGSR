@@ -24,7 +24,7 @@ namespace OpenGS
         [SerializeField] private int udpPort = 63000; // Match UDP (MatchServerV2)
         
         [Header("Client State")]
-        public string ClientPlayerId { get; private set; } = Guid.NewGuid().ToString("N");
+        public string ClientPlayerId { get; private set; } = string.Empty;
         public string CurrentMatchRoomId { get; private set; } = string.Empty;
         public bool IsMatchUdpConnected => _serverPeer != null &&
             _serverPeer.ConnectionState == ConnectionState.Connected;
@@ -57,6 +57,11 @@ namespace OpenGS
 
         private void Awake()
         {
+            ClientPlayerId = ResolveLocalPlayerId();
+            if (string.IsNullOrWhiteSpace(ClientPlayerId))
+            {
+                ClientPlayerId = Guid.NewGuid().ToString("N");
+            }
             _listener = new EventBasedNetListener();
             _netClient = new NetManager(_listener);
             
@@ -130,7 +135,7 @@ namespace OpenGS
                 {
                     ["MessageType"] = MessageType.LoginRequest, // MessageTypeを使用
                     ["PlayerID"] = ClientPlayerId,
-                    ["PlayerName"] = "UnityClient_" + ClientPlayerId.Substring(0, 4)
+                    ["PlayerName"] = "UnityClient_" + ClientPlayerId.Substring(0, Math.Min(4, ClientPlayerId.Length))
                 });
             }
             catch (Exception ex)
@@ -237,6 +242,10 @@ namespace OpenGS
                         if (!string.IsNullOrEmpty(resolvedPlayerId))
                         {
                             ClientPlayerId = resolvedPlayerId;
+                            AccountManager.Instance.LoginData(
+                                AccountManager.Instance.CurrentProfile.AccountName,
+                                AccountManager.Instance.CurrentProfile.GlobalMyIP,
+                                resolvedPlayerId);
                         }
                         Debug.Log($"[ClientNetwork] Login successful. PlayerID: {ClientPlayerId}");
                         // ログイン成功後の処理
@@ -375,6 +384,17 @@ namespace OpenGS
             {
                 _matchConnectRoutine = StartCoroutine(ConnectToMatchUdpWhenReady());
             }
+        }
+
+        public void HandleExternalMatchServerInfo(JObject response)
+        {
+            HandleMatchServerInfoResponse(response);
+        }
+
+        private static string ResolveLocalPlayerId()
+        {
+            var profileId = AccountManager.Instance?.CurrentProfile?.GlobalUserId;
+            return string.IsNullOrWhiteSpace(profileId) ? string.Empty : profileId;
         }
 
         public void SendFriendRequest(string targetPlayerId)

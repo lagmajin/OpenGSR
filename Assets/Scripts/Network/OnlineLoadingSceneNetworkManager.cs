@@ -208,6 +208,8 @@ namespace OpenGS
                     concreteScene.OnMatchServerConnected();
                 }
 
+                FindFirstObjectByType<ClientNetworkManager>()?.HandleExternalMatchServerInfo(json);
+
                 RefreshExpectedPlayerCount();
                 return;
             }
