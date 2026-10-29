@@ -191,6 +191,8 @@ namespace OpenGS
                 return false;
             }
 
+            var previousMaxHp = player.Status.MaxHp;
+            var previousMaxArmor = player.Status.MaxArmor;
             if (evt.MaxHp() > 0) player.Status.MaxHp = evt.MaxHp();
             if (evt.MaxArmor() >= 0) player.Status.MaxArmor = evt.MaxArmor();
 
@@ -201,12 +203,14 @@ namespace OpenGS
             var currentHp = GetPlayerHpSafe(player);
             var currentArmor = GetPlayerArmorSafe(player);
 
-            if (!Mathf.Approximately(previousHp, currentHp))
+            if (!Mathf.Approximately(previousHp, currentHp) ||
+                !Mathf.Approximately(previousMaxHp, player.Status.MaxHp))
             {
                 OnPlayerHealthChanged?.Invoke(player, currentHp);
             }
 
-            if (!Mathf.Approximately(previousArmor, currentArmor))
+            if (!Mathf.Approximately(previousArmor, currentArmor) ||
+                !Mathf.Approximately(previousMaxArmor, player.Status.MaxArmor))
             {
                 OnPlayerArmorChanged?.Invoke(player, currentArmor);
             }
@@ -240,18 +244,22 @@ namespace OpenGS
 
             var previousHp = GetPlayerHpSafe(player);
             var previousArmor = GetPlayerArmorSafe(player);
+            var previousMaxHp = player.Status.MaxHp;
+            var previousMaxArmor = player.Status.MaxArmor;
             player.ApplyAuthoritativeRespawn(
                 new Vector3(evt.Position().x, evt.Position().y, player.transform.position.z),
                 evt.CurrentHealth(), evt.MaxHealth(), evt.CurrentArmor(), evt.MaxArmor());
 
             var currentHp = GetPlayerHpSafe(player);
             var currentArmor = GetPlayerArmorSafe(player);
-            if (!Mathf.Approximately(previousHp, currentHp))
+            if (!Mathf.Approximately(previousHp, currentHp) ||
+                !Mathf.Approximately(previousMaxHp, player.Status.MaxHp))
             {
                 OnPlayerHealthChanged?.Invoke(player, currentHp);
             }
 
-            if (!Mathf.Approximately(previousArmor, currentArmor))
+            if (!Mathf.Approximately(previousArmor, currentArmor) ||
+                !Mathf.Approximately(previousMaxArmor, player.Status.MaxArmor))
             {
                 OnPlayerArmorChanged?.Invoke(player, currentArmor);
             }
