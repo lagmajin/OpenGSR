@@ -412,6 +412,10 @@ namespace OpenGS
         private Vector2 position_;
         private Vector2 direction_;
         private string grenadeType_;
+        private string projectileID_;
+        private float speed_;
+        private float remainingFuseSeconds_;
+        private float gravityScale_ = 1f;
 
         public GrenadeThrowEvent(string playerId, Vector2 position, Vector2 direction, string grenadeType)
         {
@@ -421,10 +425,25 @@ namespace OpenGS
             grenadeType_ = grenadeType;
         }
 
+        public GrenadeThrowEvent(
+            string playerId, Vector2 position, Vector2 direction, string grenadeType,
+            string projectileId, float speed, float remainingFuseSeconds, float gravityScale = 1f)
+            : this(playerId, position, direction, grenadeType)
+        {
+            projectileID_ = projectileId;
+            speed_ = speed;
+            remainingFuseSeconds_ = remainingFuseSeconds;
+            gravityScale_ = gravityScale;
+        }
+
         public string PlayerID() => playerID_;
         public Vector2 Position() => position_;
         public Vector2 Direction() => direction_;
         public string GrenadeType() => grenadeType_;
+        public string ProjectileID() => projectileID_;
+        public float Speed() => speed_;
+        public float RemainingFuseSeconds() => remainingFuseSeconds_;
+        public float GravityScale() => gravityScale_;
     }
 
     /// <summary>

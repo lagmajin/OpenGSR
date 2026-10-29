@@ -253,16 +253,20 @@ namespace OpenGS
 
         private static AmmoUpdateEvent DeserializeAmmoUpdate(JObject json)
         {
-            return new AmmoUpdateEvent(S(json, "PlayerId"), S(json, "WeaponType"), I(json, "CurrentAmmo"), I(json, "MaxAmmo"));
+            return new AmmoUpdateEvent(S(json, "PlayerId", S(json, "PlayerID")), S(json, "WeaponType"), I(json, "CurrentAmmo"), I(json, "MaxAmmo"));
         }
 
         private static GrenadeThrowEvent DeserializeGrenadeThrow(JObject json)
         {
             return new GrenadeThrowEvent(
-                S(json, "PlayerId"),
+                S(json, "PlayerId", S(json, "PlayerID")),
                 new Vector2(F(json, "PosX"), F(json, "PosY")),
                 new Vector2(F(json, "DirX"), F(json, "DirY")),
-                S(json, "GrenadeType")
+                S(json, "GrenadeType", S(json, "ObjectType")),
+                S(json, "ObjectId", S(json, "ProjectileId")),
+                F(json, "Speed"),
+                F(json, "RemainingFuseSeconds"),
+                F(json, "GravityScale", 1f)
             );
         }
 
@@ -316,7 +320,7 @@ namespace OpenGS
         private static ObjectSpawnedEvent DeserializeObjectSpawned(JObject json)
         {
             return new ObjectSpawnedEvent(
-                S(json, "ObjectId"),
+                S(json, "ObjectId", S(json, "ProjectileId")),
                 S(json, "ObjectType"),
                 new Vector2(F(json, "PosX"), F(json, "PosY")),
                 F(json, "Rotation")
@@ -326,7 +330,7 @@ namespace OpenGS
         private static ObjectDestroyedEvent DeserializeObjectDestroyed(JObject json)
         {
             return new ObjectDestroyedEvent(
-                S(json, "ObjectId"),
+                S(json, "ObjectId", S(json, "ProjectileId")),
                 S(json, "DestroyedBy"),
                 new Vector2(F(json, "PosX"), F(json, "PosY"))
             );

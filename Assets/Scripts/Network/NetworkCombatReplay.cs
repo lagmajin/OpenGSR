@@ -18,6 +18,7 @@ namespace OpenGS
 
         private readonly CompositeDisposable disposables = new CompositeDisposable();
         private readonly Dictionary<string, GameObject> spawnedObjects = new Dictionary<string, GameObject>();
+        private readonly Dictionary<string, GameObject> remoteProjectiles = new Dictionary<string, GameObject>();
 
         private void Start()
         {
@@ -54,10 +55,18 @@ namespace OpenGS
 
         private void HandleGrenadeThrow(GrenadeThrowEvent e)
         {
-            if (e == null || IsLocalPlayer(e.PlayerID()))
+            if (e == null)
             {
                 return;
             }
+
+            if (IsServerProjectile(e.GrenadeType()))
+            {
+                SpawnServerProjectile(e);
+                return;
+            }
+
+            if (IsLocalPlayer(e.PlayerID())) return;
 
             var position = new Vector3(e.Position().x, e.Position().y, 0f);
             var rotation = Quaternion.Euler(0f, 0f, Mathf.Atan2(e.Direction().y, e.Direction().x) * Mathf.Rad2Deg);
@@ -84,6 +93,12 @@ namespace OpenGS
                 LogReplayEvent("Replacing existing", e.ObjectType(), e.ObjectID());
                 Destroy(existing);
                 spawnedObjects.Remove(e.ObjectID());
+            }
+
+            if (IsServerProjectile(e.ObjectType()))
+            {
+                SpawnFallbackProjectile(e.ObjectID(), e.ObjectType(), e.Position(), e.Rotation());
+                return;
             }
 
             var prefab = ResolveSpawnPrefab(e.ObjectType());
@@ -119,6 +134,120 @@ namespace OpenGS
             }
 
             spawnedObjects.Remove(e.ObjectID());
+
+            if (TryRemoveById(remoteProjectiles, e.ObjectID(), out var projectile) && projectile != null)
+            {
+                Destroy(projectile);
+            }
+        }
+
+        private void SpawnServerProjectile(GrenadeThrowEvent e)
+        {
+            // A local shooter can receive its own authoritative event after it has
+            // already created the predicted projectile. Preserve that visual.
+            if (IsLocalPlayer(e.PlayerID())) return;
+
+            var id = e.ProjectileID();
+            if (string.IsNullOrWhiteSpace(id)) return;
+            RemoveById(remoteProjectiles, id);
+
+            var position = e.Position();
+            var direction = e.Direction();
+            if (direction.sqrMagnitude < 0.0001f) direction = Vector2.right;
+            direction.Normalize();
+
+            var speed = e.Speed() > 0f ? e.Speed() : ResolveProjectileSpeed(e.GrenadeType());
+            var remainingFuse = e.RemainingFuseSeconds() > 0f
+                ? e.RemainingFuseSeconds()
+                : ResolveProjectileLifetime(e.GrenadeType());
+            CreateProjectileVisual(
+                id, e.GrenadeType(), position, direction * speed,
+                e.GravityScale(), remainingFuse);
+        }
+
+        private void SpawnFallbackProjectile(string id, string objectType, Vector2 position, float rotation)
+        {
+            if (string.IsNullOrWhiteSpace(id)) return;
+            RemoveById(remoteProjectiles, id);
+            var radians = rotation;
+            if (Mathf.Abs(radians) < 0.001f) radians = 0f;
+            var direction = new Vector2(Mathf.Cos(radians), Mathf.Sin(radians));
+            CreateProjectileVisual(
+                id, objectType, position, direction * ResolveProjectileSpeed(objectType),
+                1f, ResolveProjectileLifetime(objectType));
+        }
+
+        private void CreateProjectileVisual(
+            string id, string objectType, Vector2 position, Vector2 velocity,
+            float gravityScale, float lifetime)
+        {
+            var go = new GameObject($"RemoteProjectile_{objectType}");
+            go.transform.position = new Vector3(position.x, position.y, 0f);
+            go.transform.rotation = Quaternion.Euler(
+                0f, 0f, Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg);
+
+            var renderer = go.AddComponent<SpriteRenderer>();
+            renderer.sprite = Resources.Load<Sprite>("Sprites/Bullet/Circle");
+            renderer.color = string.Equals(objectType, "RocketProjectile", StringComparison.OrdinalIgnoreCase)
+                ? new Color(1f, 0.38f, 0.12f)
+                : new Color(1f, 0.76f, 0.2f);
+            renderer.sortingOrder = 20;
+            go.transform.localScale = string.Equals(objectType, "RocketProjectile", StringComparison.OrdinalIgnoreCase)
+                ? Vector3.one * 0.16f : Vector3.one * 0.13f;
+
+            var flight = go.AddComponent<RemoteProjectileFlight>();
+            flight.Initialize(velocity, gravityScale, Mathf.Max(0.1f, lifetime));
+            remoteProjectiles[id] = go;
+        }
+
+        private static bool IsServerProjectile(string objectType)
+            => string.Equals(objectType, "RocketProjectile", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(objectType, "LaunchedGrenade", StringComparison.OrdinalIgnoreCase) ||
+               string.Equals(objectType, "ChildClusterGrenade", StringComparison.OrdinalIgnoreCase);
+
+        private static float ResolveProjectileSpeed(string objectType)
+            => string.Equals(objectType, "RocketProjectile", StringComparison.OrdinalIgnoreCase)
+                ? 30f
+                : string.Equals(objectType, "ChildClusterGrenade", StringComparison.OrdinalIgnoreCase)
+                    ? 8f
+                    : 18f;
+
+        private static float ResolveProjectileLifetime(string objectType)
+            => string.Equals(objectType, "RocketProjectile", StringComparison.OrdinalIgnoreCase) ? 1.5f : 2.5f;
+
+        private static void RemoveById(Dictionary<string, GameObject> objects, string id)
+        {
+            if (TryRemoveById(objects, id, out var go) && go != null) Destroy(go);
+        }
+
+        private static bool TryRemoveById(
+            Dictionary<string, GameObject> objects, string id, out GameObject go)
+        {
+            if (objects.TryGetValue(id, out go))
+            {
+                objects.Remove(id);
+                return true;
+            }
+
+            var matchingKey = default(string);
+            foreach (var entry in objects)
+            {
+                if (string.Equals(entry.Key, id, StringComparison.OrdinalIgnoreCase))
+                {
+                    matchingKey = entry.Key;
+                    go = entry.Value;
+                    break;
+                }
+            }
+
+            if (matchingKey != null)
+            {
+                objects.Remove(matchingKey);
+                return true;
+            }
+
+            go = null;
+            return false;
         }
 
         private static void SpawnSimpleFlash(Vector3 position, Color color, float lifetime)
@@ -161,6 +290,9 @@ namespace OpenGS
                     return Resources.Load<GameObject>("Prefabs/Weapon/Projectile/FireGrenade");
                 case "SmokeGrenade":
                     return Resources.Load<GameObject>("Prefabs/Weapon/Projectile/SmokeGrenade");
+                case "RocketProjectile":
+                case "LaunchedGrenade":
+                    return null;
                 default:
                     return null;
             }
