@@ -28,7 +28,7 @@ namespace OpenGS
         {
             var tags = collision.gameObject.GetComponent<MultipleTags>();
 
-            if (tags.HasPlayerTag())
+            if (tags != null && tags.HasPlayerTag())
             {
                 MissionClear();
             }
