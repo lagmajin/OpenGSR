@@ -242,6 +242,7 @@ namespace OpenGS
         public void SetUniqueID(Guid id)
         {
             uniqueId = id;
+            GetComponent<AbstractPlayerLinker>()?.SetPlayerId(id.ToString());
         }
 
         // ─── IPlayer: チーム ─────────────────────────────────────────
