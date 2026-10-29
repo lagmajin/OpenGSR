@@ -40,9 +40,11 @@ namespace OpenGS
                 // ゲームプレイ系
                 RUDPMessageTypes.PlayerDeath     => DeserializePlayerDead(json),
                 RUDPMessageTypes.PlayerKill      => DeserializePlayerKill(json),
+                RUDPMessageTypes.PlayerKilled    => DeserializePlayerKill(json),
                 RUDPMessageTypes.PlayerAssist    => DeserializePlayerAssist(json),
                 RUDPMessageTypes.PlayerShot      => DeserializePlayerShot(json),
                 RUDPMessageTypes.PlayerDamage    => DeserializePlayerDamage(json),
+                RUDPMessageTypes.PlayerDamaged   => DeserializePlayerDamage(json),
                 RUDPMessageTypes.KillScoreUpdate => DeserializeScoreUpdate(json),
 
                 // リスポーン
@@ -122,8 +124,8 @@ namespace OpenGS
         private static PlayerKillEvent DeserializePlayerKill(JObject json)
         {
             return new PlayerKillEvent(
-                S(json, "KillerId"),
-                S(json, "VictimId"),
+                S(json, "KillerId", S(json, "KillerID")),
+                S(json, "VictimId", S(json, "KilledPlayerID")),
                 S(json, "WeaponType", "Unknown"),
                 B(json, "Headshot")
             );
@@ -137,7 +139,7 @@ namespace OpenGS
         private static PlayerShotEvent DeserializePlayerShot(JObject json)
         {
             return new PlayerShotEvent(
-                S(json, "PlayerId"),
+                S(json, "PlayerId", S(json, "PlayerID")),
                 new Vector2(F(json, "PosX"), F(json, "PosY")),
                 new Vector2(F(json, "DirX"), F(json, "DirY")),
                 S(json, "WeaponType", "Unknown")
@@ -147,10 +149,10 @@ namespace OpenGS
         private static PlayerDamageEvent DeserializePlayerDamage(JObject json)
         {
             return new PlayerDamageEvent(
-                S(json, "TargetId"),
-                S(json, "AttackerId"),
+                S(json, "TargetId", S(json, "DamagedPlayerID", S(json, "TargetID"))),
+                S(json, "AttackerId", S(json, "AttackerID")),
                 I(json, "Damage"),
-                I(json, "RemainingHp")
+                I(json, "RemainingHp", I(json, "RemainingHealth"))
             );
         }
 
