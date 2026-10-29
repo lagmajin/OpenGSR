@@ -232,7 +232,9 @@ namespace OpenGS
             json["PosY"] = e.Position().y;
             json["DirX"] = e.Direction().x;
             json["DirY"] = e.Direction().y;
-            json["WeaponType"] = e.WeaponType() ?? "Unknown";
+            var weaponType = e.WeaponType() ?? "Unknown";
+            json["WeaponType"] = weaponType;
+            json["WeaponVariant"] = weaponType;
             json["Timestamp"] = e.Timestamp.ToString("o");
             return json;
         }

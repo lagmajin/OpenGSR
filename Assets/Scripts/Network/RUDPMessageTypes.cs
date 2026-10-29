@@ -176,6 +176,7 @@ namespace OpenGS
             json["DirX"] = direction.x;
             json["DirY"] = direction.y;
             json["WeaponType"] = weaponType;
+            json["WeaponVariant"] = weaponType;
             return json;
         }
 
