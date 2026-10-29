@@ -176,6 +176,8 @@ namespace OpenGS
                 var ip = json["IP"]?.ToString() ?? json["IPAddress"]?.ToString();
                 var port = json["Port"]?.ToObject<int?>();
                 var udpPort = json["UdpPort"]?.ToObject<int?>();
+                var roomId = json["RoomID"]?.ToString() ?? json["RoomId"]?.ToString();
+                var udpToken = json["UdpToken"]?.ToString() ?? json["Token"]?.ToString();
                 if (!string.IsNullOrWhiteSpace(ip))
                 {
                     OnlineManager.Instance.MatchServerInfo.IP = ip;
@@ -189,6 +191,16 @@ namespace OpenGS
                 if (udpPort.HasValue)
                 {
                     OnlineManager.Instance.MatchServerInfo.UdpPort = udpPort.Value;
+                }
+
+                if (!string.IsNullOrWhiteSpace(roomId))
+                {
+                    OnlineManager.Instance.MatchServerInfo.RoomID = roomId;
+                }
+
+                if (!string.IsNullOrWhiteSpace(udpToken))
+                {
+                    OnlineManager.Instance.MatchServerInfo.UdpToken = udpToken;
                 }
 
                 if (onlineLoadingScene is OnlineLoadingScene concreteScene)

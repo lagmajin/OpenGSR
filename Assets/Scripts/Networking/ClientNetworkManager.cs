@@ -341,6 +341,7 @@ namespace OpenGS
             var port = response["Port"]?.ToObject<int?>();
             var udp = response["UdpPort"]?.ToObject<int?>();
             var roomId = response.GetStringOrNull("RoomID");
+            var udpToken = response.GetStringOrNull("UdpToken") ?? response.GetStringOrNull("Token");
 
             if (!string.IsNullOrWhiteSpace(ip))
             {
@@ -360,6 +361,12 @@ namespace OpenGS
             if (!string.IsNullOrWhiteSpace(roomId))
             {
                 CurrentMatchRoomId = roomId;
+                OnlineManager.Instance.MatchServerInfo.RoomID = roomId;
+            }
+
+            if (!string.IsNullOrWhiteSpace(udpToken))
+            {
+                OnlineManager.Instance.MatchServerInfo.UdpToken = udpToken;
             }
 
             Debug.Log($"[ClientNetwork] MatchServerInfo received: {OnlineManager.Instance.MatchServerInfo.IP}:{OnlineManager.Instance.MatchServerInfo.UdpPort ?? OnlineManager.Instance.MatchServerInfo.Port}");
@@ -514,6 +521,13 @@ namespace OpenGS
             }
 
             var matchInfo = OnlineManager.Instance.MatchServerInfo;
+            var roomId = !string.IsNullOrWhiteSpace(CurrentMatchRoomId) ? CurrentMatchRoomId : matchInfo.RoomID;
+            if (string.IsNullOrWhiteSpace(roomId) || string.IsNullOrWhiteSpace(matchInfo.UdpToken))
+            {
+                Debug.LogWarning("[ClientNetwork] Match UDP credentials are missing; request match server info after joining a room.");
+                return;
+            }
+
             var resolvedIp = !string.IsNullOrWhiteSpace(matchInfo.IP) ? matchInfo.IP : serverIp;
             var resolvedUdpPort = matchInfo.UdpPort ?? matchInfo.Port ?? udpPort;
 
@@ -534,7 +548,9 @@ namespace OpenGS
             SendUdpInput(new JObject
             {
                 ["MessageType"] = RUDPMessageTypes.ClientConnect,
-                ["PlayerID"] = ClientPlayerId
+                ["PlayerID"] = ClientPlayerId,
+                ["RoomID"] = OnlineManager.Instance.MatchServerInfo.RoomID ?? CurrentMatchRoomId,
+                ["UdpToken"] = OnlineManager.Instance.MatchServerInfo.UdpToken
             }, DeliveryMethod.ReliableOrdered);
         }
 
