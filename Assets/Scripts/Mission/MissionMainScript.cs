@@ -25,6 +25,7 @@ namespace OpenGS
 
             time += Time.deltaTime;
 
+#if UNITY_EDITOR
             if (Input.GetKeyDown(KeyCode.F1))
             {
                 MissionClear();
@@ -34,6 +35,7 @@ namespace OpenGS
             {
                 MissionFail();
             }
+#endif
 
             if (Input.GetKeyDown(KeyCode.R))
             {
